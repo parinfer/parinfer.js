@@ -160,7 +160,10 @@ Notice that there is no special code to perform the operations to the internal
 state.  The view is simply a pure function which inserts the closing delimiters
 where appropriate.  We still need to keep the input clean though:
 
-- __when typing a closing delimiter:__ prevent typing one that is unmatched, while allowing one that is matched.
+- __when typing a closing delimiter:__
+  - prevent typing one that is unmatched
+  - prevent typing one if it is the first token on a line (disregarding whitespace)
+  - otherwise, allow it if it is matched
 - __when the cursor leaves a line:__ erase closing delimiters at the end of the line
 
 The aformentioned points allow us to type inline expression seen below:
