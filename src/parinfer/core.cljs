@@ -150,14 +150,13 @@
       (html
         [:div
          [:textarea
-          {:ref "txt"
-           :on-change (fn [evt]
+          {:on-change (fn [evt]
                         (let [target (.-target evt)]
                           (update-text! (.-selectionStart target) (.-value target))))
            :value (:text data)}]
-         [:ul
-          (for [[i ch] (:stack data)]
-            [:li i " " ch])]]))))
+         [:pre.internal
+          (:text data)
+          ]]))))
 
 (om/root
   root-comp
