@@ -4,24 +4,36 @@ This is an experiment that tries to demonstrate a possible replacement for
 [paredit] as a simpler and more natural way to write Clojure code, and perhaps
 other Lisps.
 
-__The basic premise:__ It's possible for an open delimiter (paren, bracket, or
-curly) to be naturally closed based on indentation, while still allowing for
-explicit closing when inlining is desired.  Skip to the [concept examples] for
-details.
+##### The basic premise
+
+A vast majority of closing delimiters `)]}` in Clojure can become inferred
+based on indentation.  Thus, I'm building an editor demo that will move these
+delimiters around for you as you adjust the indentation of your code.  Inlining
+expressions will still be supported of course.
+
+Skip to the [concept examples] for details.
 
 [concept examples]:#concept
 
-__A proposal__: Since we cannot assume that any existing Clojure code will be
-[indented correctly][clojure-validate-indent], our experimental editor operates
-instead on code which __does not allow any closing delimiters at the end of a
-line__. Rather, these delimiters are inferred and displayed by the editor,
-based on indentation alone.  In the figure below, the left side shows code that
-follows such a rule, and the right side highlights the location of the inferred
-closing delimiters.
+##### A new format
+
+To make this possible, our experimental editor has to operate on code which
+__does not allow any closing delimiters at the end of a line__. Rather, these
+delimiters are inferred and displayed by the editor, based on indentation
+alone.  In the figure below, the left side shows code that follows such a rule,
+and the right side highlights the location of the inferred closing delimiters.
 
 ![inferred parens](http://i.imgur.com/dPigfne.png)
 
-__Prior Art__
+##### Using with existing code
+
+It may be possible for the editor to load and
+[validate][clojure-validate-indent] an existing Clojure source file, say
+`foo.clj`, then convert it to a working copy at `foo.iclj` to follow the
+aforementioned format.  Edits to `foo.iclj` will result in straightforward
+translations to the `foo.clj` file.
+
+##### Prior Art
 
 - [paredit] - structural editing and auto-balancing of Lisp text
 - [Haml], [Slim], and [Jade] - indented HTML templating langs that are really close to indented lisps
@@ -46,7 +58,8 @@ __Prior Art__
 ## Concept Examples
 
 Changing the indentation of code will cause tokens to jump in and out of
-collections:
+collections, as the editor moves the closing delimiters around to obey
+indentation:
 
 ```clojure
 (defn foo
