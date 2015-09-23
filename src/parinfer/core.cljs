@@ -9,12 +9,13 @@
 
 (defonce app-state (atom {:text ""}))
 
-(defn remove-trailing-closers
-  [line]
-  (string/replace line #"[\]})]+\s*$" ""))
-
 ;;------------------------------------------------------------------------
 ;; Simple clojure delimiter parsing
+;;
+;; It handles:
+;;  - multi-line strings
+;;  - comments
+;;  - escaped characters
 ;;------------------------------------------------------------------------
 
 (def matching-delim
@@ -31,50 +32,65 @@
       (derive "]" :close)
       (derive ")" :close)))
 
+;;; We track delimiters by using a stack of [x-pos char] tuples.
+
 ;; Simple state tracking by checking last character.
 
 (defn prev-ch [stack]
   (second (peek stack)))
 
-(defn in-escape? [stack]
+;;; A delimiter stack can be in any of the following states:
+
+(defn escaping?
+  "Next character will be escaped."
+  [stack]
   (= \\ (prev-ch stack)))
 
-(defn in-str? [stack]
+(defn in-str?
+  "Next character is inside a string."
+  [stack]
   (= \" (prev-ch stack)))
 
-(defn in-comment? [stack]
+(defn in-comment?
+  "Next character is inside a comment."
+  [stack]
   (= \; (prev-ch stack)))
 
-(defn in-code? [stack]
+(defn in-code?
+  "Next character is inside actual code."
+  [stack]
   (and (not (in-str? stack))
        (not (in-comment? stack))))
 
-(defn valid-closer? [stack ch]
+(defn valid-closer?
+  "Determine if the given closing delimiter can be used next, assuming we are inside code."
+  [stack ch]
   (= (prev-ch stack) (matching-delim ch)))
 
 ;; Push operations
 
-(defmulti push-char*
+(defmulti push-char
+  "Update the delimiter stack with the given character."
   (fn [stack [x-pos ch]] ch)
   :hierarchy #'char-hierarchy)
 
-(defmethod push-char* "\t"
+(defmethod push-char "\t"
   [stack [x-pos ch]]
   (cond
     (not (in-str? stack)) (throw (str "no tabs allowed outside strings"))
     :else stack))
 
-(defmethod push-char* :open
+(defmethod push-char :open
   [stack [x-pos ch]]
   (cond
-    (in-escape? stack) (pop stack)
+    (escaping? stack) (pop stack)
     (in-code? stack) (conj stack [x-pos ch])
     :else stack))
 
-(defmethod push-char* :close
+(defmethod push-char :close
   [stack [x-pos ch]]
   (cond
-    (in-escape? stack) (pop stack)
+    (escaping? stack) (pop stack)
     (in-code? stack) (if (valid-closer? stack ch)
                        (pop stack)
                        (do
@@ -82,37 +98,43 @@
                          (throw (str "no matching open delimiter for " ch))))
     :else stack))
 
-(defmethod push-char* ";"
+(defmethod push-char ";"
   [stack [x-pos ch]]
   (cond
-    (in-escape? stack) (pop stack)
+    (escaping? stack) (pop stack)
     (in-code? stack) (conj stack [x-pos ch])
     :else stack))
 
-(defmethod push-char* "\n"
+(defmethod push-char "\n"
   [stack [x-pos ch]]
-  (let [s0 (cond-> stack (in-escape? stack) pop)
+  (let [s0 (cond-> stack (escaping? stack) pop)
         s1 (cond-> s0 (in-comment? s0) pop)]
     s1))
 
-(defmethod push-char* "\\"
+(defmethod push-char "\\"
   [stack [x-pos ch]]
   (cond
-    (in-escape? stack) (pop stack)
+    (escaping? stack) (pop stack)
     :else (conj stack [x-pos ch])))
 
-(defmethod push-char* "\""
+(defmethod push-char "\""
   [stack [x-pos ch]]
   (cond
-    (in-escape? stack) (pop stack)
+    (escaping? stack) (pop stack)
     (in-str? stack) (pop stack)
     :else (conj stack [x-pos ch])))
 
-(defmethod push-char* :default
+(defmethod push-char :default
   [stack [x-pos ch]]
   (cond
-    (in-escape? stack) (pop stack)
+    (escaping? stack) (pop stack)
     :else stack))
+
+;;------------------------------------------------------------------------
+;; Closing Delimiter inferencing
+;;------------------------------------------------------------------------
+
+;; Utilities
 
 (defn whitespace? [ch]
   (re-find #"[\s,]" ch))
@@ -123,16 +145,33 @@
        insert
        (subs orig idx)))
 
+;; Parsing/inferencing
+
+(def empty-result
+  "An initial state of our running result."
+  {:lines []                        ;; final lines containing the inferenced closing delimiters.
+   :line-no -1                      ;; current line number we are processing.
+   :track-indent? false             ;; "true" when we are looking for the first char on a line to signify indentation.
+   :insert {:line nil :col nil}     ;; the place to insert closing delimiters whenever we hit appropriate indentation.
+   :stack []})                      ;; the delimiter stack
+
 (defn close-delims
+  "Update the given result by inferring closing delimiters.
+  Do this by using the given indentation level."
   ([result] (close-delims result 0))
   ([result indent-x]
-   (let [[stack delims] (loop [stack (:stack result), delims ""]
-                          (if-not (seq stack)
-                            [stack delims]
-                            (let [[x ch] (peek stack)]
-                              (if (>= x indent-x)
-                                (recur (pop stack) (str delims (matching-delim ch)))
-                                [stack delims]))))
+
+   (let [;; Pop the appropriate delims off the stack, and create the inferred delim string.
+         [stack delims]
+         (loop [stack (:stack result), delims ""]
+           (if-not (seq stack)
+             [stack delims]
+             (let [[x ch] (peek stack)]
+               (if (>= x indent-x)
+                 (recur (pop stack) (str delims (matching-delim ch)))
+                 [stack delims]))))
+
+         ;; Insert the delims in the correct place, then update the result.
          {:keys [line-no x-pos]} (:insert result)
          result (-> result
                     (update-in [:lines line-no] insert-string x-pos delims)
@@ -140,7 +179,8 @@
                            :stack stack))]
      result)))
 
-(defn push-char
+(defn process-char
+  "Update the given result by processing the given character and its position."
   [{:keys [stack track-indent? line-no] :as result} [x-pos ch]]
 
   (let [;; Insert closing delimiters if required.
@@ -153,7 +193,7 @@
         result (cond-> result should-close? (close-delims x-pos))
 
         ;; Update the delimiter stack with this character.
-        result (update-in result [:stack] push-char* [x-pos ch])
+        result (update-in result [:stack] push-char [x-pos ch])
         stack (:stack result)
 
         ;; Add potential insert point for closing delimiters if required.
@@ -165,43 +205,44 @@
         result (cond-> result insert (assoc :insert insert))]
     result))
 
-;; main parsers
-
-(def empty-result
-  {:lines []
-   :line-no -1
-   :track-indent? false
-   :insert {:line nil :col nil}
-   :stack []})
-
-(defn parse-line
-  ([line] (parse-line empty-result line))
+(defn process-line
+  "Update the given result by processing the given line of text."
+  ([line] (process-line empty-result line))
   ([{:keys [stack lines line-no] :as result} line]
    (let [result (assoc result
                   :track-indent? (and (seq stack) (not (in-str? stack)))
                   :lines (conj lines line)
                   :line-no (inc line-no))
-         result (reduce push-char result (map-indexed vector (str line "\n")))]
+         result (reduce process-char result (map-indexed vector (str line "\n")))]
      result)))
 
-(defn parse-text
-  ([text] (parse-text empty-result text))
+(defn process-text
+  "Update the given result by processing the given text."
+  ([text] (process-text empty-result text))
   ([result text]
-   (let [result (reduce parse-line result (split-lines text))
+   (let [result (reduce process-line result (split-lines text))
          result (cond-> result (seq (:stack result)) close-delims)]
      result)))
 
-;; EVENTS
+;;------------------------------------------------------------------------
+;; Editor
+;;------------------------------------------------------------------------
+
+;; EVENTS: TODO:
 ;; when editing current line, prevent invalid closers
 ;; when leaving current line, remove trailing closers
 ;; when edited, updated paren overlay
+
+(defn remove-trailing-closers
+  [line]
+  (string/replace line #"[\]})]+\s*$" ""))
 
 ;; VIEW
 
 (defn update-text!
   [cursor-index text]
   (try
-    (let [{:keys [stack lines]} (parse-text text)]
+    (let [{:keys [stack lines]} (process-text text)]
       (swap! app-state assoc :stack stack)
       (swap! app-state assoc :text text)
       (swap! app-state assoc :full-text (join "\n" lines)))
