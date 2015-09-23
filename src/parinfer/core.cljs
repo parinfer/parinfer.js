@@ -7,6 +7,27 @@
 
 (enable-console-print!)
 
+(def stress-text
+  "
+(defn foo
+  \"docstring with \\\" [({
+  second line\"
+  [arg
+  \\[
+  ret ;; a comment
+
+a
+b
+c
+(def s nil
+
+[:div
+  [:a {:href \"hi\"
+       :style {:color \"#f00\"
+       :id \"link\"
+  [:span \"hello\"
+  ")
+
 (defonce app-state (atom {:text ""}))
 
 ;;------------------------------------------------------------------------
@@ -263,13 +284,18 @@
                         (let [target (.-target evt)]
                           (update-text! (.-selectionStart target) (.-value target))))
            :value (:text data)}]
-         [:pre.internal
-          (:text data)]
-         [:pre.computed
-          (:full-text data)]]))))
+         [:pre.internal (str ";; internal state\n" (:text data))]
+         [:pre.computed (str ";; w/ inferred delims\n" (:full-text data))]]))))
+
+;; hack to initialize the state on first load (not when reloading)
+(declare loaded)
+(when-not loaded
+  (update-text! 0 stress-text))
+(def loaded true)
 
 (om/root
   root-comp
   app-state
   {:target (. js/document (getElementById "app"))})
+
 
