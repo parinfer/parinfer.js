@@ -1,6 +1,6 @@
 (ns ^:figwheel-always parinfer.core
   (:require
-    [clojure.string :as string :refer [split-lines]]
+    [clojure.string :as string :refer [split-lines join]]
     [om.core :as om :include-macros true]
     [om.dom :as dom :include-macros true]
     [sablono.core :refer-macros [html]]))
@@ -117,11 +117,28 @@
 (defn whitespace? [ch]
   (re-find #"[\s,]" ch))
 
+(defn insert-string
+  [orig idx insert]
+  (str (subs orig 0 idx)
+       insert
+       (subs orig idx)))
+
 (defn close-delims
   ([result] (close-delims result 0))
-  ([result x-pos]
-   ;; TODO: close all delimiters that are >= x-pos, and insert at insertion point
-   (assoc result :track-indent? false)))
+  ([result indent-x]
+   (let [[stack delims] (loop [stack (:stack result), delims ""]
+                          (if-not (seq stack)
+                            [stack delims]
+                            (let [[x ch] (peek stack)]
+                              (if (>= x indent-x)
+                                (recur (pop stack) (str delims (matching-delim ch)))
+                                [stack delims]))))
+         {:keys [line-no x-pos]} (:insert result)
+         result (-> result
+                    (update-in [:lines line-no] insert-string x-pos delims)
+                    (assoc :track-indent? false
+                           :stack stack))]
+     result)))
 
 (defn push-char
   [{:keys [stack track-indent? line-no] :as result} [x-pos ch]]
@@ -144,7 +161,7 @@
                           (in-code? stack)
                           (not (whitespace? ch)))
                  {:line-no line-no
-                  :x-pos x-pos})
+                  :x-pos (inc x-pos)})
         result (cond-> result insert (assoc :insert insert))]
     result))
 
@@ -184,9 +201,10 @@
 (defn update-text!
   [cursor-index text]
   (try
-    (let [stack (parse-text text)]
+    (let [{:keys [stack lines]} (parse-text text)]
       (swap! app-state assoc :stack stack)
-      (swap! app-state assoc :text text))
+      (swap! app-state assoc :text text)
+      (swap! app-state assoc :full-text (join "\n" lines)))
     (catch :default e
       (println "EXCEPTION:" e)
       nil ;; don't update the text
@@ -205,8 +223,9 @@
                           (update-text! (.-selectionStart target) (.-value target))))
            :value (:text data)}]
          [:pre.internal
-          (:text data)
-          ]]))))
+          (:text data)]
+         [:pre.computed
+          (:full-text data)]]))))
 
 (om/root
   root-comp
