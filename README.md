@@ -276,7 +276,7 @@ The aformentioned points allow us to type inline expression seen below:
 
 ## Setup
 
-Not working yet:
+A simple working demo can be run here:
 
 ```
 lein figwheel dev
