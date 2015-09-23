@@ -265,13 +265,13 @@ The aformentioned points allow us to type inline expression seen below:
     (:require-macros
       [cljs.core.async.macros :refer [go]])
     (                                        ; <-- I type "(", and the indented lines below enter this new expression, while closing the one above.
-      [cljs.core.async :refer [<!]])))
+      [cljs.core.async :refer [<!]]))
 
   (ns example.core
     (:require-macros
       [cljs.core.async.macros :refer [go]])
     (:require                                ; <-- complete the expression
-      [cljs.core.async :refer [<!]])))
+      [cljs.core.async :refer [<!]]))
   ```
 
 ## Setup
