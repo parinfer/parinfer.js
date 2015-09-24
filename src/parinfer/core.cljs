@@ -184,7 +184,7 @@ c
    :line-no -1                         ;; current line number we are processing.
    :track-indent? false                ;; "true" when we are looking for the first char on a line to signify indentation.
    :delim-trail {:start nil :end nil}  ;; track EOL delims since we replace them wholesale with inferred delims.
-   :insert {:line nil :col nil}        ;; the place to insert closing delimiters whenever we hit appropriate indentation.
+   :insert {:line-no nil :x-pos nil}   ;; the place to insert closing delimiters whenever we hit appropriate indentation.
    :stack []})                         ;; the delimiter stack
 
 (defn close-delims
@@ -243,16 +243,23 @@ c
       :delim-trail delim-trail)))
 
 (defn remove-delim-trail
-  [{:keys [delim-trail line-no backup stack] :as result}]
-  (if-let [{:keys [start end]} delim-trail]
-    (let [[backup stack] (loop [backup backup, stack stack]
-                           (if (empty? backup)
-                             [backup stack]
-                             (recur (pop backup) (conj stack (peek backup)))))]
-      (-> result
-          (update-in [:lines line-no] remove-str-range start end)
-          (assoc :backup backup :stack stack)))
-    result))
+  [{:keys [delim-trail insert line-no backup stack] :as result}]
+  (let [{:keys [start end]} delim-trail]
+    (if (and start end)
+      (let [[backup stack] (loop [backup backup, stack stack]
+                             (if (empty? backup)
+                               [backup stack]
+                               (recur (pop backup) (conj stack (peek backup)))))
+            result (-> result
+                       (update-in [:lines line-no] remove-str-range start end)
+                       (assoc :backup backup :stack stack))
+
+
+            insert-line? (= (:line-no insert) line-no)
+            result (cond-> result
+                     insert-line? (update-in [:insert :x-pos] min start))]
+        result)
+      result)))
 
 (defn process-char
   "Update the given result by processing the given character and its position."
