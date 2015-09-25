@@ -1,4 +1,4 @@
-# Inferring `)]}` in Clojure
+# Parinfer
 
 This is an experiment that tries to demonstrate a possible replacement for
 [paredit] as a simpler and more natural way to write Clojure code, and perhaps
@@ -11,27 +11,9 @@ based on indentation.  Thus, I'm building an editor demo that will move these
 delimiters around for you as you adjust the indentation of your code.  Inlining
 expressions will still be supported of course.
 
-Skip to the [concept examples] for details.
+See [concept examples] for details.
 
 [concept examples]:#concept-examples
-
-##### A new format
-
-To make this possible, our experimental editor has to operate on code which
-__does not allow any closing delimiters at the end of a line__. Rather, these
-delimiters are inferred and displayed by the editor, based on indentation
-alone.  In the figure below, the left side shows code that follows such a rule,
-and the right side highlights the location of the inferred closing delimiters.
-
-![inferred parens](http://i.imgur.com/dPigfne.png)
-
-##### Using with existing code
-
-It may be possible for the editor to load and
-[validate][clojure-validate-indent] an existing Clojure source file, say
-`foo.clj`, then convert it to a working copy at `foo.iclj` to follow the
-aforementioned format.  Edits to `foo.iclj` will result in straightforward
-translations to the `foo.clj` file.
 
 ##### Prior Art
 
@@ -89,17 +71,16 @@ ret              ; <-- ... `ret` leaves the vector.
 
 ### Implementation
 
-This token-jumping can be done in this editor because the closing delimiters at
-the end of each line are treated as _virtual characters_-- they are never
-represented explicitly in the source.  The editor's view recomputes the
-positions of these closing delimiters on every change.
+This token-jumping can be done in this editor because we treat closing
+delimiters at the end of each line as mobile.  The editor's view recomputes
+their positions on every change.
 
-Here you can see the internal state and computed views for each of the
-aformentioned examples steps side-by-side:
+Here you can see internal view (what the editor is really looking for) vs the
+computed view.
 
  <table>
 <thead>
-<th align=left>internal state</th>
+<th align=left>internal view</th>
 <th align=left>computed view</th>
 </thead>
 <tr>
@@ -156,17 +137,21 @@ ret
 </tr>
 </table>
 
-Notice that there is no special code to perform the operations to the internal
-state.  The view is simply a pure function which inserts the closing delimiters
-where appropriate.  We still need to keep the input clean though:
+Notice that the internal view simply ignores the trailing delimiters. The
+computed view recomputes their position based on indentation.
+
+The tricky parts are related to user interaction, which are documented in detail
+in the formatter namespace. Summary:
 
 - __when typing a closing delimiter:__
   - prevent typing one that is unmatched
   - prevent typing one if it is the first token on a line (disregarding whitespace)
   - otherwise, allow it if it is matched
-- __when the cursor leaves a line:__ erase closing delimiters at the end of the line
+- allow special rules for the current line being edited:
+  - treat the cursor position as a candidate for trailing delimiter insertion, so the user
+    can insert spaces before delimiters to insert new content
 
-The aformentioned points allow us to type inline expression seen below:
+The aformentioned points also allow us to type inline expression seen below:
 
  <table>
 <thead>
@@ -276,7 +261,7 @@ The aformentioned points allow us to type inline expression seen below:
 
 ## Setup
 
-A simple working demo can be run here:
+not quite ready yet.
 
 ```
 lein figwheel dev
