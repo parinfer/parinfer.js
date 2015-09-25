@@ -38,40 +38,49 @@ c
 ;; Editor
 ;;------------------------------------------------------------------------
 
-(defn update-text!
-  [cursor-index text]
-  (let [lines (split-lines (subs text 0 cursor-index))
-        cursor-x (count (last lines))
-        cursor-line (dec (count lines))
-        data {:cursor-line cursor-line
-              :cursor-x cursor-x}
-        {:keys [stack lines]} (process-text data text)]
-    (swap! app-state assoc :stack stack)
-    (swap! app-state assoc :text text)
-    (swap! app-state assoc :full-text (join "\n" lines))))
 
-(defn trigger-change!
-  "should be called when text or cursor position changes."
-  [evt]
-  (let [target (.-target evt)]
-    (update-text! (.-selectionStart target) (.-value target))))
+(defn before-change
+  [_inst change]
+  ;; TODO: calculate and store processed text
+  ;; TODO: prevent typing a bad delimiter
+  ;;       (will have to find whether the character type is successfully seen in the processed text)
+  )
+
+(defn on-change
+  [_inst change]
+  ;; TODO: apply pre-calculated text (from beforeChange),
+  ;;       only if it is different from current value to prevent possible cycling.
+  )
+
+(defn on-cursor-activity
+  [_inst]
+  ;; TODO: trigger a change if we move lines
+  )
+
+(def editor-opts
+  {:lineNumbers "true"
+   :mode "clojure"})
+
+(defn setup-editor
+  [elm]
+  (let [cm (.fromTextArea js/CodeMirror elm (clj->js editor-opts))]
+    (.on cm "change" on-change)
+    (.on cm "beforeChange" before-change)
+    (.on cm "cursorActivity" on-cursor-activity)))
 
 (defn root-comp
   [data owner]
   (reify
+    om/IDidMount
+    (did-mount [_this]
+      (let [elm (om/get-node owner "editor")]
+        (setup-editor elm)))
+
     om/IRender
     (render [_this]
       (html
         [:div
-         [:textarea
-          {:on-change trigger-change!}]
-         [:pre.computed (:full-text data)]]))))
-
-;; hack to initialize the state on first load (not when reloading)
-(declare loaded)
-(when-not loaded
-  (update-text! 0 stress-text))
-(def loaded true)
+         [:textarea {:ref "editor"}]]))))
 
 (om/root
   root-comp
