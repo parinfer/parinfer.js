@@ -1,6 +1,6 @@
 (ns parinfer.formatter
   (:require
-    [clojure.string :refer [split-lines]]))
+    [clojure.string :refer [split-lines join]]))
 
 (def matching-delim
   {"{" "}", "}" "{"
@@ -374,6 +374,17 @@
   ([state text]
    (let [state (merge initial-state state)
          state (reduce process-line state (split-lines text))
-         state (cond-> state (seq (:stack state)) close-delims)]
+         stack (:stack state)
+         close? (and (seq stack)
+                     (not (in-str? stack)))
+         state (cond-> state close? close-delims)]
      state)))
+
+(defn format-text
+  "Format the given text by repositioning any trailing closing delimiters based on indentation."
+  ([text] (format-text initial-state text))
+  ([state text]
+   (let [state (process-text state text)
+         final-text (join "\n" (:lines state))]
+     final-text)))
 
