@@ -254,7 +254,6 @@ c
                        (update-in [:lines line-no] remove-str-range start end)
                        (assoc :backup backup :stack stack))
 
-
             insert-line? (= (:line-no insert) line-no)
             result (cond-> result
                      insert-line? (update-in [:insert :x-pos] min start))]
@@ -263,7 +262,7 @@ c
 
 (defn process-char
   "Update the given result by processing the given character and its position."
-  [{:keys [stack line-no track-indent?] :as result} [x-pos ch]]
+  [{:keys [stack line-no track-indent? cursor-x cursor-line] :as result} [x-pos ch]]
 
   (let [result (process-delim-trail result [x-pos ch])
         backup (:backup result)
@@ -279,16 +278,24 @@ c
                    (assoc :backup backup)
                    (update-in [:lines line-no] str ch))
 
-        ;; Add potential insert point for closing delimiters if required.
-        insert (when (and (not= "" ch)
+        insert-at-cursor? (and (not track-indent?)
+                               (= x-pos (dec cursor-x))
+                               (= line-no cursor-line)
+                               (in-code? stack)
+                               (whitespace? ch))
 
-                          ;; only allow whitespace as an insert if we have already found the indentation point
-                          ;; (i.e. a whitespace-only line)
-                          (or (and (not track-indent?) (whitespace? ch))
-                              (not (whitespace? ch)))
-                          (not (isa? char-hierarchy ch :close))
-                          (seq stack)
-                          (in-code? stack))
+        closing-delim? (isa? char-hierarchy ch :close)
+
+        insert-at-char? (and (not= "" ch)
+                             (not (whitespace? ch))
+                             (or (and (= line-no cursor-line)
+                                      closing-delim?)
+                                 (not closing-delim?))
+                             (in-code? stack))
+
+        ;; Add potential insert point for closing delimiters if required.
+        insert (when (or insert-at-cursor?
+                         insert-at-char?)
                  {:line-no line-no
                   :x-pos (inc x-pos)})
         result (cond-> result insert (assoc :insert insert))]
@@ -317,47 +324,51 @@ c
 (defn process-line
   "Update the given result by processing the given line of text."
   ([line] (process-line empty-result line))
-  ([{:keys [stack lines line-no] :as result} line]
-   (let [result (assoc result
+  ([{:keys [stack lines line-no cursor-line] :as result} line]
+   (let [line-no (inc line-no)
+         result (assoc result
                   :backup []
                   :delim-trail {:start nil :end nil}
                   :track-indent? (and (seq stack) (not (in-str? stack)))
                   :lines (conj lines "")
-                  :line-no (inc line-no))
+                  :line-no line-no)
          result (reduce pre-process-char result (str line "\n"))
-         result (remove-delim-trail result)
+         result (cond-> result
+                  (not= line-no cursor-line) remove-delim-trail)
          ]
      result)))
 
 (defn process-text
   "Update the given result by processing the given text."
-  ([text] (process-text empty-result text))
-  ([result text]
-   (let [result (reduce process-line result (split-lines text))
-         result (cond-> result (seq (:stack result)) close-delims)]
-     result)))
+  [result text & {:keys [cursor-line cursor-x]}]
+  (let [result (assoc result
+                      :cursor-line cursor-line
+                      :cursor-x cursor-x)
+        result (reduce process-line result (split-lines text))
+        result (cond-> result (seq (:stack result)) close-delims)]
+    result))
 
 ;;------------------------------------------------------------------------
 ;; Editor
 ;;------------------------------------------------------------------------
 
-;; EVENTS: TODO:
-;; when editing current line, prevent invalid closers
-;; when leaving current line, remove trailing closers
-;; when edited, updated paren overlay
-
-(defn remove-trailing-closers
-  [line]
-  (string/replace line #"[\]})]+\s*$" ""))
-
-;; VIEW
-
 (defn update-text!
   [cursor-index text]
-  (let [{:keys [stack lines]} (process-text text)]
+  (let [lines (split-lines (subs text 0 cursor-index))
+        cursor-x (count (last lines))
+        cursor-line (dec (count lines))
+        {:keys [stack lines]} (process-text empty-result text
+                                :cursor-line cursor-line
+                                :cursor-x cursor-x)]
     (swap! app-state assoc :stack stack)
     (swap! app-state assoc :text text)
     (swap! app-state assoc :full-text (join "\n" lines))))
+
+(defn trigger-change!
+  "should be called when text or cursor position changes."
+  [evt]
+  (let [target (.-target evt)]
+    (update-text! (.-selectionStart target) (.-value target))))
 
 (defn root-comp
   [data owner]
@@ -367,9 +378,7 @@ c
       (html
         [:div
          [:textarea
-          {:on-change (fn [evt]
-                        (let [target (.-target evt)]
-                          (update-text! (.-selectionStart target) (.-value target))))}]
+          {:on-change trigger-change!}]
          [:pre.computed (:full-text data)]]))))
 
 ;; hack to initialize the state on first load (not when reloading)
