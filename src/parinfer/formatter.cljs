@@ -1,6 +1,6 @@
 (ns parinfer.formatter
   (:require
-    [clojure.string :refer [split-lines join]]))
+    [clojure.string :refer [join]]))
 
 (def matching-delim
   {"{" "}", "}" "{"
@@ -373,7 +373,8 @@
   ([text] (process-text initial-state text))
   ([state text]
    (let [state (merge initial-state state)
-         state (reduce process-line state (split-lines text))
+         lines (.split text "\n") ;; different from clojure.string/split (respects empty lines)
+         state (reduce process-line state lines)
          stack (:stack state)
          close? (and (seq stack)
                      (not (in-str? stack)))
