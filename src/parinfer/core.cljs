@@ -44,26 +44,33 @@ c
 (def global-cm nil)
 
 (defn update-text!
+  "Read the current value of the editor, and correct its value.
+  (rearranges closing delimiters based on indentation)"
   [cm]
   (let [current-text (.getValue cm)
         cursor (.getCursor cm)
         state {:cursor-line (.-line cursor)
                :cursor-x (.-ch cursor)}
-        formatted (format-text state current-text)]
+
+        ;; FIXME: this can be slow for large files (need to cache state at each line)
+        formatted (format-text state current-text)
+
+        scroller (.getScrollerElement cm)
+        scroll-x (.-scrollLeft scroller)
+        scroll-y (.-scrollTop scroller)]
 
     (reset! target-text formatted)
 
-    (println "current value:" (pr-str current-text))
-    (println "current target:" (pr-str @target-text))
     (when-not (= current-text @target-text)
       (.setValue cm @target-text)
+
+      ;; We have to restore the cursor and scroll position after updating the
+      ;; value of the editor. Otherwise, it will reset to the top left.
+      ;;
+      ;;   source: https://groups.google.com/forum/#!topic/codemirror/oNzsevQW1DE
+      ;;
       (.setCursor cm cursor)
-      ;; TODO: also restore scroll:
-      ;;      scrollTop and scrollLeft from cm.getScrollerElement()
-      ;;      source: https://groups.google.com/forum/#!topic/codemirror/oNzsevQW1DE
-      ) 
-    )
-  )
+      (.scrollTo cm scroll-x scroll-y))))
 
 ;; NOTE:
 ;; Text is either updated after a change in text or
