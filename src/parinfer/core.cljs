@@ -5,10 +5,14 @@
     [om.core :as om :include-macros true]
     [om.dom :as dom :include-macros true]
     [sablono.core :refer-macros [html]]
+
     [cljsjs.codemirror]
     [cljsjs.codemirror.mode.clojure]
     [cljsjs.codemirror.keymap.vim]
+    [cljsjs.codemirror.addon.edit.matchbrackets]
+
     [parinfer.formatter :refer [format-text]]
+
     ))
 
 (enable-console-print!)
@@ -95,9 +99,10 @@ c
   (reset! frame-updated? false))
 
 (def editor-opts
-  {:lineNumbers "true"
+  {:lineNumbers true
    :mode "clojure"
    :keyMap "vim"
+   :matchBrackets true
    })
 
 (defn setup-editor
