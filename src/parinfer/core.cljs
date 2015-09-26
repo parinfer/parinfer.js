@@ -40,76 +40,19 @@ c
 ;; Editor
 ;;------------------------------------------------------------------------
 
-(defn replace-string-range
-  [orig from to diff]
-  (str
-    (subs orig 0 from)
-    diff
-    (subs orig to)))
-
-(defn calc-new-value
-  "Calculate the new value of Code Mirror given this change.
-  Might be able to ignore this"
-  [cm change]
-  (let [text (.getValue cm)
-        no-lines (.lineCount cm)
-
-        line-lengths (as-> text $
-                          (split-lines $)
-                          (map count $)
-                          (concat $ (repeat 0))
-                          (map inc $)
-                          (take no-lines $))
-
-        line-indexes (reduce
-                         (fn [indexes length]
-                           (let [prev-index (last indexes)
-                                 new-index (+ prev-index length)]
-                             (conj indexes new-index)))
-                         [0]
-                         line-lengths)
-
-        diff (join "\n" (.-text change))
-
-        get-marker (fn [end] {:x-pos (.-ch end) :line-no (.-line end)})
-        markers [(get-marker (.-from change)) (get-marker (.-to change))]
-        marker-sort-key (fn [x] [(:line-no x) (:x-pos x)])
-        marker-to-index (fn [{:keys [line-no x-pos]}]
-                          (+ x-pos (line-indexes line-no)))
-
-        [from to] (->> markers
-                       (sort-by marker-sort-key)
-                       (map marker-to-index))
-
-        new-text (replace-string-range text from to diff)]
-
-    new-text))
-
 (def target-text (atom ""))
 (def global-cm nil)
 
-(defn before-change
-  [cm change]
-  (println "BEFORE CHANGE")
-  (let [new-text (calc-new-value cm change)]
-    (println "new target:" (pr-str new-text))
-    (println "current target:" (pr-str @target-text))
+(defn update-text!
+  [cm]
+  (let [current-text (.getValue cm)
+        cursor (.getCursor cm)
+        state {:cursor-line (.-line cursor)
+               :cursor-x (.-ch cursor)}
+        formatted (format-text state current-text)]
 
-    (when-not (= new-text @target-text)
-      (let [line-no (.. change -from -line)
-            x-pos (.. change -from -ch)
-            state {:cursor-line line-no
-                   :cursor-x (inc x-pos)}
-            formatted (format-text state new-text)]
-        (reset! target-text formatted))))
-  )
+    (reset! target-text formatted)
 
-(defn on-change
-  [cm change]
-  (println "ON CHANGE")
-  (let [cursor (.getCursor cm)
-        current-text (.getValue cm)
-        ]
     (println "current value:" (pr-str current-text))
     (println "current target:" (pr-str @target-text))
     (when-not (= current-text @target-text)
@@ -118,15 +61,31 @@ c
       ;; TODO: also restore scroll:
       ;;      scrollTop and scrollLeft from cm.getScrollerElement()
       ;;      source: https://groups.google.com/forum/#!topic/codemirror/oNzsevQW1DE
-      ))
-  )
-
-(defn on-cursor-activity
-  [cm]
-  (let [cursor (.getCursor cm)]
-    ;; TODO: trigger a change if we move lines, sending only the line. don't care about x-pos
+      ) 
     )
   )
+
+;; NOTE:
+;; Text is either updated after a change in text or
+;; a cursor movement, but not both.
+;;
+;; When typing, on-change is called, then on-cursor-activity.
+;; So we prevent updating the text twice by using an update flag.
+
+(def frame-updated? (atom false))
+
+(defn on-change
+  "Called after typing something."
+  [cm change]
+  (update-text! cm)
+  (reset! frame-updated? true))
+
+(defn on-cursor-activity
+  "Called after the cursor moves."
+  [cm]
+  (when-not @frame-updated?
+    (update-text! cm))
+  (reset! frame-updated? false))
 
 (def editor-opts
   {:lineNumbers "true"
@@ -139,7 +98,6 @@ c
   (let [cm (.fromTextArea js/CodeMirror elm (clj->js editor-opts))]
     (set! global-cm cm)
     (.on cm "change" on-change)
-    (.on cm "beforeChange" before-change)
     (.on cm "cursorActivity" on-cursor-activity)))
 
 (defn root-comp
