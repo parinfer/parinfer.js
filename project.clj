@@ -9,7 +9,7 @@
                  [org.clojure/core.async "0.1.346.0-17112a-alpha"]
                  [sablono "0.3.6"]
                  [org.omcljs/om "0.9.0"]
-                 [cljsjs/codemirror "5.6.0-0"]
+                 [cljsjs/codemirror "5.7.0-0"]
                  ]
 
   :plugins [[lein-cljsbuild "1.1.0"]

@@ -7,6 +7,7 @@
     [sablono.core :refer-macros [html]]
     [cljsjs.codemirror]
     [cljsjs.codemirror.mode.clojure]
+    [cljsjs.codemirror.keymap.vim]
     [parinfer.formatter :refer [format-text]]
     ))
 
@@ -101,10 +102,6 @@ c
                    :cursor-x (inc x-pos)}
             formatted (format-text state new-text)]
         (reset! target-text formatted))))
-
-  ;; (.update change from to text)
-  ;; TODO: prevent typing a bad delimiter
-  ;;       (will have to find whether the character type is successfully seen in the processed text)
   )
 
 (defn on-change
@@ -122,9 +119,6 @@ c
       ;;      scrollTop and scrollLeft from cm.getScrollerElement()
       ;;      source: https://groups.google.com/forum/#!topic/codemirror/oNzsevQW1DE
       ))
-
-  ;; TODO: apply pre-calculated text (from beforeChange),
-  ;;       only if it is different from current value to prevent possible cycling.
   )
 
 (defn on-cursor-activity
@@ -136,7 +130,9 @@ c
 
 (def editor-opts
   {:lineNumbers "true"
-   :mode "clojure"})
+   :mode "clojure"
+   :keyMap "vim"
+   })
 
 (defn setup-editor
   [elm]
