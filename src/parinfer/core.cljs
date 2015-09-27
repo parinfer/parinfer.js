@@ -8,8 +8,6 @@
 
     [cljsjs.codemirror]
     [cljsjs.codemirror.mode.clojure]
-    [cljsjs.codemirror.keymap.vim]
-    [cljsjs.codemirror.addon.edit.matchbrackets]
 
     [parinfer.formatter :refer [format-text]]
 
@@ -98,11 +96,20 @@ c
     (update-text! cm))
   (reset! frame-updated? false))
 
+(defn on-tab
+  "Indent selection or insert two spaces when tab is pressed.
+  from: https://github.com/codemirror/CodeMirror/issues/988#issuecomment-14921785"
+  [cm]
+  (if (.somethingSelected cm)
+    (.indentSelection cm)
+    (let [n (.getOption cm "indentUnit")
+          spaces (apply str (repeat n " "))]
+      (.replaceSelection cm spaces))))
+
 (def editor-opts
   {:lineNumbers true
    :mode "clojure"
-   :keyMap "vim"
-   :matchBrackets true
+   :extraKeys {:Tab on-tab}
    })
 
 (defn setup-editor
