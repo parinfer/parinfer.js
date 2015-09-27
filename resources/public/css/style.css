@@ -1,29 +1,5 @@
 /* some style */
 
-* {
-  font-size: 16px;
+.CodeMirror {
+  font-family: Menlo, Consolas, 'DejaVu Sans Mono', monospace;
 }
-
-textarea {
-  font-family: monospace;
-  width: 300px;
-  height: 400px;
-  float: left;
-  padding: 20px;
-  background: #eee;
-  border: 0px;
-}
-
-pre.internal {
-  margin: 20px;
-  width: 300px;
-  float: left;
-  color: #555;
-}
-
-pre.computed {
-  margin: 20px;
-  width: 300px;
-  float: left;
-}
-
