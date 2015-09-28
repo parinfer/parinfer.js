@@ -19,6 +19,7 @@
   :clean-targets ^{:protect false} ["resources/public/js/compiled" "target"]
 
   :cljsbuild {
+    :test-commands {"test" ["node" "resources/public/js/compiled/parinfer-test.js"]}
     :builds [{:id "dev"
               :source-paths ["src"]
 
@@ -34,7 +35,17 @@
               :compiler {:output-to "resources/public/js/compiled/parinfer.js"
                          :main parinfer.core
                          :optimizations :advanced
-                         :pretty-print false}}]}
+                         :pretty-print false}}
+
+             {:id "test"
+              :source-paths ["src" "test"]
+              :compiler {:output-to "resources/public/js/compiled/parinfer-test.js"
+                         :output-dir "resources/public/js/compiled/out-test"
+                         :main parinfer.runner
+                         :optimizations :none
+                         :target :nodejs
+                         :hashbang false}}
+             ]}
 
   :figwheel {
              ;; :http-server-root "public" ;; default and assumes "resources" 

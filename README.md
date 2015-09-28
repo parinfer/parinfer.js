@@ -268,3 +268,6 @@ lein figwheel dev
 open http://localhost:3449
 ```
 
+```
+lein cljsbuild test
+```

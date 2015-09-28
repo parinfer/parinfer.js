@@ -238,7 +238,7 @@ Once we leave the line, spaces should be removed:
 ```
 
 ```out
-(def b)
+(def b) 
 ```
 
 ```in
@@ -293,7 +293,7 @@ the previous state:
   ret
 ```
 
-```in
+```out
 (let [a 1]) 2
   ret
 ```
@@ -307,5 +307,6 @@ Cannot insert closing delimiters on their own line:
 
 ```out
 (let [a 1])
+      
 ```
 
