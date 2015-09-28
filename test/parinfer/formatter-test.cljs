@@ -7,11 +7,14 @@
 
 (def fs (js/require "fs"))
 
+;; All test cases are parsed from this markdown file.
+(def test-filepath "formatter-test.md")
+
 (defn error-msg
   [line-no msg]
   (str "error at test-case line #" line-no ": " msg))
 
-(defmulti parse-line
+(defmulti parse-test-line
   (fn [state [line-no line]]
     (cond
       (= "```" line)          :end-block
@@ -19,7 +22,7 @@
       (:block-key state)      :in-block
       :else                   :default)))
 
-(defmethod parse-line :end-block
+(defmethod parse-test-line :end-block
   [{:keys [block-key test-case test-cases] :as state} [line-no line]]
   (if-not block-key
     (throw (error-msg line-no "opening block must have a name: 'in' or 'out'"))
@@ -35,7 +38,7 @@
         ;; close test block
         (assoc state :block-key nil)))))
 
-(defmethod parse-line :start-block
+(defmethod parse-test-line :start-block
   [{:keys [block-key test-case test-cases] :as state} [line-no line]]
   (if block-key
     (throw (error-msg line-no "must close previous block before starting new one"))
@@ -57,7 +60,7 @@
             (assoc :block-key block-key)
             (assoc-in [:test-case block-key] {:line-no line-no :text ""}))))))
 
-(defmethod parse-line :in-block
+(defmethod parse-test-line :in-block
   [{:keys [block-key test-case test-cases] :as state} [line-no line]]
   (let [cursor-x (.indexOf line "|")
         cursor-line (when (and (= :in block-key)
@@ -68,7 +71,7 @@
         (update-in [:test-case block-key :text] str "\n" line)
         (update-in [:test-case block-key :cursor-line] #(or % cursor-line)))))
 
-(defmethod parse-line :default
+(defmethod parse-test-line :default
   [state [line-no line]]
   state)
 
@@ -78,7 +81,7 @@
                        :block-key nil ;; :in or :out
                        :test-case {:in nil, :out nil}}
         numbered-lines (map-indexed (fn [line-no line] [(inc line-no) line]) lines)
-        state (reduce parse-line initial-state numbered-lines)]
+        state (reduce parse-test-line initial-state numbered-lines)]
     
     (when (:block-key state)
       (throw (error-msg "EOF" "code block not closed")))
@@ -89,7 +92,7 @@
     (:test-cases state)))
 
 (deftest run-test-cases
-  (let [text (.readFileSync fs "formatter-test.md")
+  (let [text (.readFileSync fs test-filepath)
         test-cases (parse-test-cases text)]
     (doseq [{:keys [in out]} test-cases]
       (let [cursor-line (:cursor-line in)]
