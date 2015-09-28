@@ -297,3 +297,15 @@ the previous state:
 (let [a 1]) 2
   ret
 ```
+
+Cannot insert closing delimiters on their own line:
+
+```in
+(let [a 1
+      ])
+```
+
+```out
+(let [a 1])
+```
+
