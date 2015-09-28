@@ -246,7 +246,7 @@ Once we leave the line, spaces should be removed:
 ```
 
 ```out
-(def b [[ c d] ])
+(def b [[c d] ])
 ```
 
 ```in
