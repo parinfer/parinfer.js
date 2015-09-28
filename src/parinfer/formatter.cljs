@@ -283,15 +283,8 @@
   delimiters while editing a line.
 
   "
-  [{:keys [track-indent? cursor-x cursor-line line-no stack x-pos ch] :as state}]
-  (let [insert-at-cursor? (and (not track-indent?)
-                               (= x-pos (dec cursor-x))
-                               (= line-no cursor-line)
-                               (in-code? stack)
-                               (whitespace? ch))
-
-        closing-delim? (isa? char-hierarchy ch :close)
-
+  [{:keys [track-indent? cursor-line line-no stack x-pos ch] :as state}]
+  (let [closing-delim? (isa? char-hierarchy ch :close)
         insert-at-char? (and (not= "" ch)
                              (not (whitespace? ch))
                              (or (and (= line-no cursor-line)
@@ -300,8 +293,7 @@
                              (in-code? stack))
 
         ;; Add potential insert point for closing delimiters if required.
-        insert (when (or insert-at-cursor?
-                         insert-at-char?)
+        insert (when insert-at-char?
                  {:line-no line-no
                   :x-pos (inc x-pos)})]
 
