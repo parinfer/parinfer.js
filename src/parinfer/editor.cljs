@@ -52,10 +52,18 @@
     (.scrollTo cm scroll-x scroll-y)))
 
 (defn update-cursor!
+  "Correctly position cursor after text that was just typed.
+  We need this since reformatting the text can shift things forward past our cursor."
   [cm change]
-  (let [text (join "\n" (.-text change))]
-    ;; TODO: correct cursor position here
-    ))
+  (when (= "+input" (.-origin change))
+    (let [text (join "\n" (.-text change))
+          from-x (.. change -from -ch)
+          line-no (.. change -from -line)
+          line (.getLine cm line-no)
+          insert-x (.indexOf line text from-x)]
+      (if (= -1 insert-x)
+        (.setCursor cm line-no from-x)
+        (.setCursor cm line-no (+ insert-x (count text)))))))
 
 ;;----------------------------------------------------------------------
 ;; Life Cycle events
