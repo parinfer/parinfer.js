@@ -61,8 +61,18 @@
           line-no (.. change -from -line)
           line (.getLine cm line-no)
           insert-x (.indexOf line text from-x)]
-      (if (= -1 insert-x)
+      (cond
+
+        ;; pressing return, keep current position then.
+        (= text "\n")
+        nil
+
+        ;; typed character not found, we probably prevented it. keep cursor where it was.
+        (= -1 insert-x)
         (.setCursor cm line-no from-x)
+
+        ;; move cursor to after the typed characters were found.
+        :else
         (.setCursor cm line-no (+ insert-x (count text)))))))
 
 ;;----------------------------------------------------------------------
