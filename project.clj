@@ -26,6 +26,8 @@
               :figwheel { :on-jsload "parinfer.core/on-js-reload" }
 
               :compiler {:main parinfer.core
+                         :foreign-libs [{:file "src/parinfer/cm-clojure-parinfer.js"
+                                         :provides ["cljsjs.codemirror.mode.clojure-parinfer"]}]
                          :asset-path "js/compiled/out"
                          :output-to "resources/public/js/compiled/parinfer.js"
                          :output-dir "resources/public/js/compiled/out"
@@ -33,6 +35,8 @@
              {:id "min"
               :source-paths ["src"]
               :compiler {:output-to "resources/public/js/compiled/parinfer.js"
+                         :foreign-libs [{:file "src/parinfer/cm-clojure-parinfer.js"
+                                         :provides ["cljsjs.codemirror.mode.clojure-parinfer"]}]
                          :main parinfer.core
                          :optimizations :advanced
                          :pretty-print false}}
@@ -41,6 +45,8 @@
               :source-paths ["src" "test"]
               :compiler {:output-to "resources/public/js/compiled/parinfer-test.js"
                          :output-dir "resources/public/js/compiled/out-test"
+                         :foreign-libs [{:file "src/parinfer/cm-clojure-parinfer.js"
+                                         :provides ["cljsjs.codemirror.mode.clojure-parinfer"]}]
                          :main parinfer.runner
                          :optimizations :none
                          :target :nodejs

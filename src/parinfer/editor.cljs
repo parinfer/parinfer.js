@@ -3,7 +3,7 @@
     [clojure.string :as string :refer [join]]
     [parinfer.formatter :refer [format-text]]
     [cljsjs.codemirror]
-    [cljsjs.codemirror.mode.clojure]))
+    [cljsjs.codemirror.mode.clojure-parinfer]))
 
 ;; map of editor key -> editor state
 (defonce state
@@ -118,7 +118,7 @@
 
 (def editor-opts
   {:lineNumbers true
-   :mode "clojure"
+   :mode "clojure-parinfer"
    :extraKeys {:Tab on-tab}})
 
 (defn on-state-change

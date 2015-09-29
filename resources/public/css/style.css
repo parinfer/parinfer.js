@@ -3,3 +3,7 @@
 .CodeMirror {
   font-family: Menlo, Consolas, 'DejaVu Sans Mono', monospace;
 }
+
+.cm-bracket.cm-trailing {
+  opacity: 0.4;
+}
