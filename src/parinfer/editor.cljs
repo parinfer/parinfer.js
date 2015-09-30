@@ -1,5 +1,8 @@
 (ns parinfer.editor
+  (:require-macros
+    [cljs.core.async.macros :refer [go go-loop]])
   (:require
+    [cljs.core.async :refer [<! timeout chan]]
     [clojure.string :as string :refer [join]]
     [parinfer.formatter :refer [format-text]]
     [cljsjs.codemirror]
@@ -17,7 +20,8 @@
   "Custom data/methods for a CodeMirror editor."
   (cm-key [this])
   (frame-updated? [this])
-  (set-frame-updated! [this value]))
+  (set-frame-updated! [this value])
+  (record-change! [this thing]))
 
 ;;----------------------------------------------------------------------
 ;; Operations
@@ -88,6 +92,15 @@
 
 (def frame-updates (atom {}))
 
+(def empty-recording
+  {:changes []
+   :init-value nil
+   :last-time nil
+   :recording? false})
+
+(defonce vcr
+  (atom {}))
+
 (defn before-change
   "Called before any change is applied to the editor."
   [cm change]
@@ -97,10 +110,40 @@
              (= (.getValue cm) (join "\n" (.-text change))))
     (.cancel change)))
 
+(defn parse-pos
+  [pos]
+  {:line (.-line pos)
+   :ch (.-ch pos)})
+
+(defn parse-change
+  [change]
+  (js/console.log "change object:" change)
+  {:from (parse-pos (.-from change))
+   :to (parse-pos (.-to change))
+   :text (seq (.-text change))
+   :origin (.-origin change)})
+
+(defn apply-change
+  [cm {:keys [text from to origin]}]
+  (.replaceRange cm
+     (js->clj text)
+     (js->clj from)
+     (js->clj to)
+     origin))
+
+(defn parse-selections
+  [selections]
+  selections)
+
+(defn apply-selections
+  [cm selections]
+  )
+
 (defn on-change
   "Called after any change is applied to the editor."
   [cm change]
   (when (not= "setValue" (.-origin change))
+    (record-change! cm {:change (parse-change change)})
     (fix-text! cm)
     (update-cursor! cm change)
     (set-frame-updated! cm true)))
@@ -109,6 +152,7 @@
   "Called after the cursor moves in the editor."
   [cm]
   (when-not (frame-updated? cm)
+    (record-change! cm {:selections (parse-selections (.listSelections cm))})
     (fix-text! cm))
   (set-frame-updated! cm false))
 
@@ -154,12 +198,26 @@
       #(-> (or % empty-editor-state)
            (assoc :cm cm)))
 
+    (swap! vcr update-in [key-]
+      #(or % empty-recording))
+
     ;; Extend the code mirror object with some utility methods.
     (specify! cm
       IEditor
       (cm-key [this] key-)
       (frame-updated? [this] (get-in @frame-updates [key- :frame-updated?]))
-      (set-frame-updated! [this value] (swap! frame-updates assoc-in [key- :frame-updated?] value)))
+      (set-frame-updated! [this value] (swap! frame-updates assoc-in [key- :frame-updated?] value))
+      (record-change! [this new-thing]
+        (let [data (get @vcr key-)]
+          (when (:recording? data)
+            (let [last-time (:last-time data)
+                  now (.getTime (js/Date.))
+                  dt (if last-time (- now last-time) 0)
+                  new-changes (conj (:changes data) (assoc new-thing :dt dt))
+                  new-data (assoc data
+                                  :last-time now
+                                  :changes new-changes)]
+              (swap! vcr assoc key- new-data))))))
 
     ;; handle code mirror events
     (.on cm "change" on-change)
@@ -168,8 +226,33 @@
 
     cm))
 
-(defn start-editor-sync!
-  []
+(defn start-editor-sync! []
   ;; sync state changes to the editor
   (add-watch state :editor-updater on-state-change)
   (force-editor-sync!))
+
+(defn start-recording!
+  [key-]
+  (let [{:keys [text cm] :as editor} (get @state key-)]
+    (swap! vcr assoc
+           :changes []
+           :init-value text
+           :recording? true
+           :last-time nil)))
+
+(defn stop-recording!
+  [key-]
+  (swap! vcr assoc-in [key- :recording?] false))
+
+(defn play-recording!
+  [key-]
+  (let [cm (get-in @state [key- :cm])
+        recording (get @vcr key-)]
+    (go
+      (swap! state assoc-in [key- :text] (:init-value recording))
+      (doseq [{:keys [change selections dt]} (:changes recording)]
+        (<! (timeout dt))
+        (cond
+          change (apply-change cm change)
+          selections (apply-selections cm selections)
+          :else nil)))))
