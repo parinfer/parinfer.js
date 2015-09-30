@@ -135,19 +135,24 @@
   "Called everytime the state changes to sync the code editor."
   [_ _ old-state new-state]
   (doseq [[k {:keys [cm text]}] new-state]
+    (let [changed? (not= text (.getValue cm))]
+      (when changed?
+        (.setValue cm text)))))
+
+(defn force-editor-sync! []
+  (doseq [[k {:keys [cm text]}] @state]
     (.setValue cm text)))
 
 (defn create-editor!
   [element key-]
   (let [cm (.fromTextArea js/CodeMirror element (clj->js editor-opts))]
 
-    ;; create a state entry for this editor if needed (allows reloading state)
     (when-not (get @state key-)
-      (swap! frame-updates assoc key- {})
-      (swap! state assoc key- empty-editor-state))
+      (swap! frame-updates assoc key- {}))
 
-    ;; attach editor object to state
-    (swap! state assoc-in [key- :cm] cm)
+    (swap! state update-in [key-]
+      #(-> (or % empty-editor-state)
+           (assoc :cm cm)))
 
     ;; Extend the code mirror object with some utility methods.
     (specify! cm
@@ -156,16 +161,15 @@
       (frame-updated? [this] (get-in @frame-updates [key- :frame-updated?]))
       (set-frame-updated! [this value] (swap! frame-updates assoc-in [key- :frame-updated?] value)))
 
-    ;; sync state changes to the editor
-    (add-watch state :editor-updater on-state-change)
-
     ;; handle code mirror events
     (.on cm "change" on-change)
     (.on cm "beforeChange" before-change)
     (.on cm "cursorActivity" on-cursor-activity)
 
-    ;; trigger first state sync
-    (swap! state identity)
-
     cm))
 
+(defn start-editor-sync!
+  []
+  ;; sync state changes to the editor
+  (add-watch state :editor-updater on-state-change)
+  (force-editor-sync!))
