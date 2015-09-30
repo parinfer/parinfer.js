@@ -126,9 +126,9 @@
 (defn apply-change
   [cm {:keys [text from to origin]}]
   (.replaceRange cm
-     (js->clj text)
-     (js->clj from)
-     (js->clj to)
+     (clj->js text)
+     (clj->js from)
+     (clj->js to)
      origin))
 
 (defn parse-selections
@@ -234,7 +234,8 @@
 (defn start-recording!
   [key-]
   (let [{:keys [text cm] :as editor} (get @state key-)]
-    (swap! vcr assoc
+    (swap! vcr update-in [key-]
+           assoc
            :changes []
            :init-value text
            :recording? true
@@ -250,9 +251,10 @@
         recording (get @vcr key-)]
     (go
       (swap! state assoc-in [key- :text] (:init-value recording))
-      (doseq [{:keys [change selections dt]} (:changes recording)]
+      (doseq [{:keys [change selections dt] :as data} (:changes recording)]
         (<! (timeout dt))
         (cond
           change (apply-change cm change)
           selections (apply-selections cm selections)
           :else nil)))))
+
