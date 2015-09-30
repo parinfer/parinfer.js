@@ -131,13 +131,19 @@
      (clj->js to)
      origin))
 
+(defn parse-selection
+  [selection]
+  {:anchor (parse-pos (.-anchor selection))
+   :head (parse-pos (.-head selection))
+   })
+
 (defn parse-selections
   [selections]
-  selections)
+  (map parse-selection selections))
 
 (defn apply-selections
   [cm selections]
-  )
+  (.setSelections cm (clj->js selections)))
 
 (defn on-change
   "Called after any change is applied to the editor."
