@@ -5,6 +5,8 @@
     [cljs.core.async :refer [<! timeout chan]]
     [clojure.string :as string :refer [join]]
     [parinfer.formatter :refer [format-text]]
+    [goog.dom.classlist :as classlist]
+    [goog.dom :as gdom]
     [cljsjs.codemirror]
     [cljsjs.codemirror.mode.clojure-parinfer]))
 
@@ -251,16 +253,33 @@
   [key-]
   (swap! vcr assoc-in [key- :recording?] false))
 
+(defn freeze-editor!
+  [cm]
+  (let [element (.getWrapperElement cm)
+        cursor (gdom/getElementByClass "CodeMirror-cursors" element)]
+    (.setOption cm "readOnly" "nocursor")
+    (classlist/add element "CodeMirror-focused")
+    (set! (.. cursor -style -visibility) "visible")))
+
+(defn thaw-editor!
+  [cm]
+  (let [element (.getWrapperElement cm)
+        cursor (gdom/getElementByClass "CodeMirror-cursors" element)]
+    (.setOption cm "readOnly" false)))
+
 (defn play-recording!
   [key-]
   (let [cm (get-in @state [key- :cm])
-        recording (get @vcr key-)]
+        recording (get @vcr key-)
+        element (.getWrapperElement cm)]
+    (freeze-editor! cm)
     (go
       (swap! state assoc-in [key- :text] (:init-value recording))
       (doseq [{:keys [change selections dt] :as data} (:changes recording)]
-        (<! (timeout dt))
+        (<! (timeout (/ dt 2)))
         (cond
           change (apply-change cm change)
           selections (apply-selections cm selections)
-          :else nil)))))
+          :else nil))
+      (thaw-editor! cm))))
 
