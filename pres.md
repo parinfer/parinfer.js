@@ -1,46 +1,63 @@
 ## Parinfer
 
-A proof-of-concept for a simple editor feature
-to simplify the way we write Lisp.
+Illustrating a simple editor feature
+that may simplify how we write Lisp.
 
 ### TLDR
 
 - perhaps an intuitive alternative to paredit
 - adjust indentation to affect nesting (without hiding parens)
-- a natural way to keep your code pretty
+- a natural way to keep your code properly formatted
 
-### The problem
+### Background
 
-The piles of parentheses are jarring to everyone who first gazes at Lisp.  The
-unfamiliarity is an attack on all fronts-- how would I think/write/read/manage
-it? And how do I justify time to learn it when it's not that popular?
+In Lisp, parentheses tend to bunch together at the end of a line-- a jarring
+convention to many.  In practice, it is not the parentheses, but indentation
+which guides the way we communicate and understand our code.
 
-Here, we are only focusing on a subset of this approachability problem. We want
-to lower the barrier to _writing_ Lisp through a simple editor feature concept.
-This kind of thing may come in handy soon since we are seeing a growth in
-Clojure adoption and the advent of Racket in VR, both of which use Lisp syntax.
+```
+(defn foo [a b]
+  (let [x (+ a b)]
+    (println "The sum is" x)))
+```
+
+```
+(defn foo [a b]
+  (let [
+     x (+ a b)
+    ]
+    (println "The sum is" x)
+  )
+)
+```
+
+The Lisp convention favors a principle of high information density.  It allows
+the structure to be _skimmed_ through indentation and _inspected_ without
+ambiguity through parens. It's all there, and you choose the _resolution_ at
+which to view it.
+
+```dim the parens
+(defn foo [a b]
+  (let [x (+ a b)]
+    (println "The sum is" x)))
+```
+
+```highlight the parens
+(defn foo [a b]
+  (let [x (+ a b)]
+    (println "The sum is" x)))
+```
+
+This duplication of information across resolutions serves an important role for
+the reader, but it incurs a redundant effort on the writer to ensure both are inline.
 
 ### The idea
 
-Open parentheses are important because they denote the start of a collection.
-These are very clear and easy to read.  But it is the closing parentheses which
-tend to bunch together at the end of a line.
+This project proposes that a simple editor feature can automatically ensure that changing
+one will affect the other, keeping both in sync without incurring complexity.
 
-These "piles" of parens are the defining feature that shocks us when we first
-look at Lisp.  It is not just for its effect on legibility, but for the
-additional work required to balance these parens while inserting and editing
-expressions.
-
-This project proposes that these defining "piles" of parens are still a
-necessary formality which prevents ambiguity about the structure of our code,
-but that the burden of managing them should be on your editor.  In fact, we
-will show how an editor can intuitively manage them for you without magic, by
-virtue of indentation conventions that we already employ.
-
-### The Two Rules
-
-_We will use Clojure's dialect of Lisp from this point forward, but same concepts
-apply to others of course._
+It should be simple to use without memorizing hotkeys without it incurring any
+difficult magic that may cause frustration in corner cases.
 
 1. open parens and indentation are the single source of truth (you control this)
   - highlight open parens and indentation in an example
@@ -53,6 +70,26 @@ apply to others of course._
   - use CodeMirror's markers to mark open parens and spaces
 2. We infer those.
   - use CodeMirror's markers to mark trailing delims
+
+### How is it different?
+
+- standard editor features?  wait to hear feedback about sublime
+  - newline auto-indent
+  - auto-align existing lines
+- paredit operations
+  - slurp/barf
+  - wrap
+  - join/split
+  - electric return
+- sweet-expressions, indent-clj
+- Haskell's $ operator
+
+### Why is it different?
+
+- simple, predictable
+- character based rather than structural
+- uses indentation to deduce content, but does not hide parens
+- Haskell's operator essentially, but with indentation
 
 ### Animated Examples
 
