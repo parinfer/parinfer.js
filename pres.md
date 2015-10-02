@@ -11,9 +11,9 @@ that may simplify how we write Lisp.
 
 ### Background
 
-In Lisp, parentheses tend to bunch together at the end of a line-- a jarring
-convention to many.  In practice, it is not the parentheses, but indentation
-which guides the way we communicate and understand our code.
+In Lisp, parentheses tend to bunch together at the end of a line. This
+convention can be jarring at first if you are used to curly braces in other
+languages being on their own lines:
 
 ```
 (defn foo [a b]
@@ -31,10 +31,14 @@ which guides the way we communicate and understand our code.
 )
 ```
 
-The Lisp convention favors a principle of high information density.  It allows
-the structure to be _skimmed_ through indentation and _inspected_ without
-ambiguity through parens. It's all there, and you choose the _resolution_ at
-which to view it.
+But the convention in Lisp favors high information density, employing an
+indentation style not unlike Python for readability.  Indentation allows you to
+_skim_ while the parens allow you to _inspect_:
+
+- __skimming__: indentation creates a natural nested hierarchy (siblings aligned, children indented)
+- __inspecting__: highlight matching parens with your cursor in any editor to verify structure
+
+It's all there; you choose the _resolution_ at which to view it.
 
 ```dim the parens
 (defn foo [a b]
