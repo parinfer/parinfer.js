@@ -5,9 +5,15 @@ that may simplify how we write Lisp.
 
 ### TLDR
 
-- perhaps an intuitive alternative to paredit
+- perhaps an intuitive alternative to [paredit]
 - adjust indentation to affect nesting (without hiding parens)
 - a natural way to keep your code properly formatted
+
+```
+some animation up here (type out a full example)
+```
+
+[paredit]:http://danmidwood.com/content/2014/11/21/animated-paredit.html
 
 ### Background
 
@@ -31,37 +37,55 @@ languages being on their own lines:
 )
 ```
 
-But the convention in Lisp favors high information density, employing an
-indentation style not unlike Python for readability.  Indentation allows you to
-_skim_ while the parens allow you to _inspect_:
+But the convention in Lisp favors high information density, while still
+employing an indentation style not unlike Python for readability.  Indentation
+allows you to _skim_ while the parens allow you to _inspect_:
 
-- __skimming__: indentation creates a natural nested hierarchy (siblings aligned, children indented)
-- __inspecting__: highlight matching parens with your cursor in any editor to verify structure
+- __on skimming__: indentation creates a natural nested hierarchy (siblings aligned, children indented)
+- __on inspecting__: highlight matching parens with your cursor in any editor to verify structure
 
-It's all there; you choose the _resolution_ at which to view it.
+It's natural to switch between these modes when reading, allowing you to choose
+the resolution at which to view it.
 
-```dim the parens
+```skimming: dim the parens
 (defn foo [a b]
   (let [x (+ a b)]
     (println "The sum is" x)))
 ```
 
-```highlight the parens
+```inspecting: highlight the parens
 (defn foo [a b]
   (let [x (+ a b)]
     (println "The sum is" x)))
 ```
-
-This duplication of information across resolutions serves an important role for
-the reader, but it incurs a redundant effort on the writer to ensure both are inline.
 
 ### The idea
 
-This project proposes that a simple editor feature can automatically ensure that changing
-one will affect the other, keeping both in sync without incurring complexity.
+Similar to the way that we quickly _skim_ code by using its indentation, I
+believe that we should be able to quickly _sketch_ code using indentation as
+well.  Here's how that might look:
 
-It should be simple to use without memorizing hotkeys without it incurring any
-difficult magic that may cause frustration in corner cases.
+```
+(defn foo [a b])
+(+ a b) ;; <-- insert space at front
+```
+
+What you see above is the editor influencing the structure of your code based
+on indentation.  Changes in indentation are reflected as changes in structure.
+Here's another example with deeper nesting:
+
+```
+(defn component []
+  (html)
+  [:div.container]
+  [:h1 "title"])
+```
+
+You can skip ahead to the [examples section] if you wish to see more.
+
+[examples section]:#usage-examples
+
+### How it works
 
 1. open parens and indentation are the single source of truth (you control this)
   - highlight open parens and indentation in an example
@@ -95,7 +119,7 @@ difficult magic that may cause frustration in corner cases.
 - uses indentation to deduce content, but does not hide parens
 - Haskell's operator essentially, but with indentation
 
-### Animated Examples
+### Usage Examples
 
 - one-line to show paren closing
 
