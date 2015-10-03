@@ -18,8 +18,10 @@ some animation up here (type out a full example)
 ### Background
 
 In Lisp, parentheses tend to bunch together at the end of a line. This
-convention can be jarring at first if you are used to curly braces in other
+[convention] can be jarring at first if you are used to curly braces in other
 languages being on their own lines:
+
+[convention]:https://en.wikipedia.org/wiki/Indent_style#Lisp_style
 
 ```
 (defn foo [a b]
