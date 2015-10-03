@@ -72,9 +72,8 @@ well.  Here's how that might look:
 (+ a b) ;; <-- insert space at front
 ```
 
-What you see above is the editor influencing the structure of your code based
-on indentation.  Changes in indentation are reflected as changes in structure.
-Here's another example with deeper nesting:
+What you see above is the editor allowing you to influence the structure of
+your code based on indentation. Here's another example with deeper nesting:
 
 ```
 (defn component []
