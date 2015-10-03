@@ -21,8 +21,8 @@
     (set! (.-innerHTML app) (home)))
   
   ;; create editors
-  (create-editor! (.getElementById js/document "main") :main)
-  (create-editor! (.getElementById js/document "second") :second)
+  (create-editor! "main" :main)
+  (create-editor! "second" :second)
   (start-editor-sync!)
 
   )

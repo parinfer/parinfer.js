@@ -196,8 +196,9 @@
     (.setValue cm text)))
 
 (defn create-editor!
-  [element key-]
-  (let [cm (.fromTextArea js/CodeMirror element (clj->js editor-opts))]
+  [element-id key-]
+  (let [element (js/document.getElementById element-id)
+        cm (js/CodeMirror.fromTextArea element (clj->js editor-opts))]
 
     (when-not (get @state key-)
       (swap! frame-updates assoc key- {}))
