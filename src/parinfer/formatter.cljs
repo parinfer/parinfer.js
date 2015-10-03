@@ -287,9 +287,8 @@
   (let [closing-delim? (isa? char-hierarchy ch :close)
         insert-at-char? (and (not= "" ch)
                              (not (whitespace? ch))
-                             (or (and (= line-no cursor-line)
-                                      closing-delim?)
-                                 (not closing-delim?))
+                             (or (not closing-delim?)
+                                 (= line-no cursor-line))
                              (in-code? stack))
 
         ;; Add potential insert point for closing delimiters if required.
