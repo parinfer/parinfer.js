@@ -82,6 +82,20 @@ your code based on indentation. Here's another example with deeper nesting:
   [:h1 "title"])
 ```
 
+As a side effect, this makes it easy for us to insert/delete a line without
+rearranging the pile of parens:
+
+```
+(defn component []
+  (html
+   [:div.container
+    [:h1 "title"]]))
+    |  <-- start inserting here, then remove it
+```
+
+I think the key here is that we are implicitly managing our parens in a way
+that they are always properly formatted, without having to memorize hotkeys.
+
 You can skip ahead to the [examples section] if you wish to see more.
 
 [examples section]:#usage-examples
