@@ -9,7 +9,8 @@
                  [org.clojure/core.async "0.1.346.0-17112a-alpha"]
                  [hiccups "0.3.0"]
                  [cljsjs/codemirror "5.7.0-0"]
-                 ]
+                 [cljsjs/marked "0.3.5-0"]
+                 [cljs-ajax "0.5.0"]]
 
   :plugins [[lein-cljsbuild "1.1.0"]
             [lein-figwheel "0.4.0"]]

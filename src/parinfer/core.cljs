@@ -4,27 +4,28 @@
   (:require
     [hiccups.runtime]
     [parinfer.editor :refer [create-editor! start-editor-sync!]]
+    [ajax.core :refer [GET]]
+    cljsjs.marked
     ))
 
 (enable-console-print!)
 
-(defhtml home []
-  [:div
-   [:textarea#main]
-   [:textarea#second]
-   ])
-
-(defn init! []
+(defn render!
+  [md-text]
 
   ;; initialize page
-  (let [app (.getElementById js/document "app")]
-    (set! (.-innerHTML app) (home)))
+  (let [element (js/document.getElementById "app")
+        html-text (js/marked md-text)]
+    (set! (.-innerHTML element) html-text))
   
   ;; create editors
-  (create-editor! "main" :main)
-  (create-editor! "second" :second)
-  (start-editor-sync!)
+  ; (create-editor! "main" :main)
+  ; (create-editor! "second" :second)
+  ; (start-editor-sync!)
 
   )
+
+(defn init! []
+  (GET "content.md" {:handler render!}))
 
 (init!)
