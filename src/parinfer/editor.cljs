@@ -8,6 +8,7 @@
     [goog.dom.classlist :as classlist]
     [goog.dom :as gdom]
     [cljsjs.codemirror]
+    [cljsjs.codemirror.mode.clojure]
     [cljsjs.codemirror.mode.clojure-parinfer]))
 
 ;; map of editor key -> editor state
@@ -178,6 +179,11 @@
 ;; Setup
 ;;----------------------------------------------------------------------
 
+(def reg-editor-opts
+  {:lineNumbers true
+   :mode "clojure"
+   :extraKeys {:Tab on-tab}})
+
 (def editor-opts
   {:lineNumbers true
    :mode "clojure-parinfer"
@@ -194,6 +200,13 @@
 (defn force-editor-sync! []
   (doseq [[k {:keys [cm text]}] @state]
     (.setValue cm text)))
+
+(defn create-regular-editor!
+  ([element-id] (create-regular-editor! element-id {}))
+  ([element-id opts]
+   (let [element (js/document.getElementById element-id)
+         cm (js/CodeMirror.fromTextArea element (clj->js (merge reg-editor-opts opts)))]
+     cm)))
 
 (defn create-editor!
   [element-id key-]

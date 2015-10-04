@@ -26,7 +26,7 @@ languages being on their own lines:
  <div class="two-col">
 <div class="col">
 <div class="caption">Lisp Style</div>
-<textarea id="code-lisp-style">
+<textarea id="code-lisp-style" rows="5">
 (defn foo [a b]
   (let [x (+ a b)]
     (println "The sum is" x)))

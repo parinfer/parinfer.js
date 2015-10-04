@@ -28,7 +28,6 @@ h1 em {
 
 .subtitle em {
   color: #111;
-  font-style: normal;
   border-bottom: 1px solid #111;
 }
 
@@ -58,11 +57,25 @@ p, li {
 .CodeMirror {
   font-family: Menlo, Consolas, 'DejaVu Sans Mono', monospace;
   border: 1px solid #CCC;
-  width: 600px;
   margin: 20px auto;
+  padding: 5px;
 }
 
 .cm-bracket.cm-trailing {
   opacity: 0.4;
 }
 
+.two-col {
+}
+
+.col {
+  float:left;
+  width: 350px;
+  margin-right: 10px;
+}
+
+.two-col:after {
+  content:'';
+  display:block;
+  clear: both;
+}

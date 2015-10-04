@@ -4,7 +4,11 @@
   (:require
     [hiccups.runtime]
     [parinfer.vcr-data :refer [intro-vcr-state]]
-    [parinfer.editor :refer [create-editor! start-editor-sync! vcr play-recording!]]
+    [parinfer.editor :refer [create-editor!
+                             create-regular-editor!
+                             start-editor-sync!
+                             vcr
+                             play-recording!]]
     [ajax.core :refer [GET]]
     [cljsjs.marked]
     ))
@@ -22,6 +26,13 @@
   ;; create editors
   (create-editor! "code-intro" :intro)
   (start-editor-sync!)
+
+  (let [opts {:lineNumbers false}]
+    (create-regular-editor! "code-lisp-style" opts)
+    (create-regular-editor! "code-c-style" opts)
+    (create-regular-editor! "code-skim" opts)
+    (create-regular-editor! "code-inspect" opts)
+    )
 
   ;; create editor animations
   (swap! vcr assoc :intro intro-vcr-state)
