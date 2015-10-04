@@ -3,9 +3,10 @@
     [hiccups.core :refer [defhtml html]])
   (:require
     [hiccups.runtime]
-    [parinfer.editor :refer [create-editor! start-editor-sync!]]
+    [parinfer.vcr-data :refer [intro-vcr-state]]
+    [parinfer.editor :refer [create-editor! start-editor-sync! vcr play-recording!]]
     [ajax.core :refer [GET]]
-    cljsjs.marked
+    [cljsjs.marked]
     ))
 
 (enable-console-print!)
@@ -17,11 +18,14 @@
   (let [element (js/document.getElementById "app")
         html-text (js/marked md-text)]
     (set! (.-innerHTML element) html-text))
-  
+
   ;; create editors
-  ; (create-editor! "main" :main)
-  ; (create-editor! "second" :second)
-  ; (start-editor-sync!)
+  (create-editor! "code-intro" :intro)
+  (start-editor-sync!)
+
+  ;; create editor animations
+  (swap! vcr assoc :intro intro-vcr-state)
+  (play-recording! :intro)
 
   )
 

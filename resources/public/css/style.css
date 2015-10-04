@@ -57,8 +57,12 @@ p, li {
 
 .CodeMirror {
   font-family: Menlo, Consolas, 'DejaVu Sans Mono', monospace;
+  border: 1px solid #CCC;
+  width: 600px;
+  margin: 20px auto;
 }
 
 .cm-bracket.cm-trailing {
   opacity: 0.4;
 }
+

@@ -255,16 +255,18 @@
   (swap! vcr assoc-in [key- :recording?] false))
 
 (defn freeze-editor!
-  [cm]
-  (let [element (.getWrapperElement cm)
+  [cm-or-key]
+  (let [cm (if (keyword? cm-or-key) (get-in @state [cm-or-key :cm]) cm-or-key)
+        element (.getWrapperElement cm)
         cursor (gdom/getElementByClass "CodeMirror-cursors" element)]
     (.setOption cm "readOnly" "nocursor")
     (classlist/add element "CodeMirror-focused")
     (set! (.. cursor -style -visibility) "visible")))
 
 (defn thaw-editor!
-  [cm]
-  (let [element (.getWrapperElement cm)
+  [cm-or-key]
+  (let [cm (if (keyword? cm-or-key) (get-in @state [cm-or-key :cm]) cm-or-key)
+        element (.getWrapperElement cm)
         cursor (gdom/getElementByClass "CodeMirror-cursors" element)]
     (.setOption cm "readOnly" false)))
 
@@ -272,12 +274,13 @@
   [key-]
   (let [cm (get-in @state [key- :cm])
         recording (get @vcr key-)
+        timescale (get recording :timescale 1)
         element (.getWrapperElement cm)]
     (freeze-editor! cm)
     (go
       (swap! state assoc-in [key- :text] (:init-value recording))
       (doseq [{:keys [change selections dt] :as data} (:changes recording)]
-        (<! (timeout (/ dt 2)))
+        (<! (timeout (/ dt timescale)))
         (cond
           change (apply-change cm change)
           selections (apply-selections cm selections)
