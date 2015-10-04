@@ -13,7 +13,7 @@ an editor feature concept to <em>simplify how we write Lisp</em>
 [paredit]:http://danmidwood.com/content/2014/11/21/animated-paredit.html
 
  <div>
-<div class="caption">__Quick Look__ at indentation-driven structuring:</div>
+<div class="caption">__Quick Look__ at indentation-driven editing:</div>
 <textarea id="code-intro">
 </textarea>
 </div>
@@ -74,6 +74,9 @@ this way to choose the resolution at which to view your code:
 </textarea>
 </div>
 </div>
+
+It is the balance of these two views that gives us readability without causing
+structural ambiguity.
 
 ## The idea
 
