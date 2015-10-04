@@ -1,4 +1,59 @@
-/* some style */
+
+body {
+  font-family: "Open Sans", Arial, freesans, sans-serif;
+  background: #F7F7F7;
+}
+
+h1, h2, h3, h4, h5, h6 {
+}
+
+h1 {
+  font-size: 64px;
+  text-align: center;
+  font-weight: 200;
+  margin: 100px 0 0;
+}
+
+h1 em {
+  text-decoration: none;
+  font-style: normal;
+  opacity: 0.5;
+}
+
+.subtitle {
+  font-size: 20px;
+  text-align: center;
+  margin: 40px 0;
+}
+
+.subtitle em {
+  color: #111;
+  font-style: normal;
+  border-bottom: 1px solid #111;
+}
+
+.features {
+  width: 470px;
+  margin: 0px auto 50px;
+  color: #888;
+  list-style-position: inside;
+  list-style-type: square;
+}
+
+a, a:link, a:visited, a:hover, a:active {
+  text-decoration: none;
+  color: #CC3385;
+}
+
+p, li {
+  line-height: 1.7em;
+  color: #555;
+}
+
+.wrapper {
+  width: 720px;
+  margin: 0 auto;
+}
 
 .CodeMirror {
   font-family: Menlo, Consolas, 'DejaVu Sans Mono', monospace;

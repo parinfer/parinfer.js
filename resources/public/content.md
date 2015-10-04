@@ -1,20 +1,21 @@
-## Parinfer
+# par<em>infer</em>
 
-Illustrating a simple editor feature
-that may simplify how we write Lisp.
+ <p class="subtitle">
+an editor feature concept to <em>simplify how we write Lisp</em>
+</p>
 
-### TLDR
-
-- perhaps an intuitive alternative to [paredit]
-- adjust indentation to affect nesting (without hiding parens)
-- a natural way to keep your code properly formatted
+  <ul class="features">
+<li> Affect structure through indentation.
+<li> Results in [paredit]-like features without memorizing hotkeys.
+<li> Naturally keep your code properly formatted.
+</ul>
 
 [paredit]:http://danmidwood.com/content/2014/11/21/animated-paredit.html
 
  <textarea id="code-intro">
 </textarea>
 
-### Background
+## Background
 
 In Lisp, parentheses tend to bunch together at the end of a line. This
 [convention] can be jarring at first if you are used to curly braces in other
@@ -76,7 +77,7 @@ the resolution at which to view it.
 </div>
 </div>
 
-### The idea
+## The idea
 
 Similar to the way that we quickly _skim_ code by using its indentation, I
 believe that we should be able to quickly _sketch_ code using indentation as
@@ -112,7 +113,7 @@ I think the key here is that we are writing/editing code without explicitly
 managing where our parentheses close.  As a result, our code remains
 properly formatted.
 
-### Try It
+## Try It
 
 <textarea id="code-try">
 </textarea>
