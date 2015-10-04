@@ -96,13 +96,13 @@ p, li {
 #cm-code-lisp-style,
 #cm-code-c-style
 {
-  height: 150px;
+  height: 160px;
 }
 
 #cm-code-skim,
 #cm-code-inspect
 {
-  height: 80px;
+  height: 90px;
 }
 
 #cm-code-skim span.cm-bracket
@@ -118,4 +118,11 @@ p, li {
 {
   opacity: 0.15;
   color: #000;
+}
+
+#cm-code-inspect
+.CodeMirror-matchingbracket {
+  background: #E6EFFD;
+  color: inherit;
+  border-bottom: 1px solid #111;
 }

@@ -24,15 +24,13 @@
     (set! (.-innerHTML element) html-text))
 
   ;; create editors
-  (create-editor! "code-intro" :intro {:lineNumbers false})
+  (create-editor! "code-intro" :intro)
   (start-editor-sync!)
 
-  (let [opts {:lineNumbers false}]
-    (create-regular-editor! "code-lisp-style" opts)
-    (create-regular-editor! "code-c-style" opts)
-    (create-regular-editor! "code-skim" opts)
-    (create-regular-editor! "code-inspect" opts)
-    )
+  (create-regular-editor! "code-lisp-style")
+  (create-regular-editor! "code-c-style")
+  (create-regular-editor! "code-skim")
+  (create-regular-editor! "code-inspect" {:matchBrackets true})
 
   ;; create editor animations
   (swap! vcr assoc :intro intro-vcr-state)

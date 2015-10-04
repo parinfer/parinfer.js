@@ -8,6 +8,8 @@
     [goog.dom.classlist :as classlist]
     [goog.dom :as gdom]
     [cljsjs.codemirror]
+    [cljsjs.codemirror.addon.selection.active-line]
+    [cljsjs.codemirror.addon.edit.matchbrackets]
     [cljsjs.codemirror.mode.clojure]
     [cljsjs.codemirror.mode.clojure-parinfer]))
 
@@ -180,12 +182,11 @@
 ;;----------------------------------------------------------------------
 
 (def reg-editor-opts
-  {:lineNumbers true
-   :mode "clojure"
+  {:mode "clojure"
    :extraKeys {:Tab on-tab}})
 
 (def editor-opts
-  {:lineNumbers true
+  {:styleActiveLine true
    :mode "clojure-parinfer"
    :extraKeys {:Tab on-tab}})
 

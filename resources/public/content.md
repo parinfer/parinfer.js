@@ -12,8 +12,11 @@ an editor feature concept to <em>simplify how we write Lisp</em>
 
 [paredit]:http://danmidwood.com/content/2014/11/21/animated-paredit.html
 
- <textarea id="code-intro">
+ <div>
+<div class="caption">__Quick Look__ at indentation-driven structuring:</div>
+<textarea id="code-intro">
 </textarea>
+</div>
 
 ## Background
 
@@ -25,7 +28,7 @@ languages being on their own lines:
 
  <div class="two-col">
 <div class="col">
-<div class="caption">Lisp Style:</div>
+<div class="caption">__Lisp Style__ indentation:</div>
 <textarea id="code-lisp-style" rows="5">
 (defn foo [a b]
   (let [x (+ a b)]
@@ -34,7 +37,7 @@ languages being on their own lines:
 </div>
 
 <div class="col">
-<div class="caption">C Style:</div>
+<div class="caption">__C Style__ indentation:</div>
 <textarea id="code-c-style">
 (defn foo [a b]
   (let [
@@ -49,16 +52,12 @@ languages being on their own lines:
 
 But the convention in Lisp favors high information density, while still
 employing an indentation style not unlike Python for readability.  Indentation
-allows you to _skim_ while the parens allow you to _inspect_:
-
-- __on skimming__: indentation dictates hierarchy (siblings aligned, children indented)
-- __on inspecting__: highlight matching parens with your cursor in any editor to verify structure
-
-It's natural in this way to choose the resolution at which to view your code:
+allows you to _skim_ while the parens allow you to _inspect_.  It's natural in
+this way to choose the resolution at which to view your code:
 
  <div class="two-col">
 <div class="col">
-<div class="caption">Skimming:</div>
+<div class="caption">__Skim__ by focusing on indentation</div>
 <textarea id="code-skim">
 (defn foo [a b]
   (let [x (+ a b)]
@@ -67,7 +66,7 @@ It's natural in this way to choose the resolution at which to view your code:
 </div>
 
 <div class="col">
-<div class="caption">Inspecting:</div>
+<div class="caption">__Inspect__ parens with your cursor when needed</div>
 <textarea id="code-inspect">
 (defn foo [a b]
   (let [x (+ a b)]
