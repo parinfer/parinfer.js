@@ -25,7 +25,7 @@ languages being on their own lines:
 
  <div class="two-col">
 <div class="col">
-<div class="caption">Lisp Style</div>
+<div class="caption">Lisp Style:</div>
 <textarea id="code-lisp-style" rows="5">
 (defn foo [a b]
   (let [x (+ a b)]
@@ -34,7 +34,7 @@ languages being on their own lines:
 </div>
 
 <div class="col">
-<div class="caption">C Style</div>
+<div class="caption">C Style:</div>
 <textarea id="code-c-style">
 (defn foo [a b]
   (let [
@@ -51,15 +51,14 @@ But the convention in Lisp favors high information density, while still
 employing an indentation style not unlike Python for readability.  Indentation
 allows you to _skim_ while the parens allow you to _inspect_:
 
-- __on skimming__: indentation creates a natural nested hierarchy (siblings aligned, children indented)
+- __on skimming__: indentation dictates hierarchy (siblings aligned, children indented)
 - __on inspecting__: highlight matching parens with your cursor in any editor to verify structure
 
-It's natural to switch between these modes when reading, allowing you to choose
-the resolution at which to view it.
+It's natural in this way to choose the resolution at which to view your code:
 
  <div class="two-col">
 <div class="col">
-<div class="title">Skimming</div>
+<div class="caption">Skimming:</div>
 <textarea id="code-skim">
 (defn foo [a b]
   (let [x (+ a b)]
@@ -68,7 +67,7 @@ the resolution at which to view it.
 </div>
 
 <div class="col">
-<div class="title">Inspecting</div>
+<div class="caption">Inspecting:</div>
 <textarea id="code-inspect">
 (defn foo [a b]
   (let [x (+ a b)]

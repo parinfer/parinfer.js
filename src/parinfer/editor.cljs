@@ -205,48 +205,54 @@
   ([element-id] (create-regular-editor! element-id {}))
   ([element-id opts]
    (let [element (js/document.getElementById element-id)
-         cm (js/CodeMirror.fromTextArea element (clj->js (merge reg-editor-opts opts)))]
+         cm (js/CodeMirror.fromTextArea element (clj->js (merge reg-editor-opts opts)))
+         wrapper (.getWrapperElement cm)]
+     (set! (.-id wrapper) (str "cm-" element-id))
      cm)))
 
 (defn create-editor!
-  [element-id key-]
-  (let [element (js/document.getElementById element-id)
-        cm (js/CodeMirror.fromTextArea element (clj->js editor-opts))]
+  ([element-id key-] (create-editor! element-id key- {}))
+  ([element-id key- opts]
+   (let [element (js/document.getElementById element-id)
+         cm (js/CodeMirror.fromTextArea element (clj->js (merge editor-opts opts)))
+         wrapper (.getWrapperElement cm)]
 
-    (when-not (get @state key-)
-      (swap! frame-updates assoc key- {}))
+     (set! (.-id wrapper) (str "cm-" element-id))
 
-    (swap! state update-in [key-]
-      #(-> (or % empty-editor-state)
-           (assoc :cm cm)))
+     (when-not (get @state key-)
+       (swap! frame-updates assoc key- {}))
 
-    (swap! vcr update-in [key-]
-      #(or % empty-recording))
+     (swap! state update-in [key-]
+            #(-> (or % empty-editor-state)
+                 (assoc :cm cm)))
 
-    ;; Extend the code mirror object with some utility methods.
-    (specify! cm
-      IEditor
-      (cm-key [this] key-)
-      (frame-updated? [this] (get-in @frame-updates [key- :frame-updated?]))
-      (set-frame-updated! [this value] (swap! frame-updates assoc-in [key- :frame-updated?] value))
-      (record-change! [this new-thing]
-        (let [data (get @vcr key-)]
-          (when (:recording? data)
-            (let [last-time (:last-time data)
-                  now (.getTime (js/Date.))
-                  dt (if last-time (- now last-time) 0)
-                  new-changes (conj (:changes data) (assoc new-thing :dt dt))
-                  new-data (assoc data
-                                  :last-time now
-                                  :changes new-changes)]
-              (swap! vcr assoc key- new-data))))))
+     (swap! vcr update-in [key-]
+            #(or % empty-recording))
 
-    ;; handle code mirror events
-    (.on cm "change" on-change)
-    (.on cm "beforeChange" before-change)
-    (.on cm "cursorActivity" on-cursor-activity)
+     ;; Extend the code mirror object with some utility methods.
+     (specify! cm
+               IEditor
+               (cm-key [this] key-)
+               (frame-updated? [this] (get-in @frame-updates [key- :frame-updated?]))
+               (set-frame-updated! [this value] (swap! frame-updates assoc-in [key- :frame-updated?] value))
+               (record-change! [this new-thing]
+                               (let [data (get @vcr key-)]
+                                 (when (:recording? data)
+                                   (let [last-time (:last-time data)
+                                         now (.getTime (js/Date.))
+                                         dt (if last-time (- now last-time) 0)
+                                         new-changes (conj (:changes data) (assoc new-thing :dt dt))
+                                         new-data (assoc data
+                                                         :last-time now
+                                                         :changes new-changes)]
+                                     (swap! vcr assoc key- new-data))))))
 
-    cm))
+     ;; handle code mirror events
+     (.on cm "change" on-change)
+     (.on cm "beforeChange" before-change)
+     (.on cm "cursorActivity" on-cursor-activity)
+
+     cm)))
 
 (defn start-editor-sync! []
   ;; sync state changes to the editor

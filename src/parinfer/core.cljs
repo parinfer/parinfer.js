@@ -24,7 +24,7 @@
     (set! (.-innerHTML element) html-text))
 
   ;; create editors
-  (create-editor! "code-intro" :intro)
+  (create-editor! "code-intro" :intro {:lineNumbers false})
   (start-editor-sync!)
 
   (let [opts {:lineNumbers false}]

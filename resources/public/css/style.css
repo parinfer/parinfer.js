@@ -54,11 +54,20 @@ p, li {
   margin: 0 auto;
 }
 
+.caption {
+  margin-top: 20px;
+  margin-bottom: 5px;
+  margin-left: 5px;
+  font-style: italic;
+  opacity: 0.5;
+}
+
 .CodeMirror {
   font-family: Menlo, Consolas, 'DejaVu Sans Mono', monospace;
-  border: 1px solid #CCC;
-  margin: 20px auto;
+  background: #FEFEFE;
+  border: 1px solid #EEE;
   padding: 5px;
+  margin-bottom: 20px;
 }
 
 .cm-bracket.cm-trailing {
@@ -78,4 +87,35 @@ p, li {
   content:'';
   display:block;
   clear: both;
+}
+
+#cm-code-intro {
+  height: 200px;
+}
+
+#cm-code-lisp-style,
+#cm-code-c-style
+{
+  height: 150px;
+}
+
+#cm-code-skim,
+#cm-code-inspect
+{
+  height: 80px;
+}
+
+#cm-code-skim span.cm-bracket
+{
+  opacity: 0.15;
+  color: #000;
+}
+
+#cm-code-inspect span.cm-keyword,
+#cm-code-inspect span.cm-variable,
+#cm-code-inspect span.cm-builtin,
+#cm-code-inspect span.cm-string
+{
+  opacity: 0.15;
+  color: #000;
 }
