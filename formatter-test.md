@@ -241,6 +241,8 @@ Once we leave the line, spaces should be removed:
 (def b) 
 ```
 
+Another example with more delimiters:
+
 ```in
 (def b [[c d] |])
 ```
@@ -257,7 +259,18 @@ Once we leave the line, spaces should be removed:
 (def b [[c d]])
 ```
 
-Trailing closing delimiters are never removed from the current line, which will
+Spaces between trailing delims after the cursor should be removed since we are not in a position
+where we may be editing them:
+
+```in
+(def |b [[c d] ])
+```
+
+```out
+(def b [[c d]])
+```
+
+Trailing closing delimiters before the cursor are never removed, which may
 cause indented lines below to be ignored.  This is to allow inserting a token
 after such a delimiter.
 
@@ -273,7 +286,7 @@ For example, without the cursor on the first line, this is expected:
   ret)
 ```
 
-With the cursor on the first line, the indented line below does not affect it.
+With the cursor at the end of the first line, the indented line below does not affect it.
 
 ```in
 (let [a 1])|
@@ -296,6 +309,19 @@ the previous state:
 ```out
 (let [a 1]) 2
   ret
+```
+
+But if the cursor is before such a delimiter, we are not in a position to insert a token after it,
+thus indentation can affect it again:
+
+```in
+(let [a 1]|)
+  ret)
+```
+
+```out
+(let [a 1]
+  ret)
 ```
 
 Cannot insert closing delimiters on their own line:

@@ -206,7 +206,7 @@
                      +-- trailing delims that we will remove
                           (notice whitespace will also be removed)
   "
-  [{:keys [stack delim-trail backup x-pos ch] :as state}]
+  [{:keys [stack delim-trail backup x-pos ch cursor-line line-no cursor-x] :as state}]
   (let [closing-delim? (isa? char-hierarchy ch :close)
 
         ;; Determine if our tracked delimiters are not at the end of the line.
@@ -218,7 +218,9 @@
         ;; Determine if we have a delimiter we can track.
         update? (and (in-code? stack)
                      closing-delim?
-                     (valid-closer? stack ch))
+                     (valid-closer? stack ch)
+                     (or (not= cursor-line line-no)
+                         (>= x-pos cursor-x)))
 
         ;; Clear the backup delimiters if we reset.
         backup (cond-> backup reset? empty)
@@ -252,11 +254,16 @@
               the closing delims. now we need them back to
               infer closing delims for indented lines.)
   "
-  [{:keys [delim-trail insert line-no backup stack] :as state}]
+  [{:keys [delim-trail insert line-no lines backup stack] :as state}]
   (let [{:keys [start end]} delim-trail]
     (if (and start end)
-      (let [[backup stack] (loop [backup backup, stack stack]
-                             (if (empty? backup)
+      (let [line (get lines line-no)
+            remove-count (->> (subs line start end)
+                              (filter #(isa? char-hierarchy % :close))
+                              (count))
+            ignore-count (- (count backup) remove-count)
+            [backup stack] (loop [backup backup, stack stack]
+                             (if (= ignore-count (count backup))
                                [backup stack]
                                (recur (pop backup) (conj stack (peek backup)))))
             state (-> state
@@ -355,8 +362,7 @@
                   :lines (conj lines "")
                   :line-no line-no)
          state (reduce process-char state (str line "\n"))
-         state (cond-> state
-                  (not= line-no cursor-line) remove-delim-trail)]
+         state (remove-delim-trail state)]
      state)))
 
 (defn process-text

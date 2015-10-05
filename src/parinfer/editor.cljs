@@ -122,7 +122,6 @@
 
 (defn parse-change
   [change]
-  (js/console.log "change object:" change)
   {:from (parse-pos (.-from change))
    :to (parse-pos (.-to change))
    :text (seq (.-text change))

@@ -25,6 +25,7 @@
 
   ;; create editors
   (create-editor! "code-intro" :intro)
+  (create-editor! "code-try" :try)
   (start-editor-sync!)
 
   (create-regular-editor! "code-lisp-style")

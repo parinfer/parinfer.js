@@ -69,6 +69,7 @@
         line (string/replace line "|" "")]
     (-> state
         (update-in [:test-case block-key :text] str "\n" line)
+        (update-in [:test-case block-key :cursor-x] #(or % cursor-x))
         (update-in [:test-case block-key :cursor-line] #(or % cursor-line)))))
 
 (defmethod parse-test-line :default
@@ -82,7 +83,7 @@
                        :test-case {:in nil, :out nil}}
         numbered-lines (map-indexed (fn [line-no line] [(inc line-no) line]) lines)
         state (reduce parse-test-line initial-state numbered-lines)]
-    
+
     (when (:block-key state)
       (throw (error-msg "EOF" "code block not closed")))
 
@@ -95,8 +96,10 @@
   (let [text (.readFileSync fs test-filepath)
         test-cases (parse-test-cases text)]
     (doseq [{:keys [in out]} test-cases]
-      (let [cursor-line (:cursor-line in)]
-        (is (= (:text out) (format-text {:cursor-line cursor-line} (:text in)))
+      (let [cursor-line (:cursor-line in)
+            cursor-x (:cursor-x in)]
+        (is (= (:text out) (format-text {:cursor-line cursor-line
+                                         :cursor-x cursor-x} (:text in)))
             (cond-> (str "test case @ line #" (:line-no in))
-              cursor-line (str " with cursor at line:" (pr-str cursor-line))))))))
+              (and cursor-line cursor-x) (str " with cursor at line=" cursor-line " x=" cursor-x)))))))
 
