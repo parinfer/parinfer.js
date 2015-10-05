@@ -82,22 +82,24 @@ structural ambiguity.
 
 Since we can _skim_ code with indentation, why not _sketch_ code with indentation as well?
 
-__Indent__ to influence the structure of your code:
-
+<div>
+<div class="caption">__Indent__ to influence the structure of your code:</div>
 <textarea id="code-idea-nest">
 (defn foo [a b])
 (+ a b) ;; <-- insert space at front
 </textarea>
+</div>
 
-__Indent further__ to reach different thresholds:
-
+<div>
+<div class="caption">__Indent further__ to reach different thresholds:</div>
 <textarea id="code-idea-wide-nest">
 (let [m {:foo 1}])
    |
 </textarea>
+</div>
 
-__Indent multiple lines__ to see its effect:
-
+<div>
+<div class="caption">__Indent multiple lines__ to see its effect:</div>
 <textarea id="code-idea-deep-nest">
 (defn component []
   (html)
@@ -105,9 +107,10 @@ __Indent multiple lines__ to see its effect:
                  :color "#000"}]
   [:h1 "title"])
 </textarea>
+</div>
 
-__Insert/delete a line__ without rearranging the pile of parens:
-
+<div>
+<div class="caption">__Insert/delete a line__ without rearranging the pile of parens:</div>
 <textarea id="code-idea-insert-delete">
 (defn component []
   (html
@@ -116,37 +119,42 @@ __Insert/delete a line__ without rearranging the pile of parens:
     |  <-- start inserting here
     |  <-- insert another, then delete
 </textarea>
+</div>
 
 ## A Visual Cue for Special Cases
 
 Parens will _dim_ if they can react to indentation (i.e. parens grouped at the end of a line.)
 
-__Watch for dimming__ of the parens at the end of a line:
-
+<div>
+<div class="caption">__Watch for dimming__ of the parens at the end of a line:</div>
 <textarea id="code-cue-dim">
 (defn foo [a b] ret)  blocker
 </textarea>
+</div>
 
-__`blocker`__ prevents the indentation-based structuring that you might expect:
-
+<div>
+<div class="caption">__`blocker`__ prevents the indentation-based structuring that you might expect:</div>
 <textarea id="code-cue-block">
 (defn foo []) blocker
   |ret
 </textarea>
+</div>
 
-__Comments don't block__ of course:
-
+<div>
+<div class="caption">__Comments don't block__ of course:</div>
 <textarea id="code-cue-comment">
 (defn foo []  ; a comment will not interfere
   |ret
 </textarea>
+</div>
 
-__Your cursor will block__ in case you want to type a blocker:
-
+<div>
+<div class="caption">__Your cursor will block__ in case you want to type a blocker:</div>
 <textarea id="code-cue-cursor">
 (defn foo []| type here
   ret
 </textarea>
+</div>
 
 ## Try It
 
