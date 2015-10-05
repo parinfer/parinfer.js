@@ -80,39 +80,73 @@ structural ambiguity.
 
 ## The idea
 
-Similar to the way that we quickly _skim_ code by using its indentation, I
-believe that we should be able to quickly _sketch_ code using indentation as
-well.  Here's how that might look:
+Since we can _skim_ code with indentation, why not _sketch_ code with indentation as well?
 
-<textarea id="code-idea1">
+__Indent__ to influence the structure of your code:
+
+<textarea id="code-idea-nest">
 (defn foo [a b])
 (+ a b) ;; <-- insert space at front
 </textarea>
 
-What you see above is the editor allowing you to influence the structure of
-your code based on indentation. Here's another example with deeper nesting:
+__Indent further__ to reach different thresholds:
 
-<textarea id="code-idea2">
+<textarea id="code-idea-wide-nest">
+(let [m {:foo 1}])
+   |
+</textarea>
+
+__Indent multiple lines__ to see its effect:
+
+<textarea id="code-idea-deep-nest">
 (defn component []
   (html)
-  [:div.container]
+  [:div {:style {:background "#FFF"
+                 :color "#000"}]
   [:h1 "title"])
 </textarea>
 
-As a side effect, this makes it easy for us to insert/delete a line without
-rearranging the pile of parens:
+__Insert/delete a line__ without rearranging the pile of parens:
 
-<textarea id="code-idea3">
+<textarea id="code-idea-insert-delete">
 (defn component []
   (html
    [:div.container
     [:h1 "title"]]))
-    |  <-- start inserting here, then remove it
+    |  <-- start inserting here
+    |  <-- insert another, then delete
 </textarea>
 
-I think the key here is that we are writing/editing code without explicitly
-managing where our parentheses close.  As a result, our code remains
-properly formatted.
+## A Visual Cue for Special Cases
+
+Parens will _dim_ if they can react to indentation (i.e. parens grouped at the end of a line.)
+
+__Watch for dimming__ of the parens at the end of a line:
+
+<textarea id="code-cue-dim">
+(defn foo [a b] ret)  blocker
+</textarea>
+
+__`blocker`__ prevents the indentation-based structuring that you might expect:
+
+<textarea id="code-cue-block">
+(defn foo []) blocker
+  |ret
+</textarea>
+
+__Comments don't block__ of course:
+
+<textarea id="code-cue-comment">
+(defn foo []  ; a comment will not interfere
+  |ret
+</textarea>
+
+__Your cursor will block__ in case you want to type a blocker:
+
+<textarea id="code-cue-cursor">
+(defn foo []| type here
+  ret
+</textarea>
 
 ## Try It
 
