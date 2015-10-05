@@ -210,14 +210,82 @@
      (set! (.-id wrapper) (str "cm-" element-id))
      cm)))
 
+(defn freeze-editor!
+  [cm-or-key]
+  (let [cm (if (keyword? cm-or-key) (get-in @state [cm-or-key :cm]) cm-or-key)
+        element (.getWrapperElement cm)
+        cursor (gdom/getElementByClass "CodeMirror-cursors" element)]
+    (.setOption cm "readOnly" "nocursor")
+    (classlist/add element "CodeMirror-focused")
+    (set! (.. cursor -style -visibility) "visible")))
+
+(defn thaw-editor!
+  [cm-or-key]
+  (let [cm (if (keyword? cm-or-key) (get-in @state [cm-or-key :cm]) cm-or-key)
+        element (.getWrapperElement cm)
+        cursor (gdom/getElementByClass "CodeMirror-cursors" element)]
+    (.setOption cm "readOnly" false)))
+
+(defn start-recording!
+  [key-]
+  (let [{:keys [text cm] :as editor} (get @state key-)]
+    (swap! vcr update-in [key-]
+           assoc
+           :changes []
+           :init-value text
+           :recording? true
+           :last-time nil)))
+
+(defn stop-recording!
+  [key-]
+  (swap! vcr assoc-in [key- :recording?] false))
+
+
+(defn play-recording!
+  [key-]
+  (let [cm (get-in @state [key- :cm])
+        recording (get @vcr key-)
+        timescale (get recording :timescale 1)
+        element (.getWrapperElement cm)]
+    (freeze-editor! cm)
+    (go
+      (swap! state assoc-in [key- :text] (:init-value recording))
+      (doseq [{:keys [change selections dt] :as data} (:changes recording)]
+        (<! (timeout (/ dt timescale)))
+        (cond
+          change (apply-change cm change)
+          selections (apply-selections cm selections)
+          :else nil))
+      (thaw-editor! cm))))
+
+(def show-record-controls? true)
+
 (defn create-editor!
   ([element-id key-] (create-editor! element-id key- {}))
   ([element-id key- opts]
    (let [element (js/document.getElementById element-id)
          cm (js/CodeMirror.fromTextArea element (clj->js (merge editor-opts opts)))
-         wrapper (.getWrapperElement cm)]
+         wrapper (.getWrapperElement cm)
+         ]
 
      (set! (.-id wrapper) (str "cm-" element-id))
+
+     (when show-record-controls?
+       (let [btn-record (gdom/createElement "button")
+             btn-stop (gdom/createElement "button")
+             btn-play (gdom/createElement "button")]
+
+         (gdom/insertSiblingAfter btn-record wrapper)
+         (gdom/insertSiblingAfter btn-stop btn-record)
+         (gdom/insertSiblingAfter btn-play btn-stop)
+
+         (gdom/setTextContent btn-record "Start Recording")
+         (gdom/setTextContent btn-stop "Done Recording")
+         (gdom/setTextContent btn-play "Play Recording")
+
+         (set! (.-onclick btn-record) #(start-recording! key-))
+         (set! (.-onclick btn-stop) #(stop-recording! key-))
+         (set! (.-onclick btn-play) #(play-recording! key-))))
 
      (when-not (get @state key-)
        (swap! frame-updates assoc key- {}))
@@ -258,51 +326,4 @@
   ;; sync state changes to the editor
   (add-watch state :editor-updater on-state-change)
   (force-editor-sync!))
-
-(defn start-recording!
-  [key-]
-  (let [{:keys [text cm] :as editor} (get @state key-)]
-    (swap! vcr update-in [key-]
-           assoc
-           :changes []
-           :init-value text
-           :recording? true
-           :last-time nil)))
-
-(defn stop-recording!
-  [key-]
-  (swap! vcr assoc-in [key- :recording?] false))
-
-(defn freeze-editor!
-  [cm-or-key]
-  (let [cm (if (keyword? cm-or-key) (get-in @state [cm-or-key :cm]) cm-or-key)
-        element (.getWrapperElement cm)
-        cursor (gdom/getElementByClass "CodeMirror-cursors" element)]
-    (.setOption cm "readOnly" "nocursor")
-    (classlist/add element "CodeMirror-focused")
-    (set! (.. cursor -style -visibility) "visible")))
-
-(defn thaw-editor!
-  [cm-or-key]
-  (let [cm (if (keyword? cm-or-key) (get-in @state [cm-or-key :cm]) cm-or-key)
-        element (.getWrapperElement cm)
-        cursor (gdom/getElementByClass "CodeMirror-cursors" element)]
-    (.setOption cm "readOnly" false)))
-
-(defn play-recording!
-  [key-]
-  (let [cm (get-in @state [key- :cm])
-        recording (get @vcr key-)
-        timescale (get recording :timescale 1)
-        element (.getWrapperElement cm)]
-    (freeze-editor! cm)
-    (go
-      (swap! state assoc-in [key- :text] (:init-value recording))
-      (doseq [{:keys [change selections dt] :as data} (:changes recording)]
-        (<! (timeout (/ dt timescale)))
-        (cond
-          change (apply-change cm change)
-          selections (apply-selections cm selections)
-          :else nil))
-      (thaw-editor! cm))))
 
