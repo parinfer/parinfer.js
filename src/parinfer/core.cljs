@@ -3,7 +3,7 @@
     [hiccups.core :refer [defhtml html]])
   (:require
     [hiccups.runtime]
-    [parinfer.vcr-data :refer [intro-vcr-state]]
+    [parinfer.vcr-data :as vcr]
     [parinfer.editor :refer [create-editor!
                              create-regular-editor!
                              start-editor-sync!
@@ -45,8 +45,11 @@
   (create-regular-editor! "code-inspect" {:matchBrackets true})
 
   ;; create editor animations
-  (swap! vcr assoc :intro intro-vcr-state)
+  (swap! vcr assoc :intro vcr/intro-vcr-state)
+  (swap! vcr assoc :idea-nest vcr/idea-nest-vcr-state)
+
   (play-recording! :intro)
+  (play-recording! :idea-nest)
 
   )
 

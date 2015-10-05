@@ -126,3 +126,7 @@ p, li {
   color: inherit;
   border-bottom: 1px solid #111;
 }
+
+#cm-code-idea-nest {
+  height: 70px;
+}

@@ -1049,4 +1049,63 @@
    :last-time 1443920519747,
    :recording? false})
 
+(def idea-nest-vcr-state
+  '{:timescale 2
+    :changes
+    [{:selections ({:anchor {:line 1, :ch 0}, :head {:line 1, :ch 0}}),
+      :dt 0}
+     {:change
+      {:from {:line 1, :ch 0},
+       :to {:line 1, :ch 0},
+       :text (" "),
+       :origin "+input"},
+      :dt 382}
+     {:change
+      {:from {:line 1, :ch 1},
+       :to {:line 1, :ch 1},
+       :text (" "),
+       :origin "+input"},
+      :dt 214}
+     {:change
+      {:from {:line 1, :ch 1},
+       :to {:line 1, :ch 2},
+       :text (""),
+       :origin "+delete"},
+      :dt 1081}
+     {:change
+      {:from {:line 1, :ch 0},
+       :to {:line 1, :ch 1},
+       :text (""),
+       :origin "+delete"},
+      :dt 256}
+     {:change
+      {:from {:line 1, :ch 0},
+       :to {:line 1, :ch 0},
+       :text (" "),
+       :origin "+input"},
+      :dt 935}
+     {:change
+      {:from {:line 1, :ch 1},
+       :to {:line 1, :ch 1},
+       :text (" "),
+       :origin "+input"},
+      :dt 236}
+     {:change
+      {:from {:line 1, :ch 1},
+       :to {:line 1, :ch 2},
+       :text (""),
+       :origin "+delete"},
+      :dt 1146}
+     {:change
+      {:from {:line 1, :ch 0},
+       :to {:line 1, :ch 1},
+       :text (""),
+       :origin "+delete"},
+      :dt 203}],
+    :init-value "(defn foo [a b])\n(+ a b)",
+    :last-time 1444084526856, 
+    :recording? false} 
+
+  )
+
 
