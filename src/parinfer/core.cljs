@@ -26,6 +26,17 @@
   ;; create editors
   (create-editor! "code-intro" :intro)
   (create-editor! "code-try" :try)
+
+  (create-editor! "code-idea-nest" :idea-nest)
+  (create-editor! "code-idea-wide-nest" :idea-wide-nest)
+  (create-editor! "code-idea-deep-nest" :idea-deep-nest)
+  (create-editor! "code-idea-insert-delete" :idea-insert-delete)
+
+  (create-editor! "code-cue-dim" :cue-dim)
+  (create-editor! "code-cue-block" :cue-block)
+  (create-editor! "code-cue-comment" :cue-comment)
+  (create-editor! "code-cue-cursor" :cue-cursor)
+
   (start-editor-sync!)
 
   (create-regular-editor! "code-lisp-style")

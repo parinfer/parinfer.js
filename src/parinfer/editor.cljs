@@ -2,6 +2,7 @@
   (:require-macros
     [cljs.core.async.macros :refer [go go-loop]])
   (:require
+    [cljs.pprint :refer [pprint]]
     [cljs.core.async :refer [<! timeout chan]]
     [clojure.string :as string :refer [join]]
     [parinfer.formatter :refer [format-text]]
@@ -258,6 +259,12 @@
           :else nil))
       (thaw-editor! cm))))
 
+(defn print-recording!
+  [key-]
+  (let [cm (get-in @state [key- :cm])
+        recording (get @vcr key-)]
+    (pprint recording)))
+
 (def show-record-controls? true)
 
 (defn create-editor!
@@ -273,19 +280,23 @@
      (when show-record-controls?
        (let [btn-record (gdom/createElement "button")
              btn-stop (gdom/createElement "button")
-             btn-play (gdom/createElement "button")]
+             btn-play (gdom/createElement "button")
+             btn-print (gdom/createElement "button")]
 
          (gdom/insertSiblingAfter btn-record wrapper)
          (gdom/insertSiblingAfter btn-stop btn-record)
          (gdom/insertSiblingAfter btn-play btn-stop)
+         (gdom/insertSiblingAfter btn-print btn-play)
 
          (gdom/setTextContent btn-record "Start Recording")
          (gdom/setTextContent btn-stop "Done Recording")
          (gdom/setTextContent btn-play "Play Recording")
+         (gdom/setTextContent btn-print "Print Recording")
 
          (set! (.-onclick btn-record) #(start-recording! key-))
          (set! (.-onclick btn-stop) #(stop-recording! key-))
-         (set! (.-onclick btn-play) #(play-recording! key-))))
+         (set! (.-onclick btn-play) #(play-recording! key-))
+         (set! (.-onclick btn-print) #(print-recording! key-))))
 
      (when-not (get @state key-)
        (swap! frame-updates assoc key- {}))
