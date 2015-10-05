@@ -24,7 +24,7 @@
     (set! (.-innerHTML element) html-text))
 
   ;; create editors
-  (create-editor! "code-intro" :intro)
+  (create-editor! "code-intro" :intro {:styleActiveLine true})
   (create-editor! "code-try" :try)
 
   (create-editor! "code-idea-nest" :idea-nest)
@@ -45,11 +45,13 @@
   (create-regular-editor! "code-inspect" {:matchBrackets true})
 
   ;; create editor animations
-  (swap! vcr assoc :intro vcr/intro-vcr-state)
-  (swap! vcr assoc :idea-nest vcr/idea-nest-vcr-state)
+  (swap! vcr assoc :intro vcr/intro)
+  (swap! vcr assoc :idea-nest vcr/idea-nest)
+  (swap! vcr assoc :idea-wide-nest vcr/idea-wide-nest)
 
   (play-recording! :intro)
   (play-recording! :idea-nest)
+  (play-recording! :idea-wide-nest)
 
   )
 

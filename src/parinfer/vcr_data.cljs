@@ -1,6 +1,6 @@
 (ns parinfer.vcr-data)
 
-(def intro-vcr-state
+(def intro
  '{:timescale 4
    :changes
    [{:change
@@ -1049,7 +1049,7 @@
    :last-time 1443920519747,
    :recording? false})
 
-(def idea-nest-vcr-state
+(def idea-nest
   '{:timescale 2
     :changes
     [{:selections ({:anchor {:line 1, :ch 0}, :head {:line 1, :ch 0}}),
@@ -1105,7 +1105,121 @@
     :init-value "(defn foo [a b])\n(+ a b)",
     :last-time 1444084526856, 
     :recording? false} 
-
   )
+
+(def idea-wide-nest
+  '{:timescale 2
+    :changes
+    [{:change
+      {:from {:line 1, :ch 0},
+       :to {:line 1, :ch 0},
+       :text (" "),
+       :origin "+input"},
+      :dt 0}
+     {:change
+      {:from {:line 1, :ch 1},
+       :to {:line 1, :ch 1},
+       :text (" "),
+       :origin "+input"},
+      :dt 554}
+     {:change
+      {:from {:line 1, :ch 2},
+       :to {:line 1, :ch 2},
+       :text (" "),
+       :origin "+input"},
+      :dt 762}
+     {:change
+      {:from {:line 1, :ch 3},
+       :to {:line 1, :ch 3},
+       :text (" "),
+       :origin "+input"},
+      :dt 203}
+     {:change
+      {:from {:line 1, :ch 4},
+       :to {:line 1, :ch 4},
+       :text (" "),
+       :origin "+input"},
+      :dt 314}
+     {:change
+      {:from {:line 1, :ch 5},
+       :to {:line 1, :ch 5},
+       :text (" "),
+       :origin "+input"},
+      :dt 261}
+     {:change
+      {:from {:line 1, :ch 6},
+       :to {:line 1, :ch 6},
+       :text (" "),
+       :origin "+input"},
+      :dt 1022}
+     {:change
+      {:from {:line 1, :ch 7},
+       :to {:line 1, :ch 7},
+       :text (" "),
+       :origin "+input"},
+      :dt 191}
+     {:change
+      {:from {:line 1, :ch 8},
+       :to {:line 1, :ch 8},
+       :text (" "),
+       :origin "+input"},
+      :dt 248}
+     {:change
+      {:from {:line 1, :ch 8},
+       :to {:line 1, :ch 9},
+       :text (""),
+       :origin "+delete"},
+      :dt 1697}
+     {:change
+      {:from {:line 1, :ch 7},
+       :to {:line 1, :ch 8},
+       :text (""),
+       :origin "+delete"},
+      :dt 203}
+     {:change
+      {:from {:line 1, :ch 6},
+       :to {:line 1, :ch 7},
+       :text (""),
+       :origin "+delete"},
+      :dt 224}
+     {:change
+      {:from {:line 1, :ch 5},
+       :to {:line 1, :ch 6},
+       :text (""),
+       :origin "+delete"},
+      :dt 1294}
+     {:change
+      {:from {:line 1, :ch 4},
+       :to {:line 1, :ch 5},
+       :text (""),
+       :origin "+delete"},
+      :dt 236}
+     {:change
+      {:from {:line 1, :ch 3},
+       :to {:line 1, :ch 4},
+       :text (""),
+       :origin "+delete"},
+      :dt 226}
+     {:change
+      {:from {:line 1, :ch 2},
+       :to {:line 1, :ch 3},
+       :text (""),
+       :origin "+delete"},
+      :dt 258}
+     {:change
+      {:from {:line 1, :ch 1},
+       :to {:line 1, :ch 2},
+       :text (""),
+       :origin "+delete"},
+      :dt 1227}
+{:change
+ {:from {:line 1, :ch 0},
+  :to {:line 1, :ch 1},
+  :text (""),
+  :origin "+delete"},
+ :dt 236}],
+:init-value "(let [m {:foo 1}])\n:bar 2",
+:last-time 1444086232249, 
+:recording? false})
 
 

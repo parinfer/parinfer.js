@@ -127,6 +127,8 @@ p, li {
   border-bottom: 1px solid #111;
 }
 
-#cm-code-idea-nest {
+#cm-code-idea-nest,
+#cm-code-idea-wide-nest
+{
   height: 70px;
 }

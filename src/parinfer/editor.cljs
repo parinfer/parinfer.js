@@ -181,13 +181,8 @@
 ;; Setup
 ;;----------------------------------------------------------------------
 
-(def reg-editor-opts
-  {:mode "clojure"
-   :extraKeys {:Tab on-tab}})
-
 (def editor-opts
-  {:styleActiveLine true
-   :mode "clojure-parinfer"
+  {:mode "clojure-parinfer"
    :extraKeys {:Tab on-tab}})
 
 (defn on-state-change
@@ -206,7 +201,7 @@
   ([element-id] (create-regular-editor! element-id {}))
   ([element-id opts]
    (let [element (js/document.getElementById element-id)
-         cm (js/CodeMirror.fromTextArea element (clj->js (merge reg-editor-opts opts)))
+         cm (js/CodeMirror.fromTextArea element (clj->js (merge editor-opts opts)))
          wrapper (.getWrapperElement cm)]
      (set! (.-id wrapper) (str "cm-" element-id))
      cm)))
