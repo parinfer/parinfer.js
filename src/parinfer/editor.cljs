@@ -6,7 +6,7 @@
     [sablono.core :refer-macros [html]]
 
     [cljs.pprint :refer [pprint]]
-    [cljs.core.async :refer [<! timeout chan]]
+    [cljs.core.async :refer [<! timeout chan alts! close!]]
     [clojure.string :as string :refer [join]]
 
     [parinfer.formatter :refer [format-text]]
@@ -219,8 +219,6 @@
   (let [cm (if (keyword? cm-or-key) (get-in @state [cm-or-key :cm]) cm-or-key)
         element (.getWrapperElement cm)
         cursor (gdom/getElementByClass "CodeMirror-cursors" element)]
-    (.setOption cm "readOnly" "nocursor")
-    (classlist/add element "CodeMirror-focused")
     (set! (.. cursor -style -visibility) "visible")))
 
 (defn thaw-editor!
@@ -228,7 +226,7 @@
   (let [cm (if (keyword? cm-or-key) (get-in @state [cm-or-key :cm]) cm-or-key)
         element (.getWrapperElement cm)
         cursor (gdom/getElementByClass "CodeMirror-cursors" element)]
-    (.setOption cm "readOnly" false)))
+    ))
 
 (defn start-recording!
   [key-]
@@ -240,27 +238,47 @@
            :recording? true
            :last-time nil)))
 
-(defn stop-recording!
+(defn done-recording!
   [key-]
   (swap! vcr assoc-in [key- :recording?] false))
 
-
 (defn play-recording!
   [key-]
+  (when-let [stop-chan (get-in @vcr [key- :stop-chan])]
+    (close! stop-chan))
+  (swap! vcr assoc-in [key- :stop-chan] (chan))
   (let [cm (get-in @state [key- :cm])
         recording (get @vcr key-)
         timescale (get recording :timescale 1)
+        loop? (get recording :loop? true)
+        loop-delay (get recording :loop-delay 2000)
         element (.getWrapperElement cm)]
     (freeze-editor! cm)
-    (go
+    (go-loop []
       (swap! state assoc-in [key- :text] (:init-value recording))
-      (doseq [{:keys [change selections dt] :as data} (:changes recording)]
-        (<! (timeout (/ dt timescale)))
-        (cond
-          change (apply-change cm change)
-          selections (apply-selections cm selections)
-          :else nil))
+      (loop [changes (:changes recording)]
+        (when (seq changes)
+          (let [{:keys [change selections dt] :as data} (first changes)
+                tchan (timeout (/ dt timescale))
+                stop-chan (:stop-chan recording)
+                [v c] (alts! [tchan stop-chan])]
+            (when (not= c stop-chan)
+              (cond
+                change (apply-change cm change)
+                selections (apply-selections cm selections)
+                :else nil)
+              (recur (rest changes))))))
+      (when loop?
+        (let [tchan (timeout loop-delay)
+              stop-chan (:stop-chan recording)
+              [v c] (alts! [tchan stop-chan])]
+          (when (not= c stop-chan)
+            (recur))))
       (thaw-editor! cm))))
+
+(defn stop-playing!
+  [key-]
+  (close! (get-in @vcr [key- :stop-chan])))
 
 (defn print-recording!
   [key-]
@@ -273,18 +291,20 @@
          :target-key nil}))
 
 (defn controls-view
-  [{:keys [target-key] :as data} owner]
+  [{:keys [target-key show?] :as data} owner]
   (reify
     om/IRender
     (render [_]
-      (html
-        [:div
-         [:code (str target-key)] [:br]
-         "Recording "
-         [:button {:on-click #(start-recording! target-key)} "Start"]
-         [:button {:on-click #(stop-recording! target-key)} "Done"]
-         [:button {:on-click #(play-recording! target-key)} "Play"]
-         [:button {:on-click #(print-recording! target-key)} "Print"]]))))
+      (when show?
+        (html
+          [:div
+           [:code (str target-key)] [:br]
+           "Recording "
+           [:button {:on-click #(start-recording! target-key)} "Start Record"]
+           [:button {:on-click #(done-recording! target-key)} "Stop Record"]
+           [:button {:on-click #(play-recording! target-key)} "Play"]
+           [:button {:on-click #(stop-playing! target-key)} "Stop"]
+           [:button {:on-click #(print-recording! target-key)} "Print"]])))))
 
 (defn render-controls! []
   (om/root
@@ -299,8 +319,19 @@
          cm (js/CodeMirror.fromTextArea element (clj->js (merge editor-opts opts)))
          wrapper (.getWrapperElement cm)]
 
-     (set! (.-onclick wrapper) #(swap! controls-state assoc :target-key key-))
+
      (set! (.-id wrapper) (str "cm-" element-id))
+
+     ;; on blur, start playing animation again, if we are not dev mode.
+     (.on cm "blur" (fn [e]
+                      (when-not (:show? @controls-state)
+                        (play-recording! key-))))
+
+     ;; on focus, set recording controls to focus on this editor.
+     ;; and stop any animation.
+     (.on cm "focus" (fn [e]
+                       (swap! controls-state assoc :target-key key-)
+                       (stop-playing! key-)))
 
      (when-not (get @state key-)
        (swap! frame-updates assoc key- {}))

@@ -46,12 +46,11 @@
   (create-regular-editor! "code-inspect" {:matchBrackets true})
 
   ;; create editor animations
-  (swap! vcr assoc
-         :intro vcr/intro
-         :idea-nest vcr/idea-nest
-         :idea-wide-nest vcr/idea-wide-nest
-         :idea-deep-nest vcr/idea-deep-nest
-         :idea-insert-delete vcr/idea-insert-delete)
+  (swap! vcr update-in [:intro] merge vcr/intro
+  (swap! vcr update-in [:idea-nest] merge vcr/idea-nest)
+  (swap! vcr update-in [:idea-wide-nest] merge vcr/idea-wide-nest)
+  (swap! vcr update-in [:idea-deep-nest] merge vcr/idea-deep-nest)
+  (swap! vcr update-in [:idea-insert-delete] merge vcr/idea-insert-delete))
 
   (play-recording! :intro)
   (play-recording! :idea-nest)
