@@ -121,9 +121,9 @@ Since we can _skim_ code with indentation, why not _sketch_ code with indentatio
 </textarea>
 </div>
 
-## A Visual Cue for Special Cases
+## A Visual Cue for Special Parens
 
-Parens will _dim_ if they can react to indentation (i.e. parens grouped at the end of a line.)
+Only parens grouped at the end of a line can react to indentation.  These parens will _dim_:
 
 <div>
 <div class="caption">__Watch for dimming__ of the parens at the end of a line:</div>
