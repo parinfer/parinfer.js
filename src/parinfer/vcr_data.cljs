@@ -1222,4 +1222,232 @@
 :last-time 1444086232249, 
 :recording? false})
 
+(def idea-deep-nest
+  '{:timescale 2
+    :changes
+    [{:change
+      {:from {:line 3, :ch 9},
+       :to {:line 3, :ch 9},
+       :text ("  "),
+       :origin "+input"},
+      :dt 0}
+     {:change
+      {:from {:line 3, :ch 11},
+       :to {:line 3, :ch 11},
+       :text ("  "),
+       :origin "+input"},
+      :dt 208}
+     {:change
+      {:from {:line 3, :ch 13},
+       :to {:line 3, :ch 13},
+       :text ("  "),
+       :origin "+input"},
+      :dt 199}
+     {:change
+      {:from {:line 3, :ch 15},
+       :to {:line 3, :ch 15},
+       :text ("  "),
+       :origin "+input"},
+      :dt 224}
+     {:selections ({:anchor {:line 2, :ch 2}, :head {:line 2, :ch 2}}),
+      :dt 1367}
+     {:selections ({:anchor {:line 2, :ch 2}, :head {:line 2, :ch 3}}),
+      :dt 190}
+     {:selections ({:anchor {:line 2, :ch 2}, :head {:line 2, :ch 4}}),
+      :dt 17}
+     {:selections ({:anchor {:line 2, :ch 2}, :head {:line 2, :ch 6}}),
+      :dt 17}
+     {:selections ({:anchor {:line 2, :ch 2}, :head {:line 3, :ch 8}}),
+      :dt 18}
+     {:selections ({:anchor {:line 2, :ch 2}, :head {:line 3, :ch 10}}),
+      :dt 17}
+     {:selections ({:anchor {:line 2, :ch 2}, :head {:line 4, :ch 12}}),
+      :dt 17}
+     {:selections ({:anchor {:line 2, :ch 2}, :head {:line 4, :ch 14}}),
+      :dt 17}
+     {:selections ({:anchor {:line 2, :ch 2}, :head {:line 4, :ch 16}}),
+      :dt 17}
+     {:change
+      {:from {:line 2, :ch 0},
+       :to {:line 2, :ch 2},
+       :text ("    "),
+       :origin "+input"},
+      :dt 636}
+     {:change
+      {:from {:line 3, :ch 0},
+       :to {:line 3, :ch 17},
+       :text ("                   "),
+       :origin "+input"},
+      :dt 8}
+     {:change
+      {:from {:line 4, :ch 0},
+       :to {:line 4, :ch 2},
+       :text ("    "),
+       :origin "+input"},
+      :dt 5}
+     {:change
+      {:from {:line 4, :ch 4},
+       :to {:line 4, :ch 4},
+       :text ("  "),
+       :origin "+input"},
+      :dt 1898}],
+    :init-value
+    "(defn component []\n  (html)\n  [:div {:style {:background \"#FFF\"}\n         :color \"#000\"}]\n  [:h1 \"title\"])",
+    :last-time 1444094273773, 
+    :recording? false})
 
+(def idea-insert-delete
+  '{:timescale 2
+    :changes
+    [{:selections ({:anchor {:line 3, :ch 21}, :head {:line 3, :ch 21}}),
+      :dt 0}
+     {:change
+      {:from {:line 3, :ch 20},
+       :to {:line 3, :ch 21},
+       :text (""),
+       :origin "+delete"},
+      :dt 927}
+     {:change
+      {:from {:line 3, :ch 20},
+       :to {:line 3, :ch 20},
+       :text ("" ""),
+       :origin "+input"},
+      :dt 256}
+     {:change
+      {:from {:line 4, :ch 0},
+       :to {:line 4, :ch 0},
+       :text (" "),
+       :origin "+input"},
+      :dt 577}
+     {:change
+      {:from {:line 4, :ch 1},
+       :to {:line 4, :ch 1},
+       :text (" "),
+       :origin "+input"},
+      :dt 152}
+     {:change
+      {:from {:line 4, :ch 2},
+       :to {:line 4, :ch 2},
+       :text (" "),
+       :origin "+input"},
+      :dt 272}
+     {:change
+      {:from {:line 4, :ch 3},
+       :to {:line 4, :ch 3},
+       :text (" "),
+       :origin "+input"},
+      :dt 176}
+     {:change
+      {:from {:line 4, :ch 4},
+       :to {:line 4, :ch 4},
+       :text ("f"),
+       :origin "+input"},
+      :dt 711}
+     {:change
+      {:from {:line 4, :ch 5},
+       :to {:line 4, :ch 5},
+       :text ("o"),
+       :origin "+input"},
+      :dt 89}
+     {:change
+      {:from {:line 4, :ch 6},
+       :to {:line 4, :ch 6},
+       :text ("o"),
+       :origin "+input"},
+      :dt 119}
+     {:change
+      {:from {:line 4, :ch 7},
+       :to {:line 4, :ch 7},
+       :text ("" ""),
+       :origin "+input"},
+      :dt 1033}
+     {:change
+      {:from {:line 5, :ch 0},
+       :to {:line 5, :ch 0},
+       :text ("    "),
+       :origin "+input"},
+      :dt 4}
+     {:change
+      {:from {:line 5, :ch 4},
+       :to {:line 5, :ch 4},
+       :text ("b"),
+       :origin "+input"},
+      :dt 348}
+     {:change
+      {:from {:line 5, :ch 5},
+       :to {:line 5, :ch 5},
+       :text ("a"),
+       :origin "+input"},
+      :dt 176}
+     {:change
+      {:from {:line 5, :ch 6},
+       :to {:line 5, :ch 6},
+       :text ("r"),
+       :origin "+input"},
+      :dt 119}
+     {:change
+      {:from {:line 5, :ch 6},
+       :to {:line 5, :ch 7},
+       :text (""),
+       :origin "+delete"},
+      :dt 1927}
+     {:change
+      {:from {:line 5, :ch 5},
+       :to {:line 5, :ch 6},
+       :text (""),
+       :origin "+delete"},
+      :dt 168}
+     {:change
+      {:from {:line 5, :ch 4},
+       :to {:line 5, :ch 5},
+       :text (""),
+       :origin "+delete"},
+      :dt 192}
+{:change
+ {:from {:line 5, :ch 4},
+  :to {:line 5, :ch 4},
+  :text ("b"),
+  :origin "+input"},
+ :dt 890}
+{:change
+ {:from {:line 5, :ch 5},
+  :to {:line 5, :ch 5},
+  :text ("a"),
+  :origin "+input"},
+ :dt 216}
+{:change
+ {:from {:line 5, :ch 6},
+  :to {:line 5, :ch 6},
+  :text ("r"),
+  :origin "+input"},
+ :dt 79}
+{:change
+ {:from {:line 5, :ch 6},
+  :to {:line 5, :ch 7},
+  :text (""),
+  :origin "+delete"},
+ :dt 367}
+{:change
+ {:from {:line 5, :ch 5},
+  :to {:line 5, :ch 6},
+  :text (""),
+  :origin "+delete"},
+ :dt 168}
+{:change
+ {:from {:line 5, :ch 4},
+  :to {:line 5, :ch 5},
+  :text (""),
+  :origin "+delete"},
+ :dt 248}
+{:selections ({:anchor {:line 5, :ch 4}, :head {:line 4, :ch 4}}),
+ :dt 705}
+{:change
+ {:from {:line 4, :ch 4},
+  :to {:line 5, :ch 4},
+  :text (""),
+  :origin "+delete"},
+ :dt 511}],
+:init-value
+"(defn component []\n  (html\n   [:div.container\n    [:h1 \"title\"]])) ",
+:last-time 1444095323419, 
+:recording? false})

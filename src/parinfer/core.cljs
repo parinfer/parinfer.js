@@ -30,8 +30,8 @@
 
   (create-editor! "code-idea-nest" :idea-nest)
   (create-editor! "code-idea-wide-nest" :idea-wide-nest)
-  (create-editor! "code-idea-deep-nest" :idea-deep-nest)
-  (create-editor! "code-idea-insert-delete" :idea-insert-delete)
+  (create-editor! "code-idea-deep-nest" :idea-deep-nest {:styleActiveLine true})
+  (create-editor! "code-idea-insert-delete" :idea-insert-delete {:styleActiveLine true})
 
   (create-editor! "code-cue-dim" :cue-dim)
   (create-editor! "code-cue-block" :cue-block)
@@ -46,13 +46,18 @@
   (create-regular-editor! "code-inspect" {:matchBrackets true})
 
   ;; create editor animations
-  (swap! vcr assoc :intro vcr/intro)
-  (swap! vcr assoc :idea-nest vcr/idea-nest)
-  (swap! vcr assoc :idea-wide-nest vcr/idea-wide-nest)
+  (swap! vcr assoc
+         :intro vcr/intro
+         :idea-nest vcr/idea-nest
+         :idea-wide-nest vcr/idea-wide-nest
+         :idea-deep-nest vcr/idea-deep-nest
+         :idea-insert-delete vcr/idea-insert-delete)
 
   (play-recording! :intro)
   (play-recording! :idea-nest)
   (play-recording! :idea-wide-nest)
+  (play-recording! :idea-deep-nest)
+  (play-recording! :idea-insert-delete)
 
   (render-controls!))
 
