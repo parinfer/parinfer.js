@@ -171,7 +171,8 @@ code {
   height: 50px;
 }
 
-#cm-code-cue-block
+#cm-code-cue-block,
+#cm-code-cue-cursor
 {
   height: 90px;
 }

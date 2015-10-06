@@ -2100,6 +2100,91 @@
 :last-time 1444150093903, 
 :recording? false})
 
+(def idea-paredit
+  '{:timescale 2
+    :changes
+    [{:change
+      {:from {:line 0, :ch 0},
+       :to {:line 0, :ch 0},
+       :text ("("),
+       :origin "+input"},
+      :dt 0}
+     {:change
+      {:from {:line 0, :ch 1},
+       :to {:line 0, :ch 1},
+       :text ("{"),
+       :origin "+input"},
+      :dt 379}
+     {:change
+      {:from {:line 0, :ch 2},
+       :to {:line 0, :ch 2},
+       :text ("["),
+       :origin "+input"},
+      :dt 399}
+     {:change
+      {:from {:line 0, :ch 2},
+       :to {:line 0, :ch 3},
+       :text (""),
+       :origin "+delete"},
+      :dt 1284}
+     {:change
+      {:from {:line 0, :ch 1},
+       :to {:line 0, :ch 2},
+       :text (""),
+       :origin "+delete"},
+      :dt 288}
+     {:change
+      {:from {:line 0, :ch 0},
+       :to {:line 0, :ch 1},
+       :text (""),
+       :origin "+delete"},
+      :dt 685}
+     {:change
+      {:from {:line 0, :ch 0},
+       :to {:line 0, :ch 0},
+       :text ("("),
+       :origin "+input"},
+      :dt 871}
+     {:selections ({:anchor {:line 0, :ch 4}, :head {:line 0, :ch 4}}),
+      :dt 1030}
+     {:change
+      {:from {:line 0, :ch 4},
+       :to {:line 0, :ch 4},
+       :text (")"),
+       :origin "+input"},
+      :dt 715}
+     {:change
+      {:from {:line 0, :ch 4},
+       :to {:line 0, :ch 5},
+       :text (""),
+       :origin "+delete"},
+      :dt 1656}
+     {:selections ({:anchor {:line 0, :ch 8}, :head {:line 0, :ch 8}}),
+      :dt 812}
+     {:change
+      {:from {:line 0, :ch 8},
+       :to {:line 0, :ch 8},
+       :text (")"),
+       :origin "+input"},
+      :dt 581}
+     {:change
+      {:from {:line 0, :ch 8},
+       :to {:line 0, :ch 9},
+       :text (""),
+       :origin "+delete"},
+      :dt 1708}
+     {:selections ({:anchor {:line 0, :ch 1}, :head {:line 0, :ch 1}}),
+      :dt 1215}
+     {:change
+      {:from {:line 0, :ch 0},
+       :to {:line 0, :ch 1},
+       :text (""),
+       :origin "+delete"},
+      :dt 513}],
+    :init-value "foo bar baz", 
+    :last-time 1444166831622, 
+    :recording? false})
+
 (def cue-dim
   '{:loop-delay 1000
     :timescale 2
@@ -2167,12 +2252,14 @@
 (def cue-block
   '{:timescale 2
     :changes
-    [{:change
+    [{:selections ({:anchor {:line 2, :ch 0}, :head {:line 2, :ch 0}}),
+      :dt 0}
+     {:change
       {:from {:line 2, :ch 0},
        :to {:line 2, :ch 0},
        :text ("  "),
        :origin "+input"},
-      :dt 0}
+      :dt 500}
      {:change
       {:from {:line 2, :ch 2},
        :to {:line 2, :ch 2},
@@ -2199,4 +2286,67 @@
       :dt 496}],
     :init-value "(foo [1 2 3\n      4 5 6] x)\n7 8 9",
     :last-time 1444146051467, 
+    :recording? false})
+
+(def cue-cursor
+  '{:timescale 2
+    :changes
+    [{:selections ({:anchor {:line 0, :ch 11}, :head {:line 0, :ch 11}}),
+      :dt 0}
+     {:change
+      {:from {:line 0, :ch 11},
+       :to {:line 0, :ch 11},
+       :text ("]"),
+       :origin "+input"},
+      :dt 1154}
+     {:change
+      {:from {:line 0, :ch 12},
+       :to {:line 0, :ch 12},
+       :text (" "),
+       :origin "+input"},
+      :dt 351}
+     {:change
+      {:from {:line 0, :ch 13},
+       :to {:line 0, :ch 13},
+       :text ("x"),
+       :origin "+input"},
+      :dt 857}
+     {:selections ({:anchor {:line 1, :ch 5}, :head {:line 1, :ch 5}}),
+      :dt 946}
+     {:selections ({:anchor {:line 1, :ch 5}, :head {:line 1, :ch 6}}),
+      :dt 252}
+     {:selections ({:anchor {:line 1, :ch 5}, :head {:line 1, :ch 8}}),
+      :dt 15}
+     {:selections ({:anchor {:line 1, :ch 5}, :head {:line 2, :ch 11}}),
+      :dt 17}
+     {:selections ({:anchor {:line 1, :ch 5}, :head {:line 2, :ch 12}}),
+      :dt 5}
+     {:change
+      {:from {:line 1, :ch 0},
+       :to {:line 1, :ch 6},
+       :text ("    "),
+       :origin "+input"},
+      :dt 690}
+     {:change
+      {:from {:line 2, :ch 0},
+       :to {:line 2, :ch 6},
+       :text ("    "),
+       :origin "+input"},
+      :dt 3}
+     {:change
+      {:from {:line 1, :ch 0},
+       :to {:line 1, :ch 4},
+       :text ("  "),
+       :origin "+input"},
+      :dt 357}
+     {:change
+      {:from {:line 2, :ch 0},
+       :to {:line 2, :ch 4},
+       :text ("  "),
+       :origin "+input"},
+      :dt 3}
+     {:selections ({:anchor {:line 2, :ch 8}, :head {:line 2, :ch 8}}),
+      :dt 841}],
+    :init-value "(foo [1 2 3\n      4 5 6 \n      7 8 9])",
+    :last-time 1444165202387, 
     :recording? false})

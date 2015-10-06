@@ -54,7 +54,7 @@
 
         ;; format the text
         opts {:cursor-line (.-line cursor)
-               :cursor-x (.-ch cursor)}
+              :cursor-x (.-ch cursor)}
         new-text (format-text opts current-text)]
 
     ;; update the text

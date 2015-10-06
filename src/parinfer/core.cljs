@@ -33,6 +33,7 @@
   (create-editor! "code-idea-deep-nest" :idea-deep-nest)
   (create-editor! "code-idea-insert-delete" :idea-insert-delete)
   (create-editor! "code-idea-string" :idea-string)
+  (create-editor! "code-idea-paredit" :idea-paredit)
 
   (create-editor! "code-cue-dim" :cue-dim)
   (create-editor! "code-cue-block" :cue-block)
@@ -52,8 +53,10 @@
   (swap! vcr update-in [:idea-deep-nest] merge vcr/idea-deep-nest)
   (swap! vcr update-in [:idea-insert-delete] merge vcr/idea-insert-delete))
   (swap! vcr update-in [:idea-string] merge vcr/idea-string)
+  (swap! vcr update-in [:idea-paredit] merge vcr/idea-paredit)
   (swap! vcr update-in [:cue-dim] merge vcr/cue-dim)
   (swap! vcr update-in [:cue-block] merge vcr/cue-block)
+  (swap! vcr update-in [:cue-cursor] merge vcr/cue-cursor)
 
   (play-recording! :intro)
   (play-recording! :idea-nest)
@@ -61,8 +64,10 @@
   (play-recording! :idea-deep-nest)
   (play-recording! :idea-insert-delete)
   (play-recording! :idea-string)
+  (play-recording! :idea-paredit)
   (play-recording! :cue-dim)
   (play-recording! :cue-block)
+  (play-recording! :cue-cursor)
 
   (render-controls!))
 

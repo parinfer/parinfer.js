@@ -78,56 +78,72 @@ this way to choose the resolution at which to view your code:
 It is the balance of these two views that gives us readability without causing
 structural ambiguity.
 
-## The idea
+## Indentation
 
-Since we can _skim_ code with indentation, why not _sketch_ code with indentation as well?
+Since we can _skim_ code with indentation, why not _sketch_ code with
+indentation as well?
+
+This can be done by treating right-parens at the end of a line as _eager to
+move_.  That is, eager to extend to indented lines.  We _dim_ them in the
+editor to signify this mobility.
 
 <div>
 <div class="caption">__Indent__ to influence the structure of your code:</div>
 <textarea id="code-idea-nest">
-(defn foo [a b])
-(+ a b) ;; <-- insert space at front
 </textarea>
 </div>
 
 <div>
 <div class="caption">__Indent further__ to reach different thresholds:</div>
 <textarea id="code-idea-wide-nest">
-(let [m {:foo 1}])
-   |
 </textarea>
 </div>
 
 <div>
 <div class="caption">__Indent multiple lines__ to see its effect:</div>
 <textarea id="code-idea-deep-nest">
-(defn component []
-  (html)
-  [:div {:style {:background "#FFF"
-                 :color "#000"}]
-  [:h1 "title"])
 </textarea>
 </div>
+
+## How it works
+
+The transformation performed by the editor is _very straightforward_.  It is an
+idempotent function of the input text which:
+
+- removes all right-parens at the end of a line (except those behind the cursor, more on that later)
+- inserts new right-parens based purely on left-parens and indentation
+- also removes any unmatched, dangling right-parens.
+
+These simple rules lead to some really interesting consequences not wholly
+related to indentation. It somehow simplifies other editing tasks...
+
+## General Editing
 
 <div>
 <div class="caption">__Insert/delete/comment a line__ without rearranging the pile of parens:</div>
 <textarea id="code-idea-insert-delete">
-(defn component []
-  (html
-   [:div.container
-    [:h1 "title"]]))
-    |  <-- start inserting here
-    |  <-- insert another, then delete
 </textarea>
 </div>
 
 <div>
-<div class="caption">__Insert quotes__ without worry. Just close them and your parens are rebalanced.</div>
+<div class="caption">__Left-parens extend to end of line__ by default allowing simple paredit wrapping/splicing:</div>
+<textarea id="code-idea-paredit">
+</textarea>
+</div>
+
+<div>
+<div class="caption">__Remove/insert right-parens inside a line__ for simple paredit slurping/barfing:</div>
+<textarea id="code-idea-paredit">
+</textarea>
+</div>
+
+<div>
+<div class="caption">__Inserting quotes__ is made simple by design. Just close them and your parens are rebalanced:</div>
 <textarea id="code-idea-string">
 </textarea>
 </div>
 
-## Stable vs Mobile Parens
+## Significance of the cursor
 
 Indentation should only cause the repositioning of _closing_ parens grouped at
 the _end_ of a line. We want stability for parentheses inside a line, and
@@ -151,7 +167,7 @@ mobility for those at the end.
 </div>
 
 <div>
-<div class="caption">__Your cursor is considered a blocker__ to give you more freedom while typing:</div>
+<div class="caption">__Your cursor is treated as a blocker__ so you have more freedom to restructure:</div>
 <textarea id="code-cue-cursor">
 (defn foo []| type here
   ret
