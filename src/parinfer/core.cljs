@@ -30,8 +30,8 @@
 
   (create-editor! "code-idea-nest" :idea-nest)
   (create-editor! "code-idea-wide-nest" :idea-wide-nest)
-  (create-editor! "code-idea-deep-nest" :idea-deep-nest {:styleActiveLine true})
-  (create-editor! "code-idea-insert-delete" :idea-insert-delete {:styleActiveLine true})
+  (create-editor! "code-idea-deep-nest" :idea-deep-nest)
+  (create-editor! "code-idea-insert-delete" :idea-insert-delete)
 
   (create-editor! "code-cue-dim" :cue-dim)
   (create-editor! "code-cue-block" :cue-block)
