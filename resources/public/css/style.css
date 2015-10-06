@@ -75,6 +75,11 @@ p, li {
   opacity: 0.5;
 }
 
+code {
+  font-family: Menlo, Consolas, 'DejaVu Sans Mono', monospace;
+  font-size: 16px;
+}
+
 .CodeMirror {
   font-family: Menlo, Consolas, 'DejaVu Sans Mono', monospace;
   background: #FEFEFE;
@@ -159,4 +164,9 @@ p, li {
 #cm-code-cue-dim
 {
   height: 50px;
+}
+
+#cm-code-cue-block
+{
+  height: 90px;
 }

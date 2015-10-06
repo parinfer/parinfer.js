@@ -2079,3 +2079,40 @@
 :init-value "", 
 :last-time 1444143175216, 
 :recording? false})
+
+(def cue-block
+  '{:changes
+    [{:change
+      {:from {:line 2, :ch 0},
+       :to {:line 2, :ch 0},
+       :text ("  "),
+       :origin "+input"},
+      :dt 0}
+     {:change
+      {:from {:line 2, :ch 2},
+       :to {:line 2, :ch 2},
+       :text ("  "),
+       :origin "+input"},
+      :dt 269}
+     {:change
+      {:from {:line 2, :ch 4},
+       :to {:line 2, :ch 4},
+       :text ("  "),
+       :origin "+input"},
+      :dt 272}
+     {:selections ({:anchor {:line 1, :ch 14}, :head {:line 1, :ch 14}}),
+      :dt 1214}
+     {:selections ({:anchor {:line 1, :ch 13}, :head {:line 1, :ch 14}}),
+      :dt 219}
+     {:change
+      {:from {:line 1, :ch 13},
+       :to {:line 1, :ch 14},
+       :text (""),
+       :origin "+delete"},
+      :dt 1332}
+     {:selections ({:anchor {:line 0, :ch 11}, :head {:line 0, :ch 11}}),
+      :dt 496}],
+    :init-value "(foo [1 2 3\n      4 5 6] x)\n7 8 9",
+    :last-time 1444146051467, 
+    :recording? false, 
+    :timescale 2})

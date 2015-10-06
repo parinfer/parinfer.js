@@ -123,27 +123,20 @@ Since we can _skim_ code with indentation, why not _sketch_ code with indentatio
 
 ## A Visual Cue for Special Parens
 
-Only parens grouped at the end of a line can react to indentation.  These parens will _dim_:
+Only parens grouped at the end of a line can react to indentation, so we give
+a visual cue for this.
 
 <div>
-<div class="caption">__Watch for dimming__ of the parens at the end of a line:</div>
+<div class="caption">__Parens will dim__ at the end of a line to let you know the editor can move them:</div>
 <textarea id="code-cue-dim">
 (defn foo [a b] ret)  blocker
 </textarea>
 </div>
 
 <div>
-<div class="caption">__`blocker`__ prevents the indentation-based structuring that you might expect:</div>
+<div class="caption">__Blockers__ can prevent indentation-based structuring until you remove them:</div>
 <textarea id="code-cue-block">
 (defn foo []) blocker
-  |ret
-</textarea>
-</div>
-
-<div>
-<div class="caption">__Comments don't block__ of course:</div>
-<textarea id="code-cue-comment">
-(defn foo []  ; a comment will not interfere
   |ret
 </textarea>
 </div>
