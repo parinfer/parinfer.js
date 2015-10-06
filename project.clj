@@ -8,6 +8,8 @@
                  [org.clojure/clojurescript "1.7.122"]
                  [org.clojure/core.async "0.1.346.0-17112a-alpha"]
                  [hiccups "0.3.0"]
+                 [org.omcljs/om "0.9.0"]
+                 [sablono "0.3.6"]
                  [cljsjs/codemirror "5.7.0-0"]
                  [cljsjs/marked "0.3.5-0"]
                  [cljs-ajax "0.5.0"]]

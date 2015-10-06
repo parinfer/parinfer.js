@@ -4,6 +4,13 @@ body {
   background: #F7F7F7;
 }
 
+#controls {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  margin: 10px;
+}
+
 h1, h2, h3, h4, h5, h6 {
 }
 

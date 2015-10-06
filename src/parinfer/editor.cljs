@@ -2,12 +2,18 @@
   (:require-macros
     [cljs.core.async.macros :refer [go go-loop]])
   (:require
+    [om.core :as om :include-macros true]
+    [sablono.core :refer-macros [html]]
+
     [cljs.pprint :refer [pprint]]
     [cljs.core.async :refer [<! timeout chan]]
     [clojure.string :as string :refer [join]]
+
     [parinfer.formatter :refer [format-text]]
+
     [goog.dom.classlist :as classlist]
     [goog.dom :as gdom]
+
     [cljsjs.codemirror]
     [cljsjs.codemirror.addon.selection.active-line]
     [cljsjs.codemirror.addon.edit.matchbrackets]
@@ -260,38 +266,39 @@
         recording (get @vcr key-)]
     (pprint recording)))
 
-(def show-record-controls? true)
+(defonce controls-state
+  (atom {:show? true
+         :target-key nil}))
+
+(defn controls-view
+  [{:keys [target-key] :as data} owner]
+  (reify
+    om/IRender
+    (render [_]
+      (html
+        [:div
+         [:code (str target-key)] [:br]
+         "Recording "
+         [:button {:on-click #(start-recording! target-key)} "Start"]
+         [:button {:on-click #(stop-recording! target-key)} "Done"]
+         [:button {:on-click #(play-recording! target-key)} "Play"]
+         [:button {:on-click #(print-recording! target-key)} "Print"]]))))
+
+(defn render-controls! []
+  (om/root
+    controls-view
+    controls-state
+    {:target (js/document.getElementById "controls")}))
 
 (defn create-editor!
   ([element-id key-] (create-editor! element-id key- {}))
   ([element-id key- opts]
    (let [element (js/document.getElementById element-id)
          cm (js/CodeMirror.fromTextArea element (clj->js (merge editor-opts opts)))
-         wrapper (.getWrapperElement cm)
-         ]
+         wrapper (.getWrapperElement cm)]
 
+     (set! (.-onclick wrapper) #(swap! controls-state assoc :target-key key-))
      (set! (.-id wrapper) (str "cm-" element-id))
-
-     (when show-record-controls?
-       (let [btn-record (gdom/createElement "button")
-             btn-stop (gdom/createElement "button")
-             btn-play (gdom/createElement "button")
-             btn-print (gdom/createElement "button")]
-
-         (gdom/insertSiblingAfter btn-record wrapper)
-         (gdom/insertSiblingAfter btn-stop btn-record)
-         (gdom/insertSiblingAfter btn-play btn-stop)
-         (gdom/insertSiblingAfter btn-print btn-play)
-
-         (gdom/setTextContent btn-record "Start Recording")
-         (gdom/setTextContent btn-stop "Done Recording")
-         (gdom/setTextContent btn-play "Play Recording")
-         (gdom/setTextContent btn-print "Print Recording")
-
-         (set! (.-onclick btn-record) #(start-recording! key-))
-         (set! (.-onclick btn-stop) #(stop-recording! key-))
-         (set! (.-onclick btn-play) #(play-recording! key-))
-         (set! (.-onclick btn-print) #(print-recording! key-))))
 
      (when-not (get @state key-)
        (swap! frame-updates assoc key- {}))

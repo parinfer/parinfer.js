@@ -4,7 +4,8 @@
   (:require
     [hiccups.runtime]
     [parinfer.vcr-data :as vcr]
-    [parinfer.editor :refer [create-editor!
+    [parinfer.editor :refer [render-controls!
+                             create-editor!
                              create-regular-editor!
                              start-editor-sync!
                              vcr
@@ -53,7 +54,7 @@
   (play-recording! :idea-nest)
   (play-recording! :idea-wide-nest)
 
-  )
+  (render-controls!))
 
 (defn init! []
   (GET "content.md" {:handler render!}))
