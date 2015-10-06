@@ -1228,77 +1228,73 @@
 (def idea-deep-nest
   '{:timescale 2
     :changes
-    [{:selections ({:anchor {:line 3, :ch 9}, :head {:line 3, :ch 9}}),
-      :dt 0}
-     {:change
+    [{:change
       {:from {:line 3, :ch 9},
        :to {:line 3, :ch 9},
        :text ("  "),
        :origin "+input"},
-      :dt 1000}
+      :dt 0}
      {:change
       {:from {:line 3, :ch 11},
        :to {:line 3, :ch 11},
        :text ("  "),
        :origin "+input"},
-      :dt 208}
+      :dt 236}
      {:change
       {:from {:line 3, :ch 13},
        :to {:line 3, :ch 13},
        :text ("  "),
        :origin "+input"},
-      :dt 199}
+      :dt 257}
      {:change
       {:from {:line 3, :ch 15},
        :to {:line 3, :ch 15},
        :text ("  "),
        :origin "+input"},
-      :dt 224}
+      :dt 362}
      {:selections ({:anchor {:line 2, :ch 2}, :head {:line 2, :ch 2}}),
-      :dt 1367}
+      :dt 1022}
      {:selections ({:anchor {:line 2, :ch 2}, :head {:line 2, :ch 3}}),
-      :dt 190}
-     {:selections ({:anchor {:line 2, :ch 2}, :head {:line 2, :ch 4}}),
+      :dt 202}
+     {:selections ({:anchor {:line 2, :ch 2}, :head {:line 2, :ch 5}}),
       :dt 17}
-     {:selections ({:anchor {:line 2, :ch 2}, :head {:line 2, :ch 6}}),
-      :dt 17}
-     {:selections ({:anchor {:line 2, :ch 2}, :head {:line 3, :ch 8}}),
-      :dt 18}
-     {:selections ({:anchor {:line 2, :ch 2}, :head {:line 3, :ch 10}}),
-      :dt 17}
+     {:selections ({:anchor {:line 2, :ch 2}, :head {:line 3, :ch 9}}),
+      :dt 46}
      {:selections ({:anchor {:line 2, :ch 2}, :head {:line 4, :ch 12}}),
-      :dt 17}
-     {:selections ({:anchor {:line 2, :ch 2}, :head {:line 4, :ch 14}}),
-      :dt 17}
+      :dt 9}
+     {:selections ({:anchor {:line 2, :ch 2}, :head {:line 4, :ch 13}}),
+      :dt 15}
      {:selections ({:anchor {:line 2, :ch 2}, :head {:line 4, :ch 16}}),
-      :dt 17}
+      :dt 37}
      {:change
       {:from {:line 2, :ch 0},
        :to {:line 2, :ch 2},
        :text ("    "),
        :origin "+input"},
-      :dt 636}
+      :dt 597}
      {:change
       {:from {:line 3, :ch 0},
        :to {:line 3, :ch 17},
        :text ("                   "),
        :origin "+input"},
-      :dt 8}
+      :dt 5}
      {:change
       {:from {:line 4, :ch 0},
        :to {:line 4, :ch 2},
        :text ("    "),
        :origin "+input"},
       :dt 5}
+     {:selections ({:anchor {:line 4, :ch 4}, :head {:line 4, :ch 4}}),
+      :dt 1485}
      {:change
       {:from {:line 4, :ch 4},
        :to {:line 4, :ch 4},
        :text ("  "),
        :origin "+input"},
-      :dt 1898}],
+      :dt 446}],
     :init-value
     "(defn component []\n  (html)\n  [:div {:style {:background \"#FFF\"}\n         :color \"#000\"}]\n  [:h1 \"title\"])",
-    :last-time 1444094273773, 
+    :last-time 1444164401491, 
     :recording? false})
 
 (def idea-insert-delete
