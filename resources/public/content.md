@@ -110,7 +110,7 @@ Since we can _skim_ code with indentation, why not _sketch_ code with indentatio
 </div>
 
 <div>
-<div class="caption">__Insert/delete a line__ without rearranging the pile of parens:</div>
+<div class="caption">__Insert/delete/comment a line__ without rearranging the pile of parens:</div>
 <textarea id="code-idea-insert-delete">
 (defn component []
   (html
