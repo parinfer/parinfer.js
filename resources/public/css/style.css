@@ -27,6 +27,12 @@ h1 em {
   opacity: 0.5;
 }
 
+h2 {
+  margin-top: 50px;
+  border-top: 1px solid #dedede;
+  padding-top: 20px;
+}
+
 .subtitle {
   font-size: 20px;
   text-align: center;
@@ -62,7 +68,7 @@ p, li {
 }
 
 .caption {
-  margin-top: 20px;
+  padding-top: 20px;
   margin-bottom: 5px;
   margin-left: 5px;
   font-style: italic;
