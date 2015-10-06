@@ -161,6 +161,11 @@ code {
   height: 130px;
 }
 
+#cm-code-idea-string
+{
+  height: 110px;
+}
+
 #cm-code-cue-dim
 {
   height: 50px;
@@ -170,3 +175,4 @@ code {
 {
   height: 90px;
 }
+

@@ -121,20 +121,29 @@ Since we can _skim_ code with indentation, why not _sketch_ code with indentatio
 </textarea>
 </div>
 
-## A Visual Cue for Special Parens
+<div>
+<div class="caption">__Insert quotes__ without worry. Just close them and your parens are rebalanced.</div>
+<textarea id="code-idea-string">
+</textarea>
+</div>
 
-Only parens grouped at the end of a line can react to indentation, so we give
-a visual cue for this.
+## Stable vs Mobile Parens
+
+Indentation should only cause the repositioning of _closing_ parens grouped at
+the _end_ of a line. We want stability for parentheses inside a line, and
+mobility for those at the end.
 
 <div>
-<div class="caption">__Parens will dim__ at the end of a line to let you know the editor can move them:</div>
+<div class="caption">__Mobile Parens will dim__ to let you know the editor can move them:</div>
 <textarea id="code-cue-dim">
 (defn foo [a b] ret)  blocker
 </textarea>
 </div>
 
+"Blockers" are tokens that prevent closing parentheses from moving.  
+
 <div>
-<div class="caption">__Blockers__ can prevent indentation-based structuring until you remove them:</div>
+<div class="caption">__Blockers__ prevent your code from changing in unintuitive ways:</div>
 <textarea id="code-cue-block">
 (defn foo []) blocker
   |ret
@@ -142,7 +151,7 @@ a visual cue for this.
 </div>
 
 <div>
-<div class="caption">__Your cursor will block__ in case you want to type a blocker:</div>
+<div class="caption">__Your cursor is considered a blocker__ to give you more freedom while typing:</div>
 <textarea id="code-cue-cursor">
 (defn foo []| type here
   ret
