@@ -278,7 +278,8 @@
 
 (defn stop-playing!
   [key-]
-  (close! (get-in @vcr [key- :stop-chan])))
+  (when-let [stop-chan (get-in @vcr [key- :stop-chan])]
+    (close! stop-chan)))
 
 (defn print-recording!
   [key-]
