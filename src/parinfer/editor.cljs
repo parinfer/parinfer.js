@@ -191,6 +191,8 @@
   {:mode "clojure-parinfer"
    :extraKeys {:Tab on-tab}})
 
+(aset js/CodeMirror "keyMap" "default" "Shift-Tab" "indentLess")
+
 (defn on-state-change
   "Called everytime the state changes to sync the code editor."
   [_ _ old-state new-state]
