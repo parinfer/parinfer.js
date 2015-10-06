@@ -285,7 +285,7 @@
   [key-]
   (let [cm (get-in @state [key- :cm])
         recording (get @vcr key-)]
-    (pprint recording)))
+    (pprint (dissoc recording :stop-chan))))
 
 (defonce controls-state
   (atom {:show? true

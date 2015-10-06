@@ -51,12 +51,14 @@
   (swap! vcr update-in [:idea-wide-nest] merge vcr/idea-wide-nest)
   (swap! vcr update-in [:idea-deep-nest] merge vcr/idea-deep-nest)
   (swap! vcr update-in [:idea-insert-delete] merge vcr/idea-insert-delete))
+  (swap! vcr update-in [:cue-dim] merge vcr/cue-dim)
 
   (play-recording! :intro)
   (play-recording! :idea-nest)
   (play-recording! :idea-wide-nest)
   (play-recording! :idea-deep-nest)
   (play-recording! :idea-insert-delete)
+  (play-recording! :cue-dim)
 
   (render-controls!))
 

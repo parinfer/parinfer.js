@@ -1862,3 +1862,220 @@
 "(ns example.core\n  (:require\n    [clojure.string :refer [join]]))",
 :last-time 1444142678883,
 :recording? false})
+
+(def cue-dim
+  '{:timescale 2
+    :changes
+    [{:change
+      {:from {:line 0, :ch 0},
+       :to {:line 0, :ch 0},
+       :text ("("),
+       :origin "+input"},
+      :dt 0}
+     {:change
+      {:from {:line 0, :ch 1},
+       :to {:line 0, :ch 1},
+       :text ("d"),
+       :origin "+input"},
+      :dt 167}
+     {:change
+      {:from {:line 0, :ch 2},
+       :to {:line 0, :ch 2},
+       :text ("e"),
+       :origin "+input"},
+      :dt 146}
+     {:change
+      {:from {:line 0, :ch 3},
+       :to {:line 0, :ch 3},
+       :text ("f"),
+       :origin "+input"},
+      :dt 81}
+     {:change
+      {:from {:line 0, :ch 4},
+       :to {:line 0, :ch 4},
+       :text ("n"),
+       :origin "+input"},
+      :dt 135}
+     {:change
+      {:from {:line 0, :ch 5},
+       :to {:line 0, :ch 5},
+       :text (" "),
+       :origin "+input"},
+      :dt 133}
+     {:change
+      {:from {:line 0, :ch 6},
+       :to {:line 0, :ch 6},
+       :text ("f"),
+       :origin "+input"},
+      :dt 124}
+     {:change
+      {:from {:line 0, :ch 7},
+       :to {:line 0, :ch 7},
+       :text ("o"),
+       :origin "+input"},
+      :dt 127}
+     {:change
+      {:from {:line 0, :ch 8},
+       :to {:line 0, :ch 8},
+       :text ("o"),
+       :origin "+input"},
+      :dt 133}
+     {:change
+      {:from {:line 0, :ch 9},
+       :to {:line 0, :ch 9},
+       :text (" "),
+       :origin "+input"},
+      :dt 122}
+     {:change
+      {:from {:line 0, :ch 10},
+       :to {:line 0, :ch 10},
+       :text ("["),
+       :origin "+input"},
+      :dt 152}
+     {:change
+      {:from {:line 0, :ch 11},
+       :to {:line 0, :ch 11},
+       :text ("a"),
+       :origin "+input"},
+      :dt 198}
+     {:change
+      {:from {:line 0, :ch 12},
+       :to {:line 0, :ch 12},
+       :text (" "),
+       :origin "+input"},
+      :dt 170}
+     {:change
+      {:from {:line 0, :ch 13},
+       :to {:line 0, :ch 13},
+       :text ("b"),
+       :origin "+input"},
+      :dt 268}
+     {:change
+      {:from {:line 0, :ch 14},
+       :to {:line 0, :ch 14},
+       :text ("]"),
+       :origin "+input"},
+      :dt 257}
+     {:change
+      {:from {:line 0, :ch 15},
+       :to {:line 0, :ch 15},
+       :text (" "),
+       :origin "+input"},
+      :dt 935}
+     {:change
+      {:from {:line 0, :ch 16},
+       :to {:line 0, :ch 16},
+       :text ("x"),
+       :origin "+input"},
+      :dt 338}
+{:change
+ {:from {:line 0, :ch 17},
+  :to {:line 0, :ch 17},
+  :text (")"),
+  :origin "+input"},
+ :dt 1029}
+{:change
+ {:from {:line 0, :ch 18},
+  :to {:line 0, :ch 18},
+  :text (" "),
+  :origin "+input"},
+ :dt 210}
+{:change
+ {:from {:line 0, :ch 19},
+  :to {:line 0, :ch 19},
+  :text ("x"),
+  :origin "+input"},
+ :dt 296}
+{:change
+ {:from {:line 0, :ch 19},
+  :to {:line 0, :ch 20},
+  :text (""),
+  :origin "+delete"},
+ :dt 1227}
+{:change
+ {:from {:line 0, :ch 18},
+  :to {:line 0, :ch 19},
+  :text (""),
+  :origin "+delete"},
+ :dt 199}
+{:change
+ {:from {:line 0, :ch 17},
+  :to {:line 0, :ch 18},
+  :text (""),
+  :origin "+delete"},
+ :dt 863}
+{:change
+ {:from {:line 0, :ch 16},
+  :to {:line 0, :ch 17},
+  :text (""),
+  :origin "+delete"},
+ :dt 600}
+{:change
+ {:from {:line 0, :ch 15},
+  :to {:line 0, :ch 16},
+  :text (""),
+  :origin "+delete"},
+ :dt 267}
+{:change
+ {:from {:line 0, :ch 15},
+  :to {:line 0, :ch 15},
+  :text (" "),
+  :origin "+input"},
+ :dt 1013}
+{:change
+ {:from {:line 0, :ch 16},
+  :to {:line 0, :ch 16},
+  :text ("x"),
+  :origin "+input"},
+ :dt 214}
+{:change
+ {:from {:line 0, :ch 17},
+  :to {:line 0, :ch 17},
+  :text (")"),
+  :origin "+input"},
+ :dt 846}
+{:change
+ {:from {:line 0, :ch 18},
+  :to {:line 0, :ch 18},
+  :text (" "),
+  :origin "+input"},
+ :dt 169}
+{:change
+ {:from {:line 0, :ch 19},
+  :to {:line 0, :ch 19},
+  :text ("x"),
+  :origin "+input"},
+ :dt 606}
+{:change
+ {:from {:line 0, :ch 19},
+  :to {:line 0, :ch 20},
+  :text (""),
+  :origin "+delete"},
+ :dt 707}
+{:change
+ {:from {:line 0, :ch 18},
+  :to {:line 0, :ch 19},
+  :text (""),
+  :origin "+delete"},
+ :dt 270}
+{:change
+ {:from {:line 0, :ch 17},
+  :to {:line 0, :ch 18},
+  :text (""),
+  :origin "+delete"},
+ :dt 735}
+{:change
+ {:from {:line 0, :ch 16},
+  :to {:line 0, :ch 17},
+  :text (""),
+  :origin "+delete"},
+ :dt 188}
+{:change
+ {:from {:line 0, :ch 15},
+  :to {:line 0, :ch 16},
+  :text (""),
+  :origin "+delete"},
+ :dt 663}],
+:init-value "", 
+:last-time 1444143175216, 
+:recording? false})
