@@ -1050,7 +1050,8 @@
    :recording? false})
 
 (def idea-nest
-  '{:timescale 2
+  '{:loop-delay 1000
+    :timescale 2
     :changes
     [{:selections ({:anchor {:line 1, :ch 0}, :head {:line 1, :ch 0}}),
       :dt 0}
@@ -1108,7 +1109,8 @@
   )
 
 (def idea-wide-nest
-  '{:timescale 2
+  '{:loop-delay 1000
+    :timescale 2
     :changes
     [{:change
       {:from {:line 1, :ch 0},
@@ -1121,43 +1123,43 @@
        :to {:line 1, :ch 1},
        :text (" "),
        :origin "+input"},
-      :dt 554}
+      :dt 186}
      {:change
       {:from {:line 1, :ch 2},
        :to {:line 1, :ch 2},
        :text (" "),
        :origin "+input"},
-      :dt 762}
+      :dt 799}
      {:change
       {:from {:line 1, :ch 3},
        :to {:line 1, :ch 3},
        :text (" "),
        :origin "+input"},
-      :dt 203}
+      :dt 212}
      {:change
       {:from {:line 1, :ch 4},
        :to {:line 1, :ch 4},
        :text (" "),
        :origin "+input"},
-      :dt 314}
+      :dt 204}
      {:change
       {:from {:line 1, :ch 5},
        :to {:line 1, :ch 5},
        :text (" "),
        :origin "+input"},
-      :dt 261}
+      :dt 236}
      {:change
       {:from {:line 1, :ch 6},
        :to {:line 1, :ch 6},
        :text (" "),
        :origin "+input"},
-      :dt 1022}
+      :dt 754}
      {:change
       {:from {:line 1, :ch 7},
        :to {:line 1, :ch 7},
        :text (" "),
        :origin "+input"},
-      :dt 191}
+      :dt 213}
      {:change
       {:from {:line 1, :ch 8},
        :to {:line 1, :ch 8},
@@ -1169,68 +1171,71 @@
        :to {:line 1, :ch 9},
        :text (""),
        :origin "+delete"},
-      :dt 1697}
+      :dt 1270}
      {:change
       {:from {:line 1, :ch 7},
        :to {:line 1, :ch 8},
        :text (""),
        :origin "+delete"},
-      :dt 203}
+      :dt 225}
      {:change
       {:from {:line 1, :ch 6},
        :to {:line 1, :ch 7},
        :text (""),
        :origin "+delete"},
-      :dt 224}
+      :dt 230}
      {:change
       {:from {:line 1, :ch 5},
        :to {:line 1, :ch 6},
        :text (""),
        :origin "+delete"},
-      :dt 1294}
+      :dt 749}
      {:change
       {:from {:line 1, :ch 4},
        :to {:line 1, :ch 5},
        :text (""),
        :origin "+delete"},
-      :dt 236}
+      :dt 225}
      {:change
       {:from {:line 1, :ch 3},
        :to {:line 1, :ch 4},
        :text (""),
        :origin "+delete"},
-      :dt 226}
+      :dt 217}
      {:change
       {:from {:line 1, :ch 2},
        :to {:line 1, :ch 3},
        :text (""),
        :origin "+delete"},
-      :dt 258}
+      :dt 266}
      {:change
       {:from {:line 1, :ch 1},
        :to {:line 1, :ch 2},
        :text (""),
        :origin "+delete"},
-      :dt 1227}
+      :dt 1006}
 {:change
  {:from {:line 1, :ch 0},
   :to {:line 1, :ch 1},
   :text (""),
   :origin "+delete"},
- :dt 236}],
+ :dt 176}],
 :init-value "(let [m {:foo 1}])\n:bar 2",
-:last-time 1444086232249, 
-:recording? false})
+:last-time 1444141621667,
+:recording? false,
+})
 
 (def idea-deep-nest
   '{:timescale 2
     :changes
-    [{:change
+    [{:selections ({:anchor {:line 3, :ch 9}, :head {:line 3, :ch 9}}),
+      :dt 0}
+     {:change
       {:from {:line 3, :ch 9},
        :to {:line 3, :ch 9},
        :text ("  "),
        :origin "+input"},
-      :dt 0}
+      :dt 1000}
      {:change
       {:from {:line 3, :ch 11},
        :to {:line 3, :ch 11},
