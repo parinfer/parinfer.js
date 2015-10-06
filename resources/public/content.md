@@ -82,8 +82,7 @@ structural ambiguity.
 
 Since we can _skim_ code with indentation, why not _sketch_ code with indentation as well?
 
- <div class="two-col">
-<div class="col">
+<div>
 <div class="caption">__Indent__ to influence the structure of your code:</div>
 <textarea id="code-idea-nest">
 (defn foo [a b])
@@ -91,13 +90,12 @@ Since we can _skim_ code with indentation, why not _sketch_ code with indentatio
 </textarea>
 </div>
 
-<div class="col">
+<div>
 <div class="caption">__Indent further__ to reach different thresholds:</div>
 <textarea id="code-idea-wide-nest">
 (let [m {:foo 1}])
    |
 </textarea>
-</div>
 </div>
 
 <div>
