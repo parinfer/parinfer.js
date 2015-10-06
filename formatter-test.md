@@ -324,6 +324,18 @@ thus indentation can affect it again:
   ret)
 ```
 
+If the cursor is a comment after such a delimiter, we can safely move it:
+
+```in
+(let [a 1]) ;|
+  ret
+```
+
+```out
+(let [a 1] ;
+  ret)
+```
+
 Cannot insert closing delimiters on their own line:
 
 ```in

@@ -206,7 +206,7 @@
                      +-- trailing delims that we will remove
                           (notice whitespace will also be removed)
   "
-  [{:keys [stack delim-trail backup x-pos ch cursor-line line-no cursor-x] :as state}]
+  [{:keys [stack delim-trail backup x-pos ch cursor-line line-no cursor-x cursor-in-comment?] :as state}]
   (let [closing-delim? (isa? char-hierarchy ch :close)
 
         ;; Determine if our tracked delimiters are not at the end of the line.
@@ -215,12 +215,15 @@
                     (not (whitespace? ch))
                     (not closing-delim?))
 
+        cursor-in-comment? (or cursor-in-comment?
+                               (and (= cursor-line line-no)
+                                    (= x-pos cursor-x)
+                                    (in-comment? stack)))
+
         ;; Determine if we have a delimiter we can track.
         update? (and (in-code? stack)
                      closing-delim?
-                     (valid-closer? stack ch)
-                     (or (not= cursor-line line-no)
-                         (>= x-pos cursor-x)))
+                     (valid-closer? stack ch))
 
         ;; Clear the backup delimiters if we reset.
         backup (cond-> backup reset? empty)
@@ -234,8 +237,22 @@
                       :else delim-trail)]
 
     (assoc state
+      :cursor-in-comment? cursor-in-comment?
       :backup backup
       :delim-trail delim-trail)))
+
+(defn block-delim-trail
+  "The presence of the cursor can block the removal of some part of the delim trail."
+  [{:keys [delim-trail line-no cursor-line cursor-x cursor-in-comment?] :as state}]
+  (let [{:keys [start end]} delim-trail
+        cursor-block? (and (= line-no cursor-line)
+                           (> cursor-x start)
+                           (not cursor-in-comment?))
+        start (cond-> start (and start cursor-block?) (max cursor-x))
+        end (cond-> end (and end cursor-block?) (max cursor-x))
+        [start end] (when-not (= start end) [start end])]
+    (assoc state
+           :delim-trail {:start start :end end})))
 
 (defn remove-delim-trail
   "Update the state by removing our marked delim trail.
@@ -357,12 +374,15 @@
    (let [line-no (inc line-no)
          state (assoc state
                   :backup []
+                  :cursor-in-comment? false
                   :delim-trail {:start nil :end nil}
                   :track-indent? (and (seq stack) (not (in-str? stack)))
                   :lines (conj lines "")
                   :line-no line-no)
          state (reduce process-char state (str line "\n"))
-         state (remove-delim-trail state)]
+         state (-> state
+                   block-delim-trail
+                   remove-delim-trail)]
      state)))
 
 (defn process-text
