@@ -175,9 +175,22 @@ code {
   height: 130px;
 }
 
-#cm-code-insert-delete
+#cm-code-line
+{
+  height: 150px;
+}
+
+#cm-code-comment
 {
   height: 130px;
+}
+
+#cm-code-wrap,
+#cm-code-splice,
+#cm-code-slurp,
+#cm-code-barf
+{
+  height: 50px;
 }
 
 #cm-code-string

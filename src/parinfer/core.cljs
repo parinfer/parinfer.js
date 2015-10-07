@@ -55,6 +55,12 @@
   (swap! vcr update-in [:indent] merge vcr/indent)
   (swap! vcr update-in [:indent-far] merge vcr/indent-far)
   (swap! vcr update-in [:indent-multi] merge vcr/indent-multi)
+  (swap! vcr update-in [:line] merge vcr/line)
+  (swap! vcr update-in [:wrap] merge vcr/wrap)
+  (swap! vcr update-in [:splice] merge vcr/splice)
+  (swap! vcr update-in [:barf] merge vcr/barf)
+  (swap! vcr update-in [:slurp] merge vcr/slurp-)
+  (swap! vcr update-in [:comment] merge vcr/comment-)
   
   (swap! vcr update-in [:string] merge vcr/string)
 
@@ -62,6 +68,12 @@
   (play-recording! :indent)
   (play-recording! :indent-far)
   (play-recording! :indent-multi)
+  (play-recording! :line)
+  (play-recording! :wrap)
+  (play-recording! :splice)
+  (play-recording! :barf)
+  (play-recording! :slurp)
+  (play-recording! :comment)
   (play-recording! :string)
 
   (render-controls!))
