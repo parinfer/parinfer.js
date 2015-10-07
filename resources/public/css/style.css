@@ -145,23 +145,23 @@ code {
   border-bottom: 1px solid #111;
 }
 
-#cm-code-idea-nest,
-#cm-code-idea-wide-nest
+#cm-code-indent,
+#cm-code-indent-far
 {
   height: 70px;
 }
 
-#cm-code-idea-deep-nest
+#cm-code-indent-multi
 {
   height: 130px;
 }
 
-#cm-code-idea-insert-delete
+#cm-code-insert-delete
 {
   height: 130px;
 }
 
-#cm-code-idea-string
+#cm-code-string
 {
   height: 110px;
 }

@@ -166,7 +166,7 @@ without special hotkeys.
 
 <div>
 <div class="caption">__Quote__ insertion allows temporary paren imbalances until quote is closed:</div>
-<textarea id="code-quote">
+<textarea id="code-string">
 </textarea>
 </div>
 
@@ -174,8 +174,29 @@ If you are interested in other [paredit] operations, I think they can either be
 accomplished as some composition of these aforementioned primitives, or
 just implemented through special hotkeys.
 
-## Significance of the cursor
+## Freedom of the cursor
 
+This editing system imposes some restrictions on what your cursor can do:
+
+- cannot type unmatched right-parens (since they are immediately removed)
+- cannot delete inferred right-parens (since they are immediately reinserted)
+
+But the transformation function takes your cursor position into account,
+allowing you special freedom at the end of a line:
+
+- matched right-parens at the end of a line are not removed when behind the cursor
+
+To help , our transformation function also takes the cursor position as
+input.
+
+That's why right-parens are temporarily locked when behind the cursor, allowing
+you to preempt subsequently indented lines.  Once you move the cursor away
+from this position.
+
+In the how section, we mentioned that right-parens at the end of a line are
+not removed if they are to the left of the cursor.
+
+preempt indented lines
 Indentation should only cause the repositioning of _closing_ parens grouped at
 the _end_ of a line. We want stability for parentheses inside a line, and
 mobility for those at the end.
