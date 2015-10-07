@@ -11,6 +11,25 @@ body {
   margin: 10px;
 }
 
+.interact {
+  padding: 20px;
+  background: #E7EAE9;
+  border-radius: 8px;
+  margin-bottom: 32px;
+}
+
+.interact img {
+  float: left;
+  height: 58px;
+  margin-right: 20px;
+}
+
+.interact:after {
+  content:'';
+  display:block;
+  clear: both;
+}
+
 h1, h2, h3, h4, h5, h6 {
 }
 

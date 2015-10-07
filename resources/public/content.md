@@ -83,9 +83,15 @@ structural ambiguity.
 Since we can _skim_ code with indentation, why not _sketch_ code with
 indentation as well?
 
-This can be done by treating right-parens at the end of a line as _eager to
-move_.  That is, eager to extend to indented lines.  We _dim_ them in the
-editor to signify this mobility.
+_Parinfer_ allows you to do this by treating right-parens at the end of a line
+as _eager to move_.  That is, eager to extend to indented lines.  We _dim_ them
+in the editor to signify their inferred mobility.
+
+<div class="interact">
+<img src="img/brain.png">
+__Try it!__ Interrupt the animations below to try it for yourself.<br>
+Click outside to restore the animated example.
+</div>
 
 <div>
 <div class="caption">__Indent__ to influence the structure of your code:</div>
@@ -110,23 +116,22 @@ be considered line-based slurp/barf operations, respectively.
 
 ## How it works
 
-The transformation performed by the editor is straightforward.  After every
-text change, the full text is fed through a pure, idempotent function which: 
+The transformation performed by _Parinfer_ is straightforward.  After every
+text change, the full text is fed through a pure, idempotent function which:
 
 - removes any unmatched right-parens inside a line
 - indiscriminately removes all right-parens at the end of each line
   - except those appearing on the left side of the cursor (see cursor section)
 - for every resulting unmatched left-paren...
-  - inserts a right-paren at the end of its line or last following non-empty indented line
+  - inserts a right-paren at the end of its line or its last non-empty indented line
 
-These rules accomplish indentation-based structuring, but they also simplify
-many other editing tasks...
+This enables some noteworthy editing features that we will discuss next.
 
 ## New Editing Primitives
 
-Aside from modifying indentation, there are other consequences of this new
-system which form a new set of editing primitives.  All can be performed
-without special hotkeys.
+Aside from enabling indentation-based editing, there are other consequences of
+this editing system which form a new set of editing primitives.  All can be
+performed without special hotkeys.
 
 <div>
 <div class="caption">__Insert or delete a line__ without rearranging parens:</div>
@@ -174,57 +179,30 @@ If you are interested in other [paredit] operations, I think they can either be
 accomplished as some composition of these aforementioned primitives, or
 just implemented through special hotkeys.
 
-## Freedom of the cursor
+## What the Cursor can and cannot do
 
-This editing system imposes some restrictions on what your cursor can do:
+_Parinfer_ gives your cursor some leeway.  It waits to diplace the parens
+behind your cursor until it is sure you are not trying to type anything in
+front of them. Just move your cursor away (to another line or behind the
+parens) when you're done.
+
+<div>
+<div class="caption"></div>
+<textarea id="code-cursor-insert">
+</textarea>
+</div>
+
+<div>
+<div class="caption"></div>
+<textarea id="code-cursor-rebalance">
+</textarea>
+</div>
+
+Also, in any of the previous examples, you will notice that _Parinfer_ imposes
+some restrictions on what you can type:
 
 - cannot type unmatched right-parens (since they are immediately removed)
 - cannot delete inferred right-parens (since they are immediately reinserted)
-
-But the transformation function takes your cursor position into account,
-allowing you special freedom at the end of a line:
-
-- matched right-parens at the end of a line are not removed when behind the cursor
-
-To help , our transformation function also takes the cursor position as
-input.
-
-That's why right-parens are temporarily locked when behind the cursor, allowing
-you to preempt subsequently indented lines.  Once you move the cursor away
-from this position.
-
-In the how section, we mentioned that right-parens at the end of a line are
-not removed if they are to the left of the cursor.
-
-preempt indented lines
-Indentation should only cause the repositioning of _closing_ parens grouped at
-the _end_ of a line. We want stability for parentheses inside a line, and
-mobility for those at the end.
-
-<div>
-<div class="caption">__Mobile Parens will dim__ to let you know the editor can move them:</div>
-<textarea id="code-cue-dim">
-(defn foo [a b] ret)  blocker
-</textarea>
-</div>
-
-"Blockers" are tokens that prevent closing parentheses from moving.  
-
-<div>
-<div class="caption">__Blockers__ prevent your code from changing in unintuitive ways:</div>
-<textarea id="code-cue-block">
-(defn foo []) blocker
-  |ret
-</textarea>
-</div>
-
-<div>
-<div class="caption">__Your cursor is treated as a blocker__ so you have more freedom to restructure:</div>
-<textarea id="code-cue-cursor">
-(defn foo []| type here
-  ret
-</textarea>
-</div>
 
 ## Try It
 
