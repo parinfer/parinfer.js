@@ -32,11 +32,16 @@
   (create-editor! "code-indent-far" :indent-far)
   (create-editor! "code-indent-multi" :indent-multi)
 
+  (create-editor! "code-line" :line)
+  (create-editor! "code-comment" :comment)
+  (create-editor! "code-wrap" :wrap)
+  (create-editor! "code-splice" :splice)
+  (create-editor! "code-barf" :barf)
+  (create-editor! "code-slurp" :slurp)
   (create-editor! "code-string" :string)
 
-  (create-editor! "code-cue-dim" :cue-dim)
-  (create-editor! "code-cue-block" :cue-block)
-  (create-editor! "code-cue-cursor" :cue-cursor)
+  (create-editor! "code-cursor" :code-cursor)
+  (create-editor! "code-rebalance" :code-rebalance)
 
   (start-editor-sync!)
 
@@ -53,19 +58,11 @@
   
   (swap! vcr update-in [:string] merge vcr/string)
 
-  (swap! vcr update-in [:cue-dim] merge vcr/cue-dim)
-  (swap! vcr update-in [:cue-block] merge vcr/cue-block)
-  (swap! vcr update-in [:cue-cursor] merge vcr/cue-cursor)
-
   (play-recording! :intro)
   (play-recording! :indent)
   (play-recording! :indent-far)
   (play-recording! :indent-multi)
   (play-recording! :string)
-
-  (play-recording! :cue-dim)
-  (play-recording! :cue-block)
-  (play-recording! :cue-cursor)
 
   (render-controls!))
 

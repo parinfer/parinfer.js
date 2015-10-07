@@ -10,8 +10,6 @@ an editor feature concept to <em>simplify how we write Lisp</em>
 <li> Naturally keep your code properly formatted.
 </ul>
 
-[paredit]:http://danmidwood.com/content/2014/11/21/animated-paredit.html
-
  <div>
 <div class="caption">__Quick Look__ at a new way to write/edit Lisp:</div>
 <textarea id="code-intro">
@@ -121,8 +119,8 @@ text change, the full text is fed through a pure, idempotent function which:
 
 - removes any unmatched right-parens inside a line
 - indiscriminately removes all right-parens at the end of each line
-  - except those appearing on the left side of the cursor (see cursor section)
-- for every resulting unmatched left-paren...
+  - except those appearing behind the cursor (details later)
+- for every resulting unmatched left-paren:
   - inserts a right-paren at the end of its line or its last non-empty indented line
 
 This enables some noteworthy editing features that we will discuss next.
@@ -135,7 +133,7 @@ performed without special hotkeys.
 
 <div>
 <div class="caption">__Insert or delete a line__ without rearranging parens:</div>
-<textarea id="code-insert-delete">
+<textarea id="code-line">
 </textarea>
 </div>
 
@@ -179,7 +177,7 @@ If you are interested in other [paredit] operations, I think they can either be
 accomplished as some composition of these aforementioned primitives, or
 just implemented through special hotkeys.
 
-## What the Cursor can and cannot do
+## Things to know about the Cursor
 
 _Parinfer_ gives your cursor some leeway.  It waits to diplace the parens
 behind your cursor until it is sure you are not trying to type anything in
@@ -188,23 +186,24 @@ parens) when you're done.
 
 <div>
 <div class="caption"></div>
-<textarea id="code-cursor-insert">
+<textarea id="code-cursor">
 </textarea>
 </div>
 
 <div>
 <div class="caption"></div>
-<textarea id="code-cursor-rebalance">
+<textarea id="code-rebalance">
 </textarea>
 </div>
 
-Also, in any of the previous examples, you will notice that _Parinfer_ imposes
-some restrictions on what you can type:
+Also, you may have noticed that _Parinfer_ prevents you from typing certain things:
 
 - cannot type unmatched right-parens (since they are immediately removed)
 - cannot delete inferred right-parens (since they are immediately reinserted)
 
-## Try It
+## Try it
 
 <textarea id="code-try">
 </textarea>
+
+[paredit]:http://danmidwood.com/content/2014/11/21/animated-paredit.html
