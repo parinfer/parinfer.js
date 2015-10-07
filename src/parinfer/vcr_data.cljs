@@ -1049,7 +1049,7 @@
    :last-time 1443920519747,
    :recording? false})
 
-(def idea-nest
+(def indent
   '{:loop-delay 1000
     :timescale 2
     :changes
@@ -1108,7 +1108,7 @@
     :recording? false} 
   )
 
-(def idea-wide-nest
+(def indent-far
   '{:loop-delay 1000
     :timescale 2
     :changes
@@ -1225,7 +1225,7 @@
 :recording? false,
 })
 
-(def idea-deep-nest
+(def indent-multi
   '{:timescale 2
     :changes
     [{:change

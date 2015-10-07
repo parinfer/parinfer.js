@@ -13,7 +13,7 @@ an editor feature concept to <em>simplify how we write Lisp</em>
 [paredit]:http://danmidwood.com/content/2014/11/21/animated-paredit.html
 
  <div>
-<div class="caption">__Quick Look__ at indentation-driven editing:</div>
+<div class="caption">__Quick Look__ at a new way to write/edit Lisp:</div>
 <textarea id="code-intro">
 </textarea>
 </div>
@@ -78,7 +78,7 @@ this way to choose the resolution at which to view your code:
 It is the balance of these two views that gives us readability without causing
 structural ambiguity.
 
-## Indentation
+## Editing with Indentation
 
 Since we can _skim_ code with indentation, why not _sketch_ code with
 indentation as well?
@@ -89,59 +89,90 @@ editor to signify this mobility.
 
 <div>
 <div class="caption">__Indent__ to influence the structure of your code:</div>
-<textarea id="code-idea-nest">
+<textarea id="code-indent">
 </textarea>
 </div>
 
 <div>
 <div class="caption">__Indent further__ to reach different thresholds:</div>
-<textarea id="code-idea-wide-nest">
+<textarea id="code-indent-far">
 </textarea>
 </div>
 
 <div>
 <div class="caption">__Indent multiple lines__ to see its effect:</div>
-<textarea id="code-idea-deep-nest">
+<textarea id="code-indent-multi">
 </textarea>
 </div>
+
+If you are familiar with [paredit], these indent/dedent operations can
+be considered line-based slurp/barf operations, respectively.
 
 ## How it works
 
-The transformation performed by the editor is _very straightforward_.  It is an
-idempotent function of the input text which:
+The transformation performed by the editor is straightforward.  After every
+text change, the full text is fed through a pure, idempotent function which: 
 
-- removes all right-parens at the end of a line (except those behind the cursor, more on that later)
-- inserts new right-parens based purely on left-parens and indentation
-- also removes any unmatched, dangling right-parens.
+- removes any unmatched right-parens inside a line
+- indiscriminately removes all right-parens at the end of each line
+  - except those appearing on the left side of the cursor (see cursor section)
+- for every resulting unmatched left-paren...
+  - inserts a right-paren at the end of its line or last following non-empty indented line
 
-These simple rules lead to some really interesting consequences not wholly
-related to indentation. It somehow simplifies other editing tasks...
+These rules accomplish indentation-based structuring, but they also simplify
+many other editing tasks...
 
-## General Editing
+## New Editing Primitives
+
+Aside from modifying indentation, there are other consequences of this new
+system which form a new set of editing primitives.  All can be performed
+without special hotkeys.
 
 <div>
-<div class="caption">__Insert/delete/comment a line__ without rearranging the pile of parens:</div>
-<textarea id="code-idea-insert-delete">
+<div class="caption">__Insert or delete a line__ without rearranging parens:</div>
+<textarea id="code-insert-delete">
 </textarea>
 </div>
 
 <div>
-<div class="caption">__Left-parens extend to end of line__ by default allowing simple paredit wrapping/splicing:</div>
-<textarea id="code-idea-paredit">
+<div class="caption">__Comment a line__ without rearranging parens:</div>
+<textarea id="code-comment">
 </textarea>
 </div>
 
 <div>
-<div class="caption">__Remove/insert right-parens inside a line__ for simple paredit slurping/barfing:</div>
-<textarea id="code-idea-paredit">
+<div class="caption">__Wrap__ by inserting a left-paren. It will enclose as far as indentation allows:</div>
+<textarea id="code-wrap">
 </textarea>
 </div>
 
 <div>
-<div class="caption">__Inserting quotes__ is made simple by design. Just close them and your parens are rebalanced:</div>
-<textarea id="code-idea-string">
+<div class="caption">__Splice__ by removing a left-paren, since unmatched right-parens are removed:</div>
+<textarea id="code-splice">
 </textarea>
 </div>
+
+<div>
+<div class="caption">__Inline "Barf-right"__ by inserting a right-paren before another:</div>
+<textarea id="code-barf">
+</textarea>
+</div>
+
+<div>
+<div class="caption">__Inline "Slurp-right"__ by deleting a right-paren inside a line.</div>
+<textarea id="code-slurp">
+</textarea>
+</div>
+
+<div>
+<div class="caption">__Quote__ insertion allows temporary paren imbalances until quote is closed:</div>
+<textarea id="code-quote">
+</textarea>
+</div>
+
+If you are interested in other [paredit] operations, I think they can either be
+accomplished as some composition of these aforementioned primitives, or
+just implemented through special hotkeys.
 
 ## Significance of the cursor
 
