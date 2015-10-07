@@ -147,5 +147,28 @@ concept, consider contributing a plugin for different editors!
 or maybe not:
 [unmatchedcomic](https://xkcd.com/859/)
 
+##### Prior Art
+
+- [paredit] - structural editing and auto-balancing of Lisp text
+- [Haml], [Slim], and [Jade] - indented HTML templating langs that are really close to indented lisps
+- [Haskell's $ operator] - infers a closing paren at the end of its line
+- [sweet-expressions] and [indent-clj] - infers both open and close parens
+- [Flense] and [Plastic] - structural editing concepts for Clojure text
+- [clojure-validate-indent] - validates indentation of Clojure code
+- [The Clojure Style Guide] - indentation conventions in Clojure
+
+[Haml]:http://haml.info/
+[Slim]:http://slim-lang.com/
+[Jade]:http://jade-lang.com/
+[Haskell's $ operator]:http://learnyouahaskell.com/higher-order-functions#function-application
+[paredit]:http://danmidwood.com/content/2014/11/21/animated-paredit.html
+[sweet-expressions]:http://readable.sourceforge.net/
+[indent-clj]:https://github.com/boxed/indent-clj
+[Flense]:https://github.com/mkremins/flense
+[Plastic]:https://github.com/darwin/plastic
+[clojure-validate-indent]:https://github.com/boxed/clojure-validate-indent
+[The Clojure Style Guide]:https://github.com/bbatsov/clojure-style-guide#source-code-layout--organization
+
+
 
 tweet: Parinfer: my animated essay and proof-of-concept on a better Lisp-editing experience.
