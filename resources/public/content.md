@@ -108,8 +108,9 @@ __Try it!__ Interrupt the animations below to try it for yourself. Click outside
 </textarea>
 </div>
 
-You can adjust indention by adding and subtracting spaces, of course.
-Selecting multiple lines and using the common controls below works too:
+You can select multiple lines and adjust their indentation the standard way using
+the controls below.  If you are familiar with paredit, these operations are
+roughly equivalent to those listed.
 
  <table class="paredit-table">
 <tr>
@@ -153,8 +154,8 @@ The transformation performed by _Parinfer_ is straightforward:
 </div>
 </div>
 
-And in more detail-- after every text change, the full text is fed through a
-pure, idempotent function which:
+Specifically, after every text change, the full text is fed through a pure,
+idempotent function which:
 
 - removes any unmatched right-parens inside a line
 - indiscriminately removes all right-parens at the end of each line
@@ -223,7 +224,7 @@ just implemented through special hotkeys.
 
 ## Things to know about the Cursor
 
-_Parinfer_ gives your cursor some leeway.  It waits to diplace the parens
+_Parinfer_ gives your cursor some leeway.  It waits to displace the parens
 behind your cursor until it is sure you are not trying to type anything in
 front of them. Just move your cursor away (to another line or behind the
 parens) when you're done.
