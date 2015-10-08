@@ -86,6 +86,7 @@ as _eager to move_.  That is, eager to extend to indented lines.  We _dim_ them
 in the editor to signify their inferred mobility.
 
 <div class="interact">
+<i class="fa fa-keyboard-o fa-lg"></i>
 __Try it!__ Interrupt the animations below to try it for yourself. Click outside to restore it.
 </div>
 
@@ -169,6 +170,11 @@ Aside from enabling indentation-based editing, there are other consequences of
 this editing system which form a new set of editing primitives.  All can be
 performed without special hotkeys.
 
+<div class="interact">
+<i class="fa fa-keyboard-o fa-lg"></i>
+__Try it!__ Interrupt the animations below to try it for yourself. Click outside to restore it.
+</div>
+
 <div>
 <div class="caption">__Insert or delete a line__ without rearranging parens:</div>
 <textarea id="code-line">
@@ -221,6 +227,11 @@ _Parinfer_ gives your cursor some leeway.  It waits to diplace the parens
 behind your cursor until it is sure you are not trying to type anything in
 front of them. Just move your cursor away (to another line or behind the
 parens) when you're done.
+
+<div class="interact">
+<i class="fa fa-keyboard-o fa-lg"></i>
+__Try it!__ Interrupt the animations below to try it for yourself. Click outside to restore it.
+</div>
 
 <div>
 <div class="caption">__Paren displaced__ when your cursor moves to another line, due to indentation.</div>

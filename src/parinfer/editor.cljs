@@ -303,8 +303,10 @@
       (when show?
         (html
           [:div
-           [:code (str target-key)] [:br]
-           "Recording "
+           [:code (if target-key
+                    (str target-key)
+                    "(click an editor)")]
+           [:br]
            [:button {:on-click #(start-recording! target-key)} "Start Record"]
            [:button {:on-click #(done-recording! target-key)} "Stop Record"]
            [:button {:on-click #(play-recording! target-key)} "Play"]
