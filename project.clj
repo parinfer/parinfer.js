@@ -47,7 +47,7 @@
               :source-paths ["src" "test"]
               :compiler {:output-to "resources/public/js/compiled/parinfer-test.js"
                          :output-dir "resources/public/js/compiled/out-test"
-                         :foreign-libs [{:file "src/parinfer/cm-clojure-parinfer.js"
+                         :foreign-libs [{:file "src/parinfer/js/cm-clojure-parinfer.js"
                                          :provides ["cljsjs.codemirror.mode.clojure-parinfer"]}]
                          :main parinfer.runner
                          :optimizations :none
