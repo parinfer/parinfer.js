@@ -154,8 +154,8 @@ The transformation performed by _Parinfer_ is straightforward:
 </div>
 </div>
 
-Specifically, after every text change, the full text is fed through a pure,
-idempotent function which:
+Specifically, the full text is transformed after every change by a pure,
+idempotent function:
 
 - removes any unmatched right-parens inside a line
 - indiscriminately removes all right-parens at the end of each line
