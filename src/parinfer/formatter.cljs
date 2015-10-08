@@ -392,17 +392,22 @@
    (let [state (merge initial-state state)
          lines (.split text "\n") ;; different from clojure.string/split (respects empty lines)
          state (reduce process-line state lines)
-         stack (:stack state)
-         close? (and (seq stack)
-                     (not (in-str? stack)))
-         state (cond-> state close? close-delims)]
-     state)))
+         stack (:stack state)]
+
+     ;; VERY IMPORTANT!!!!
+     ;; Return nil if there is an unclosed string, meaning we must cancel
+     ;; processing the text.  If we don't this, the simple act of typing two
+     ;; quotes in succession could silently delete delimiters in subsequent
+     ;; strings.
+     (when-not (in-str? stack)
+       (cond-> state (seq stack) close-delims)))))
 
 (defn format-text
   "Format the given text by repositioning any trailing closing delimiters based on indentation."
   ([text] (format-text initial-state text))
   ([state text]
-   (let [state (process-text state text)
-         final-text (join "\n" (:lines state))]
-     final-text)))
+   (let [state (process-text state text)]
+     (if state
+       (join "\n" (:lines state))
+       text))))
 
