@@ -1,11 +1,22 @@
+/*
+ *  To Parinfer developers,
+ *
+ *    This is a syntax-highlighting mode for Clojure, copied from CodeMirror.
+ *    We modify it for Parinfer so that it dims the inferred parens at the end of a line.
+ *    (Search for Parinfer below for the relevant edit)
+ *
+ *    This Clojure mode also has logic for where to indent the cursor when pressing enter.
+ *    We do not modify this.
+ *
+ */
+
+
+
+
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
-
 /**
- * Modified for Parinfer (see Parinfer comments)
- *
- * Original...
  * Author: Hans Engel
  * Branched from CodeMirror's Scheme mode (by Koh Zi Han, based on implementation by Koh Zi Chun)
  */
