@@ -1,17 +1,17 @@
 # par<em>infer</em>
 
  <p class="subtitle">
-an editor feature concept to <em>simplify how we write Lisp</em>
+an experiment to <em>simplify how we write Lisp</em> by:
 </p>
 
   <ul class="features">
-<li> Affect structure through indentation.
-<li> Results in [paredit]-like features without memorizing hotkeys.
-<li> Naturally keep your code properly formatted.
+<li> affecting structure through indentation
+<li> allowing [paredit]-like features without memorizing hotkeys
+<li> naturally keeping your code properly formatted
 </ul>
 
  <div>
-<div class="caption">__Quick Look__ at a new way to write/edit Lisp:</div>
+<div class="caption">__Quick Look__ at the current implementation in [CodeMirror]:</div>
 <textarea id="code-intro">
 </textarea>
 </div>
@@ -76,14 +76,25 @@ this way to choose the resolution at which to view your code:
 It is the balance of these two views that gives us readability without causing
 structural ambiguity.
 
-## Editing with Indentation
+## Indentation: the Holy Grail
 
-Since we can _skim_ code with indentation, why not _sketch_ code with
+Since we can _skim_ code with indentation, is it possible to _sketch_ code with
 indentation as well?
+[Many][sweet-expressions]
+[have][i-expressions]
+[tried][indent-clj]
+by creating alternative syntaxes, removing parens to varying degrees.
 
-_Parinfer_ allows you to do this by treating right-parens at the end of a line
-as _eager to move_.  That is, eager to extend to indented lines.  We _dim_ them
-in the editor to signify their inferred mobility.
+But perhaps we can __keep the parens__ and just allow our editor to move them
+around appropriately when we adjust indentation in our code.
+
+_Parinfer_ is a proof-of-concept that we use to explore this idea.  It treats
+the right-parens at the end of a line as _eager to move_.  That is, eager to
+extend to indented lines.  As a visual cue, we _dim_ these parens to signify
+their inferred mobility.
+
+As you might already be thinking, there are some other ramifications that we
+will discuss later.  For now, here are some working examples:
 
 <div class="interact">
 <i class="fa fa-keyboard-o fa-lg"></i>
@@ -130,51 +141,7 @@ roughly equivalent to those listed.
 </tr>
 </table>
 
-## How it works
-
-The transformation performed by _Parinfer_ is straightforward:
-
- <div class="two-col">
-<div class="col">
-<div class="caption">__You control these.__</div>
-<textarea id="code-how-control">
-(defn foo [a b]
-  (let [x (+ a b)]
-    (println "The sum is" x)))
-</textarea>
-</div>
-
-<div class="col">
-<div class="caption">__We infer these.__</div>
-<textarea id="code-how-infer">
-(defn foo [a b]
-  (let [x (+ a b)]
-    (println "The sum is" x)))
-</textarea>
-</div>
-</div>
-
-Specifically, the full text is transformed after every change by a pure,
-idempotent function:
-
-- removes any unmatched right-parens inside a line
-- indiscriminately removes all right-parens at the end of each line
-  - except those appearing behind the cursor (details later)
-- for every resulting unmatched left-paren:
-  - inserts a right-paren at the end of its line or its last non-empty indented line
-
-This enables some noteworthy editing features that we will discuss next.
-
-## New Editing Primitives
-
-Aside from enabling indentation-based editing, there are other consequences of
-this editing system which form a new set of editing primitives.  All can be
-performed without special hotkeys.
-
-<div class="interact">
-<i class="fa fa-keyboard-o fa-lg"></i>
-__Try it!__ Interrupt the animations below to try it for yourself. Click outside to restore it.
-</div>
+### Some Interesting Consequences
 
 <div>
 <div class="caption">__Insert or delete a line__ without rearranging parens:</div>
@@ -188,11 +155,85 @@ __Try it!__ Interrupt the animations below to try it for yourself. Click outside
 </textarea>
 </div>
 
+## How it works
+
+Everytime the user types something in the editor, we perform the following steps:
+
+1. remove all right-parens at the end of each line
+  - except those appearing behind the cursor (details later)
+2. for every resulting unmatched left-paren:
+  - insert a right-paren at the end of its line or its last non-empty indented line
+
+<div class="interact">
+<i class="fa fa-keyboard-o fa-lg"></i>
+__Try it!__ Edit the code below on the left to see how parens are inferred on the right.
+</div>
+
+ <div class="two-col">
+<div class="col">
+<div class="caption">__Input:__ Right-parens removed from end of each line. Notice the ones inside are untouched.</div>
+<textarea id="code-how-input">
+(defn on-click [
+  (swap! s update-in [:x] inc
+
+(defn component
+  "a hiccup style component.
+  second line of docstring."
+  [image-source
+  [:div
+   (if image-source
+     [:img {:src image-source
+            :on-click on-click
+     [:span "no image"
+   (for [[i msg] (indexed messages
+     [:div {:style {:color (color i
+      msg
+</textarea>
+</div>
+
+<div class="col">
+<div class="caption">__Output:__ Right-parens (highlighted) are reinserted based purely on indentation.</div>
+<textarea id="code-how-output">
+</textarea>
+</div>
+</div>
+
+> __As an aside__, I first considered whether it would be practical to just
+> write code in the syntax on the left since it encodes all the structural
+> information while eliminating piles of parentheses.  But we are trying to
+> create a tool for the original syntax.  And perhaps...
+> 
+> <a class="img-link" href="https://xkcd.com/859/"><img src="https://imgs.xkcd.com/comics/(.png"></img></a>
+
+In addition to the indentation features previously illustrated, this system has
+additional implications on how we interact with our Lisp code.  We will explore
+them Socratically.
+
+### Question #1: Couldn't this break existing code?
+
+Yes, by definition of this process, code will be restructured if it is not
+indented correctly.
+
+There may be a way to use a preprocessor to correct indentation when opening an
+existing file.  A full-fledged pretty-printer would technically work, but I
+think correcting indentation line-by-line may be sufficient and less
+destructive of the author's inlining choices.
+
+### Question #2: What happens when inserting parens?
+
 <div>
 <div class="caption">__Wrap__ by inserting a left-paren. It will enclose as far as indentation allows:</div>
 <textarea id="code-wrap">
 </textarea>
 </div>
+
+<div>
+<div class="caption">__Shorten__ by inserting a right-paren before another:</div>
+<textarea id="code-barf">
+</textarea>
+</div>
+
+### Question #3: What happens when deleting parens?
 
 <div>
 <div class="caption">__Splice__ by removing a left-paren, since unmatched right-parens are removed:</div>
@@ -201,38 +242,17 @@ __Try it!__ Interrupt the animations below to try it for yourself. Click outside
 </div>
 
 <div>
-<div class="caption">__"Barf right"__ by inserting a right-paren before another:</div>
-<textarea id="code-barf">
-</textarea>
-</div>
-
-<div>
-<div class="caption">__"Slurp right"__ by deleting a right-paren inside a line.</div>
+<div class="caption">__Extend__ by deleting a right-paren inside a line.</div>
 <textarea id="code-slurp">
 </textarea>
 </div>
 
-<div>
-<div class="caption">__Quote__ insertion allows temporary paren imbalances until quote is closed:</div>
-<textarea id="code-string">
-</textarea>
-</div>
+### Question #4: Why are right-parens behind the cursor not processed?
 
-If you are interested in other [paredit] operations, I think they can either be
-accomplished as some composition of these aforementioned primitives, or
-just implemented through special hotkeys.
-
-## Things to know about the Cursor
-
-_Parinfer_ gives your cursor some leeway.  It waits to displace the parens
-behind your cursor until it is sure you are not trying to type anything in
-front of them. Just move your cursor away (to another line or behind the
+_Parinfer_ does this to give your cursor some leeway.  It waits to displace the
+parens behind your cursor until it is sure you are not trying to type anything
+in front of them. Just move your cursor away (to another line or behind the
 parens) when you're done.
-
-<div class="interact">
-<i class="fa fa-keyboard-o fa-lg"></i>
-__Try it!__ Interrupt the animations below to try it for yourself. Click outside to restore it.
-</div>
 
 <div>
 <div class="caption">__Paren displaced__ when your cursor moves to another line, due to indentation.</div>
@@ -246,10 +266,13 @@ __Try it!__ Interrupt the animations below to try it for yourself. Click outside
 </textarea>
 </div>
 
-Also, you may have noticed that _Parinfer_ prevents you from typing certain things:
+### Question #5: What happens when I type a quote?
 
-- cannot insert unmatched right-parens (since they are immediately removed)
-- cannot delete inferred right-parens (since they are immediately reinserted)
+<div>
+<div class="caption">__Quote__ insertion allows temporary paren imbalances until quote is closed:</div>
+<textarea id="code-string">
+</textarea>
+</div>
 
 ## Try it
 
@@ -258,13 +281,23 @@ Also, you may have noticed that _Parinfer_ prevents you from typing certain thin
 
 ## Prior Art
 
+There are many ideas related to this concept.
+
 - [paredit] - structural editing and auto-balancing of Lisp text
 - [Haml], [Slim], and [Jade] - indented HTML templating langs that are really close to indented lisps
 - [Haskell's $ operator] - infers a closing paren at the end of its line
-- [sweet-expressions] and [indent-clj] - infers both open and close parens
+- [sweet-expressions], [i-expressions], and [indent-clj] - infers both left and right parens
 - [Flense] and [Plastic] - structural editing concepts for Clojure text
 - [clojure-validate-indent] - validates indentation of Clojure code
 - [The Clojure Style Guide] - indentation conventions in Clojure
+
+## Source Code
+
+This presentation and proof-of-concept is implemented using ClojureScript and
+the [CodeMirror] editor.  Code is available on Github:
+
+<http://github.com/shaunlebron/parinfer>
+
 
 [Haml]:http://haml.info/
 [Slim]:http://slim-lang.com/
@@ -272,8 +305,10 @@ Also, you may have noticed that _Parinfer_ prevents you from typing certain thin
 [Haskell's $ operator]:http://learnyouahaskell.com/higher-order-functions#function-application
 [paredit]:http://danmidwood.com/content/2014/11/21/animated-paredit.html
 [sweet-expressions]:http://readable.sourceforge.net/
+[i-expressions]:http://srfi.schemers.org/srfi-49/srfi-49.html
 [indent-clj]:https://github.com/boxed/indent-clj
 [Flense]:https://github.com/mkremins/flense
 [Plastic]:https://github.com/darwin/plastic
 [clojure-validate-indent]:https://github.com/boxed/clojure-validate-indent
 [The Clojure Style Guide]:https://github.com/bbatsov/clojure-style-guide#source-code-layout--organization
+[CodeMirror]:https://codemirror.net/

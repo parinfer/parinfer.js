@@ -7,8 +7,10 @@
     [parinfer.editor :refer [create-editor!
                              create-regular-editor!
                              start-editor-sync!]]
+    [parinfer.formatter :refer [format-text]]
     [ajax.core :refer [GET]]
-    [cljsjs.marked]))
+    [cljsjs.marked]
+    [cljsjs.codemirror]))
 
 (enable-console-print!)
 
@@ -45,8 +47,16 @@
   (create-regular-editor! "code-c-style")
   (create-regular-editor! "code-skim")
   (create-regular-editor! "code-inspect" {:matchBrackets true})
-  (create-regular-editor! "code-how-control")
-  (create-regular-editor! "code-how-infer")
+
+  (let [cm-input (create-regular-editor! "code-how-input")
+        cm-output (create-regular-editor! "code-how-output" {:readOnly true
+                                                             :mode "clojure-parinfer"})
+        sync! #(.setValue cm-output (format-text (.getValue cm-input)))]
+    (.on cm-input "change" sync!)
+    (sync!)
+    (.refresh cm-input)
+    (.refresh cm-output)
+    )
 
   ;; create editor animations
   (swap! vcr update-in [:intro] merge vcr/intro)

@@ -71,6 +71,10 @@ h2 {
   padding-top: 20px;
 }
 
+h3 {
+  margin-top: 40px;
+}
+
 .subtitle {
   font-size: 20px;
   text-align: center;
@@ -90,7 +94,11 @@ h2 {
   list-style-type: square;
 }
 
-a, a:link, a:visited, a:hover, a:active {
+a {
+  border-bottom: 1px solid #CC3385;
+}
+
+a:link, a:visited, a:hover, a:active {
   text-decoration: none;
   color: #CC3385;
 }
@@ -110,7 +118,7 @@ p, li {
   margin-bottom: 5px;
   margin-left: 5px;
   font-style: italic;
-  opacity: 0.5;
+  color: #888;
 }
 
 code {
@@ -223,9 +231,36 @@ code {
   height: 90px;
 }
 
-#cm-code-how-control,
-#cm-code-how-infer
+#cm-code-how-input,
+#cm-code-how-output
 {
-  height: 160px;
+  font-size: 14px;
+  height: 280px;
 }
 
+#cm-code-how-input
+{
+  opacity: 0.75;
+}
+
+#cm-code-how-output
+.cm-bracket.cm-trailing {
+  opacity: 1;
+  background: #AAFFC2;
+}
+
+p.centered
+{
+  text-align: center;
+}
+
+a.img-link
+{
+  border-bottom: 0;
+}
+
+blockquote {
+  border-left: 5px solid #ddd;
+  margin: 0;
+  padding-left: 20px;
+}
