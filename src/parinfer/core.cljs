@@ -1,18 +1,14 @@
 (ns ^:figwheel-always parinfer.core
-  (:require-macros
-    [hiccups.core :refer [defhtml html]])
   (:require
-    [hiccups.runtime]
     [parinfer.vcr-data :as vcr]
-    [parinfer.editor :refer [render-controls!
-                             create-editor!
+    [parinfer.vcr :refer [vcr
+                          play-recording!
+                          render-controls!]]
+    [parinfer.editor :refer [create-editor!
                              create-regular-editor!
-                             start-editor-sync!
-                             vcr
-                             play-recording!]]
+                             start-editor-sync!]]
     [ajax.core :refer [GET]]
-    [cljsjs.marked]
-    ))
+    [cljsjs.marked]))
 
 (enable-console-print!)
 

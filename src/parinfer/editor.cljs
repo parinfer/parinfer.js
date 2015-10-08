@@ -1,32 +1,21 @@
 (ns parinfer.editor
-  (:require-macros
-    [cljs.core.async.macros :refer [go go-loop]])
   (:require
-    [om.core :as om :include-macros true]
-    [sablono.core :refer-macros [html]]
-
-    [cljs.pprint :refer [pprint]]
-    [cljs.core.async :refer [<! timeout chan alts! close!]]
     [clojure.string :as string :refer [join]]
-
     [parinfer.formatter :refer [format-text]]
-
-    [goog.dom.classlist :as classlist]
-    [goog.dom :as gdom]
-
+    [parinfer.state :refer [state
+                            empty-editor-state]]
+    [parinfer.vcr :refer [vcr
+                          empty-recording
+                          parse-change
+                          parse-selections
+                          controls-state
+                          play-recording!
+                          stop-playing!]]
     [cljsjs.codemirror]
     [cljsjs.codemirror.addon.selection.active-line]
     [cljsjs.codemirror.addon.edit.matchbrackets]
     [cljsjs.codemirror.mode.clojure]
     [cljsjs.codemirror.mode.clojure-parinfer]))
-
-;; map of editor key -> editor state
-(defonce state
-  (atom {}))
-
-(def empty-editor-state
-  {:text ""     ;; text of the editor
-   :cm nil})    ;; the CodeMirror instance
 
 (defprotocol IEditor
   "Custom data/methods for a CodeMirror editor."
@@ -108,15 +97,6 @@
 
 (def frame-updates (atom {}))
 
-(def empty-recording
-  {:changes []
-   :init-value nil
-   :last-time nil
-   :recording? false})
-
-(defonce vcr
-  (atom {}))
-
 (defn before-change
   "Called before any change is applied to the editor."
   [cm change]
@@ -125,40 +105,6 @@
   (when (and (= "setValue" (.-origin change))
              (= (.getValue cm) (join "\n" (.-text change))))
     (.cancel change)))
-
-(defn parse-pos
-  [pos]
-  {:line (.-line pos)
-   :ch (.-ch pos)})
-
-(defn parse-change
-  [change]
-  {:from (parse-pos (.-from change))
-   :to (parse-pos (.-to change))
-   :text (seq (.-text change))
-   :origin (.-origin change)})
-
-(defn apply-change
-  [cm {:keys [text from to origin]}]
-  (.replaceRange cm
-     (clj->js text)
-     (clj->js from)
-     (clj->js to)
-     origin))
-
-(defn parse-selection
-  [selection]
-  {:anchor (parse-pos (.-anchor selection))
-   :head (parse-pos (.-head selection))
-   })
-
-(defn parse-selections
-  [selections]
-  (map parse-selection selections))
-
-(defn apply-selections
-  [cm selections]
-  (.setSelections cm (clj->js selections)))
 
 (defn on-change
   "Called after any change is applied to the editor."
@@ -197,19 +143,8 @@
 
 (aset js/CodeMirror "keyMap" "default" "Shift-Tab" "indentLess")
 
-(defn on-state-change
-  "Called everytime the state changes to sync the code editor."
-  [_ _ old-state new-state]
-  (doseq [[k {:keys [cm text]}] new-state]
-    (let [changed? (not= text (.getValue cm))]
-      (when changed?
-        (.setValue cm text)))))
-
-(defn force-editor-sync! []
-  (doseq [[k {:keys [cm text]}] @state]
-    (.setValue cm text)))
-
 (defn create-regular-editor!
+  "Create a non-parinfer editor."
   ([element-id] (create-regular-editor! element-id {}))
   ([element-id opts]
    (let [element (js/document.getElementById element-id)
@@ -218,108 +153,8 @@
      (set! (.-id wrapper) (str "cm-" element-id))
      cm)))
 
-(defn freeze-editor!
-  [cm-or-key]
-  (let [cm (if (keyword? cm-or-key) (get-in @state [cm-or-key :cm]) cm-or-key)
-        element (.getWrapperElement cm)
-        cursor (gdom/getElementByClass "CodeMirror-cursors" element)]
-    (set! (.. cursor -style -visibility) "visible")))
-
-(defn thaw-editor!
-  [cm-or-key]
-  (let [cm (if (keyword? cm-or-key) (get-in @state [cm-or-key :cm]) cm-or-key)
-        element (.getWrapperElement cm)
-        cursor (gdom/getElementByClass "CodeMirror-cursors" element)]
-    ))
-
-(defn start-recording!
-  [key-]
-  (let [{:keys [text cm] :as editor} (get @state key-)]
-    (swap! vcr update-in [key-]
-           assoc
-           :changes []
-           :init-value text
-           :recording? true
-           :last-time nil)))
-
-(defn done-recording!
-  [key-]
-  (swap! vcr assoc-in [key- :recording?] false))
-
-(defn play-recording!
-  [key-]
-  (when-let [stop-chan (get-in @vcr [key- :stop-chan])]
-    (close! stop-chan))
-  (swap! vcr assoc-in [key- :stop-chan] (chan))
-  (let [cm (get-in @state [key- :cm])
-        recording (get @vcr key-)
-        timescale (get recording :timescale 1)
-        loop? (get recording :loop? true)
-        loop-delay (get recording :loop-delay 2000)
-        element (.getWrapperElement cm)]
-    (freeze-editor! cm)
-    (go-loop []
-      (swap! state assoc-in [key- :text] (:init-value recording))
-      (loop [changes (:changes recording)]
-        (when (seq changes)
-          (let [{:keys [change selections dt] :as data} (first changes)
-                tchan (timeout (/ dt timescale))
-                stop-chan (:stop-chan recording)
-                [v c] (alts! [tchan stop-chan])]
-            (when (not= c stop-chan)
-              (cond
-                change (apply-change cm change)
-                selections (apply-selections cm selections)
-                :else nil)
-              (recur (rest changes))))))
-      (when loop?
-        (let [tchan (timeout loop-delay)
-              stop-chan (:stop-chan recording)
-              [v c] (alts! [tchan stop-chan])]
-          (when (not= c stop-chan)
-            (recur))))
-      (thaw-editor! cm))))
-
-(defn stop-playing!
-  [key-]
-  (when-let [stop-chan (get-in @vcr [key- :stop-chan])]
-    (close! stop-chan)))
-
-(defn print-recording!
-  [key-]
-  (let [cm (get-in @state [key- :cm])
-        recording (get @vcr key-)]
-    (pprint (dissoc recording :stop-chan))))
-
-(defonce controls-state
-  (atom {:show? true
-         :target-key nil}))
-
-(defn controls-view
-  [{:keys [target-key show?] :as data} owner]
-  (reify
-    om/IRender
-    (render [_]
-      (when show?
-        (html
-          [:div
-           [:code (if target-key
-                    (str target-key)
-                    "(click an editor)")]
-           [:br]
-           [:button {:on-click #(start-recording! target-key)} "Start Record"]
-           [:button {:on-click #(done-recording! target-key)} "Stop Record"]
-           [:button {:on-click #(play-recording! target-key)} "Play"]
-           [:button {:on-click #(stop-playing! target-key)} "Stop"]
-           [:button {:on-click #(print-recording! target-key)} "Print"]])))))
-
-(defn render-controls! []
-  (om/root
-    controls-view
-    controls-state
-    {:target (js/document.getElementById "controls")}))
-
 (defn create-editor!
+  "Create a parinfer editor."
   ([element-id key-] (create-editor! element-id key- {}))
   ([element-id key- opts]
    (let [element (js/document.getElementById element-id)
@@ -374,6 +209,22 @@
      (.on cm "cursorActivity" on-cursor-activity)
 
      cm)))
+
+;;----------------------------------------------------------------------
+;; Setup
+;;----------------------------------------------------------------------
+
+(defn on-state-change
+  "Called everytime the state changes to sync the code editor."
+  [_ _ old-state new-state]
+  (doseq [[k {:keys [cm text]}] new-state]
+    (let [changed? (not= text (.getValue cm))]
+      (when changed?
+        (.setValue cm text)))))
+
+(defn force-editor-sync! []
+  (doseq [[k {:keys [cm text]}] @state]
+    (.setValue cm text)))
 
 (defn start-editor-sync! []
   ;; sync state changes to the editor
