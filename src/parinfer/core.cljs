@@ -49,6 +49,8 @@
   (create-regular-editor! "code-c-style")
   (create-regular-editor! "code-skim")
   (create-regular-editor! "code-inspect" {:matchBrackets true})
+  (create-regular-editor! "code-how-control")
+  (create-regular-editor! "code-how-infer")
 
   ;; create editor animations
   (swap! vcr update-in [:intro] merge vcr/intro)

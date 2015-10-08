@@ -114,8 +114,30 @@ be considered line-based slurp/barf operations, respectively.
 
 ## How it works
 
-The transformation performed by _Parinfer_ is straightforward.  After every
-text change, the full text is fed through a pure, idempotent function which:
+The transformation performed by _Parinfer_ is straightforward:
+
+ <div class="two-col">
+<div class="col">
+<div class="caption">__You control these.__</div>
+<textarea id="code-how-control">
+(defn foo [a b]
+  (let [x (+ a b)]
+    (println "The sum is" x)))
+</textarea>
+</div>
+
+<div class="col">
+<div class="caption">__We infer these.__</div>
+<textarea id="code-how-infer">
+(defn foo [a b]
+  (let [x (+ a b)]
+    (println "The sum is" x)))
+</textarea>
+</div>
+</div>
+
+And in more detail-- after every text change, the full text is fed through a
+pure, idempotent function which:
 
 - removes any unmatched right-parens inside a line
 - indiscriminately removes all right-parens at the end of each line
@@ -206,7 +228,7 @@ Also, you may have noticed that _Parinfer_ prevents you from typing certain thin
 <textarea id="code-try">
 </textarea>
 
-##### Prior Art
+## Prior Art
 
 - [paredit] - structural editing and auto-balancing of Lisp text
 - [Haml], [Slim], and [Jade] - indented HTML templating langs that are really close to indented lisps
