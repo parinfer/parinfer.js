@@ -198,14 +198,8 @@ code {
   height: 110px;
 }
 
-#cm-code-cue-dim
-{
-  height: 50px;
-}
-
-#cm-code-cue-block,
-#cm-code-cue-cursor
+#cm-code-displaced,
+#cm-code-not-displaced
 {
   height: 90px;
 }
-

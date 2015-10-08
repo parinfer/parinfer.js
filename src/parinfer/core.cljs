@@ -40,8 +40,8 @@
   (create-editor! "code-slurp" :slurp)
   (create-editor! "code-string" :string)
 
-  (create-editor! "code-cursor" :code-cursor)
-  (create-editor! "code-rebalance" :code-rebalance)
+  (create-editor! "code-displaced" :displaced)
+  (create-editor! "code-not-displaced" :not-displaced)
 
   (start-editor-sync!)
 
@@ -60,6 +60,8 @@
   (swap! vcr update-in [:splice] merge vcr/splice)
   (swap! vcr update-in [:barf] merge vcr/barf)
   (swap! vcr update-in [:slurp] merge vcr/slurp-)
+  (swap! vcr update-in [:displaced] merge vcr/displaced)
+  (swap! vcr update-in [:not-displaced] merge vcr/not-displaced)
   (swap! vcr update-in [:comment] merge vcr/comment-)
   
   (swap! vcr update-in [:string] merge vcr/string)
@@ -75,6 +77,8 @@
   (play-recording! :slurp)
   (play-recording! :comment)
   (play-recording! :string)
+  (play-recording! :displaced)
+  (play-recording! :not-displaced)
 
   (render-controls!))
 

@@ -185,20 +185,20 @@ front of them. Just move your cursor away (to another line or behind the
 parens) when you're done.
 
 <div>
-<div class="caption"></div>
-<textarea id="code-cursor">
+<div class="caption">__Paren displaced__ when your cursor moves to another line, due to indentation.</div>
+<textarea id="code-displaced">
 </textarea>
 </div>
 
 <div>
-<div class="caption"></div>
-<textarea id="code-rebalance">
+<div class="caption">__Paren not displaced__ since you were given the chance to block it. (paren not at end of line)</div>
+<textarea id="code-not-displaced">
 </textarea>
 </div>
 
 Also, you may have noticed that _Parinfer_ prevents you from typing certain things:
 
-- cannot type unmatched right-parens (since they are immediately removed)
+- cannot insert unmatched right-parens (since they are immediately removed)
 - cannot delete inferred right-parens (since they are immediately reinserted)
 
 ## Try it

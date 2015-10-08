@@ -1988,6 +1988,68 @@
 :last-time 1444150093903, 
 :recording? false})
 
+(def displaced
+  '{:timescale 2
+    :changes
+    [{:selections ({:anchor {:line 0, :ch 0}, :head {:line 0, :ch 0}}),
+      :dt 1000}
+     {:change
+      {:from {:line 0, :ch 0},
+       :to {:line 0, :ch 0},
+       :text ("(foo [1 2 3" "      4 5 6" "      7 8 9])"),
+       :origin "paste"},
+      :dt 0}
+     {:selections ({:anchor {:line 0, :ch 11}, :head {:line 0, :ch 11}}),
+      :dt 1168}
+     {:change
+      {:from {:line 0, :ch 11},
+       :to {:line 0, :ch 11},
+       :text ("]"),
+       :origin "+input"},
+      :dt 1522}
+     {:selections ({:anchor {:line 1, :ch 11}, :head {:line 1, :ch 11}}),
+      :dt 2099}],
+    :init-value "", 
+    :last-time 1444261412937, 
+    :recording? false})
+
+(def not-displaced
+  '{:timescale 2
+    :changes
+    [{:selections ({:anchor {:line 0, :ch 0}, :head {:line 0, :ch 0}}),
+      :dt 1000}
+     {:change
+      {:from {:line 0, :ch 0},
+       :to {:line 0, :ch 0},
+       :text ("(foo [1 2 3" "      4 5 6" "      7 8 9])"),
+       :origin "paste"},
+      :dt 0}
+     {:selections ({:anchor {:line 0, :ch 11}, :head {:line 0, :ch 11}}),
+      :dt 861}
+     {:change
+      {:from {:line 0, :ch 11},
+       :to {:line 0, :ch 11},
+       :text ("]"),
+       :origin "+input"},
+      :dt 940}
+     {:change
+      {:from {:line 0, :ch 12},
+       :to {:line 0, :ch 12},
+       :text (" "),
+       :origin "+input"},
+      :dt 514}
+     {:change
+      {:from {:line 0, :ch 13},
+       :to {:line 0, :ch 13},
+       :text ("x"),
+       :origin "+input"},
+      :dt 595}
+     {:selections ({:anchor {:line 1, :ch 11}, :head {:line 1, :ch 11}}),
+      :dt 875}],
+    :init-value "",
+    :last-time 1444261858898, 
+    :recording? false})
+
 (def cue-dim
   '{:loop-delay 1000
     :timescale 2
