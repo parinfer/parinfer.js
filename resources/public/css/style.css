@@ -30,6 +30,25 @@ body {
   clear: both;
 }
 
+.paredit-table {
+  border-collapse: collapse;
+}
+
+.paredit-table th,
+.paredit-table td
+{
+  padding: 14px;
+  border: 1px solid #cecece;
+  background: #fefefe;
+}
+
+.paredit-table th
+{
+  color: #888;
+  font-style: italic;
+  background: none;
+}
+
 h1, h2, h3, h4, h5, h6 {
 }
 

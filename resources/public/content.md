@@ -86,9 +86,7 @@ as _eager to move_.  That is, eager to extend to indented lines.  We _dim_ them
 in the editor to signify their inferred mobility.
 
 <div class="interact">
-<img src="img/brain.png">
-__Try it!__ Interrupt the animations below to try it for yourself.<br>
-Click outside to restore the animated example.
+__Try it!__ Interrupt the animations below to try it for yourself. Click outside to restore it.
 </div>
 
 <div>
@@ -109,8 +107,26 @@ Click outside to restore the animated example.
 </textarea>
 </div>
 
-If you are familiar with [paredit], these indent/dedent operations can
-be considered line-based slurp/barf operations, respectively.
+You can adjust indention by adding and subtracting spaces, of course.
+Selecting multiple lines and using the common controls below works too:
+
+ <table class="paredit-table">
+<tr>
+<th>controls</th>
+<th>description</th>
+<th>[paredit] equivalent?</th>
+</tr>
+<tr>
+<td><kbd class="light">Tab</kbd></td>
+<td>indent line(s)</td>
+<td>slurp line(s) down</td>
+</tr>
+<tr>
+<td><kbd class="light">Shift</kbd> + <kbd class="light">Tab</kbd></td>
+<td>dedent line(s)</td>
+<td>barf line(s) down</td>
+</tr>
+</table>
 
 ## How it works
 
@@ -178,13 +194,13 @@ performed without special hotkeys.
 </div>
 
 <div>
-<div class="caption">__Inline "Barf-right"__ by inserting a right-paren before another:</div>
+<div class="caption">__"Barf right"__ by inserting a right-paren before another:</div>
 <textarea id="code-barf">
 </textarea>
 </div>
 
 <div>
-<div class="caption">__Inline "Slurp-right"__ by deleting a right-paren inside a line.</div>
+<div class="caption">__"Slurp right"__ by deleting a right-paren inside a line.</div>
 <textarea id="code-slurp">
 </textarea>
 </div>
