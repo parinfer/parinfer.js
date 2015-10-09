@@ -157,7 +157,7 @@ roughly equivalent to those listed.
 
 ## How it works
 
-Everytime the user types something in the editor, we perform the following steps:
+We perform the following steps to correct structured based on indentation:
 
 1. remove all right-parens at the end of each line
 2. for every resulting unmatched left-paren:
@@ -217,10 +217,21 @@ Luckily, I think we have sufficient solutions for these cases:
   <div class="side-point">(seems to be an easy way to keep order, but not sure if this can be relaxed)</div>
 <li> remove right-parens at the start of each line
   <div class="side-point">(these interfere with indentation detection)</div>
-<li> do not displace right-parens that are behind the cursor
-  <div class="side-point">(allows user to finish typing a line without an intermediate paren jumping to an indented line)</div>
 <li> do not process text if quotes are unbalanced
   <div class="side-point">(this could otherwise delete parens inside strings)</div>
+<li> escape a quote in a comment if it has an odd number of quotes?
+  <div class="side-point">(this might prevent loss of string info by preserving unbalanced quote state)</div> 
+</ol>
+
+### Automatic vs Manual Formatting
+
+This transformation can be triggered either automatically after every text
+change, or manually by some hotkey or button in the editor.  We need extra
+steps if the transformation is automatic:
+
+<ol start="6">
+<li> do not displace right-parens that are behind the cursor
+  <div class="side-point">(allows user to finish typing a line without an intermediate paren jumping to an indented line)</div>
 </ol>
 
 It is not obvious what the full implications are for this system, so let's
