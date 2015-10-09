@@ -157,7 +157,7 @@ roughly equivalent to those listed.
 
 ## How it works
 
-We perform the following steps to correct structured based on indentation:
+We perform the following steps to rearrange parens based on indentation:
 
 1. remove all right-parens at the end of each line
 2. for every resulting unmatched left-paren:
