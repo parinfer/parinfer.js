@@ -160,6 +160,31 @@ Escaped quotes
 (def foo "\"")
 ```
 
+Strings that contain code that would be rewritten if it was ever considered
+code.  See [Issue #15](https://github.com/shaunlebron/parinfer/issues/15).
+
+```in
+"|"]"
+```
+
+```out
+""]"
+```
+
+```in
+(def foo
+  "|
+  "(a b)
+      c")
+```
+
+```out
+(def foo
+  "
+  "(a b)
+      c")
+```
+
 ## Character syntax
 
 ```in
