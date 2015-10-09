@@ -115,6 +115,7 @@
   (cond
     (escaping? stack) {:stack (pop stack)}
     (in-str? stack) {:stack (pop stack)}
+    (in-comment? stack) nil
     :else {:stack (conj stack [x-pos ch])}))
 
 (defmethod push-char* :default
