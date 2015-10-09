@@ -1,4 +1,6 @@
 (ns parinfer.formatter-test
+  "Parses and verifies tests written in formatter-test.md
+  (must be run on Node.js)"
   (:require
     [clojure.string :as string :refer [split-lines]]
     [parinfer.formatter :refer [format-text]]

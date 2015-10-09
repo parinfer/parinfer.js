@@ -1,4 +1,5 @@
 (ns parinfer.editor
+  "Glues Parinfer's formatter to a CodeMirror editor"
   (:require
     [clojure.string :as string :refer [join]]
     [parinfer.formatter :refer [format-text]]

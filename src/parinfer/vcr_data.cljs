@@ -1,4 +1,5 @@
-(ns parinfer.vcr-data)
+(ns parinfer.vcr-data
+  "VCR data - editor animations pasted from the 'print' button in devmode")
 
 (def intro
  '{:timescale 4

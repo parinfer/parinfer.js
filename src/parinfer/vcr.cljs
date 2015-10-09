@@ -1,4 +1,5 @@
 (ns parinfer.vcr
+  "VCR - editor animation recording and playback"
   (:require-macros
     [cljs.core.async.macros :refer [go go-loop]])
   (:require

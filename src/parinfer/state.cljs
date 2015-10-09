@@ -1,4 +1,5 @@
-(ns parinfer.state)
+(ns parinfer.state
+  "State of the editors on our page.")
 
 ;; map of editor key -> editor state
 (defonce state
