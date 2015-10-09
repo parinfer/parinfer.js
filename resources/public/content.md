@@ -208,12 +208,13 @@ __Try it!__ Edit the code below on the left to see how parens are inferred on th
 ## Full Implications
 
 We have created this new _Parinfer_ process to achieve the indentation demos we
-saw earlier.  But this process affects more than just the Tab key!  Sometimes
-typing something will result in two characters showing up.  Other times the
-character will not show.  And sometimes we can't delete specific characters.
+saw earlier.  But this process affects more than just the Tab key!  It will
+affect the structure of existing code that you open or paste into this editor.
+And when typing, more than one character can show up, or none at all.  And
+sometimes we can't delete.
 
 Though _Parinfer_'s rules are simple on their own, their implications are not
-obvious and deserve to be enumerated. We will do this Socratically:
+obvious and deserve to be enumerated. We will do this Socratically.
 
 ### Question #1: Couldn't this break existing code?
 
