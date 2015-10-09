@@ -264,3 +264,9 @@ blockquote {
   margin: 0;
   padding-left: 20px;
 }
+
+.side-point
+{
+  font-style: italic;
+  opacity: 0.5;
+}

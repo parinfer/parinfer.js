@@ -160,7 +160,6 @@ roughly equivalent to those listed.
 Everytime the user types something in the editor, we perform the following steps:
 
 1. remove all right-parens at the end of each line
-  - except those appearing behind the cursor (details later)
 2. for every resulting unmatched left-paren:
   - insert a right-paren at the end of its line or its last non-empty indented line
 
@@ -205,16 +204,39 @@ __Try it!__ Edit the code below on the left to see how parens are inferred on th
 > 
 > <a class="img-link" href="https://xkcd.com/859/"><img src="https://imgs.xkcd.com/comics/(.png"></img></a>
 
+### Dealing with Malformed Input
+
+This two-step process is simple and works well for static, well-formatted text.
+But in practice, we need to add a few extra steps for dealing with malformed
+input (typed or pasted).  The biggest problem is that some paths between
+well-formated states must travel through malformed intermediate states.
+Luckily, I think we have sufficient solutions for these cases:
+
+<ol start="3">
+<li> remove unmatched right-parens
+  <div class="side-point">(seems to be an easy way to keep order, but not sure if this can be relaxed)</div>
+<li> remove right-parens at the start of each line
+  <div class="side-point">(these interfere with indentation detection)</div>
+<li> do not displace right-parens that are behind the cursor
+  <div class="side-point">(allows user to finish typing a line without an intermediate paren jumping to an indented line)</div>
+<li> do not process text if quotes are unbalanced
+  <div class="side-point">(this could otherwise delete parens inside strings)</div>
+</ol>
+
+It is not obvious what the full implications are for this system, so let's
+explore.
+
 ## Full Implications
 
 We have created this new _Parinfer_ process to achieve the indentation demos we
-saw earlier.  But this process affects more than just the Tab key!  It will
-affect the structure of existing code that you open or paste into this editor.
-And when typing, more than one character can show up, or none at all.  And
-sometimes we can't delete.
+saw earlier.  But this process affects more than just the Tab key, especially
+since we have added more rules for dealing with malformed input.
 
-Though _Parinfer_'s rules are simple on their own, their implications are not
-obvious and deserve to be enumerated. We will do this Socratically.
+My hope is to not make it necessary for a user to fully understand the rules of
+_Parinfer_, but to have a simple enough set of implications that make it worth
+the indentation benefits.
+
+We will now explore the implications, Socratically!
 
 ### Question #1: Couldn't this break existing code?
 
