@@ -205,9 +205,15 @@ __Try it!__ Edit the code below on the left to see how parens are inferred on th
 > 
 > <a class="img-link" href="https://xkcd.com/859/"><img src="https://imgs.xkcd.com/comics/(.png"></img></a>
 
-In addition to the indentation features previously illustrated, this system has
-additional implications on how we interact with our Lisp code.  We will explore
-them Socratically.
+## Full Implications
+
+We have created this new _Parinfer_ process to achieve the indentation demos we
+saw earlier.  But this process affects more than just the Tab key!  Sometimes
+typing something will result in two characters showing up.  Other times the
+character will not show.  And sometimes we can't delete specific characters.
+
+Though _Parinfer_'s rules are simple on their own, their implications are not
+obvious and deserve to be enumerated. We will do this Socratically:
 
 ### Question #1: Couldn't this break existing code?
 
