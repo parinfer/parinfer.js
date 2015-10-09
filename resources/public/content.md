@@ -11,7 +11,7 @@ an experiment to <em>simplify how we write Lisp</em> by:
 </ul>
 
  <div>
-<div class="caption">__Quick Look__ at the current implementation in [CodeMirror]:</div>
+<div class="caption">__Quick Look__ at the current implementation for Clojure in [CodeMirror]:</div>
 <textarea id="code-intro">
 </textarea>
 </div>
@@ -204,62 +204,90 @@ __Try it!__ Edit the code below on the left to see how parens are inferred on th
 > 
 > <a class="img-link" href="https://xkcd.com/859/"><img src="https://imgs.xkcd.com/comics/(.png"></img></a>
 
-### Dealing with Malformed Input
-
 This two-step process is simple and works well for static, well-formatted text.
-But in practice, we need to add a few extra steps for dealing with malformed
-input (typed or pasted).  The biggest problem is that some paths between
-well-formated states must travel through malformed intermediate states.
-Luckily, I think we have sufficient solutions for these cases:
+But there are some other factors that require us to add more steps or to think
+about when we should apply them.
+
+### Automatic vs. Manual Formatting
+
+The animated examples we have seen so far trigger the formatting process after
+every text change, __automatically__.
+
+If we don't want the process to restrict what we're typing, we could instead
+__manually__ trigger it with a hotkey or button.  We haven't explored this
+option yet.
+
+### Preprocessing Existing Code
+
+When opening an existing file with incorrect indentation, _Parinfer_ will
+unwittingly restructure the code and change its behavior.  A hypothetical
+preprocessor could correct indentation to prevent this from happening, but such
+a thing is not currently implemented.
+
+A fully fledged pretty-printer (which preserves comments) would technically
+work, but I think correcting indentation line-by-line may be sufficient and
+less destructive of the author's inlining choices.
+
+### Dealing with Misplaced Parens
+
+We can add some steps for processing misplaced parens:
 
 <ol start="3">
+<li> remove right-parens at the start of each line
+  <div class="side-point">(since we consider them equivalent to right-parens at the end of a line)</div>
 <li> remove unmatched right-parens
   <div class="side-point">(seems to be an easy way to keep order, but not sure if this can be relaxed)</div>
-<li> remove right-parens at the start of each line
-  <div class="side-point">(these interfere with indentation detection)</div>
-<li> do not process text if quotes are unbalanced
-  <div class="side-point">(this could otherwise delete parens inside strings)</div>
-<li> escape a quote in a comment if it has an odd number of quotes?
-  <div class="side-point">(this might prevent loss of string info by preserving unbalanced quote state)</div> 
 </ol>
 
-### Automatic vs Manual Formatting
+### The cursor as a "paperweight" for parens
 
-This transformation can be triggered either automatically after every text
-change, or manually by some hotkey or button in the editor.  We need extra
-steps if the transformation is automatic:
+Just as paperweights keep our papers from blowing away, we similarly treat the
+user's cursor as a "parenweight" to keep parens from blowing away to indented
+lines. That is, if we are using the automatic formatter, we add the step:
 
-<ol start="6">
+<ol start="5">
 <li> do not displace right-parens that are behind the cursor
   <div class="side-point">(allows user to finish typing a line without an intermediate paren jumping to an indented line)</div>
 </ol>
 
-It is not obvious what the full implications are for this system, so let's
-explore.
+### Quotes are not like parens
 
-## Full Implications
+Quotes are sort of like parens, but there are important differences that
+prevent _Parinfer_ from treating them as such.
 
-We have created this new _Parinfer_ process to achieve the indentation demos we
-saw earlier.  But this process affects more than just the Tab key, especially
-since we have added more rules for dealing with malformed input.
+- multi-line strings do not follow indentation rules because whitespace is significant.
+- since strings don't follow indentation rules, we can't infer where they are intended to be closed.
+- a quote's identity as a left-quote or right-quote is dependent on what has come before it.
+
+### Imbalanced Quotes might erase parens in Auto-mode!
+
+In auto-mode, a quote typed before another string will turn that string
+__inside-out__, irreversibly subjecting any parens inside the prior contents of
+the string to _Parinfer_'s formatter.
+
+We try disabling the formatter for these imbalanced cases, but some cases seem
+impossible to detect.  For example, an end-of-line comment containing a single
+quote (or an odd number of them) can temporarily break the fall of an
+imbalanced quote, fooling _Parinfer_ into thinking it is okay for processing,
+like a broken "Buddy system".
+
+These are some steps that may detect most imbalances:
+
+<ol start="6">
+</ol>
+<li> do not process text if the text ends with an unclosed string
+  <div class="side-point">(this is a best guess for detecting imbalances)</div>
+<li> escape one quote in a comment if it has an odd number of unescaped quotes
+  <div class="side-point">(this might prevent a comment from catching an unbalanced quote)</div> 
+</ol>
+
+## Typing in auto-formatting mode
 
 My hope is to not make it necessary for a user to fully understand the rules of
-_Parinfer_, but to have a simple enough set of implications that make it worth
-the indentation benefits.
+_Parinfer_, but to have a the differences between what you type and what you
+see be simple enough to make it worth the indentation benefits.
 
-We will now explore the implications, Socratically!
-
-### Question #1: Couldn't this break existing code?
-
-Yes, by definition of this process, code will be restructured if it is not
-indented correctly.
-
-There may be a way to use a preprocessor to correct indentation when opening an
-existing file.  A full-fledged pretty-printer would technically work, but I
-think correcting indentation line-by-line may be sufficient and less
-destructive of the author's inlining choices.
-
-### Question #2: What happens when inserting parens?
+### Inserting Parens
 
 <div>
 <div class="caption">__Wrap__ by inserting a left-paren. It will enclose as far as indentation allows:</div>
@@ -273,7 +301,7 @@ destructive of the author's inlining choices.
 </textarea>
 </div>
 
-### Question #3: What happens when deleting parens?
+### Deleting Parens
 
 <div>
 <div class="caption">__Splice__ by removing a left-paren, since unmatched right-parens are removed:</div>
