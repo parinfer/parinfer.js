@@ -1,4 +1,4 @@
-# par<em>infer</em>
+# Par<em>infer</em>
 
  <p class="subtitle">
 an experiment to <em>simplify how we write Lisp</em> by:
