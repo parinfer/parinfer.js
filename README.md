@@ -8,7 +8,7 @@ This is an experiment that tries to demonstrate a possible replacement for
 ## Files
 
 | File  | Description  |
-|-------|--------------|
+|------:|:-------------|
 | [`core.cljs`] | entry point |
 | [`formatter.cljs`] | transforms code |
 | [`editor.cljs`] | glues formatter to CodeMirror |
