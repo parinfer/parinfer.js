@@ -1546,56 +1546,56 @@
   '{:timescale 2
     :changes
     [{:change
-      {:from {:line 4, :ch 4},
-       :to {:line 4, :ch 4},
+      {:from {:line 3, :ch 3},
+       :to {:line 3, :ch 3},
        :text (";"),
        :origin "+input"},
       :dt 0}
      {:change
-      {:from {:line 4, :ch 5},
-       :to {:line 4, :ch 5},
+      {:from {:line 3, :ch 4},
+       :to {:line 3, :ch 4},
        :text (";"),
        :origin "+input"},
-      :dt 218}
+      :dt 234}
      {:change
-      {:from {:line 4, :ch 5},
-       :to {:line 4, :ch 6},
+      {:from {:line 3, :ch 4},
+       :to {:line 3, :ch 5},
        :text (""),
        :origin "+delete"},
-      :dt 1254}
+      :dt 868}
      {:change
-      {:from {:line 4, :ch 4},
-       :to {:line 4, :ch 5},
+      {:from {:line 3, :ch 3},
+       :to {:line 3, :ch 4},
        :text (""),
        :origin "+delete"},
-      :dt 261}
+      :dt 370}
      {:change
-      {:from {:line 4, :ch 4},
-       :to {:line 4, :ch 4},
+      {:from {:line 3, :ch 3},
+       :to {:line 3, :ch 3},
        :text (";"),
        :origin "+input"},
-      :dt 938}
+      :dt 1060}
      {:change
-      {:from {:line 4, :ch 5},
-       :to {:line 4, :ch 5},
+      {:from {:line 3, :ch 4},
+       :to {:line 3, :ch 4},
        :text (";"),
        :origin "+input"},
-      :dt 333}
+      :dt 370}
      {:change
-      {:from {:line 4, :ch 5},
-       :to {:line 4, :ch 6},
+      {:from {:line 3, :ch 4},
+       :to {:line 3, :ch 5},
        :text (""),
        :origin "+delete"},
-      :dt 1081}
+      :dt 932}
      {:change
-      {:from {:line 4, :ch 4},
-       :to {:line 4, :ch 5},
+      {:from {:line 3, :ch 3},
+       :to {:line 3, :ch 4},
        :text (""),
        :origin "+delete"},
-      :dt 256}],
+      :dt 323}],
     :init-value
-    "(ns example.core\n  (:require\n    [clojure.string :refer [join]]\n    [clojure.data :refer [diff]]\n    [cljs.pprint :refer [pprint]]))",
-    :last-time 1444252893794, 
+    "(cljs.build.api/build \"src\"\n  {:main 'hello-world.core\n   :output-to \"out/main.js\"\n   :verbose true})",
+    :last-time 1444400762946, 
     :recording? false})
 
 (def wrap
