@@ -279,6 +279,16 @@ keeps your parens from blowing away.
 
 ### Inserting Quotes
 
+_Parinfer_ cannot infer anything about quote positions like it can with parens.  So it doesn't
+try to do anything special with them.
+
+But it does try really hard to not format the parens inside a string when its
+contents get turned inside out by an imbalanced quote.  I am frankly scared of
+the corner cases that we may not have covered yet.  I would appreciate anyone
+[reading the details][quote-details] and opening an issue if anything is missed.
+
+[quote-details]:https://github.com/shaunlebron/parinfer/blob/master/doc/formatter-details.md#imbalanced-quotes-might-erase-parens-in-auto-mode
+
 <div>
 <div class="caption">__Quote__ insertion allows temporary paren imbalances until quote is closed:</div>
 <textarea id="code-string">
