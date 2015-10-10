@@ -211,6 +211,11 @@ we will just explore their effects in the next section.
 
 The steps in the previous section have an effect on what you type.
 
+<div class="interact">
+<i class="fa fa-keyboard-o fa-lg"></i>
+__Try it!__ Interrupt the animations below to try it for yourself. Click outside to restore it.
+</div>
+
 ### Inserting Parens
 
 <div>
