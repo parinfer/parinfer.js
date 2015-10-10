@@ -159,8 +159,9 @@ roughly equivalent to those listed.
 
 We perform the following steps to rearrange parens based on indentation:
 
-1. remove all right-parens at the end of each line
-2. for every resulting unmatched left-paren:
+1. remove all unmatched right-parens (for housekeeping)
+2. remove all right-parens at the end of each line
+3. for every resulting unmatched left-paren:
   - insert a right-paren at the end of its line or its last non-empty indented line
 
 <div class="interact">
@@ -204,50 +205,66 @@ __Try it!__ Edit the code below on the left to see how parens are inferred on th
 > 
 > <a class="img-link" href="https://xkcd.com/859/"><img src="https://imgs.xkcd.com/comics/(.png"></img></a>
 
-There are more steps performed that you can read about here in detail, but
-we will just explore their effects rather than implementation here.
+There are more steps performed that you can [read about in detail], but
+we will just explore their effects in the next section.
+
+[read about in detail]:https://github.com/shaunlebron/parinfer/blob/master/doc/formatter-details.md
+
+## Cause and Effect: Typing
+
+The steps in the previous section have an effect on what you type.
 
 ### Inserting Parens
 
 <div>
-<div class="caption">__Wrap__ by inserting a left-paren. It will enclose as far as indentation allows:</div>
+<div class="caption">__Wrap__ by inserting a left-paren. It will auto-close as far as it can, due to step #3.</div>
 <textarea id="code-wrap">
 </textarea>
 </div>
 
 <div>
-<div class="caption">__Shorten__ by inserting a right-paren before another:</div>
+<div class="caption">__Shorten__ by inserting a right-paren before another.
+Notice the original is removed, due to step #1.</div>
 <textarea id="code-barf">
 </textarea>
 </div>
 
-mention inability to insert unmatched paren
+<div class="caption">
+__Q: Why can't I insert a right-paren?__<br>
+A: Its corresponding left-paren must be there first. (see step #1)
+</div>
 
 ### Deleting Parens
 
 <div>
-<div class="caption">__Splice__ by removing a left-paren, since unmatched right-parens are removed:</div>
+<div class="caption">__Splice__ by removing a left-paren. Its corresponding right-paren is removed, due to step #1.</div>
 <textarea id="code-splice">
 </textarea>
 </div>
 
 <div>
-<div class="caption">__Extend__ by deleting a right-paren inside a line.</div>
+<div class="caption">__Extend__ by deleting a right-paren inside a line. It is replaced further down, due to step #3.</div>
 <textarea id="code-slurp">
 </textarea>
 </div>
 
-mention inability to delete inferred paren
+<div class="caption">
+__Q: Why can't I delete a right-paren?__<br>
+A: You cannot delete an inferred right-paren. It is replaced as soon
+as you delete it. (see step #3)
+</div>
 
-### When Parens Move
+### Know When Parens Move
 
-_Parinfer_ does this to give your cursor some leeway.  It waits to displace the
-parens behind your cursor until it is sure you are not trying to type anything
-in front of them. Just move your cursor away (to another line or behind the
-parens) when you're done.
+As a courtesy, _Parinfer_ will not move your parens until you are done typing
+in front of them.  Just move your cursor away when you're done (to another line
+or behind the parens).
+
+A helpful analogy might be to think of your cursor as a _paperweight_ that
+keeps your parens from blowing away.
 
 <div>
-<div class="caption">__Paren displaced__ when your cursor moves to another line, due to indentation.</div>
+<div class="caption">__Paren displaced__ when your cursor moves to another line. (displaced due to indentation)</div>
 <textarea id="code-displaced">
 </textarea>
 </div>
