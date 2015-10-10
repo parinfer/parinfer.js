@@ -23,14 +23,20 @@ This is an experiment that tries to demonstrate a possible replacement for
 [`vcr.cljs`]:src/parinfer/vcr.cljs
 [`vcr_data.cljs`]:src/parinfer/vcr_data.cljs
 
-## Tests
+## Formatter Details
 
-All tests are kept in [this markdown file](formatter-test.md), which is parsed
-and tested here under Node.js:
+The _formatter_ performs the indentation-based restructuring of code.
+You can read about the details of its design at [formatter-details.md].
+
+All tests are kept in [`formatter-tests.md`], which is parsed and tested here
+under Node.js:
 
 ```
 lein cljsbuild test
 ```
+
+[`formatter-details.md`]:doc/formatter-details.md
+[`formatter-tests.md`]:doc/formatter-tests.md
 
 ## Presentation Page
 

@@ -1,5 +1,5 @@
 (ns parinfer.formatter-test
-  "Parses and verifies tests written in formatter-test.md
+  "Parses and verifies tests written in formatter-tests.md
   (must be run on Node.js)"
   (:require
     [clojure.string :as string :refer [split-lines]]
@@ -10,7 +10,7 @@
 (def fs (js/require "fs"))
 
 ;; All test cases are parsed from this markdown file.
-(def test-filepath "formatter-test.md")
+(def test-filepath "doc/formatter-tests.md")
 
 (defn error-msg
   [line-no msg]
