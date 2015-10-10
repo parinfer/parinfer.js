@@ -38,6 +38,9 @@
   (create-editor! "code-slurp" :slurp)
   (create-editor! "code-string" :string)
 
+  (create-editor! "code-warn-good" :warn-good)
+  (create-editor! "code-warn-bad" :warn-bad)
+
   (create-editor! "code-displaced" :displaced)
   (create-editor! "code-not-displaced" :not-displaced)
 

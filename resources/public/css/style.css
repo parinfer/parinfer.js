@@ -271,3 +271,20 @@ blockquote {
   font-style: italic;
   opacity: 0.5;
 }
+
+.warning
+{
+  background: #FFFF7B;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.green
+{
+  color: #63CA63;
+}
+
+.red
+{
+  color: #E84545;
+}

@@ -278,16 +278,31 @@ parens from blowing away.
 ### Inserting Quotes
 
 _Parinfer_ cannot infer anything about quote positions like it can with parens.
-So it doesn't try to do anything special with them.  _However_, it does [try
-really hard][quote-details] not to format the parens inside a string when its
-contents get turned inside out by an imbalanced quote.  (please open issue if I
-missed something)
-
-[quote-details]:https://github.com/shaunlebron/parinfer/blob/master/doc/formatter-details.md#imbalanced-quotes-might-erase-parens-in-auto-mode
+So it doesn't try to do anything special with them, other than abandon
+processing if imbalanced quotes are detected.
 
 <div>
 <div class="caption">__Quote__ insertion allows temporary paren imbalances until quote is closed:</div>
 <textarea id="code-string">
+</textarea>
+</div>
+
+<div class="warning"> <i class="fa fa-lg fa-warning"></i>
+__WARNING: Always make sure quotes are balanced when inside comments!__<br>
+If there is an unclosed quote before a comment, which itself contains
+imbalanced quotes, they will balance each other out and fool _Parinfer_ into
+thinking it is okay for processing.
+</div>
+
+<div>
+<div class="caption"> <i class="fa fa-lg fa-times red"></i> Inserting a string here can corrupt a subsequent string.</div>
+<textarea id="code-warn-bad">
+</textarea>
+</div>
+
+<div>
+<div class="caption"> <i class="fa fa-lg fa-check green"></i> Balance the quotes in the comment to prevent the problem.</div>
+<textarea id="code-warn-good">
 </textarea>
 </div>
 

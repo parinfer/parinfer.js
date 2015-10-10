@@ -73,12 +73,12 @@ quote (or an odd number of them) can temporarily break the fall of an
 imbalanced quote, fooling _Parinfer_ into thinking it is okay for processing,
 like a broken "Buddy system".
 
-These are some steps that may detect most imbalances:
+__Recommended to Users__: Keep strings inside comments balanced!
+
+We add the following step:
 
 <ol start="6">
 <li> do not process text if the text ends with an unclosed string
   <div class="side-point">(this is a best guess for detecting imbalances)</div>
-<li> auto-escape any quotes in a comment
-  <div class="side-point">(this might prevent a comment from catching an unbalanced quote)</div>
 </ol>
 
