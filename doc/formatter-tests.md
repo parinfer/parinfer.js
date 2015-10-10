@@ -15,12 +15,7 @@ format, which will be parsed and executed by the test runner.
 Certain cases are affected by cursor location, represented by the pipe `|`
 character.
 
-Run with
-
-```
-lein cljsbuild test
-```
-
+Run with `lein cljsbuild test`
 
 ## No Closers
 
