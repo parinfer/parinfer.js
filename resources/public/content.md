@@ -259,11 +259,9 @@ as you delete it. (see step #3)
 ### Knowing When Parens Move
 
 As a courtesy, _Parinfer_ will not move your parens until you are done typing
-in front of them.  Just move your cursor away when you're done (to another line
-or behind the parens).
-
-A helpful analogy might be to think of your cursor as a _paperweight_ that
-keeps your parens from blowing away.
+in front of them.  Just move your cursor away when you're done.  A helpful
+analogy might be to think of your cursor as a _paperweight_ that keeps your
+parens from blowing away.
 
 <div>
 <div class="caption">__Paren displaced__ when your cursor moves to another line. (displaced due to indentation)</div>
@@ -279,13 +277,11 @@ keeps your parens from blowing away.
 
 ### Inserting Quotes
 
-_Parinfer_ cannot infer anything about quote positions like it can with parens.  So it doesn't
-try to do anything special with them.
-
-But it does try really hard to not format the parens inside a string when its
-contents get turned inside out by an imbalanced quote.  I am frankly scared of
-the corner cases that we may not have covered yet.  I would appreciate anyone
-[reading the details][quote-details] and opening an issue if anything is missed.
+_Parinfer_ cannot infer anything about quote positions like it can with parens.
+So it doesn't try to do anything special with them.  _However_, it does [try
+really hard][quote-details] not to format the parens inside a string when its
+contents get turned inside out by an imbalanced quote.  (please open issue if I
+missed something)
 
 [quote-details]:https://github.com/shaunlebron/parinfer/blob/master/doc/formatter-details.md#imbalanced-quotes-might-erase-parens-in-auto-mode
 
