@@ -50,6 +50,7 @@ body {
 }
 
 h1, h2, h3, h4, h5, h6 {
+  color: #222;
 }
 
 h1 {
@@ -62,7 +63,7 @@ h1 {
 h1 em {
   text-decoration: none;
   font-style: normal;
-  opacity: 0.5;
+  opacity: 0.3;
 }
 
 h2 {
