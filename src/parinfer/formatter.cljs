@@ -115,7 +115,10 @@
   (cond
     (escaping? stack) {:stack (pop stack)}
     (in-str? stack) {:stack (pop stack)}
-    (in-comment? stack) nil
+
+    ;; make sure quotes are escaped in comments, so that they can't catch imbalanced quotes
+    (in-comment? stack) {:ch "\\\""}
+
     :else {:stack (conj stack [x-pos ch])}))
 
 (defmethod push-char* :default

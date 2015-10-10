@@ -186,6 +186,32 @@ code.  See [Issue #15](https://github.com/shaunlebron/parinfer/issues/15).
       c")
 ```
 
+Make sure quotes are escaped in comments...
+
+```in
+;; "
+```
+
+```out
+;; \"
+```
+
+So the comment quotes can't catch any quote imbalances:
+
+```in
+(def foo
+  "|
+  "(a b) ;; \"
+      c")
+```
+
+```out
+(def foo
+  "
+  "(a b) ;; \"
+      c")
+```
+
 ## Character syntax
 
 ```in
