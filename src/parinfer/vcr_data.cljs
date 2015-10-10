@@ -2051,168 +2051,70 @@
     :last-time 1444261858898, 
     :recording? false})
 
-(def cue-dim
-  '{:loop-delay 1000
-    :timescale 2
+(def warn-bad
+  '{:loop-delay 2500
     :changes
-    [{:change
-      {:from {:line 0, :ch 12},
-       :to {:line 0, :ch 12},
-       :text (" "),
-       :origin "+input"},
-      :dt 0}
-     {:change
-      {:from {:line 0, :ch 13},
-       :to {:line 0, :ch 13},
-       :text ("x"),
-       :origin "+input"},
-      :dt 332}
-     {:selections ({:anchor {:line 0, :ch 15}, :head {:line 0, :ch 15}}),
-      :dt 728}
-     {:change
-      {:from {:line 0, :ch 15},
-       :to {:line 0, :ch 15},
-       :text (" "),
-       :origin "+input"},
-      :dt 463}
-     {:change
-      {:from {:line 0, :ch 16},
-       :to {:line 0, :ch 16},
-       :text ("x"),
-       :origin "+input"},
-      :dt 192}
-     {:change
-      {:from {:line 0, :ch 16},
-       :to {:line 0, :ch 17},
-       :text (""),
-       :origin "+delete"},
-      :dt 1076}
-     {:change
-      {:from {:line 0, :ch 15},
-       :to {:line 0, :ch 16},
-       :text (""),
-       :origin "+delete"},
-      :dt 190}
-     {:change
-      {:from {:line 0, :ch 14},
-       :to {:line 0, :ch 15},
-       :text (""),
-       :origin "+delete"},
-      :dt 563}
-     {:change
-      {:from {:line 0, :ch 13},
-       :to {:line 0, :ch 14},
-       :text (""),
-       :origin "+delete"},
-      :dt 202}
-     {:change
-      {:from {:line 0, :ch 12},
-       :to {:line 0, :ch 13},
-       :text (""),
-       :origin "+delete"},
-      :dt 180}],
-    :init-value "(foo [1 2 3])",
-    :last-time 1444147399683, 
-    :recording? false})
-
-(def cue-block
-  '{:timescale 2
-    :changes
-    [{:selections ({:anchor {:line 2, :ch 0}, :head {:line 2, :ch 0}}),
-      :dt 0}
-     {:change
-      {:from {:line 2, :ch 0},
-       :to {:line 2, :ch 0},
-       :text ("  "),
-       :origin "+input"},
+    [{:selections ({:anchor {:line 0, :ch 0}, :head {:line 0, :ch 0}}),
       :dt 500}
      {:change
-      {:from {:line 2, :ch 2},
-       :to {:line 2, :ch 2},
-       :text ("  "),
-       :origin "+input"},
-      :dt 269}
+      {:from {:line 0, :ch 0},
+       :to {:line 0, :ch 0},
+       :text
+       (""
+         ""
+         "(def string \")))))\") ;; <-- corrupted!"
+         ""
+         ";; \" <-- BAD (unclosed string)"),
+       :origin "paste"},
+      :dt 500}
+     {:selections ({:anchor {:line 0, :ch 0}, :head {:line 0, :ch 0}}),
+      :dt 1082}
      {:change
-      {:from {:line 2, :ch 4},
-       :to {:line 2, :ch 4},
-       :text ("  "),
+      {:from {:line 0, :ch 0},
+       :to {:line 0, :ch 0},
+       :text ("\""),
        :origin "+input"},
-      :dt 272}
-     {:selections ({:anchor {:line 1, :ch 14}, :head {:line 1, :ch 14}}),
-      :dt 1214}
-     {:selections ({:anchor {:line 1, :ch 13}, :head {:line 1, :ch 14}}),
-      :dt 219}
+      :dt 704}
      {:change
-      {:from {:line 1, :ch 13},
-       :to {:line 1, :ch 14},
-       :text (""),
-       :origin "+delete"},
-      :dt 1332}
-     {:selections ({:anchor {:line 0, :ch 11}, :head {:line 0, :ch 11}}),
-      :dt 496}],
-    :init-value "(foo [1 2 3\n      4 5 6] x)\n7 8 9",
-    :last-time 1444146051467, 
+      {:from {:line 0, :ch 1},
+       :to {:line 0, :ch 1},
+       :text ("\""),
+       :origin "+input"},
+      :dt 290}],
+    :init-value "", 
+    :last-time 1444508331824, 
     :recording? false})
 
-(def cue-cursor
-  '{:timescale 2
+(def warn-good
+  '{:loop-delay 2500
     :changes
-    [{:selections ({:anchor {:line 0, :ch 11}, :head {:line 0, :ch 11}}),
-      :dt 0}
+    [{:selections ({:anchor {:line 0, :ch 0}, :head {:line 0, :ch 0}}),
+      :dt 500}
      {:change
-      {:from {:line 0, :ch 11},
-       :to {:line 0, :ch 11},
-       :text ("]"),
-       :origin "+input"},
-      :dt 1154}
+      {:from {:line 0, :ch 0},
+       :to {:line 0, :ch 0},
+       :text
+       (""
+         ""
+         "(def string \")))))\") ;; <-- preserved!"
+         ""
+         ";; \"\" <-- GOOD (balanced quotes)"),
+       :origin "paste"},
+      :dt 500}
+     {:selections ({:anchor {:line 0, :ch 0}, :head {:line 0, :ch 0}}),
+      :dt 1082}
      {:change
-      {:from {:line 0, :ch 12},
-       :to {:line 0, :ch 12},
-       :text (" "),
+      {:from {:line 0, :ch 0},
+       :to {:line 0, :ch 0},
+       :text ("\""),
        :origin "+input"},
-      :dt 351}
+      :dt 704}
      {:change
-      {:from {:line 0, :ch 13},
-       :to {:line 0, :ch 13},
-       :text ("x"),
+      {:from {:line 0, :ch 1},
+       :to {:line 0, :ch 1},
+       :text ("\""),
        :origin "+input"},
-      :dt 857}
-     {:selections ({:anchor {:line 1, :ch 5}, :head {:line 1, :ch 5}}),
-      :dt 946}
-     {:selections ({:anchor {:line 1, :ch 5}, :head {:line 1, :ch 6}}),
-      :dt 252}
-     {:selections ({:anchor {:line 1, :ch 5}, :head {:line 1, :ch 8}}),
-      :dt 15}
-     {:selections ({:anchor {:line 1, :ch 5}, :head {:line 2, :ch 11}}),
-      :dt 17}
-     {:selections ({:anchor {:line 1, :ch 5}, :head {:line 2, :ch 12}}),
-      :dt 5}
-     {:change
-      {:from {:line 1, :ch 0},
-       :to {:line 1, :ch 6},
-       :text ("    "),
-       :origin "+input"},
-      :dt 690}
-     {:change
-      {:from {:line 2, :ch 0},
-       :to {:line 2, :ch 6},
-       :text ("    "),
-       :origin "+input"},
-      :dt 3}
-     {:change
-      {:from {:line 1, :ch 0},
-       :to {:line 1, :ch 4},
-       :text ("  "),
-       :origin "+input"},
-      :dt 357}
-     {:change
-      {:from {:line 2, :ch 0},
-       :to {:line 2, :ch 4},
-       :text ("  "),
-       :origin "+input"},
-      :dt 3}
-     {:selections ({:anchor {:line 2, :ch 8}, :head {:line 2, :ch 8}}),
-      :dt 841}],
-    :init-value "(foo [1 2 3\n      4 5 6 \n      7 8 9])",
-    :last-time 1444165202387, 
+      :dt 290}],
+    :init-value "", 
+    :last-time 1444508331824, 
     :recording? false})

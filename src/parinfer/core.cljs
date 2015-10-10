@@ -76,6 +76,8 @@
   (swap! vcr update-in [:comment] merge vcr/comment-)
   
   (swap! vcr update-in [:string] merge vcr/string)
+  (swap! vcr update-in [:warn-bad] merge vcr/warn-bad)
+  (swap! vcr update-in [:warn-good] merge vcr/warn-good)
 
   (play-recording! :intro)
   (play-recording! :indent)
@@ -88,6 +90,8 @@
   (play-recording! :slurp)
   (play-recording! :comment)
   (play-recording! :string)
+  (play-recording! :warn-good)
+  (play-recording! :warn-bad)
   (play-recording! :displaced)
   (play-recording! :not-displaced)
 

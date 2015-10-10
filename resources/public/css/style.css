@@ -250,6 +250,12 @@ code {
   background: #AAFFC2;
 }
 
+#cm-code-warn-good,
+#cm-code-warn-bad
+{
+  height: 130px;
+}
+
 p.centered
 {
   text-align: center;

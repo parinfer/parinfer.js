@@ -295,13 +295,19 @@ thinking it is okay for processing.
 </div>
 
 <div>
-<div class="caption"> <i class="fa fa-lg fa-times red"></i> __BAD:__ Inserting a string here can corrupt a subsequent string.</div>
+<div class="caption">
+<i class="fa fa-lg fa-times red"></i>
+__BAD:__ An unclosed string in a comment can cause corrupted strings.
+</div>
 <textarea id="code-warn-bad">
 </textarea>
 </div>
 
 <div>
-<div class="caption"> <i class="fa fa-lg fa-check green"></i> __GOOD__: Balance the quotes in the comment to prevent the problem.</div>
+<div class="caption">
+<i class="fa fa-lg fa-check green"></i>
+__GOOD__: Balance the quotes in the comment to prevent the problem.
+</div>
 <textarea id="code-warn-good">
 </textarea>
 </div>
