@@ -5,7 +5,7 @@ This is an experiment that tries to demonstrate a possible replacement for
 
 [paredit]:http://danmidwood.com/content/2014/11/21/animated-paredit.html
 
-## Files
+## Source
 
 | File  | Description  |
 |------:|:-------------|
