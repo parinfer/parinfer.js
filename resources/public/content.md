@@ -202,10 +202,10 @@ __Try it!__ Edit the code below on the left to see how parens are inferred on th
 > 
 > <a class="img-link" href="https://xkcd.com/859/"><img src="https://imgs.xkcd.com/comics/(.png"></img></a>
 
-There are more steps performed that you can [read about in detail], but
+There are more steps performed that you can [read about in detail][formatter-details], but
 we will just explore their effects in the next section.
 
-[read about in detail]:https://github.com/shaunlebron/parinfer/blob/master/doc/formatter-details.md
+[formatter-details]:https://github.com/shaunlebron/parinfer/blob/master/doc/formatter-details.md
 
 ## Cause and Effect: Typing
 
