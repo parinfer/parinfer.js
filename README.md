@@ -26,7 +26,7 @@ This is an experiment that tries to demonstrate a possible replacement for
 ## Formatter Details
 
 The _formatter_ performs the indentation-based restructuring of code.
-You can read about the details of its design at [formatter-details.md].
+You can read about the details of its design at [`formatter-details.md`].
 
 All tests are kept in [`formatter-tests.md`], which is parsed and tested here
 under Node.js:
