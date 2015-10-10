@@ -68,7 +68,7 @@ __inside-out__, irreversibly subjecting any parens inside the prior contents of
 the string to _Parinfer_'s formatter.
 
 We try disabling the formatter for these imbalanced cases, but some cases seem
-impossible to detect.  For example, an end-of-line comment containing a single
+difficult to detect.  For example, an end-of-line comment containing a single
 quote (or an odd number of them) can temporarily break the fall of an
 imbalanced quote, fooling _Parinfer_ into thinking it is okay for processing,
 like a broken "Buddy system".
@@ -78,7 +78,7 @@ These are some steps that may detect most imbalances:
 <ol start="6">
 <li> do not process text if the text ends with an unclosed string
   <div class="side-point">(this is a best guess for detecting imbalances)</div>
-<li> escape one quote in a comment if it has an odd number of unescaped quotes
-  <div class="side-point">(this might prevent a comment from catching an unbalanced quote)</div> 
+<li> auto-escape any quotes in a comment
+  <div class="side-point">(this might prevent a comment from catching an unbalanced quote)</div>
 </ol>
 
