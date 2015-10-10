@@ -93,9 +93,6 @@ the right-parens at the end of a line as _eager to move_.  That is, eager to
 extend to indented lines.  As a visual cue, we _dim_ these parens to signify
 their inferred mobility.
 
-As you might already be thinking, there are some other ramifications that we
-will discuss later.  For now, here are some working examples:
-
 <div class="interact">
 <i class="fa fa-keyboard-o fa-lg"></i>
 __Try it!__ Interrupt the animations below to try it for yourself. Click outside to restore it.
