@@ -254,7 +254,7 @@ A: You cannot delete an inferred right-paren. It is replaced as soon
 as you delete it. (see step #3)
 </div>
 
-### Know When Parens Move
+### Knowing When Parens Move
 
 As a courtesy, _Parinfer_ will not move your parens until you are done typing
 in front of them.  Just move your cursor away when you're done (to another line
