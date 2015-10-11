@@ -76,6 +76,13 @@ this way to choose the resolution at which to view your code:
 It is the balance of these two views that gives us readability without causing
 structural ambiguity.
 
+> __Anytime I mention "parens"__ (parentheses), it also applies to _[square]_
+> or _{curly}_ brackets.  Some Lisps (e.g. [Racket], [Clojure]) use these extra
+> delimiters to help visually separate certain constructs.
+
+[Racket]:http://racket-lang.org/
+[Clojure]:http://clojure.org/
+
 ## Indentation: the Holy Grail
 
 Since we can _skim_ code with indentation, is it possible to _sketch_ code with
