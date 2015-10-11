@@ -281,9 +281,26 @@ blockquote {
 
 .warning
 {
-  background: #FFFF7B;
   padding: 20px;
-  border-radius: 10px;
+  border-radius: 5px;
+  background: #FFFF7B;
+}
+
+.warning-title
+{
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.warning-title i.fa
+{
+  margin-right: 5px;
+}
+
+.warning-body
+{
+  margin-left: 34px;
+  color: #333;
 }
 
 .green
@@ -294,4 +311,20 @@ blockquote {
 .red
 {
   color: #E84545;
+}
+
+.question
+{
+  font-weight: bold;
+}
+
+.question i.fa
+{
+  color: #5380C7;
+  margin-right: 5px;
+}
+
+.answer
+{
+  margin-left: 22px;
 }

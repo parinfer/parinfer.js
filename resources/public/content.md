@@ -232,8 +232,11 @@ Notice the original is removed, due to step #1.</div>
 </div>
 
 <div class="caption">
-__Q: Why can't I insert a right-paren?__<br>
-A: Its corresponding left-paren must be there first. (see step #1)
+<div class="question">
+<i class="fa fa-question-circle"></i>
+Why can't I insert a right-paren?
+</div>
+<div class="answer">Its corresponding left-paren must be there first. (see step #1)</div>
 </div>
 
 ### Deleting Parens
@@ -251,9 +254,11 @@ A: Its corresponding left-paren must be there first. (see step #1)
 </div>
 
 <div class="caption">
-__Q: Why can't I delete a right-paren?__<br>
-A: You cannot delete an inferred right-paren. It is replaced as soon
-as you delete it. (see step #3)
+<div class="question">
+<i class="fa fa-question-circle"></i>
+Why can't I delete a right-paren?
+</div>
+<div class="answer">You cannot delete an inferred right-paren. It is replaced as soon as you delete it. (see step #3)</div>
 </div>
 
 ### Knowing When Parens Move
@@ -287,11 +292,16 @@ processing if imbalanced quotes are detected.
 </textarea>
 </div>
 
-<div class="warning"> <i class="fa fa-lg fa-warning"></i>
-__WARNING: Always make sure quotes are balanced when inside comments!__<br>
+<div class="warning"> 
+<div class="warning-title">
+<i class="fa fa-lg fa-warning"></i>
+WARNING: Always make sure quotes are balanced when inside comments!
+</div>
+<div class="warning-body">
 If there is an unclosed quote before a comment, which itself contains
 imbalanced quotes, they will balance each other out and fool _Parinfer_ into
 thinking it is okay for processing.
+</div>
 </div>
 
  <div class="two-col">
