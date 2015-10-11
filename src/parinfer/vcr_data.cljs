@@ -1601,94 +1601,92 @@
 (def wrap
   '{:timescale 2
     :changes
-    [{:change
-      {:from {:line 0, :ch 5},
-       :to {:line 0, :ch 5},
-       :text ("1"),
-       :origin "+input"},
+    [{:selections ({:anchor {:line 0, :ch 0}, :head {:line 0, :ch 0}}),
       :dt 0}
      {:change
-      {:from {:line 0, :ch 6},
-       :to {:line 0, :ch 6},
-       :text (" "),
-       :origin "+input"},
-      :dt 97}
-     {:change
-      {:from {:line 0, :ch 7},
-       :to {:line 0, :ch 7},
-       :text ("2"),
-       :origin "+input"},
-      :dt 103}
-     {:change
-      {:from {:line 0, :ch 8},
-       :to {:line 0, :ch 8},
-       :text (" "),
-       :origin "+input"},
-      :dt 120}
-     {:change
-      {:from {:line 0, :ch 9},
-       :to {:line 0, :ch 9},
-       :text ("3"),
-       :origin "+input"},
-      :dt 201}
-     {:change
-      {:from {:line 0, :ch 10},
-       :to {:line 0, :ch 10},
-       :text (" "),
-       :origin "+input"},
-      :dt 143}
-     {:change
-      {:from {:line 0, :ch 11},
-       :to {:line 0, :ch 11},
-       :text ("4"),
-       :origin "+input"},
-      :dt 168}
-     {:change
-      {:from {:line 0, :ch 12},
-       :to {:line 0, :ch 12},
-       :text (" "),
-       :origin "+input"},
-      :dt 136}
-     {:change
-      {:from {:line 0, :ch 13},
-       :to {:line 0, :ch 13},
-       :text ("5"),
-       :origin "+input"},
-      :dt 425}
-     {:change
-      {:from {:line 0, :ch 14},
-       :to {:line 0, :ch 14},
-       :text (" "),
-       :origin "+input"},
-      :dt 290}
-     {:change
-      {:from {:line 0, :ch 15},
-       :to {:line 0, :ch 15},
-       :text ("6"),
-       :origin "+input"},
-      :dt 157}
+      {:from {:line 0, :ch 0},
+       :to {:line 0, :ch 0},
+       :text ("(foo 1 2 3 4 5 6)"),
+       :origin "paste"},
+      :dt 543}
      {:selections ({:anchor {:line 0, :ch 5}, :head {:line 0, :ch 5}}),
-      :dt 1063}
+      :dt 924}
      {:change
       {:from {:line 0, :ch 5},
        :to {:line 0, :ch 5},
+       :text ("["),
+       :origin "+input"},
+      :dt 595}
+     {:selections ({:anchor {:line 0, :ch 19}, :head {:line 0, :ch 19}}),
+      :dt 856}
+     {:change
+      {:from {:line 0, :ch 19},
+       :to {:line 0, :ch 19},
+       :text ("" ""),
+       :origin "+input"},
+      :dt 572}
+     {:change
+      {:from {:line 1, :ch 0},
+       :to {:line 1, :ch 0},
        :text ("("),
        :origin "+input"},
-      :dt 1260}
+      :dt 311}
      {:change
-      {:from {:line 0, :ch 6},
-       :to {:line 0, :ch 6},
-       :text ("+"),
+      {:from {:line 1, :ch 1},
+       :to {:line 1, :ch 1},
+       :text ("b"),
        :origin "+input"},
-      :dt 831}
+      :dt 207}
      {:change
-      {:from {:line 0, :ch 7},
-       :to {:line 0, :ch 7},
+      {:from {:line 1, :ch 2},
+       :to {:line 1, :ch 2},
+       :text ("a"),
+       :origin "+input"},
+      :dt 169}
+     {:change
+      {:from {:line 1, :ch 3},
+       :to {:line 1, :ch 3},
+       :text ("r"),
+       :origin "+input"},
+      :dt 112}
+     {:change
+      {:from {:line 1, :ch 4},
+       :to {:line 1, :ch 4},
        :text (" "),
        :origin "+input"},
-      :dt 161}],
-    :init-value "(foo )", 
-    :last-time 1444255657876, 
+      :dt 79}
+     {:change
+      {:from {:line 1, :ch 5},
+       :to {:line 1, :ch 5},
+       :text ("a"),
+       :origin "+input"},
+      :dt 244}
+     {:change
+      {:from {:line 1, :ch 6},
+       :to {:line 1, :ch 6},
+       :text (" "),
+       :origin "+input"},
+      :dt 83}
+     {:change
+      {:from {:line 1, :ch 7},
+       :to {:line 1, :ch 7},
+       :text ("b"),
+       :origin "+input"},
+      :dt 227}
+     {:change
+      {:from {:line 1, :ch 8},
+       :to {:line 1, :ch 8},
+       :text (" "),
+       :origin "+input"},
+      :dt 181}
+     {:change
+      {:from {:line 1, :ch 9},
+       :to {:line 1, :ch 9},
+       :text ("c"),
+       :origin "+input"},
+      :dt 130}],
+    :init-value "",
+    :last-time 1444574204081, 
     :recording? false})
 
 (def splice
@@ -1709,22 +1707,35 @@
     :recording? false})
 
 (def barf
-  '{:changes
- [{:selections ({:anchor {:line 0, :ch 20}, :head {:line 0, :ch 20}}),
-   :dt 0}
-  {:selections ({:anchor {:line 0, :ch 20}, :head {:line 0, :ch 19}}),
-   :dt 165}
-  {:selections ({:anchor {:line 0, :ch 11}, :head {:line 0, :ch 11}}),
-   :dt 2231}
-  {:change
-   {:from {:line 0, :ch 11},
-    :to {:line 0, :ch 11},
-    :text (")"),
-    :origin "+input"},
-   :dt 1230}],
- :init-value "(foo (+ 1 2 3 4 5 6))",
- :last-time 1444256380089, 
- :recording? false})
+  '{:timescale 2
+    :changes
+    [{:selections ({:anchor {:line 0, :ch 0}, :head {:line 0, :ch 0}}),
+      :dt 0}
+     {:change
+      {:from {:line 0, :ch 0},
+       :to {:line 0, :ch 0},
+       :text ("(foo [1 2 3 4 5 6])" "(bar a b c)"),
+       :origin "paste"},
+      :dt 1438}
+     {:selections ({:anchor {:line 0, :ch 11}, :head {:line 0, :ch 11}}),
+      :dt 1384}
+     {:change
+      {:from {:line 0, :ch 11},
+       :to {:line 0, :ch 11},
+       :text ("]"),
+       :origin "+input"},
+      :dt 588}
+     {:selections ({:anchor {:line 1, :ch 8}, :head {:line 1, :ch 8}}),
+      :dt 1033}
+     {:change
+      {:from {:line 1, :ch 8},
+       :to {:line 1, :ch 8},
+       :text (")"),
+       :origin "+input"},
+      :dt 889}],
+    :init-value "", 
+    :last-time 1444574335406, 
+    :recording? false})
 
 (def slurp-
   '{:changes
