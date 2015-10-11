@@ -1690,20 +1690,34 @@
     :recording? false})
 
 (def splice
-  '{:loop-delay 2000
+  '{:timescale 2
     :changes
-    [{:selections ({:anchor {:line 0, :ch 6}, :head {:line 0, :ch 6}}),
+    [{:selections ({:anchor {:line 0, :ch 0}, :head {:line 0, :ch 0}}),
       :dt 0}
-     {:selections ({:anchor {:line 0, :ch 6}, :head {:line 0, :ch 5}}),
-      :dt 220}
+     {:change
+      {:from {:line 0, :ch 0},
+       :to {:line 0, :ch 0},
+       :text ("(foo [1 2 3 4 5 6])" "(bar a b c)"),
+       :origin "paste"},
+      :dt 917}
+     {:selections ({:anchor {:line 0, :ch 6}, :head {:line 0, :ch 6}}),
+      :dt 1006}
      {:change
       {:from {:line 0, :ch 5},
        :to {:line 0, :ch 6},
        :text (""),
        :origin "+delete"},
-      :dt 1372}],
-    :init-value "(foo (+ 1 2 3 4 5 6))",
-    :last-time 1444256056155, 
+      :dt 746}
+     {:selections ({:anchor {:line 1, :ch 1}, :head {:line 1, :ch 1}}),
+      :dt 970}
+     {:change
+      {:from {:line 1, :ch 0},
+       :to {:line 1, :ch 1},
+       :text (""),
+       :origin "+delete"},
+      :dt 446}],
+    :init-value "",
+    :last-time 1444575352287, 
     :recording? false})
 
 (def barf
@@ -1738,25 +1752,34 @@
     :recording? false})
 
 (def slurp-
-  '{:changes
-    [{:selections ({:anchor {:line 0, :ch 12}, :head {:line 0, :ch 11}}),
+  '{:timescale 2
+    :changes
+    [{:selections ({:anchor {:line 0, :ch 0}, :head {:line 0, :ch 0}}),
       :dt 0}
+     {:change
+      {:from {:line 0, :ch 0},
+       :to {:line 0, :ch 0},
+       :text ("(foo [1 2 3] 4 5 6)" "(bar a b) c"),
+       :origin "paste"},
+      :dt 626}
+     {:selections ({:anchor {:line 0, :ch 12}, :head {:line 0, :ch 12}}),
+      :dt 755}
      {:change
       {:from {:line 0, :ch 11},
        :to {:line 0, :ch 12},
        :text (""),
        :origin "+delete"},
-      :dt 3259}
-     {:selections ({:anchor {:line 0, :ch 15}, :head {:line 0, :ch 15}}),
-      :dt 662}
+      :dt 706}
+     {:selections ({:anchor {:line 1, :ch 9}, :head {:line 1, :ch 9}}),
+      :dt 824}
      {:change
-      {:from {:line 0, :ch 15},
-       :to {:line 0, :ch 15},
-       :text (")"),
-       :origin "+input"},
-      :dt 967}],
-    :init-value "(foo (+ 1 2) 3 4 5 6)",
-    :last-time 1444256562984, 
+      {:from {:line 1, :ch 8},
+       :to {:line 1, :ch 9},
+       :text (""),
+       :origin "+delete"},
+      :dt 515}],
+    :init-value "", 
+    :last-time 1444575467477, 
     :recording? false})
 
 (def string
