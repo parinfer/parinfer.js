@@ -83,8 +83,7 @@
   (when-let [stop-chan (get-in @vcr [key- :stop-chan])]
     (close! stop-chan))
   (swap! vcr assoc-in [key- :stop-chan] (chan))
-  (let [show? (= key- :warn-good)
-        cm (get-in @state [key- :cm])
+  (let [cm (get-in @state [key- :cm])
         recording (get @vcr key-)
         timescale (get recording :timescale 1)
         loop? (get recording :loop? true)
@@ -93,29 +92,24 @@
         cursor (gdom/getElementByClass "CodeMirror-cursors" element)]
     (set! (.. cursor -style -visibility) "visible")
     (go-loop []
-      (when show? (println "resetting"))
       (swap! state assoc-in [key- :text] (:init-value recording))
       (loop [changes (:changes recording)]
         (when (seq changes)
           (let [{:keys [change selections dt] :as data} (first changes)
-                _ (when show? (println "waiting for" dt))
                 tchan (timeout (/ dt timescale))
                 stop-chan (:stop-chan recording)
                 [v c] (alts! [tchan stop-chan])]
             (when (not= c stop-chan)
-              (when show? (println "applying change."))
               (cond
                 change (apply-change cm change)
                 selections (apply-selections cm selections)
                 :else nil)
               (recur (rest changes))))))
       (when loop?
-        (when show? (println "restarting in" loop-delay))
         (let [tchan (timeout loop-delay)
               stop-chan (:stop-chan recording)
               [v c] (alts! [tchan stop-chan])]
           (when (not= c stop-chan)
-            (when show? (println "restarting!"))
             (recur)))))))
 
 (defn stop-playing!
