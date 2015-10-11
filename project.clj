@@ -30,9 +30,7 @@
 
               :compiler {:main parinfer.core
                          :foreign-libs [{:file "src/parinfer/js/cm-clojure-parinfer.js"
-                                         :provides ["cljsjs.codemirror.mode.clojure-parinfer"]}
-                                        {:file "src/parinfer/js/marked-toc.js"
-                                         :provides ["cljsjs.marked.toc"]}]
+                                         :provides ["cljsjs.codemirror.mode.clojure-parinfer"]}]
                          :asset-path "js/compiled/out"
                          :output-to "resources/public/js/compiled/parinfer.js"
                          :output-dir "resources/public/js/compiled/out"
@@ -42,9 +40,7 @@
               :compiler {:output-to "resources/public/js/compiled/parinfer.js"
                          :externs ["src/parinfer/js/marked-toc.externs.js"]
                          :foreign-libs [{:file "src/parinfer/js/cm-clojure-parinfer.js"
-                                         :provides ["cljsjs.codemirror.mode.clojure-parinfer"]}
-                                        {:file "src/parinfer/js/marked-toc.js"
-                                         :provides ["cljsjs.marked.toc"]}]
+                                         :provides ["cljsjs.codemirror.mode.clojure-parinfer"]}]
                          :main parinfer.core
                          :optimizations :advanced
                          :pretty-print false}}
@@ -54,9 +50,7 @@
               :compiler {:output-to "resources/public/js/compiled/parinfer-test.js"
                          :output-dir "resources/public/js/compiled/out-test"
                          :foreign-libs [{:file "src/parinfer/js/cm-clojure-parinfer.js"
-                                         :provides ["cljsjs.codemirror.mode.clojure-parinfer"]}
-                                        {:file "src/parinfer/js/marked-toc.js"
-                                         :provides ["cljsjs.marked.toc"]}]
+                                         :provides ["cljsjs.codemirror.mode.clojure-parinfer"]}]
                          :main parinfer.runner
                          :optimizations :none
                          :target :nodejs

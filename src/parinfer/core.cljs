@@ -3,6 +3,7 @@
     [hiccups.core :as hiccups :refer [html]])
   (:require
     [hiccups.runtime]
+    [clojure.string :as string]
     [parinfer.vcr-data :as vcr]
     [parinfer.vcr :refer [vcr
                           play-recording!
@@ -13,23 +14,62 @@
     [parinfer.formatter :refer [format-text]]
     [ajax.core :refer [GET]]
     [cljsjs.marked]
-    [cljsjs.marked.toc]
     [cljsjs.codemirror]))
 
 (enable-console-print!)
 
-(def toc-renderer (js/make_marked_toc_renderer))
+;; var make_marked_toc_renderer = function(){
+;;   var renderer = new marked.Renderer();
+;;   renderer.toc = [];
+;; 
+;;   renderer.heading = function(text, level, raw) {
+;;       var anchor = this.options.headerPrefix + raw.toLowerCase().replace(/[^\w]+/g, '-');
+;;       renderer.toc.push({
+;;           anchor: anchor,
+;;           level: level,
+;;           text: text
+;;       });
+;;       return '<h'
+;;           + level
+;;           + ' id="'
+;;           + anchor
+;;           + '">'
+;;           + text
+;;           + '</h'
+;;           + level
+;;           + '>\n';
+;;   };
+;; 
+;;   return renderer;
+;; };
 
-(.setOptions js/marked #js {:renderer toc-renderer})
+;; Create a Table of Contents for a Markdown file.
+;; from: https://github.com/chjj/marked/issues/545#issuecomment-74505539
 
-(defn make-toc-html [toc]
-  (let [toc (js->clj toc)]
-    (html
-      [:div
-       [:h2 "Table of Contents"]
-       (for [{:strs [anchor level text]} toc]
-         [:div {:class (str "toc-link toc-level-" level)}
-          [:a {:href (str "#" anchor)} text]])])))
+(def toc (atom []))
+
+(defn toc-heading
+  [text level raw]
+  (this-as this
+    (let [anchor (str (aget this "options" "headerPrefix")
+                      (-> raw string/lower-case (string/replace #"[^\w]+" "-")))]
+      (swap! toc conj {:text text :level level :anchor anchor})
+      (str "<h" level " id='" anchor "'>" text "</h" level">\n"))))
+
+(defn toc-renderer []
+  (let [renderer (js/marked.Renderer.)]
+    (aset renderer "heading" toc-heading)
+    renderer))
+
+(.setOptions js/marked #js {:renderer (toc-renderer)})
+
+(defn make-toc-html []
+  (html
+    [:div
+     [:h2 "Table of Contents"]
+     (for [{:keys [anchor level text]} @toc]
+       [:div {:class (str "toc-link toc-level-" level)}
+        [:a {:href (str "#" anchor)} text]])]))
 
 (defn render!
   [md-text]
@@ -41,7 +81,7 @@
 
   ;; create table of contents
   (let [element (js/document.getElementById "toc")
-        toc-html (make-toc-html (.-toc toc-renderer))]
+        toc-html (make-toc-html)]
     (set! (.-innerHTML element) toc-html))
 
   ;; create editors
