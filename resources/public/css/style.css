@@ -4,6 +4,19 @@ body {
   background: #F7F7F7;
 }
 
+#xkcd {
+  margin-top: 50px;
+  border-top: 1px solid #dedede;
+  padding-top: 20px;
+  margin-bottom: -30px;
+  text-align: center;
+}
+
+#xkcd a {
+  border-bottom: 0;
+}
+
+
 .toc {
 
 }

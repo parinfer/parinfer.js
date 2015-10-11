@@ -10,13 +10,22 @@ a theory on how to <em>simplify the way we write Lisp</em> by:
 <li> naturally keeping your code properly formatted
 </ul>
 
- <div>
-<div class="caption">__Quick Look__ at the current implementation for Clojure in [CodeMirror]:</div>
-<textarea id="code-intro">
-</textarea>
+<div id="xkcd">
+<a href="https://xkcd.com/312/"><img src="img/xkcd-frost.png"></a>
 </div>
 
 <div id="toc"></div>
+
+## Quick Look
+
+This may not make sense right now, but here's what it looks like when using
+_Parinfer_ to write a Lisp function.  This is the current implementation for
+Clojure using [CodeMirror].
+
+ <div>
+<textarea id="code-intro">
+</textarea>
+</div>
 
 ## Background
 
