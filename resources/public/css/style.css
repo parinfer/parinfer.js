@@ -278,6 +278,10 @@ blockquote {
 {
   font-style: italic;
   color: #BBB;
+}
+
+td .side-point
+{
   margin-top:5px;
 }
 

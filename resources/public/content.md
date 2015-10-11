@@ -161,7 +161,8 @@ roughly equivalent to those listed.
 
 ## How it works
 
-We perform the following steps to rearrange parens based on indentation:
+We perform the following steps to rearrange parens based on indentation.<br>
+<span class="side-point">We will refer to these later as rules #1, #2, and #3:</span>
 
 1. remove all unmatched right-parens (for housekeeping)
 2. remove all right-parens at the end of each line
@@ -278,14 +279,14 @@ __Try it!__ Interrupt the animations below to try it for yourself. Click outside
 ### Inserting Parens
 
 <div>
-<div class="caption">__Wrap__ by inserting a left-paren. It will auto-close as far as it can, due to step #3.</div>
+<div class="caption">__Wrap__ by inserting a left-paren. It will auto-close as far as it can, due to rule #3.</div>
 <textarea id="code-wrap">
 </textarea>
 </div>
 
 <div>
-<div class="caption">__Shorten__ by inserting a right-paren before another.
-Notice the original is removed, due to step #1.</div>
+<div class="caption">__Barf__ by inserting a right-paren before another.
+Notice the original is removed, due to rule #1.</div>
 <textarea id="code-barf">
 </textarea>
 </div>
@@ -295,19 +296,19 @@ Notice the original is removed, due to step #1.</div>
 <i class="fa fa-question-circle"></i>
 Why can't I insert a right-paren in certain places?
 </div>
-<div class="answer">Its corresponding left-paren must be there first. (see step #1)</div>
+<div class="answer">Its corresponding left-paren must be there first. (see rule #1)</div>
 </div>
 
 ### Deleting Parens
 
 <div>
-<div class="caption">__Splice__ by removing a left-paren. Its corresponding right-paren is removed, due to step #1.</div>
+<div class="caption">__Splice__ by removing a left-paren. Its corresponding right-paren is removed, due to rule #1.</div>
 <textarea id="code-splice">
 </textarea>
 </div>
 
 <div>
-<div class="caption">__Extend__ by deleting a right-paren inside a line. It is replaced further down, due to step #3.</div>
+<div class="caption">__Slurp__ by deleting a right-paren inside a line. It is replaced further down, due to rule #3.</div>
 <textarea id="code-slurp">
 </textarea>
 </div>
@@ -317,7 +318,7 @@ Why can't I insert a right-paren in certain places?
 <i class="fa fa-question-circle"></i>
 Why can't I delete a right-paren in certain places?
 </div>
-<div class="answer">You cannot delete an inferred right-paren. It is replaced as soon as you delete it. (see step #3)</div>
+<div class="answer">You cannot delete an inferred right-paren. It is replaced as soon as you delete it. (see rule #3)</div>
 </div>
 
 ### Knowing When Parens Move
