@@ -4,6 +4,30 @@ body {
   background: #F7F7F7;
 }
 
+.toc {
+
+}
+
+.toc-link a {
+  border-bottom: 0;
+}
+
+.toc-link {
+  line-height: 1.5em;
+}
+
+.toc-level-1 {
+  display: none;
+}
+
+.toc-level-2 {
+  margin-left: 20px;
+}
+
+.toc-level-3 {
+  margin-left: 40px;
+}
+
 #controls {
   position: fixed;
   left: 0;
@@ -98,11 +122,11 @@ h3 {
 
 a {
   border-bottom: 1px solid #CC3385;
+  color: #CC3385;
 }
 
 a:link, a:visited, a:hover, a:active {
   text-decoration: none;
-  color: #CC3385;
 }
 
 p, li {

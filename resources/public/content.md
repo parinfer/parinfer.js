@@ -16,6 +16,8 @@ a theory on how to <em>simplify the way we write Lisp</em> by:
 </textarea>
 </div>
 
+<div id="toc"></div>
+
 ## Background
 
 In Lisp, parentheses tend to bunch together at the end of a line. This

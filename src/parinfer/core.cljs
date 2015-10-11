@@ -1,5 +1,8 @@
 (ns ^:figwheel-always parinfer.core
+  (:require-macros
+    [hiccups.core :as hiccups :refer [html]])
   (:require
+    [hiccups.runtime]
     [parinfer.vcr-data :as vcr]
     [parinfer.vcr :refer [vcr
                           play-recording!
@@ -10,9 +13,23 @@
     [parinfer.formatter :refer [format-text]]
     [ajax.core :refer [GET]]
     [cljsjs.marked]
+    [cljsjs.marked.toc]
     [cljsjs.codemirror]))
 
 (enable-console-print!)
+
+(def toc-renderer (js/make_marked_toc_renderer))
+
+(.setOptions js/marked #js {:renderer toc-renderer})
+
+(defn make-toc-html [toc]
+  (let [toc (js->clj toc)]
+    (html
+      [:div
+       [:h2 "Table of Contents"]
+       (for [{:strs [anchor level text]} toc]
+         [:div {:class (str "toc-link toc-level-" level)}
+          [:a {:href (str "#" anchor)} text]])])))
 
 (defn render!
   [md-text]
@@ -21,6 +38,11 @@
   (let [element (js/document.getElementById "app")
         html-text (js/marked md-text)]
     (set! (.-innerHTML element) html-text))
+
+  ;; create table of contents
+  (let [element (js/document.getElementById "toc")
+        toc-html (make-toc-html (.-toc toc-renderer))]
+    (set! (.-innerHTML element) toc-html))
 
   ;; create editors
   (create-editor! "code-intro" :intro {:styleActiveLine true})

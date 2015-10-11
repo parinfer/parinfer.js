@@ -11,7 +11,8 @@
                  [sablono "0.3.6"]
                  [cljsjs/codemirror "5.7.0-0"]
                  [cljsjs/marked "0.3.5-0"]
-                 [cljs-ajax "0.5.0"]]
+                 [cljs-ajax "0.5.0"]
+                 [hiccups "0.3.0"]]
 
   :plugins [[lein-cljsbuild "1.1.0"]
             [lein-figwheel "0.4.0"]]
@@ -29,7 +30,9 @@
 
               :compiler {:main parinfer.core
                          :foreign-libs [{:file "src/parinfer/js/cm-clojure-parinfer.js"
-                                         :provides ["cljsjs.codemirror.mode.clojure-parinfer"]}]
+                                         :provides ["cljsjs.codemirror.mode.clojure-parinfer"]}
+                                        {:file "src/parinfer/js/marked-toc.js"
+                                         :provides ["cljsjs.marked.toc"]}]
                          :asset-path "js/compiled/out"
                          :output-to "resources/public/js/compiled/parinfer.js"
                          :output-dir "resources/public/js/compiled/out"
@@ -37,8 +40,11 @@
              {:id "min"
               :source-paths ["src"]
               :compiler {:output-to "resources/public/js/compiled/parinfer.js"
+                         :externs ["src/parinfer/js/marked-toc.externs.js"]
                          :foreign-libs [{:file "src/parinfer/js/cm-clojure-parinfer.js"
-                                         :provides ["cljsjs.codemirror.mode.clojure-parinfer"]}]
+                                         :provides ["cljsjs.codemirror.mode.clojure-parinfer"]}
+                                        {:file "src/parinfer/js/marked-toc.js"
+                                         :provides ["cljsjs.marked.toc"]}]
                          :main parinfer.core
                          :optimizations :advanced
                          :pretty-print false}}
@@ -48,7 +54,9 @@
               :compiler {:output-to "resources/public/js/compiled/parinfer-test.js"
                          :output-dir "resources/public/js/compiled/out-test"
                          :foreign-libs [{:file "src/parinfer/js/cm-clojure-parinfer.js"
-                                         :provides ["cljsjs.codemirror.mode.clojure-parinfer"]}]
+                                         :provides ["cljsjs.codemirror.mode.clojure-parinfer"]}
+                                        {:file "src/parinfer/js/marked-toc.js"
+                                         :provides ["cljsjs.marked.toc"]}]
                          :main parinfer.runner
                          :optimizations :none
                          :target :nodejs
