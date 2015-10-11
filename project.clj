@@ -9,8 +9,6 @@
                  [org.clojure/core.async "0.1.346.0-17112a-alpha"]
                  [org.omcljs/om "0.9.0"]
                  [sablono "0.3.6"]
-                 [cljsjs/codemirror "5.7.0-0"]
-                 [cljsjs/marked "0.3.5-0"]
                  [cljs-ajax "0.5.0"]
                  [hiccups "0.3.0"]]
 
@@ -29,8 +27,6 @@
               :figwheel { :on-jsload "parinfer.core/on-js-reload" }
 
               :compiler {:main parinfer.core
-                         :foreign-libs [{:file "src/parinfer/js/cm-clojure-parinfer.js"
-                                         :provides ["cljsjs.codemirror.mode.clojure-parinfer"]}]
                          :asset-path "js/compiled/out"
                          :output-to "resources/public/js/compiled/parinfer.js"
                          :output-dir "resources/public/js/compiled/out"
@@ -38,9 +34,8 @@
              {:id "min"
               :source-paths ["src"]
               :compiler {:output-to "resources/public/js/compiled/parinfer.js"
-                         :externs ["src/parinfer/js/marked-toc.externs.js"]
-                         :foreign-libs [{:file "src/parinfer/js/cm-clojure-parinfer.js"
-                                         :provides ["cljsjs.codemirror.mode.clojure-parinfer"]}]
+                         :externs ["externs/marked.js"
+                                   "externs/codemirror.js"]
                          :main parinfer.core
                          :optimizations :advanced
                          :pretty-print false}}
@@ -49,8 +44,6 @@
               :source-paths ["src" "test"]
               :compiler {:output-to "resources/public/js/compiled/parinfer-test.js"
                          :output-dir "resources/public/js/compiled/out-test"
-                         :foreign-libs [{:file "src/parinfer/js/cm-clojure-parinfer.js"
-                                         :provides ["cljsjs.codemirror.mode.clojure-parinfer"]}]
                          :main parinfer.runner
                          :optimizations :none
                          :target :nodejs

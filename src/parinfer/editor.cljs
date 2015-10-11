@@ -11,12 +11,7 @@
                           parse-selections
                           controls-state
                           play-recording!
-                          stop-playing!]]
-    [cljsjs.codemirror]
-    [cljsjs.codemirror.addon.selection.active-line]
-    [cljsjs.codemirror.addon.edit.matchbrackets]
-    [cljsjs.codemirror.mode.clojure]
-    [cljsjs.codemirror.mode.clojure-parinfer]))
+                          stop-playing!]]))
 
 (defprotocol IEditor
   "Custom data/methods for a CodeMirror editor."

@@ -9,7 +9,6 @@
 
     [parinfer.state :refer [state]]
     [cljs.pprint :refer [pprint]]
-    [cljsjs.codemirror]
     [goog.dom :as gdom]))
 
 ;; map of editor key -> recording state
