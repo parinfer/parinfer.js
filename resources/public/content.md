@@ -1,7 +1,7 @@
 # Par<em>infer</em>
 
  <p class="subtitle">
-an experiment to <em>simplify how we write Lisp</em> by:
+a theory on how to <em>simplify the way we write Lisp</em> by:
 </p>
 
   <ul class="features">
