@@ -6,7 +6,7 @@ an experiment to <em>simplify how we write Lisp</em> by:
 
   <ul class="features">
 <li> affecting structure through indentation
-<li> allowing [paredit]-like features without memorizing hotkeys
+<li> allowing [Paredit]-like features without memorizing hotkeys
 <li> naturally keeping your code properly formatted
 </ul>
 
@@ -124,14 +124,14 @@ __Try it!__ Interrupt the animations below to try it for yourself. Click outside
 </div>
 
 You can select multiple lines and adjust their indentation the standard way using
-the controls below.  If you are familiar with paredit, these operations are
+the controls below.  If you are familiar with Paredit, these operations are
 roughly equivalent to those listed.
 
  <table class="paredit-table">
 <tr>
 <th>controls</th>
 <th>description</th>
-<th>[paredit] equivalent?</th>
+<th>[Paredit] equivalent?</th>
 </tr>
 <tr>
 <td><kbd class="light">Tab</kbd></td>
@@ -202,12 +202,9 @@ __Try it!__ Edit the code below on the left to see how parens are inferred on th
 </div>
 </div>
 
-> __As an aside__, I first considered whether it would be practical to just
-> write code in the syntax on the left since it encodes all the structural
-> information while eliminating piles of parentheses.  But we are trying to
-> create a tool for the original syntax.  And perhaps...
-> 
-> <a class="img-link" href="https://xkcd.com/859/"><img src="https://imgs.xkcd.com/comics/(.png"></img></a>
+Notice that the code on the left encodes all structural information while
+eliminating piles of parentheses.  This is essentially how _Parinfer_ sees your
+code.  It _infers_ the rest.
 
 There are more steps performed that you can [read about in detail][formatter-details], but
 we will just explore their effects in the next section.
@@ -216,7 +213,62 @@ we will just explore their effects in the next section.
 
 ## Cause and Effect: Typing
 
-The steps in the previous section have an effect on what you type.
+You should be aware that the steps in the previous section have an effect on
+what you type.  Interestingly, these effects translate into four of the main
+[Paredit] operations.
+
+ <table class="paredit-table light-keys">
+<tr>
+<th align="right">Cause</th>
+<th align="center">Effect</th>
+<th align="left">Description</th>
+</tr>
+
+<tr>
+<td align="right">Insert <kbd>(</kbd></td>
+<td align="center">Wrap</td>
+<td align="left">
+inserts a matching <kbd>)</kbd> as far as it can
+<div class="side-point">
+i.e. "wraps" all possible elements to the right of your cursor
+</div>
+</td>
+</tr>
+
+<tr>
+<td align="right">Insert <kbd>)</kbd></td>
+<td align="center">Barf</td>
+<td align="left">
+removes the original <kbd>)</kbd> when inserted inside a matching pair
+<div class="side-point">
+i.e. the current list "barfs" out all elements to the right of your cursor
+</div>
+</td>
+</tr>
+
+<tr>
+<td align="right">Delete <kbd>(</kbd></td>
+<td align="center">Splice</td>
+<td align="left">
+removes the matching <kbd>)</kbd>
+<div class="side-point">
+i.e. "splices" the current list into its parent (or simply "unwraps" it)
+</div>
+</td>
+</tr>
+
+<tr>
+<td align="right">Delete <kbd>)</kbd></td>
+<td align="center">Slurp</td>
+<td align="left">
+inserts another <kbd>)</kbd> as far as it can
+<div class="side-point">
+i.e. the current list "slurps" all elements to the right of your cursor
+</div>
+</td>
+</tr>
+
+</table>
 
 <div class="interact">
 <i class="fa fa-keyboard-o fa-lg"></i>

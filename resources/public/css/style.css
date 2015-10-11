@@ -40,6 +40,7 @@ body {
   padding: 14px;
   border: 1px solid #cecece;
   background: #fefefe;
+  vertical-align: top;
 }
 
 .paredit-table th
@@ -276,7 +277,8 @@ blockquote {
 .side-point
 {
   font-style: italic;
-  opacity: 0.5;
+  color: #BBB;
+  margin-top:5px;
 }
 
 .warning
@@ -328,3 +330,5 @@ blockquote {
 {
   margin-left: 22px;
 }
+
+
