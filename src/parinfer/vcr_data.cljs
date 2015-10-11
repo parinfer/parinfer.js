@@ -2055,7 +2055,7 @@
   '{:loop-delay 2500
     :changes
     [{:selections ({:anchor {:line 0, :ch 0}, :head {:line 0, :ch 0}}),
-      :dt 500}
+      :dt 0}
      {:change
       {:from {:line 0, :ch 0},
        :to {:line 0, :ch 0},
@@ -2066,7 +2066,7 @@
          ""
          ";; \" <-- BAD (unclosed string)"),
        :origin "paste"},
-      :dt 500}
+      :dt 100}
      {:selections ({:anchor {:line 0, :ch 0}, :head {:line 0, :ch 0}}),
       :dt 1082}
      {:change
@@ -2089,7 +2089,7 @@
   '{:loop-delay 2500
     :changes
     [{:selections ({:anchor {:line 0, :ch 0}, :head {:line 0, :ch 0}}),
-      :dt 500}
+      :dt 0}
      {:change
       {:from {:line 0, :ch 0},
        :to {:line 0, :ch 0},
@@ -2100,7 +2100,7 @@
          ""
          ";; \"\" <-- GOOD (balanced quotes)"),
        :origin "paste"},
-      :dt 500}
+      :dt 100}
      {:selections ({:anchor {:line 0, :ch 0}, :head {:line 0, :ch 0}}),
       :dt 1082}
      {:change

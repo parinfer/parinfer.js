@@ -294,7 +294,8 @@ imbalanced quotes, they will balance each other out and fool _Parinfer_ into
 thinking it is okay for processing.
 </div>
 
-<div>
+ <div class="two-col">
+<div class="col">
 <div class="caption">
 <i class="fa fa-lg fa-times red"></i>
 __BAD:__ An unclosed string in a comment can cause corrupted strings.
@@ -303,13 +304,14 @@ __BAD:__ An unclosed string in a comment can cause corrupted strings.
 </textarea>
 </div>
 
-<div>
+<div class="col">
 <div class="caption">
 <i class="fa fa-lg fa-check green"></i>
 __GOOD__: Balance the quotes in the comment to prevent the problem.
 </div>
 <textarea id="code-warn-good">
 </textarea>
+</div>
 </div>
 
 ## Try it

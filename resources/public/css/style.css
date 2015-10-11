@@ -253,7 +253,8 @@ code {
 #cm-code-warn-good,
 #cm-code-warn-bad
 {
-  height: 130px;
+  font-size: 14px;
+  height: 110px;
 }
 
 p.centered

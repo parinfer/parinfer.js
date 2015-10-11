@@ -165,16 +165,18 @@
 
      (set! (.-id wrapper) (str "cm-" element-id))
 
-     ;; on blur, start playing animation again, if we are not dev mode.
-     (.on cm "blur" (fn [e]
-                      (when-not (:show? @controls-state)
-                        (play-recording! key-))))
+     (when-not (:readOnly opts)
 
-     ;; on focus, set recording controls to focus on this editor.
-     ;; and stop any animation.
-     (.on cm "focus" (fn [e]
-                       (swap! controls-state assoc :target-key key-)
-                       (stop-playing! key-)))
+       ;; on blur, start playing animation again, if we are not dev mode.
+       (.on cm "blur" (fn [e]
+                        (when-not (:show? @controls-state)
+                          (play-recording! key-))))
+
+       ;; on focus, set recording controls to focus on this editor.
+       ;; and stop any animation.
+       (.on cm "focus" (fn [e]
+                         (swap! controls-state assoc :target-key key-)
+                         (stop-playing! key-))))
 
      (when-not (get @state key-)
        (swap! frame-updates assoc key- {}))
