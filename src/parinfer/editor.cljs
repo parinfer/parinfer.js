@@ -176,7 +176,8 @@
        ;; and stop any animation.
        (.on cm "focus" (fn [e]
                          (swap! controls-state assoc :target-key key-)
-                         (stop-playing! key-))))
+                         (stop-playing! key-)
+                         (on-cursor-activity cm))))
 
      (when-not (get @state key-)
        (swap! frame-updates assoc key- {}))
