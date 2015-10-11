@@ -241,7 +241,7 @@ Notice the original is removed, due to step #1.</div>
 <div class="caption">
 <div class="question">
 <i class="fa fa-question-circle"></i>
-Why can't I insert a right-paren?
+Why can't I insert a right-paren in certain places?
 </div>
 <div class="answer">Its corresponding left-paren must be there first. (see step #1)</div>
 </div>
@@ -263,7 +263,7 @@ Why can't I insert a right-paren?
 <div class="caption">
 <div class="question">
 <i class="fa fa-question-circle"></i>
-Why can't I delete a right-paren?
+Why can't I delete a right-paren in certain places?
 </div>
 <div class="answer">You cannot delete an inferred right-paren. It is replaced as soon as you delete it. (see step #3)</div>
 </div>
