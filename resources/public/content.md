@@ -411,9 +411,7 @@ interfaced to [CodeMirror] for the purpose of the editor demos here.
 
 ## Source Code
 
-Code is available on Github:
-
-<http://github.com/shaunlebron/parinfer>
+<i class="fa fa-lg fa-code-fork"></i> <http://github.com/shaunlebron/parinfer>
 
 ## Prior Art
 
