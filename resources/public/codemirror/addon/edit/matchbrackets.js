@@ -93,11 +93,13 @@
     }
   }
 
-  var currentlyHighlighted = null;
+  // Parinfer edit:
+  // (currentlyHighlighted should be local state if we want each editor to have their own highlighted brackets)
   function doMatchBrackets(cm) {
     cm.operation(function() {
-      if (currentlyHighlighted) {currentlyHighlighted(); currentlyHighlighted = null;}
-      currentlyHighlighted = matchBrackets(cm, false, cm.state.matchBrackets);
+      var state = cm.state.matchBrackets;
+      if (state.currentlyHighlighted) {state.currentlyHighlighted(); state.currentlyHighlighted = null;}
+      state.currentlyHighlighted = matchBrackets(cm, false, state);
     });
   }
 
