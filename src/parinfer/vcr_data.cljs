@@ -1110,169 +1110,188 @@
   )
 
 (def indent-far
-  '{:loop-delay 1000
-    :timescale 2
-    :changes
-    [{:change
+  '{:changes
+    [{:selections ({:anchor {:line 1, :ch 0}, :head {:line 1, :ch 0}}),
+      :dt 0}
+     {:change
       {:from {:line 1, :ch 0},
        :to {:line 1, :ch 0},
        :text (" "),
        :origin "+input"},
-      :dt 0}
+      :dt 566}
      {:change
       {:from {:line 1, :ch 1},
        :to {:line 1, :ch 1},
        :text (" "),
        :origin "+input"},
-      :dt 186}
+      :dt 185}
      {:change
       {:from {:line 1, :ch 2},
        :to {:line 1, :ch 2},
        :text (" "),
        :origin "+input"},
-      :dt 799}
+      :dt 571}
      {:change
       {:from {:line 1, :ch 3},
        :to {:line 1, :ch 3},
        :text (" "),
        :origin "+input"},
-      :dt 212}
+      :dt 169}
      {:change
       {:from {:line 1, :ch 4},
        :to {:line 1, :ch 4},
        :text (" "),
        :origin "+input"},
-      :dt 204}
+      :dt 203}
      {:change
       {:from {:line 1, :ch 5},
        :to {:line 1, :ch 5},
        :text (" "),
        :origin "+input"},
-      :dt 236}
+      :dt 225}
      {:change
       {:from {:line 1, :ch 6},
        :to {:line 1, :ch 6},
        :text (" "),
        :origin "+input"},
-      :dt 754}
+      :dt 889}
      {:change
       {:from {:line 1, :ch 7},
        :to {:line 1, :ch 7},
        :text (" "),
        :origin "+input"},
-      :dt 213}
+      :dt 202}
      {:change
       {:from {:line 1, :ch 8},
        :to {:line 1, :ch 8},
        :text (" "),
        :origin "+input"},
-      :dt 248}
+      :dt 216}
      {:change
       {:from {:line 1, :ch 8},
        :to {:line 1, :ch 9},
        :text (""),
        :origin "+delete"},
-      :dt 1270}
+      :dt 799}
      {:change
       {:from {:line 1, :ch 7},
        :to {:line 1, :ch 8},
        :text (""),
        :origin "+delete"},
-      :dt 225}
+      :dt 188}
      {:change
       {:from {:line 1, :ch 6},
        :to {:line 1, :ch 7},
        :text (""),
        :origin "+delete"},
-      :dt 230}
+      :dt 211}
      {:change
       {:from {:line 1, :ch 5},
        :to {:line 1, :ch 6},
        :text (""),
        :origin "+delete"},
-      :dt 749}
+      :dt 636}
      {:change
       {:from {:line 1, :ch 4},
        :to {:line 1, :ch 5},
        :text (""),
        :origin "+delete"},
-      :dt 225}
+      :dt 188}
      {:change
       {:from {:line 1, :ch 3},
        :to {:line 1, :ch 4},
        :text (""),
        :origin "+delete"},
-      :dt 217}
+      :dt 191}
      {:change
       {:from {:line 1, :ch 2},
        :to {:line 1, :ch 3},
        :text (""),
        :origin "+delete"},
-      :dt 266}
+      :dt 213}
      {:change
       {:from {:line 1, :ch 1},
        :to {:line 1, :ch 2},
        :text (""),
        :origin "+delete"},
-      :dt 1006}
+      :dt 754}
 {:change
  {:from {:line 1, :ch 0},
   :to {:line 1, :ch 1},
   :text (""),
   :origin "+delete"},
- :dt 176}],
+ :dt 195}],
 :init-value "(let [m {:foo 1}])\n:bar 2",
-:last-time 1444141621667,
-:recording? false,
-})
+:last-time 1444670828840,
+:recording? false, 
+:loop-delay 1000, 
+:timescale 2})
 
 (def indent-multi
-  '{:timescale 2
-    :changes
-    [{:change
+  '{:changes
+    [{:selections ({:anchor {:line 0, :ch 0}, :head {:line 0, :ch 0}}),
+      :dt 0}
+     {:change
+      {:from {:line 0, :ch 0},
+       :to {:line 0, :ch 0},
+       :text
+       ("(defn component []"
+               "  (html)"
+               "  [:div {:style {:background \"#FFF\"}"
+               "         :color \"#000\"}]"
+               "  [:h1 \"title\"])"),
+       :origin "paste"},
+      :dt 592}
+     {:selections ({:anchor {:line 3, :ch 9}, :head {:line 3, :ch 9}}),
+      :dt 1014}
+     {:change
       {:from {:line 3, :ch 9},
        :to {:line 3, :ch 9},
        :text ("  "),
        :origin "+input"},
-      :dt 0}
+      :dt 443}
      {:change
       {:from {:line 3, :ch 11},
        :to {:line 3, :ch 11},
        :text ("  "),
        :origin "+input"},
-      :dt 236}
+      :dt 213}
      {:change
       {:from {:line 3, :ch 13},
        :to {:line 3, :ch 13},
        :text ("  "),
        :origin "+input"},
-      :dt 257}
+      :dt 238}
      {:change
       {:from {:line 3, :ch 15},
        :to {:line 3, :ch 15},
        :text ("  "),
        :origin "+input"},
-      :dt 362}
+      :dt 227}
      {:selections ({:anchor {:line 2, :ch 2}, :head {:line 2, :ch 2}}),
-      :dt 1022}
+      :dt 1395}
      {:selections ({:anchor {:line 2, :ch 2}, :head {:line 2, :ch 3}}),
-      :dt 202}
-     {:selections ({:anchor {:line 2, :ch 2}, :head {:line 2, :ch 5}}),
+      :dt 82}
+     {:selections ({:anchor {:line 2, :ch 2}, :head {:line 3, :ch 5}}),
+      :dt 21}
+     {:selections ({:anchor {:line 2, :ch 2}, :head {:line 3, :ch 6}}),
+      :dt 16}
+     {:selections ({:anchor {:line 2, :ch 2}, :head {:line 3, :ch 8}}),
       :dt 17}
-     {:selections ({:anchor {:line 2, :ch 2}, :head {:line 3, :ch 9}}),
-      :dt 46}
-     {:selections ({:anchor {:line 2, :ch 2}, :head {:line 4, :ch 12}}),
-      :dt 9}
+     {:selections ({:anchor {:line 2, :ch 2}, :head {:line 4, :ch 10}}),
+      :dt 19}
      {:selections ({:anchor {:line 2, :ch 2}, :head {:line 4, :ch 13}}),
-      :dt 15}
+      :dt 16}
+     {:selections ({:anchor {:line 2, :ch 2}, :head {:line 4, :ch 15}}),
+      :dt 17}
      {:selections ({:anchor {:line 2, :ch 2}, :head {:line 4, :ch 16}}),
-      :dt 37}
+      :dt 17}
      {:change
       {:from {:line 2, :ch 0},
        :to {:line 2, :ch 2},
        :text ("    "),
        :origin "+input"},
-      :dt 597}
+      :dt 390}
      {:change
       {:from {:line 3, :ch 0},
        :to {:line 3, :ch 17},
@@ -1284,65 +1303,79 @@
        :to {:line 4, :ch 2},
        :text ("    "),
        :origin "+input"},
-      :dt 5}
+      :dt 4}
      {:selections ({:anchor {:line 4, :ch 4}, :head {:line 4, :ch 4}}),
-      :dt 1485}
+      :dt 1144}
+     {:selections ({:anchor {:line 4, :ch 4}, :head {:line 4, :ch 4}}),
+      :dt 22}
      {:change
       {:from {:line 4, :ch 4},
        :to {:line 4, :ch 4},
        :text ("  "),
        :origin "+input"},
-      :dt 446}],
-    :init-value
-    "(defn component []\n  (html)\n  [:div {:style {:background \"#FFF\"}\n         :color \"#000\"}]\n  [:h1 \"title\"])",
-    :last-time 1444164401491, 
-    :recording? false})
+      :dt 578}],
+    :init-value "",
+    :last-time 1444670969215, 
+    :recording? false, 
+    :timescale 2})
 
 (def line
   '{:timescale 2
     :changes
-    [{:change
+    [{:selections ({:anchor {:line 0, :ch 0}, :head {:line 0, :ch 0}}),
+      :dt 0}
+     {:change
+      {:from {:line 0, :ch 0},
+       :to {:line 0, :ch 0},
+       :text
+       ("(ns example.core"
+             "  (:require"
+             "    [clojure.string :refer [join]]"
+             "    [clojure.data :refer [diff]]))"),
+       :origin "paste"},
+      :dt 600}
+     {:change
       {:from {:line 3, :ch 34},
        :to {:line 3, :ch 34},
        :text ("" ""),
        :origin "+input"},
-      :dt 0}
+      :dt 1071}
      {:change
       {:from {:line 4, :ch 0},
        :to {:line 4, :ch 0},
        :text ("  "),
        :origin "+input"},
-      :dt 181}
+      :dt 406}
      {:change
       {:from {:line 4, :ch 2},
        :to {:line 4, :ch 2},
        :text ("  "),
        :origin "+input"},
-      :dt 238}
+      :dt 214}
      {:change
       {:from {:line 4, :ch 4},
        :to {:line 4, :ch 4},
        :text ("e"),
        :origin "+input"},
-      :dt 280}
+      :dt 360}
      {:change
       {:from {:line 4, :ch 5},
        :to {:line 4, :ch 5},
        :text ("x"),
        :origin "+input"},
-      :dt 214}
+      :dt 257}
      {:change
       {:from {:line 4, :ch 6},
        :to {:line 4, :ch 6},
        :text ("a"),
        :origin "+input"},
-      :dt 71}
+      :dt 70}
      {:change
       {:from {:line 4, :ch 7},
        :to {:line 4, :ch 7},
        :text ("m"),
        :origin "+input"},
-      :dt 75}
+      :dt 90}
      {:change
       {:from {:line 4, :ch 8},
        :to {:line 4, :ch 8},
@@ -1354,192 +1387,191 @@
        :to {:line 4, :ch 9},
        :text ("l"),
        :origin "+input"},
-      :dt 81}
+      :dt 89}
      {:change
       {:from {:line 4, :ch 10},
        :to {:line 4, :ch 10},
        :text ("e"),
        :origin "+input"},
-      :dt 61}
+      :dt 136}
      {:change
       {:from {:line 4, :ch 11},
        :to {:line 4, :ch 11},
        :text ("."),
        :origin "+input"},
-      :dt 129}
+      :dt 99}
      {:change
       {:from {:line 4, :ch 12},
        :to {:line 4, :ch 12},
        :text ("b"),
        :origin "+input"},
-      :dt 110}
+      :dt 103}
      {:change
       {:from {:line 4, :ch 13},
        :to {:line 4, :ch 13},
        :text ("a"),
        :origin "+input"},
-      :dt 147}
+      :dt 146}
      {:change
       {:from {:line 4, :ch 14},
        :to {:line 4, :ch 14},
        :text ("r"),
        :origin "+input"},
-      :dt 115}
+      :dt 101}
      {:change
       {:from {:line 4, :ch 15},
        :to {:line 4, :ch 15},
        :text ("" ""),
        :origin "+input"},
-      :dt 504}
-     {:change
-      {:from {:line 5, :ch 0},
-       :to {:line 5, :ch 0},
-       :text ("    "),
-       :origin "+input"},
-      :dt 7}
-     {:change
-      {:from {:line 5, :ch 4},
-       :to {:line 5, :ch 4},
-       :text ("e"),
-       :origin "+input"},
-      :dt 222}
+      :dt 371}
+{:change
+ {:from {:line 5, :ch 0},
+  :to {:line 5, :ch 0},
+  :text ("    "),
+  :origin "+input"},
+ :dt 7}
+{:change
+ {:from {:line 5, :ch 4},
+  :to {:line 5, :ch 4},
+  :text ("e"),
+  :origin "+input"},
+ :dt 232}
 {:change
  {:from {:line 5, :ch 5},
   :to {:line 5, :ch 5},
   :text ("x"),
   :origin "+input"},
- :dt 209}
+ :dt 214}
 {:change
  {:from {:line 5, :ch 6},
   :to {:line 5, :ch 6},
   :text ("a"),
   :origin "+input"},
- :dt 92}
+ :dt 76}
 {:change
  {:from {:line 5, :ch 7},
   :to {:line 5, :ch 7},
   :text ("m"),
   :origin "+input"},
- :dt 66}
+ :dt 102}
 {:change
  {:from {:line 5, :ch 8},
   :to {:line 5, :ch 8},
   :text ("p"),
   :origin "+input"},
- :dt 45}
+ :dt 39}
 {:change
  {:from {:line 5, :ch 9},
   :to {:line 5, :ch 9},
   :text ("l"),
   :origin "+input"},
- :dt 124}
+ :dt 90}
 {:change
  {:from {:line 5, :ch 10},
   :to {:line 5, :ch 10},
   :text ("e"),
   :origin "+input"},
- :dt 115}
+ :dt 110}
 {:change
  {:from {:line 5, :ch 11},
   :to {:line 5, :ch 11},
   :text ("."),
   :origin "+input"},
- :dt 156}
+ :dt 109}
 {:change
  {:from {:line 5, :ch 12},
   :to {:line 5, :ch 12},
   :text ("b"),
   :origin "+input"},
- :dt 201}
+ :dt 145}
 {:change
  {:from {:line 5, :ch 13},
   :to {:line 5, :ch 13},
   :text ("a"),
   :origin "+input"},
- :dt 147}
+ :dt 283}
 {:change
  {:from {:line 5, :ch 14},
   :to {:line 5, :ch 14},
   :text ("z"),
   :origin "+input"},
- :dt 194}
+ :dt 180}
 {:change
  {:from {:line 5, :ch 14},
   :to {:line 5, :ch 15},
   :text (""),
   :origin "+delete"},
- :dt 1315}
+ :dt 477}
 {:change
  {:from {:line 5, :ch 13},
   :to {:line 5, :ch 14},
   :text (""),
   :origin "+delete"},
- :dt 499}
+ :dt 495}
 {:change
  {:from {:line 5, :ch 12},
   :to {:line 5, :ch 13},
   :text (""),
   :origin "+delete"},
- :dt 84}
+ :dt 104}
 {:change
  {:from {:line 5, :ch 11},
   :to {:line 5, :ch 12},
   :text (""),
   :origin "+delete"},
- :dt 90}
+ :dt 65}
 {:change
  {:from {:line 5, :ch 10},
   :to {:line 5, :ch 11},
   :text (""),
   :origin "+delete"},
- :dt 83}
+ :dt 82}
 {:change
  {:from {:line 5, :ch 9},
   :to {:line 5, :ch 10},
   :text (""),
   :origin "+delete"},
- :dt 81}
+ :dt 90}
 {:change
  {:from {:line 5, :ch 8},
   :to {:line 5, :ch 9},
   :text (""),
   :origin "+delete"},
- :dt 83}
+ :dt 85}
 {:change
  {:from {:line 5, :ch 7},
   :to {:line 5, :ch 8},
   :text (""),
   :origin "+delete"},
- :dt 87}
+ :dt 79}
 {:change
  {:from {:line 5, :ch 6},
   :to {:line 5, :ch 7},
   :text (""),
   :origin "+delete"},
- :dt 80}
+ :dt 88}
 {:change
  {:from {:line 5, :ch 5},
   :to {:line 5, :ch 6},
   :text (""),
   :origin "+delete"},
- :dt 260}
+ :dt 300}
 {:change
  {:from {:line 5, :ch 4},
   :to {:line 5, :ch 5},
   :text (""),
   :origin "+delete"},
- :dt 181}
+ :dt 135}
 {:selections ({:anchor {:line 5, :ch 4}, :head {:line 4, :ch 4}}),
- :dt 754}
+ :dt 676}
 {:change
  {:from {:line 4, :ch 4},
   :to {:line 5, :ch 4},
   :text (""),
   :origin "+delete"},
- :dt 495}],
-:init-value
-"(ns example.core\n  (:require\n    [clojure.string :refer [join]]\n    [clojure.data :refer [diff]]))",
-:last-time 1444253174845, 
+ :dt 507}],
+:init-value "",
+:last-time 1444670641434, 
 :recording? false})
 
 (def comment-
