@@ -18,9 +18,9 @@ a theory on how to <em>simplify the way we write Lisp</em> by:
 
 ## Quick Look
 
-This may not make sense right now, but here's what it looks like when using
-_Parinfer_ to write a Lisp function.  This is the current implementation for
-Clojure using [CodeMirror].
+Here's what it looks like when using _Parinfer_ to write a Lisp function.  No
+hotkeys are used.  Click to play around with it if you're curious or wait
+until the next sections for details.
 
  <div>
 <textarea id="code-intro">
