@@ -73,15 +73,16 @@
         (= text "\n")
         nil
 
-        ;; typed character not found, we probably prevented it. keep cursor where it was.
-        (= -1 insert-x)
-        (.setCursor cm line-no from-x)
-
         ;; only move the semicolon ahead since it can be pushed forward by
         ;; commenting out inferred parens meaning they are immediately
         ;; reinserted behind it.
         (= text ";")
         (.setCursor cm line-no after-x)
+
+        ;; typed character not found where expected it, we probably prevented it. keep cursor where it was.
+        (or (= -1 insert-x)
+            (> insert-x from-x))
+        (.setCursor cm line-no from-x)
 
         :else nil))))
 
