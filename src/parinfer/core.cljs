@@ -59,7 +59,6 @@
 
   ;; create editors
   (create-editor! "code-intro" :intro {:styleActiveLine true})
-  (create-editor! "code-try" :try)
 
   (create-editor! "code-indent" :indent)
   (create-editor! "code-indent-far" :indent-far)

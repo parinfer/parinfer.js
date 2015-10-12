@@ -372,4 +372,16 @@ td .side-point
   margin-left: 22px;
 }
 
+footer {
+  margin-top: 50px;
+  border-top: 1px solid #dedede;
+  padding-top: 20px;
+  margin-bottom: -30px;
+  text-align: center;
+  color: #555;
+}
 
+footer a {
+  color: #555;
+  border-bottom: 0px;
+}
