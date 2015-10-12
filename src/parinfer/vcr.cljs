@@ -127,8 +127,11 @@
 ;; VCR Controls UI
 ;;----------------------------------------------------------------------
 
+;; do not modify this line, set by publish script.
+(def SHOW_CONTROLS true)
+
 (defonce controls-state
-  (atom {:show? true
+  (atom {:show? SHOW_CONTROLS
          :target-key nil}))
 
 (defn controls-view
