@@ -18,14 +18,11 @@ a theory on how to <em>simplify the way we write Lisp</em> by:
 
 ## Quick Look
 
-Here's what it looks like when using _Parinfer_ to write a Lisp function.  No
-hotkeys are used.  Click to play around with it if you're curious or wait
-until the next sections for details.
+If you are familiar with Lisp, here's what it looks like to rapidly restructure
+your code by just indenting.  Click to play around with it if you're curious.
+Details ahead.
 
- <div>
-<textarea id="code-intro">
-</textarea>
-</div>
+<textarea id="code-intro"> </textarea>
 
 ## Background
 
