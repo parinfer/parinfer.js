@@ -62,7 +62,8 @@
           from-x (.. change -from -ch)
           line-no (.. change -from -line)
           line (.getLine cm line-no)
-          insert-x (.indexOf line text from-x)]
+          insert-x (.indexOf line text from-x)
+          after-x (+ insert-x (count text))]
       (cond
         ;; something is selected, don't touch the cursor
         selection?
@@ -76,9 +77,13 @@
         (= -1 insert-x)
         (.setCursor cm line-no from-x)
 
-        ;; move cursor to after the typed characters were found.
-        :else
-        (.setCursor cm line-no (+ insert-x (count text)))))))
+        ;; only move the semicolon ahead since it can be pushed forward by
+        ;; commenting out inferred parens meaning they are immediately
+        ;; reinserted behind it.
+        (= text ";")
+        (.setCursor cm line-no after-x)
+
+        :else nil))))
 
 ;;----------------------------------------------------------------------
 ;; Life Cycle events
