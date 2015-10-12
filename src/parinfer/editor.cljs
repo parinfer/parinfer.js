@@ -135,6 +135,8 @@
 
 (def editor-opts
   {:mode "clojure-parinfer"
+   :theme "github"
+   :matchBrackets true
    :extraKeys {:Tab on-tab}})
 
 (aset js/CodeMirror "keyMap" "default" "Shift-Tab" "indentLess")
