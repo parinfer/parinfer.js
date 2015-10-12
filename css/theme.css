@@ -69,7 +69,6 @@ div.CodeMirror span.CodeMirror-matchingbracket {
   border-bottom: 1px solid #111;
 }
 div.CodeMirror span.CodeMirror-nonmatchingbracket {
-  color: inherit;
 }
 
 /* don't change selection color based on an editor's focus status. */

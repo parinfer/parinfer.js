@@ -292,6 +292,11 @@ code {
   height: 110px;
 }
 
+#cm-code-enter
+{
+  height: 180px;
+}
+
 p.centered
 {
   text-align: center;
@@ -332,11 +337,6 @@ td .side-point
   margin-bottom: 10px;
 }
 
-.warning-title i.fa
-{
-  margin-right: 5px;
-}
-
 .warning-body
 {
   margin-left: 34px;
@@ -361,7 +361,6 @@ td .side-point
 .question i.fa
 {
   color: #5380C7;
-  margin-right: 5px;
 }
 
 .answer
@@ -381,4 +380,8 @@ footer {
 footer a {
   color: #555;
   border-bottom: 0px;
+}
+
+i.fa {
+  margin-right: 5px;
 }
