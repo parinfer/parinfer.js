@@ -420,7 +420,7 @@ Code is available on Github:
 There are many ideas related to this concept.
 
 - [paredit] - structural editing and auto-balancing of Lisp text
-- [Haml], [Slim], and [Jade] - indented HTML templating langs that are really close to indented lisps
+- [Haml], [Slim], and [Jade] - indented HTML templating langs (close to indented lisps)
 - [Haskell's $ operator] - infers a closing paren at the end of its line
 - [sweet-expressions], [i-expressions], and [indent-clj] - infers both left and right parens
 - [Flense] and [Plastic] - structural editing concepts for Clojure text
