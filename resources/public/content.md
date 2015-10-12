@@ -406,6 +406,12 @@ implemented in any major editor yet, the formatting code is implemented and
 documented.  The bulk of the code is a pure function in ClojureScript,
 interfaced to [CodeMirror] for the purpose of the editor demos here.
 
+Most importantly, when an editor using _Parinfer_ reads a file not created with
+_Parinfer_, we will have to correct its indentation beforehand with an
+idempotent [preprocessor].  The same will have to be done for pasted code.
+
+[preprocessor]:https://github.com/shaunlebron/parinfer/blob/master/doc/formatter-details.md#preprocessing-existing-code
+
 ## Source Code
 
 <i class="fa fa-lg fa-code-fork"></i> <http://github.com/shaunlebron/parinfer>
