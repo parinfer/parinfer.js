@@ -2,12 +2,13 @@
 
 We perform the following steps to rearrange parens based on indentation:
 
-1. remove all right-parens at the end of each line
-2. for every resulting unmatched left-paren:
+1. remove all unmatched right-parens (for housekeeping)
+2. remove all right-parens at the start and end of each line
+3. for every resulting unmatched left-paren:
   - insert a right-paren at the end of its line or its last non-empty indented line
 
-This two-step process is simple and works well for static, well-formatted text.
-But there are some other factors that require us to add more steps or to think
+This process is simple and works well for static, well-formatted text.  But
+there are some other factors that require us to add more steps or to think
 about when we should apply them.
 
 ### Automatic vs. Manual Formatting
@@ -29,17 +30,6 @@ a thing is not currently implemented.
 A fully fledged pretty-printer (which preserves comments) would technically
 work, but I think correcting indentation line-by-line may be sufficient and
 less destructive of the author's inlining choices.
-
-### Dealing with Misplaced Parens
-
-We can add some steps for processing misplaced parens:
-
-<ol start="3">
-<li> remove right-parens at the start of each line
-  <div class="side-point">(since we consider them equivalent to right-parens at the end of a line)</div>
-<li> remove unmatched right-parens
-  <div class="side-point">(seems to be an easy way to keep order, but not sure if this can be relaxed)</div>
-</ol>
 
 ### The cursor as a "paperweight" for parens
 
