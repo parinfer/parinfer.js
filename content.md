@@ -395,10 +395,25 @@ __GOOD__: Balance the quotes in the comment to prevent the problem.
 </div>
 </div>
 
-## Try it
+## Conclusions
 
-<textarea id="code-try">
-</textarea>
+Inferring parentheses based on indentation seems to lead to simpler editing
+mechanics for Lisp code.  Though the rules for inserting/deleting parens must
+be learned, it leads to a system that keeps our code formatted well, without
+requiring special hotkeys to use.
+
+## Future Work
+
+I will be gauging interest on _Parinfer_ for future work.  Though it is not
+implemented in any major editor yet, the formatting code is implemented and
+documented.  The bulk of the code is a pure function in ClojureScript,
+interfaced to [CodeMirror] for the purpose of the editor demos here.
+
+## Source Code
+
+Code is available on Github:
+
+<http://github.com/shaunlebron/parinfer>
 
 ## Prior Art
 
@@ -412,13 +427,9 @@ There are many ideas related to this concept.
 - [clojure-validate-indent] - validates indentation of Clojure code
 - [The Clojure Style Guide] - indentation conventions in Clojure
 
-## Source Code
-
-This presentation and proof-of-concept is implemented using ClojureScript and
-the [CodeMirror] editor.  Code is available on Github:
-
-<http://github.com/shaunlebron/parinfer>
-
+<footer>
+by [@shaunlebron](http://twitter.com/shaunlebron)
+</footer>
 
 [Haml]:http://haml.info/
 [Slim]:http://slim-lang.com/
