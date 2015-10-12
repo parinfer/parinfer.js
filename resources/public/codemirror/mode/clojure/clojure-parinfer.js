@@ -5,6 +5,13 @@
  *    We modify it for Parinfer so that it dims the inferred parens at the end of a line.
  *    (Search for Parinfer below for the relevant edit)
  *
+ *    For the purpose of extra-highlighting, we also modify it by tracking a previousToken
+ *    so we can highlight def'd symbols and symbols that are called to. Example:
+ *
+ *      (def foo 123)          (bar 123)
+ *           ^^^                ^^^
+ *            |------------------|------------- highlighted as 'def' token type
+ *
  *    This Clojure mode also has logic for where to indent the cursor when pressing enter.
  *    We do not modify this.
  *
@@ -34,7 +41,7 @@
 CodeMirror.defineMode("clojure-parinfer", function (options) {
     var BUILTIN = "builtin", COMMENT = "comment", STRING = "string", CHARACTER = "string-2",
         ATOM = "atom", NUMBER = "number", BRACKET = "bracket", KEYWORD = "keyword", VAR = "variable",
-        TRAILING = "trailing";
+        TRAILING = "trailing", DEF = "def";
     var INDENT_WORD_SKIP = options.indentUnit || 2;
     var NORMAL_INDENT_UNIT = options.indentUnit || 2;
 
@@ -45,6 +52,9 @@ CodeMirror.defineMode("clojure-parinfer", function (options) {
     }
 
     var atoms = makeKeywords("true false nil");
+
+    var defs = makeKeywords(
+        "defn defn- def defonce defmulti defmethod defmacro defstruct deftype ns");
 
     var keywords = makeKeywords(
       "defn defn- def def- defonce defmulti defmethod defmacro defstruct deftype defprotocol defrecord defproject deftest slice defalias defhinted defmacro- defn-memo defnk defnk defonce- defunbound defunbound- defvar defvar- let letfn do case cond condp for loop recur when when-not when-let when-first if if-let if-not . .. -> ->> doto and or dosync doseq dotimes dorun doall load import unimport ns in-ns refer try catch finally throw with-open with-local-vars binding gen-class gen-and-load-class gen-and-save-class handler-case handle");
@@ -142,6 +152,7 @@ CodeMirror.defineMode("clojure-parinfer", function (options) {
     return {
         startState: function () {
             return {
+                previousToken: null,
                 indentStack: null,
                 indentation: 0,
                 mode: false
@@ -159,6 +170,7 @@ CodeMirror.defineMode("clojure-parinfer", function (options) {
                 return null;
             }
             var returnType = null;
+            var previousToken = null;
 
             switch(state.mode){
                 case "string": // multi-line string parsing mode
@@ -190,6 +202,10 @@ CodeMirror.defineMode("clojure-parinfer", function (options) {
                     } else if (isNumber(ch,stream)){
                         returnType = NUMBER;
                     } else if (ch == "(" || ch == "[" || ch == "{" ) {
+                        if (ch == "(") {
+                          previousToken = "(";
+                        }
+
                         var keyWord = '', indentTemp = stream.column(), letter;
                         /**
                         Either
@@ -244,11 +260,19 @@ CodeMirror.defineMode("clojure-parinfer", function (options) {
                             returnType = BUILTIN;
                         } else if (atoms && atoms.propertyIsEnumerable(stream.current())) {
                             returnType = ATOM;
+                        } else if (state.previousToken == "def" || state.previousToken == "(") {
+                            returnType = DEF;
                         } else {
-                          returnType = VAR;
+                            returnType = VAR;
+                        }
+
+                        if (state.previousToken == "(" && defs && defs.propertyIsEnumerable(stream.current())) {
+                          previousToken = "def";
                         }
                     }
             }
+
+            state.previousToken = previousToken;
 
             return returnType;
         },
