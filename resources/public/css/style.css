@@ -292,6 +292,11 @@ code {
   height: 110px;
 }
 
+#cm-code-enter
+{
+  height: 180px;
+}
+
 p.centered
 {
   text-align: center;

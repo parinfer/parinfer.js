@@ -170,10 +170,12 @@ roughly equivalent to those listed.
 ## How it works
 
 We perform the following steps to rearrange parens based on indentation.<br>
-<span class="side-point">We will refer to these later as rules #1, #2, and #3:</span>
+<span class="side-point">We will refer to these later as rules #1, #2, and #3.
+(I'm currently trying to establish a mathematical basis for this.  No
+explanations yet.)</span>
 
 1. all unmatched right-parens are removed (for housekeeping)
-2. all right-parens at the end of each line are removed
+2. all right-parens at the start and end of each line are removed
 3. for every resulting unmatched left-paren:
   - a right-paren is inserted at the end of its line or its last non-empty indented line
 
@@ -390,6 +392,20 @@ __GOOD__: Balance the quotes in the comment to prevent the problem.
 <textarea id="code-warn-good">
 </textarea>
 </div>
+</div>
+
+### Pressing Enter
+
+Pressing enter will result in your cursor moving to an auto-indented line, as
+expected.  Just keep in mind that the inferred parens won't move until you
+actually type something on the new line.
+
+<div>
+<div class="caption">
+__Watch where the cursor is__ when pressing Enter. Inferred parens not displaced until typing. (rule #2)
+</div>
+<textarea id="code-enter">
+</textarea>
 </div>
 
 ## Conclusions

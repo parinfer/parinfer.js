@@ -71,6 +71,7 @@
   (create-editor! "code-barf" :barf)
   (create-editor! "code-slurp" :slurp)
   (create-editor! "code-string" :string)
+  (create-editor! "code-enter" :enter)
 
   (let [opts {:readOnly true}
         cm-good (create-editor! "code-warn-good" :warn-good opts)
@@ -115,6 +116,7 @@
   (swap! vcr update-in [:string] merge vcr/string)
   (swap! vcr update-in [:warn-bad] merge vcr/warn-bad)
   (swap! vcr update-in [:warn-good] merge vcr/warn-good)
+  (swap! vcr update-in [:enter] merge vcr/enter)
 
   (play-recording! :intro)
   (play-recording! :indent)
@@ -131,6 +133,7 @@
   (play-recording! :warn-bad)
   (play-recording! :displaced)
   (play-recording! :not-displaced)
+  (play-recording! :enter)
 
   (render-controls!))
 
