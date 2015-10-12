@@ -1761,25 +1761,29 @@
        :to {:line 0, :ch 0},
        :text ("(foo [1 2 3] 4 5 6)" "(bar a b) c"),
        :origin "paste"},
-      :dt 626}
+      :dt 1109}
      {:selections ({:anchor {:line 0, :ch 12}, :head {:line 0, :ch 12}}),
-      :dt 755}
+      :dt 918}
      {:change
       {:from {:line 0, :ch 11},
        :to {:line 0, :ch 12},
        :text (""),
        :origin "+delete"},
-      :dt 706}
+      :dt 1195}
+     {:selections ({:anchor {:line 0, :ch 18}, :head {:line 0, :ch 18}}),
+      :dt 592}
      {:selections ({:anchor {:line 1, :ch 9}, :head {:line 1, :ch 9}}),
-      :dt 824}
+      :dt 1709}
      {:change
       {:from {:line 1, :ch 8},
        :to {:line 1, :ch 9},
        :text (""),
        :origin "+delete"},
-      :dt 515}],
-    :init-value "", 
-    :last-time 1444575467477, 
+      :dt 1279}
+     {:selections ({:anchor {:line 1, :ch 11}, :head {:line 1, :ch 11}}),
+      :dt 510}],
+    :init-value "",
+    :last-time 1444643570209, 
     :recording? false})
 
 (def string
