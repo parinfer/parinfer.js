@@ -422,7 +422,7 @@ There are many ideas related to this concept.
 
 - [paredit] - structural editing and auto-balancing of Lisp text
 - [Haml], [Slim], and [Jade] - indented HTML templating langs (close to indented lisps)
-- [Haskell's $ operator] - infers a closing paren at the end of its line
+- [Haskell's $ operator] - infers a closing paren after all expressions to the right
 - [sweet-expressions], [i-expressions], and [indent-clj] - infers both left and right parens
 - [Flense] and [Plastic] - structural editing concepts for Clojure text
 - [clojure-validate-indent] - validates indentation of Clojure code
