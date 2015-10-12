@@ -30,6 +30,15 @@
             match: found && found.ch == match.charAt(0), forward: dir > 0};
   }
 
+  // Parinfer edit:
+  // (trailing delimiters should match non-trailing delimiters too)
+  function bracketStylesMatch(a, b) {
+    return (
+      a == b ||
+      a == "bracket trailing" && b == "bracket" ||
+      b == "bracket trailing" && a == "bracket");
+  }
+
   // bracketRegex is used to specify which type of bracket to scan
   // should be a regexp, e.g. /[[\]]/
   //
@@ -53,7 +62,7 @@
       if (lineNo == where.line) pos = where.ch - (dir < 0 ? 1 : 0);
       for (; pos != end; pos += dir) {
         var ch = line.charAt(pos);
-        if (re.test(ch) && (style === undefined || cm.getTokenTypeAt(Pos(lineNo, pos + 1)) == style)) {
+        if (re.test(ch) && (style === undefined || bracketStylesMatch(cm.getTokenTypeAt(Pos(lineNo, pos + 1)), style))) {
           var match = matching[ch];
           if ((match.charAt(1) == ">") == (dir > 0)) stack.push(ch);
           else if (!stack.length) return {pos: Pos(lineNo, pos), ch: ch};
