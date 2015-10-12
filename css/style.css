@@ -217,17 +217,14 @@ code {
 #cm-code-inspect span.cm-keyword,
 #cm-code-inspect span.cm-variable,
 #cm-code-inspect span.cm-builtin,
-#cm-code-inspect span.cm-string
+#cm-code-inspect span.cm-string,
+#cm-code-inspect span.cm-def,
+#cm-code-inspect span.cm-atom,
+#cm-code-inspect span.cm-number,
+#cm-code-inspect span.cm-comment
 {
   opacity: 0.15;
   color: #000;
-}
-
-#cm-code-inspect
-.CodeMirror-matchingbracket {
-  background: #E6EFFD;
-  color: inherit;
-  border-bottom: 1px solid #111;
 }
 
 #cm-code-indent,

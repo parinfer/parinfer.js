@@ -175,10 +175,10 @@ roughly equivalent to those listed.
 We perform the following steps to rearrange parens based on indentation.<br>
 <span class="side-point">We will refer to these later as rules #1, #2, and #3:</span>
 
-1. remove all unmatched right-parens (for housekeeping)
-2. remove all right-parens at the end of each line
+1. all unmatched right-parens are removed (for housekeeping)
+2. all right-parens at the end of each line are removed
 3. for every resulting unmatched left-paren:
-  - insert a right-paren at the end of its line or its last non-empty indented line
+  - a right-paren is inserted at the end of its line or its last non-empty indented line
 
 <div class="interact">
 <i class="fa fa-keyboard-o fa-lg"></i>
