@@ -29,7 +29,7 @@
    :indent-delta 0                     ;; how much the current line's indentation was changed
    })
 
-(defn insert-eol-close-paren
+(defn append-delim-trail
   [{:keys [stack line-no insert] :as state}]
   (let [[dedent-x open-ch] (peek stack)
         close-ch (matching-delim open-ch)
@@ -67,7 +67,7 @@
         process? (not skip?)
         state (assoc state :process? process?)]
     (cond-> state
-      matching? insert-eol-close-paren)))
+      matching? append-delim-trail)))
 
 (defn process-char
   "Update the state by processing the given character and its position."
@@ -79,8 +79,12 @@
       (:process? state) process-char*)))
 
 (defn reinsert-delims
-  [state]
-  state)
+  [{:keys [removed-delims] :as state}]
+  (reduce
+    (fn [state _delim]
+      (append-delim-trail state))
+    state
+    removed-delims))
 
 (defn process-line
   "Update the state by processing the given line of text."
@@ -96,7 +100,7 @@
                   :line-no line-no)
          state (reduce process-char state (str line "\n"))
          state (-> state
-                   remove-delim-trail ;; make sure we still have access to what was removed
+                   remove-delim-trail
                    reinsert-delims)]
      state)))
 

@@ -140,9 +140,9 @@
   (let [{:keys [start end]} delim-trail]
     (if (and start end)
       (let [line (get lines line-no)
-            remove-count (->> (subs line start end)
-                              (filter #(isa? char-hierarchy % :close))
-                              (count))
+            delims (->> (subs line start end)
+                        (filter #(isa? char-hierarchy % :close)))
+            remove-count (count delims)
             ignore-count (- (count backup) remove-count)
             [backup stack] (loop [backup backup, stack stack]
                              (if (= ignore-count (count backup))
@@ -150,7 +150,9 @@
                                (recur (pop backup) (conj stack (peek backup)))))
             state (-> state
                        (update-in [:lines line-no] remove-str-range start end)
-                       (assoc :backup backup :stack stack))
+                       (assoc :backup backup
+                              :stack stack
+                              :removed-delims delims))
 
             insert-line? (= (:line-no insert) line-no)
             state (cond-> state
