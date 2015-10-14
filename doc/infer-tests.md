@@ -1,21 +1,4 @@
-# Formatter Tests
-
-The formatter is a pure function that formats some input text based on the
-indentation rules of this project.  Test cases are created with the following
-format, which will be parsed and executed by the test runner.
-
-    ```in
-    input code here
-    ```
-
-    ```out
-    output code here
-    ```
-
-Certain cases are affected by cursor location, represented by the pipe `|`
-character.
-
-Run with `lein cljsbuild test`
+# Parinfer - Infer Tests
 
 ## No Closers
 

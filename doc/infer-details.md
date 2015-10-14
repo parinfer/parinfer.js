@@ -1,4 +1,4 @@
-# Parinfer Formatter
+# Parinfer - Infer
 
 We perform the following steps to rearrange parens based on indentation:
 
