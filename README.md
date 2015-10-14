@@ -31,11 +31,12 @@ This is an experiment that tries to demonstrate a possible replacement for
 
 The _formatter_ comes in two parts (see [overview]):
 
-- __prep__: correct indentation based on parens ([details][prep-details], [tests][prep-tests])
+- __prep__: ([details][prep-details], [tests][prep-tests]) correct indentation based on parens 
   - (used to preprocess existing files)
-- __infer__: correct parens based on indentation ([details][infer-details], [tests][infer-tests])
+- __infer__: ([details][infer-details], [tests][infer-tests]) correct parens based on indentation 
   - (used while editing a file)
 
+[overview]:doc/overview.md
 [prep-details]:doc/prep-details.md
 [prep-tests]:doc/prep-tests.md
 [infer-details]:doc/infer-details.md
