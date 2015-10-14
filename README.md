@@ -19,9 +19,9 @@ This is an experiment that tries to demonstrate a possible replacement for
 | [`vcr_data.cljs`] | editor animation data |
 
 [`core.cljs`]:src/parinfer/core.cljs
-[`reader.cljs`]:src/parreader/reader.cljs
+[`reader.cljs`]:src/parinfer/reader.cljs
 [`infer.cljs`]:src/parinfer/infer.cljs
-[`prep.cljs`]:src/parprep/prep.cljs
+[`prep.cljs`]:src/parinfer/prep.cljs
 [`editor.cljs`]:src/parinfer/editor.cljs
 [`state.cljs`]:src/parinfer/state.cljs
 [`vcr.cljs`]:src/parinfer/vcr.cljs
