@@ -11,7 +11,7 @@
     [parinfer.editor :refer [create-editor!
                              create-regular-editor!
                              start-editor-sync!]]
-    [parinfer.formatter :refer [format-text]]
+    [parinfer.infer :as infer]
     [ajax.core :refer [GET]]))
 
 (enable-console-print!)
@@ -92,7 +92,7 @@
   (let [cm-input (create-regular-editor! "code-how-input")
         cm-output (create-regular-editor! "code-how-output" {:readOnly true
                                                              :mode "clojure-parinfer"})
-        sync! #(.setValue cm-output (format-text (.getValue cm-input)))]
+        sync! #(.setValue cm-output (infer/format-text (.getValue cm-input)))]
     (.on cm-input "change" sync!)
     (sync!)
     (.refresh cm-input)

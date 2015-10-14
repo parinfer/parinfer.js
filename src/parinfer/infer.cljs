@@ -1,4 +1,4 @@
-(ns parinfer.formatter
+(ns parinfer.infer
   "Formats the text according to Parinfer's indentation-based rules."
   (:require
     [clojure.string :refer [join]]))

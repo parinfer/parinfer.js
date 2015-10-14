@@ -2,7 +2,7 @@
   "Glues Parinfer's formatter to a CodeMirror editor"
   (:require
     [clojure.string :as string :refer [join]]
-    [parinfer.formatter :refer [format-text]]
+    [parinfer.infer :as infer]
     [parinfer.state :refer [state
                             empty-editor-state]]
     [parinfer.vcr :refer [vcr
@@ -40,7 +40,7 @@
         ;; format the text
         opts {:cursor-line (.-line cursor)
               :cursor-x (.-ch cursor)}
-        new-text (format-text opts current-text)]
+        new-text (infer/format-text opts current-text)]
 
     ;; update the text
     (swap! state assoc-in [(cm-key cm) :text] new-text)
