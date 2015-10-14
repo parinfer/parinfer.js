@@ -24,6 +24,18 @@ minimal dedent.
      foo)
 ```
 
+minimal dedent across multiple.
+
+```in
+(let [foo {:a 1}]
+           foo)
+```
+
+```out
+(let [foo {:a 1}]
+     foo)
+```
+
 keep relative indentation of child expressions:
 
 ```in
@@ -59,8 +71,6 @@ spaces kept before and after SOL close-parens stay.
   
 
 ```
-
-minimal indent:
 
 extra indent is fine (won't cause parinfer to restructure it)
 

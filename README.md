@@ -10,14 +10,16 @@ This is an experiment that tries to demonstrate a possible replacement for
 | File  | Description  |
 |------:|:-------------|
 | [`core.cljs`] | entry point |
-| [`formatter.cljs`] | transforms code |
+| [`reader.cljs`] | clojure reader for tracking parens and token states |
+| [`infer.cljs`] | corrects parens based on indentation |
+| [`prep.cljs`] | corrects indentation based on parens |
 | [`editor.cljs`] | glues formatter to CodeMirror |
 | [`state.cljs`] | state of each editor |
 | [`vcr.cljs`] | editor recording and playback |
 | [`vcr_data.cljs`] | editor animation data |
 
 [`core.cljs`]:src/parinfer/core.cljs
-[`formatter.cljs`]:src/parinfer/formatter.cljs
+[`infer.cljs`]:src/parinfer/infer.cljs
 [`editor.cljs`]:src/parinfer/editor.cljs
 [`state.cljs`]:src/parinfer/state.cljs
 [`vcr.cljs`]:src/parinfer/vcr.cljs
@@ -25,22 +27,25 @@ This is an experiment that tries to demonstrate a possible replacement for
 
 ## Formatter Details
 
-The _formatter_ performs the indentation-based restructuring of code.
-You can read about the details of its design at [`formatter-details.md`].
+The _formatter_ comes in two parts (see [overview]):
 
-All tests are kept in [`formatter-tests.md`], which is parsed and tested here
-under Node.js:
+- __prep__: correct indentation based on parens ([details][prep-details], [tests][prep-tests])
+  - (used to preprocess existing files)
+- __infer__: correct parens based on indentation ([details][infer-details], [tests][infer-tests])
+  - (used while editing a file)
+
+[prep-details]:doc/prep-details.md
+[prep-tests]:doc/prep-tests.md
+[infer-details]:doc/infer-details.md
+[infer-tests]:doc/infer-tests.md
+
+Run tests with:
 
 ```
 lein cljsbuild test
 ```
 
-[`formatter-details.md`]:doc/formatter-details.md
-[`formatter-tests.md`]:doc/formatter-tests.md
-
 ## Presentation Page
-
-not quite ready yet.
 
 ```
 lein figwheel dev
