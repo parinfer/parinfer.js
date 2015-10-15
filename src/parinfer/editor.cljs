@@ -2,7 +2,7 @@
   "Glues Parinfer's formatter to a CodeMirror editor"
   (:require
     [clojure.string :as string :refer [join]]
-    [parinfer.infer :as infer]
+    [parinfer.format.infer :as infer]
     [parinfer.state :refer [state
                             empty-editor-state]]
     [parinfer.vcr :refer [vcr

@@ -1,19 +1,19 @@
-(ns parinfer.prep
+(ns parinfer.format.prep
   "Corrects indentation based on parens.
   (used to preprocess existing files)"
   (:require
-    [parinfer.reader :refer [in-str?
-                             in-code?
-                             whitespace?
-                             valid-closer?
-                             matching-delim
-                             char-hierarchy]]
-    [parinfer.infer :refer [update-delim-trail
-                            remove-delim-trail
-                            update-insertion-pt
-                            update-line
-                            process-char*]]
-    [parinfer.string :refer [insert-string]]
+    [parinfer.format.reader :refer [in-str?
+                                    in-code?
+                                    whitespace?
+                                    valid-closer?
+                                    matching-delim
+                                    closing-delim?]]
+    [parinfer.format.infer :refer [update-delim-trail
+                                   remove-delim-trail
+                                   update-insertion-pt
+                                   update-line
+                                   process-char*]]
+    [parinfer.format.string :refer [insert-string]]
     [clojure.string :refer [join]]))
 
 (def initial-state
@@ -72,15 +72,14 @@
 (defn process-indent
   "Update the state by handling a possible indentation trigger."
   [{:keys [stack track-indent? lines line-no ch] :as state}]
-  (let [close-delim? (isa? char-hierarchy ch :close)
-        check-indent? (and track-indent?
+  (let [check-indent? (and track-indent?
                         (in-code? stack)
                         (not (whitespace? ch))
                         (not= ";" ch))
         matching? (and check-indent?
-                       close-delim?
+                       (closing-delim? ch)
                        (valid-closer? stack ch))
-        skip? (and check-indent? close-delim?)
+        skip? (and check-indent? (closing-delim? ch))
         at-indent? (and check-indent? (not skip?))
         state (assoc state :process? (not skip?))]
     (cond-> state

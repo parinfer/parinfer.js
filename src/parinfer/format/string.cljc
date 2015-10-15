@@ -1,4 +1,4 @@
-(ns parinfer.string)
+(ns parinfer.format.string)
 
 (defn insert-string
   [orig idx insert]

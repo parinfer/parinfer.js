@@ -3,8 +3,8 @@
   (must be run on Node.js)"
   (:require
     [clojure.string :as string :refer [split-lines]]
-    [parinfer.infer :as infer]
-    [parinfer.prep :as prep]
+    [parinfer.format.infer :as infer]
+    [parinfer.format.prep :as prep]
     [cljs.test :refer-macros [is deftest]]
     ))
 

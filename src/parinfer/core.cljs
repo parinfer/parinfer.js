@@ -11,7 +11,7 @@
     [parinfer.editor :refer [create-editor!
                              create-regular-editor!
                              start-editor-sync!]]
-    [parinfer.infer :as infer]
+    [parinfer.format.infer :as infer]
     [ajax.core :refer [GET]]))
 
 (enable-console-print!)

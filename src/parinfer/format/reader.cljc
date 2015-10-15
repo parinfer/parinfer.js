@@ -1,4 +1,4 @@
-(ns parinfer.reader
+(ns parinfer.format.reader
   "a basic clojure reader for tracking parens and token states")
 
 (def matching-delim
@@ -6,14 +6,8 @@
    "[" "]", "]" "["
    "(" ")", ")" "("})
 
-(def char-hierarchy
-  (-> (make-hierarchy)
-      (derive "{" :open)
-      (derive "[" :open)
-      (derive "(" :open)
-      (derive "}" :close)
-      (derive "]" :close)
-      (derive ")" :close)))
+(def opening-delim?  #{"{" "[" "("})
+(def closing-delim?  #{"}" "]" ")"})
 
 (defn whitespace? [ch]
   (re-find #"[\s,]" ch))
@@ -63,8 +57,11 @@
 
 (defmulti push-char*
   "Update the delimiter stack with the given character."
-  (fn [state] (:ch state))
-  :hierarchy #'char-hierarchy)
+  (fn [{:keys [ch]}]
+    (cond
+      (opening-delim? ch) :open
+      (closing-delim? ch) :close
+      :else ch)))
 
 (defmethod push-char* "\t"
   [{:keys [stack]}]

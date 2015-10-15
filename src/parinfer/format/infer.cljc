@@ -1,18 +1,18 @@
-(ns parinfer.infer
+(ns parinfer.format.infer
   "Corrects parens based on indentation.
   (used while editing a file)"
   (:require
     [clojure.string :refer [join]]
-    [parinfer.string :refer [insert-string
-                             remove-str-range]]
-    [parinfer.reader :refer [push-char
-                             whitespace?
-                             in-str?
-                             in-code?
-                             in-comment?
-                             valid-closer?
-                             matching-delim
-                             char-hierarchy]]))
+    [parinfer.format.string :refer [insert-string
+                                    remove-str-range]]
+    [parinfer.format.reader :refer [push-char
+                                    whitespace?
+                                    in-str?
+                                    in-code?
+                                    in-comment?
+                                    valid-closer?
+                                    matching-delim
+                                    closing-delim?]]))
 
 (def initial-state
   "An initial state of our running state."
@@ -72,13 +72,12 @@
                           (notice whitespace will also be removed)
   "
   [{:keys [stack delim-trail backup x-pos ch cursor-line line-no cursor-x cursor-in-comment?] :as state}]
-  (let [closing-delim? (isa? char-hierarchy ch :close)
-
+  (let [ 
         ;; Determine if our tracked delimiters are not at the end of the line.
         reset? (and (in-code? stack)
                     (not= ";" ch)
                     (not (whitespace? ch))
-                    (not closing-delim?))
+                    (not (closing-delim? ch)))
 
         cursor-in-comment? (or cursor-in-comment?
                                (and (= cursor-line line-no)
@@ -87,7 +86,7 @@
 
         ;; Determine if we have a delimiter we can track.
         update? (and (in-code? stack)
-                     closing-delim?
+                     (closing-delim? ch)
                      (valid-closer? stack ch))
 
         ;; Clear the backup delimiters if we reset.
@@ -141,7 +140,7 @@
     (if (and start end)
       (let [line (get lines line-no)
             delims (->> (subs line start end)
-                        (filter #(isa? char-hierarchy % :close)))
+                        (filter closing-delim?))
             remove-count (count delims)
             ignore-count (- (count backup) remove-count)
             [backup stack] (loop [backup backup, stack stack]
@@ -175,10 +174,9 @@
 
   "
   [{:keys [track-indent? cursor-line line-no stack x-pos ch] :as state}]
-  (let [closing-delim? (isa? char-hierarchy ch :close)
-        insert-at-char? (and (not= "" ch)
+  (let [insert-at-char? (and (not= "" ch)
                              (not (whitespace? ch))
-                             (or (not closing-delim?)
+                             (or (not (closing-delim? ch))
                                  (= line-no cursor-line))
                              (in-code? stack))
 
@@ -206,12 +204,11 @@
                    ;;       the character completely, removing it from the line.
   "
   [{:keys [stack track-indent? lines line-no x-pos ch] :as state}]
-  (let [close-delim? (isa? char-hierarchy ch :close)
-        check-indent? (and track-indent?
+  (let [check-indent? (and track-indent?
                         (in-code? stack)
                         (not (whitespace? ch))
                         (not= ";" ch))
-        skip? (and check-indent? close-delim?)
+        skip? (and check-indent? (closing-delim? ch))
         at-indent? (and check-indent? (not skip?))
         state (assoc state :process? (not skip?))]
     (cond-> state
