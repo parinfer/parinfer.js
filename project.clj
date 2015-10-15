@@ -19,6 +19,8 @@
 
   :clean-targets ^{:protect false} ["resources/public/js/compiled" "target"]
 
+  :aliases {"prep" ["run" "-m" "parinfer.format.prep-file"]}
+
   :cljsbuild {
     :test-commands {"test" ["node" "resources/public/js/compiled/parinfer-test.js"]}
     :builds [{:id "dev"
