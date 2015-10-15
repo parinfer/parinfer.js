@@ -24,17 +24,17 @@
 (defn escaping?
   "Next character will be escaped."
   [stack]
-  (= \\ (prev-ch stack)))
+  (= "\\" (prev-ch stack)))
 
 (defn in-str?
   "Next character is inside a string."
   [stack]
-  (= \" (prev-ch stack)))
+  (= "\"" (prev-ch stack)))
 
 (defn in-comment?
   "Next character is inside a comment."
   [stack]
-  (= \; (prev-ch stack)))
+  (= ";" (prev-ch stack)))
 
 (defn in-code?
   "Next character is inside actual code."

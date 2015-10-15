@@ -90,7 +90,7 @@
   "Update the state by processing the given character and its position."
   [{:keys [lines line-no] :as state} ch]
   (let [x-pos (count (get lines line-no))
-        state (assoc state :x-pos x-pos :ch ch)
+        state (assoc state :x-pos x-pos :ch (str ch))
         state (process-indent state)]
     (cond-> state
       (:process? state) process-char*)))

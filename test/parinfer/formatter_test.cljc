@@ -1,14 +1,14 @@
 (ns parinfer.formatter-test
   "Parses and verifies tests written in doc/*-tests.md
-  (must be run on Node.js)"
+  (cljs stuff is Node.js specific)"
   (:require
+    #?(:clj  [clojure.test :refer [is deftest]]
+       :cljs [cljs.test :refer-macros [is deftest]])
     [clojure.string :as string :refer [split-lines]]
     [parinfer.format.infer :as infer]
-    [parinfer.format.prep :as prep]
-    [cljs.test :refer-macros [is deftest]]
-    ))
+    [parinfer.format.prep :as prep]))
 
-(def fs (js/require "fs"))
+#?(:cljs (def fs (js/require "fs")))
 
 (defn error-msg
   [line-no msg]
@@ -94,7 +94,9 @@
 
 (defn run-test-cases
   [type- format-text]
-  (let [text (.readFileSync fs (str "doc/" type- "-tests.md"))
+  (let [filename (str "doc/" type- "-tests.md")
+        text #?(:clj (slurp filename)
+                :cljs (.readFileSync fs filename))
         test-cases (parse-test-cases text)]
     (doseq [{:keys [in out]} test-cases]
       (let [cursor-line (:cursor-line in)

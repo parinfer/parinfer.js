@@ -110,6 +110,7 @@
   [{:keys [delim-trail line-no cursor-line cursor-x cursor-in-comment?] :as state}]
   (let [{:keys [start end]} delim-trail
         cursor-block? (and (= line-no cursor-line)
+                           start
                            (> cursor-x start)
                            (not cursor-in-comment?))
         start (cond-> start (and start cursor-block?) (max cursor-x))
@@ -140,6 +141,7 @@
     (if (and start end)
       (let [line (get lines line-no)
             delims (->> (subs line start end)
+                        (map str)
                         (filter closing-delim?))
             remove-count (count delims)
             ignore-count (- (count backup) remove-count)
@@ -231,7 +233,7 @@
   "Update the state by processing the given character and its position."
   [{:keys [lines line-no] :as state} ch]
   (let [x-pos (count (get lines line-no))
-        state (assoc state :x-pos x-pos :ch ch)
+        state (assoc state :x-pos x-pos :ch (str ch))
         state (process-indent state)]
     (cond-> state
       (:process? state) process-char*)))

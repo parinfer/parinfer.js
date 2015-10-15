@@ -1,3 +1,5 @@
 language: clojure
 lein: lein
-script: lein cljsbuild test
+script:
+  - lein cljsbuild test
+  - lein test parinfer.formatter-test
