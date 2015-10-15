@@ -29,7 +29,8 @@
 (defn in-str?
   "Next character is inside a string."
   [stack]
-  (= "\"" (prev-ch stack)))
+  (let [ch (prev-ch (cond-> stack (escaping? stack) pop))]
+    (= "\"" ch)))
 
 (defn in-comment?
   "Next character is inside a comment."
@@ -105,6 +106,7 @@
   [{:keys [stack] :as state}]
   (cond
     (escaping? stack) {:stack (pop stack)}
+    (in-comment? stack) nil
     :else {:stack (conj stack (select-keys state [:x-pos :ch]))}))
 
 (defmethod push-char* "\""

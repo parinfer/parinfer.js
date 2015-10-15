@@ -115,3 +115,14 @@ foo)
 (let [foo 1]
  foo)
 ```
+
+escape character in comment untouched:
+
+```in
+; hello \n world
+```
+
+```out
+; hello \n world
+```
+

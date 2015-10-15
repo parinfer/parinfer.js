@@ -249,6 +249,16 @@ code.  See [Issue #15](https://github.com/shaunlebron/parinfer/issues/15).
   ret)
 ```
 
+escape character in comment untouched:
+
+```in
+; hello \n world
+```
+
+```out
+; hello \n world
+```
+
 ## Cursor Cases
 
 `|` represents the cursor.  This allows us to insert spaces between EOL closing
