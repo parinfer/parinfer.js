@@ -97,3 +97,21 @@ doesn't try to align siblings.
    :foo 1
      :bar 2)
 ```
+
+multiple expressions
+
+```in
+(let [foo 1]
+      foo)
+
+(let [foo 1]
+foo)
+```
+
+```out
+(let [foo 1]
+     foo)
+
+(let [foo 1]
+ foo)
+```

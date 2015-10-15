@@ -50,6 +50,28 @@ ret
 ret
 ```
 
+multiple lines:
+
+```in
+(defn foo
+  [arg
+  ret
+
+(defn foo
+  [arg
+  ret
+```
+
+```out
+(defn foo
+  [arg]
+  ret)
+
+(defn foo
+  [arg]
+  ret)
+```
+
 ## Bad Closers
 
 ```in
