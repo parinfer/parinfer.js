@@ -37,7 +37,7 @@
     (-> state
         (assoc :stack stack
                :dedent-x (:x-pos opener))
-        (update-in [:lines line-no] insert-string (:x-pos insert) close-ch)
+        (update-in [:lines (:line-no insert)] insert-string (:x-pos insert) close-ch)
         (update-in [:insert :x-pos] inc))))
 
 (defn min-indent
