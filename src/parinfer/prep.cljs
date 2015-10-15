@@ -66,7 +66,8 @@
         (assoc-in [:lines line-no] indent-str)
         (assoc :indent-delta new-delta
                :x-pos new-x
-               :track-indent? false))))
+               :track-indent? false
+               :dedent-x nil))))
 
 (defn process-indent
   "Update the state by handling a possible indentation trigger."
