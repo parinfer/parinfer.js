@@ -25,7 +25,7 @@
    :insert {:line-no nil :x-pos nil}   ;; the place to insert closing delimiters whenever we hit appropriate indentation.
    :stack []                           ;; the delimiter stack, maps of [:x-pos :ch :indent-delta]
    :backup []                          ;; (unused, but required by the reader because of the infer process)
-   :dedent-x 0                         ;; current x-position subsequent lines cannot be nested inside
+   :dedent-x nil                       ;; current x-position subsequent lines cannot be nested inside
    :indent-delta 0                     ;; how much the current line's indentation was changed
    })
 
@@ -40,25 +40,36 @@
         (update-in [:lines line-no] insert-string (:x-pos insert) close-ch)
         (update-in [:insert :x-pos] inc))))
 
+(defn min-indent
+  [x {:keys [stack]}]
+  (let [opener (peek stack)]
+    (if-let [start-x (:x-pos opener)]
+      (max (inc start-x) x)
+      x)))
+
+(defn min-dedent
+  [x {:keys [dedent-x]}]
+  (if dedent-x
+    (min dedent-x x)
+    x))
+
 (defn correct-indent
-  [{:keys [x-pos indent-delta] :as state}]
-  )
+  [{:keys [x-pos stack dedent-x line-no] :as state}]
+  (let [opener (peek stack)
+        delta (:indent-delta opener 0)
+        new-x (-> (+ x-pos delta)
+                  (min-indent state)
+                  (min-dedent state))
+        new-delta (- new-x x-pos)
+        indent-str (apply str (repeat new-x " "))]
+    (-> state
+        (assoc-in [:lines line-no] indent-str)
+        (assoc :indent-delta new-delta
+               :x-pos new-x
+               :track-indent? false))))
 
 (defn process-indent
-  "Update the state by handling a possible indentation trigger.
-
-  Example:
-  
-  (defn foo [a b
-     ret           ;; <---  When we process `r`, we detect indentation, then
-                   ;;       we start backtracking to insert closing delimiters on a previous line.
-
-
-  (defn foo [a b]
-     )             ;; <---  If a line starts with a closing delimiter, it is not
-                   ;;       considered an indentation trigger.  In fact, we skip
-                   ;;       the character completely, removing it from the line.
-  "
+  "Update the state by handling a possible indentation trigger."
   [{:keys [stack track-indent? lines line-no ch] :as state}]
   (let [close-delim? (isa? char-hierarchy ch :close)
         check-indent? (and track-indent?
@@ -103,7 +114,8 @@
                   :delim-trail {:start nil :end nil}
                   :track-indent? (and (seq stack) (not (in-str? stack)))
                   :lines (conj lines "")
-                  :line-no line-no)
+                  :line-no line-no
+                  :removed-delims [])
          state (reduce process-char state (str line "\n"))
          state (-> state
                    remove-delim-trail

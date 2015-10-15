@@ -250,7 +250,8 @@
                   :delim-trail {:start nil :end nil}
                   :track-indent? (and (seq stack) (not (in-str? stack)))
                   :lines (conj lines "")
-                  :line-no line-no)
+                  :line-no line-no
+                  :removed-delims [])
          state (reduce process-char state (str line "\n"))
          state (-> state
                    block-delim-trail

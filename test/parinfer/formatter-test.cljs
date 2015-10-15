@@ -4,6 +4,7 @@
   (:require
     [clojure.string :as string :refer [split-lines]]
     [parinfer.infer :as infer]
+    [parinfer.prep :as prep]
     [cljs.test :refer-macros [is deftest]]
     ))
 
@@ -106,3 +107,5 @@
 (deftest run-infer-cases
   (run-test-cases "infer" infer/format-text))
 
+(deftest run-prep-cases
+  (run-test-cases "prep" prep/format-text))
