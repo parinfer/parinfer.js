@@ -112,7 +112,11 @@
                   :backup []
                   :cursor-in-comment? false
                   :delim-trail {:start nil :end nil}
-                  :track-indent? (and (seq stack) (not (in-str? stack)))
+
+                  ;; different from process-line in parinfer.format.infer
+                  ;; (even if the stack is empty, we still have to track indentation)
+                  :track-indent? (not (in-str? stack))
+
                   :lines (conj lines "")
                   :line-no line-no
                   :removed-delims [])
