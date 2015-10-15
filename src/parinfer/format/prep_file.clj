@@ -9,7 +9,7 @@
 (defn prep-file
   [filename]
   (let [i (.lastIndexOf filename ".")
-        [prefix ext] (if (>= 0 i)
+        [prefix ext] (if (>= i 0)
                        [(subs filename 0 i) (subs filename i)]
                        [filename ".clj"])
         prep-filename (str prefix ".prep" ext)
