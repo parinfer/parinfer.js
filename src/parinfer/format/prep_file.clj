@@ -1,6 +1,5 @@
 (ns parinfer.format.prep-file
   (:require
-    [clojure.string :refer [last-index-of]]
     [parinfer.format.prep :as prep]))
 
 (def usage
@@ -9,8 +8,8 @@
 
 (defn prep-file
   [filename]
-  (let [i (last-index-of filename ".")
-        [prefix ext] (if i
+  (let [i (.lastIndexOf filename ".")
+        [prefix ext] (if (>= 0 i)
                        [(subs filename 0 i) (subs filename i)]
                        [filename ".clj"])
         prep-filename (str prefix ".prep" ext)
