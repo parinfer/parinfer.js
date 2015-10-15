@@ -23,7 +23,7 @@
    :track-indent? false                ;; "true" when we are looking for the first char on a line to signify indentation.
    :delim-trail {:start nil :end nil}  ;; track EOL delims since we replace them wholesale with inferred delims.
    :insert {:line-no nil :x-pos nil}   ;; the place to insert closing delimiters whenever we hit appropriate indentation.
-   :stack []                           ;; the delimiter stack, [x-pos char] tuples
+   :stack []                           ;; the delimiter stack, maps of [:x-pos :ch :indent-delta]
    :backup []                          ;; (unused, but required by the reader because of the infer process)
    :dedent-x 0                         ;; current x-position subsequent lines cannot be nested inside
    :indent-delta 0                     ;; how much the current line's indentation was changed

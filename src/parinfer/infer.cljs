@@ -21,7 +21,7 @@
    :track-indent? false                ;; "true" when we are looking for the first char on a line to signify indentation.
    :delim-trail {:start nil :end nil}  ;; track EOL delims since we replace them wholesale with inferred delims.
    :insert {:line-no nil :x-pos nil}   ;; the place to insert closing delimiters whenever we hit appropriate indentation.
-   :stack []                           ;; the delimiter stack, [x-pos char] tuples
+   :stack []                           ;; the delimiter stack, maps of [:x-pos :ch :indent-delta]
    :backup []                          ;; trailing delims that are pushed back onto the stack at EOL
    })
 
@@ -45,8 +45,8 @@
          (loop [stack (:stack state), delims ""]
            (if-not (seq stack)
              [stack delims]
-             (let [[x ch] (peek stack)]
-               (if (>= x indent-x)
+             (let [{:keys [x-pos ch]} (peek stack)]
+               (if (>= x-pos indent-x)
                  (recur (pop stack) (str delims (matching-delim ch)))
                  [stack delims]))))
 

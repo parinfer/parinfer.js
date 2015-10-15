@@ -21,12 +21,11 @@
 ;;------------------------------------------------------------------------
 ;; Delimiter Stack states
 ;;
-;;   We track delimiters by using a stack of [x-pos char] tuples.
-;;   State is tracked by checking last character.
+;;   State is tracked by checking last pushed character.
 ;;------------------------------------------------------------------------
 
 (defn prev-ch [stack]
-  (second (peek stack)))
+  (:ch (peek stack)))
 
 (defn escaping?
   "Next character will be escaped."
@@ -58,7 +57,7 @@
 ;; Delimiter Stack operations
 ;;
 ;; 
-;;   We track delimiters by using a stack of [x-pos char] tuples.
+;;   We track delimiters by using a stack of maps containing [:x-pos :ch :indent-delta].
 ;;   State is tracked by checking last character.
 ;;------------------------------------------------------------------------
 
@@ -68,20 +67,20 @@
   :hierarchy #'char-hierarchy)
 
 (defmethod push-char* "\t"
-  [{:keys [stack x-pos ch]}]
+  [{:keys [stack]}]
   (cond
     (not (in-str? stack)) {:ch "  "} ;; replace with two spaces
     :else nil))
 
 (defmethod push-char* :open
-  [{:keys [stack x-pos ch]}]
+  [{:keys [stack] :as state}]
   (cond
     (escaping? stack) {:stack (pop stack)}
-    (in-code? stack) {:stack (conj stack [x-pos ch])}
+    (in-code? stack) {:stack (conj stack (select-keys state [:x-pos :ch :indent-delta]))}
     :else nil))
 
 (defmethod push-char* :close
-  [{:keys [stack backup x-pos ch]}]
+  [{:keys [stack backup ch]}]
   (cond
     (escaping? stack) {:stack (pop stack)}
     (in-code? stack) (if (valid-closer? stack ch)
@@ -92,35 +91,35 @@
     :else nil))
 
 (defmethod push-char* ";"
-  [{:keys [stack x-pos ch]}]
+  [{:keys [stack] :as state}]
   (cond
     (escaping? stack) {:stack (pop stack)}
-    (in-code? stack) {:stack (conj stack [x-pos ch])}
+    (in-code? stack) {:stack (conj stack (select-keys state [:x-pos :ch]))}
     :else nil))
 
 (defmethod push-char* "\n"
-  [{:keys [stack x-pos ch]}]
+  [{:keys [stack]}]
   (let [stack (cond-> stack (escaping? stack) pop)
         stack (cond-> stack (in-comment? stack) pop)]
     {:ch ""
      :stack stack}))
 
 (defmethod push-char* "\\"
-  [{:keys [stack x-pos ch]}]
+  [{:keys [stack] :as state}]
   (cond
     (escaping? stack) {:stack (pop stack)}
-    :else {:stack (conj stack [x-pos ch])}))
+    :else {:stack (conj stack (select-keys state [:x-pos :ch]))}))
 
 (defmethod push-char* "\""
-  [{:keys [stack x-pos ch]}]
+  [{:keys [stack] :as state}]
   (cond
     (escaping? stack) {:stack (pop stack)}
     (in-str? stack) {:stack (pop stack)}
     (in-comment? stack) nil
-    :else {:stack (conj stack [x-pos ch])}))
+    :else {:stack (conj stack (select-keys state [:x-pos :ch]))}))
 
 (defmethod push-char* :default
-  [{:keys [stack x-pos ch]}]
+  [{:keys [stack]}]
   (cond
     (escaping? stack) {:stack (pop stack)}
     :else nil))
