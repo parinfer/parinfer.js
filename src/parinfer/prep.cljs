@@ -40,6 +40,10 @@
         (update-in [:lines line-no] insert-string (:x-pos insert) close-ch)
         (update-in [:insert :x-pos] inc))))
 
+(defn correct-indent
+  [{:keys [x-pos indent-delta] :as state}]
+  )
+
 (defn process-indent
   "Update the state by handling a possible indentation trigger.
 
@@ -55,19 +59,21 @@
                    ;;       considered an indentation trigger.  In fact, we skip
                    ;;       the character completely, removing it from the line.
   "
-  [{:keys [stack track-indent? lines line-no x-pos ch] :as state}]
-  (let [at-indent? (and track-indent?
+  [{:keys [stack track-indent? lines line-no ch] :as state}]
+  (let [close-delim? (isa? char-hierarchy ch :close)
+        check-indent? (and track-indent?
                         (in-code? stack)
                         (not (whitespace? ch))
                         (not= ";" ch))
-        close-delim? (isa? char-hierarchy ch :close)
-        matching? (and close-delim?
+        matching? (and check-indent?
+                       close-delim?
                        (valid-closer? stack ch))
-        skip? (and at-indent? close-delim?)
-        process? (not skip?)
-        state (assoc state :process? process?)]
+        skip? (and check-indent? close-delim?)
+        at-indent? (and check-indent? (not skip?))
+        state (assoc state :process? (not skip?))]
     (cond-> state
-      matching? append-delim-trail)))
+      matching? append-delim-trail
+      at-indent? correct-indent)))
 
 (defn process-char
   "Update the state by processing the given character and its position."

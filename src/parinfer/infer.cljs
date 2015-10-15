@@ -206,15 +206,16 @@
                    ;;       the character completely, removing it from the line.
   "
   [{:keys [stack track-indent? lines line-no x-pos ch] :as state}]
-  (let [at-indent? (and track-indent?
+  (let [close-delim? (isa? char-hierarchy ch :close)
+        check-indent? (and track-indent?
                         (in-code? stack)
                         (not (whitespace? ch))
                         (not= ";" ch))
-        skip? (and at-indent? (isa? char-hierarchy ch :close))
-        process? (not skip?)
-        state (assoc state :process? process?)]
+        skip? (and check-indent? close-delim?)
+        at-indent? (and check-indent? (not skip?))
+        state (assoc state :process? (not skip?))]
     (cond-> state
-      (and (not skip?) at-indent?) (close-delims x-pos))))
+      at-indent? (close-delims x-pos))))
 
 (defn update-line
   "Update the state by addding processed character to the line."
