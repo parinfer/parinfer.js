@@ -31,12 +31,12 @@
 
 (defn append-delim-trail
   [{:keys [stack line-no insert] :as state}]
-  (let [[dedent-x open-ch] (peek stack)
-        close-ch (matching-delim open-ch)
+  (let [opener (peek stack)
+        close-ch (matching-delim (:ch opener))
         stack (pop stack)]
     (-> state
         (assoc :stack stack
-               :dedent-x dedent-x)
+               :dedent-x (:x-pos opener))
         (update-in [:lines line-no] insert-string (:x-pos insert) close-ch)
         (update-in [:insert :x-pos] inc))))
 
