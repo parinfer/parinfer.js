@@ -126,3 +126,14 @@ escape character in comment untouched:
 ; hello \n world
 ```
 
+escaped whitespace
+
+```in
+(def foo \,)
+(def bar \ )
+```
+
+```out
+(def foo \,)
+(def bar \ )
+```

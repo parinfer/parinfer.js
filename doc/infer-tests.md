@@ -259,6 +259,18 @@ escape character in comment untouched:
 ; hello \n world
 ```
 
+escaped whitespace
+
+```in
+(def foo \,
+(def bar \ 
+```
+
+```out
+(def foo \,)
+(def bar \ )
+```
+
 ## Cursor Cases
 
 `|` represents the cursor.  This allows us to insert spaces between EOL closing

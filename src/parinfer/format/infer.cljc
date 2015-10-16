@@ -7,6 +7,7 @@
                                     remove-str-range]]
     [parinfer.format.reader :refer [push-char
                                     whitespace?
+                                    escaping?
                                     in-str?
                                     in-code?
                                     in-comment?
@@ -73,11 +74,16 @@
   "
   [{:keys [stack delim-trail backup x-pos ch cursor-line line-no cursor-x cursor-in-comment?] :as state}]
   (let [ 
-        ;; Determine if our tracked delimiters are not at the end of the line.
-        reset? (and (in-code? stack)
-                    (not= ";" ch)
-                    (not (whitespace? ch))
-                    (not (closing-delim? ch)))
+
+        ;; these characters won't block, unless they're escaped
+        pass-char? (or (= ";" ch)
+                     (whitespace? ch)
+                     (closing-delim? ch))
+
+        ;; must be in code (before push-char)
+        reset? (when (in-code? stack)
+                 (or (escaping? stack)
+                     (not pass-char?)))
 
         cursor-in-comment? (or cursor-in-comment?
                                (and (= cursor-line line-no)
@@ -86,6 +92,7 @@
 
         ;; Determine if we have a delimiter we can track.
         update? (and (in-code? stack)
+                     (not (escaping? stack))
                      (closing-delim? ch)
                      (valid-closer? stack ch))
 
@@ -175,12 +182,23 @@
   delimiters while editing a line.
 
   "
-  [{:keys [track-indent? cursor-line line-no stack x-pos ch] :as state}]
-  (let [insert-at-char? (and (not= "" ch)
-                             (not (whitespace? ch))
-                             (or (not (closing-delim? ch))
-                                 (= line-no cursor-line))
-                             (in-code? stack))
+  [{:keys [track-indent? cursor-line lines line-no stack x-pos ch] :as state}]
+  (let [prev-ch (str (last (get lines line-no)))
+
+        insert-at-char? (and 
+                          ;; must be in code (after push-char)
+                          (in-code? stack)
+
+                          ;; don't insert at blank (a removed character)
+                          (not= "" ch)
+
+                          ;; don't insert at whitespace, unless escaped
+                          (or (not (whitespace? ch))
+                              (= "\\" prev-ch))
+
+                          ;; don't insert at closing delim, unless cursor is on this line
+                          (or (not (closing-delim? ch))
+                              (= line-no cursor-line)))
 
         ;; Add potential insert point for closing delimiters if required.
         insert (when insert-at-char?
@@ -223,11 +241,12 @@
 
 (defn process-char*
   [state]
+  ;; NOTE: the order here is important!
   (-> state
       update-delim-trail
       push-char
-      update-line
-      update-insertion-pt))
+      update-insertion-pt
+      update-line))
 
 (defn process-char
   "Update the state by processing the given character and its position."
