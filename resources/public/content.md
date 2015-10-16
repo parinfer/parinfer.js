@@ -415,20 +415,11 @@ mechanics for Lisp code.  Though the rules for inserting/deleting parens must
 be learned, it leads to a system that keeps our code formatted well, without
 requiring special hotkeys to use.
 
-## Future Work
-
-I will be gauging interest on _Parinfer_ for future work.  Though it is not
-implemented in any major editor yet, the formatting code is implemented and
-documented.  The bulk of the code is a pure function in ClojureScript,
-interfaced to [CodeMirror] for the purpose of the editor demos here.
-
-Most importantly, when an editor using _Parinfer_ reads a file not created with
-_Parinfer_, we will have to correct its indentation beforehand with an
-idempotent [preprocessor].  The same will have to be done for pasted code.
-
-[preprocessor]:https://github.com/shaunlebron/parinfer/blob/master/doc/formatter-details.md#preprocessing-existing-code
-
 ## Source Code
+
+The text formatting code is implemented in portable Clojure/ClojureScript.  The
+editor demos are created in CodeMirror with hooks to apply our formatters and
+update cursor position.
 
 <i class="fa fa-lg fa-code-fork"></i> <http://github.com/shaunlebron/parinfer>
 
