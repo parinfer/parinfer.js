@@ -1,5 +1,42 @@
 # Parinfer Formatting Overview
 
+_Parinfer_ is enabled by a simple corollary following from a formal definition
+of Lisp's indentation style.
+
+## Lisp's Indentation Style
+
+Given a file of Lisp text (with parens correctly balanced), the following
+conditions are necessary for it to be considered what we are defining as the
+Lisp indentation style.
+
+For every newline character that is not inside a string:
+
+1. Contiguous close-parens adjacent to it (disregarding whitespace and comment
+   padding) should be gathered at the end of the line before that newline
+   character.
+2. Indentation satisfies `min <= x <= max`, such that:
+  - `x` is the number of spaces after the newline
+  - `min` is the position of the newline's parent open-paren (zero if none exists)
+  - `max` is the position the open-paren of the last close-paren before the
+    newline (infinity if none exists)
+
+Notice that a single line program is fine.  The rules make no requirement for
+where line breaks should be.  Rather, they establish an invariant that must be
+true everytime one appears.
+
+Also notice that _sufficient_ conditions would certainly establish stricter
+indentation thresholds (aligning w/ requirements of Python and Haskell), but we
+posit that the two aforementioned conditions are the only ones necessary for
+establishing _Parinfer_.
+
+### Corollary: Indentation and Close-Parens are functions of one another
+
+TODO: prove that there is a one-to-one mapping between values of 1 (the number
+of contiguous parens) and 2 (indentation ranges).
+Then show how we can calculate one from the other.
+
+### Misc Notes
+
 (SOL/EOL/MOL = start, end, middle of line)
 
 We have two functions for formatting code:
