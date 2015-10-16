@@ -127,4 +127,3 @@
   [state]
   (let [new-data (push-char* state)]
     (merge-with #(or %2 %1) state new-data)))
-

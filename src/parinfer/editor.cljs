@@ -237,4 +237,3 @@
   ;; sync state changes to the editor
   (add-watch state :editor-updater on-state-change)
   (force-editor-sync!))
-

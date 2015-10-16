@@ -48,8 +48,8 @@
 (defn parse-selection
   [selection]
   {:anchor (parse-pos (.-anchor selection))
-   :head (parse-pos (.-head selection))
-   })
+   :head (parse-pos (.-head selection))})
+   
 
 (defn parse-selections
   [selections]
@@ -157,4 +157,3 @@
     controls-view
     controls-state
     {:target (js/document.getElementById "controls")}))
-

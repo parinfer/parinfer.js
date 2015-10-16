@@ -21,4 +21,3 @@
     (println usage)
     (doseq [filename args]
       (prep-file filename))))
-

@@ -24,8 +24,8 @@
    :delim-trail {:start nil :end nil}  ;; track EOL delims since we replace them wholesale with inferred delims.
    :insert {:line-no nil :x-pos nil}   ;; the place to insert closing delimiters whenever we hit appropriate indentation.
    :stack []                           ;; the delimiter stack, maps of [:x-pos :ch :indent-delta]
-   :backup []                          ;; trailing delims that are pushed back onto the stack at EOL
-   })
+   :backup []})                          ;; trailing delims that are pushed back onto the stack at EOL
+   
 
 (defn close-delims
   "Update the state by inferring closing delimiters.
@@ -301,4 +301,3 @@
    (if-let [state (process-text state text)]
      (join "\n" (:lines state))
      text)))
-

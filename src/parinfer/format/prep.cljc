@@ -27,8 +27,8 @@
    :stack []                           ;; the delimiter stack, maps of [:x-pos :ch :indent-delta]
    :backup []                          ;; (unused, but required by the reader because of the infer process)
    :dedent-x nil                       ;; current x-position subsequent lines cannot be nested inside
-   :indent-delta 0                     ;; how much the current line's indentation was changed
-   })
+   :indent-delta 0})                     ;; how much the current line's indentation was changed
+   
 
 (defn append-delim-trail
   [{:keys [stack line-no insert] :as state}]
@@ -147,4 +147,3 @@
    (if-let [state (process-text state text)]
      (join "\n" (:lines state))
      text)))
-

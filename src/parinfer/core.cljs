@@ -96,8 +96,8 @@
     (.on cm-input "change" sync!)
     (sync!)
     (.refresh cm-input)
-    (.refresh cm-output)
-    )
+    (.refresh cm-output))
+    
 
   ;; create editor animations
   (swap! vcr update-in [:intro] merge vcr/intro)

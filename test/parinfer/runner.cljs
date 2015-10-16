@@ -3,8 +3,8 @@
   (:require
     [cljs.nodejs :refer [enable-util-print!]]
     [cljs.test :refer-macros [run-tests]]
-    [parinfer.formatter-test]
-    ))
+    [parinfer.formatter-test]))
+    
 
 (enable-util-print!)
 

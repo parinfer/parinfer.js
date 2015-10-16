@@ -8,5 +8,3 @@
 (def empty-editor-state
   {:text ""     ;; text of the editor
    :cm nil})    ;; the CodeMirror instance
-
-
