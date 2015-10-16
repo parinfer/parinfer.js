@@ -13,7 +13,8 @@
                                    update-insertion-pt
                                    update-line
                                    process-char*]]
-    [parinfer.format.string :refer [insert-string]]
+    [parinfer.format.string :refer [insert-string
+                                    get-lines]]
     [clojure.string :refer [join]]))
 
 (def initial-state
@@ -131,7 +132,7 @@
   ([text] (process-text initial-state text))
   ([state text]
    (let [state (merge initial-state state)
-         lines (.split text "\n") ;; different from clojure.string/split (respects empty lines)
+         lines (get-lines text)
          state (reduce process-line state lines)
          stack (:stack state)]
 

@@ -4,7 +4,8 @@
   (:require
     [clojure.string :refer [join]]
     [parinfer.format.string :refer [insert-string
-                                    remove-str-range]]
+                                    remove-str-range
+                                    get-lines]]
     [parinfer.format.reader :refer [push-char
                                     whitespace?
                                     escaping?
@@ -281,7 +282,7 @@
   ([text] (process-text initial-state text))
   ([state text]
    (let [state (merge initial-state state)
-         lines (.split text "\n") ;; different from clojure.string/split (respects empty lines)
+         lines (get-lines text)
          state (reduce process-line state lines)
          stack (:stack state)]
 
