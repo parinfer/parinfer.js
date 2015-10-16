@@ -92,19 +92,31 @@
 
     (:test-cases state)))
 
+(defn idempotent-check
+  [type- message result state format-text]
+  (let [post-result (format-text state result)
+        message (str type- " idempotence over " message)]
+    (is (= result post-result) message)))
+
 (defn run-test-cases
-  [type- format-text]
-  (let [filename (str "doc/" type- "-tests.md")
-        text #?(:clj (slurp filename)
-                :cljs (.readFileSync fs filename))
-        test-cases (parse-test-cases text)]
-    (doseq [{:keys [in out]} test-cases]
-      (let [cursor-line (:cursor-line in)
-            cursor-x (:cursor-x in)]
-        (is (= (:text out) (format-text {:cursor-line cursor-line
-                                         :cursor-x cursor-x} (:text in)))
-            (cond-> (str "test case @ line #" (:line-no in))
-              (and cursor-line cursor-x) (str " with cursor at line=" cursor-line " x=" cursor-x)))))))
+  ([type- format-text] (run-test-cases type- format-text nil))
+  ([type- format-text post-test]
+   (let [filename (str "doc/" type- "-tests.md")
+         text #?(:clj (slurp filename)
+                      :cljs (.readFileSync fs filename))
+         test-cases (parse-test-cases text)]
+     (doseq [{:keys [in out]} test-cases]
+       (let [cursor-line (:cursor-line in)
+             cursor-x (:cursor-x in)
+             cursor? (and cursor-line cursor-x)
+             state (select-keys in [:cursor-line :cursor-x])
+             message (cond-> (str type- " test case @ line #" (:line-no in))
+                       cursor? (str " with cursor at line=" cursor-line " x=" cursor-x))
+             result (format-text state (:text in))]
+         (is (= (:text out) result))
+         (idempotent-check "infer" message result state infer/format-text)
+         (when-not cursor?
+           (idempotent-check "prep" message result state prep/format-text)))))))
 
 (deftest run-infer-cases
   (run-test-cases "infer" infer/format-text))
