@@ -16,7 +16,16 @@ This is an experiment that tries to demonstrate a possible replacement for
 Run tests with:
 
 ```
-lein cljsbuild test
+$ lein cljsbuild test
+```
+
+### How files are preprocessed
+
+Point this script to some repo with clojure files, then run `git diff` in that repo.
+Run `git diff -w` to see non-indentation related changes, like paren gathering.
+
+```
+./prep-all.sh <directory>
 ```
 
 [`reader.cljc`]:src/parinfer/format/reader.cljc

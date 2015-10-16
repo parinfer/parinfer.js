@@ -4,20 +4,16 @@
 
 (def usage
   "prep-file <filenames>
-  Corrects indentation of the given files, writing to .prep.clj files.")
+  Corrects indentation of the given files, backing up originals to .bak")
 
 (defn prep-file
   [filename]
-  (let [i (.lastIndexOf filename ".")
-        [prefix ext] (if (>= i 0)
-                       [(subs filename 0 i) (subs filename i)]
-                       [filename ".clj"])
-        prep-filename (str prefix ".prep" ext)
-        _ (println "Reading" filename "...")
-        orig-text (slurp filename)
+  (println "Reading" filename "...")
+  (let [orig-text (slurp filename)
         prep-text (prep/format-text orig-text)]
-    (println "Writing" prep-filename "...")
-    (spit prep-filename prep-text)))
+    (println "Writing" filename "...")
+    (spit filename prep-text)
+    (spit (str filename ".bak") orig-text)))
 
 (defn -main
   [& args]
