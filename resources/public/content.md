@@ -104,7 +104,7 @@ But perhaps we can __keep the parens__ and just allow our editor to move them
 around appropriately when we adjust indentation in our code.
 
 _Parinfer_ is a proof-of-concept that we use to explore this idea.  It treats
-the right-parens at the end of a line as _eager to move_.  That is, eager to
+the close-parens at the end of a line as _eager to move_.  That is, eager to
 extend to indented lines.  As a visual cue, we _dim_ these parens to signify
 their inferred mobility.
 
@@ -171,13 +171,12 @@ roughly equivalent to those listed.
 
 We perform the following steps to rearrange parens based on indentation.<br>
 <span class="side-point">We will refer to these later as rules #1, #2, and #3.
-(I'm currently trying to establish a mathematical basis for this.  No
-explanations yet.)</span>
+(See the [mathematical basis] for a closer look at why these rules work.)</span>
 
-1. all unmatched right-parens are removed (for housekeeping)
-2. all right-parens at the start and end of each line are removed
-3. for every resulting unmatched left-paren:
-  - a right-paren is inserted at the end of its line or its last non-empty indented line
+1. all unmatched close-parens are removed (for housekeeping)
+2. all close-parens at the start and end of each line are removed
+3. for every resulting unmatched open-paren:
+  - a close-paren is inserted at the end of its line or its last non-empty indented line
 
 <div class="interact">
 <i class="fa fa-keyboard-o fa-lg"></i>
@@ -186,7 +185,7 @@ __Try it!__ Edit the code below on the left to see how parens are inferred on th
 
  <div class="two-col">
 <div class="col">
-<div class="caption">__Input:__ Right-parens removed from end of each line. Notice the ones inside are untouched.</div>
+<div class="caption">__Input:__ Close-parens removed from end of each line. Notice the ones inside are untouched.</div>
 <textarea id="code-how-input">
 (defn on-click [
   (swap! s update-in [:x] inc
@@ -207,7 +206,7 @@ __Try it!__ Edit the code below on the left to see how parens are inferred on th
 </div>
 
 <div class="col">
-<div class="caption">__Output:__ Right-parens (highlighted) are reinserted based purely on indentation.</div>
+<div class="caption">__Output:__ Close-parens (highlighted) are reinserted based purely on indentation.</div>
 <textarea id="code-how-output">
 </textarea>
 </div>
@@ -289,13 +288,13 @@ __Try it!__ Interrupt the animations below to try it for yourself. Click outside
 ### Inserting Parens
 
 <div>
-<div class="caption">__Wrap__ by inserting a left-paren. It will auto-close as far as it can, due to rule #3.</div>
+<div class="caption">__Wrap__ by inserting a open-paren. It will auto-close as far as it can, due to rule #3.</div>
 <textarea id="code-wrap">
 </textarea>
 </div>
 
 <div>
-<div class="caption">__Barf__ by inserting a right-paren before another.
+<div class="caption">__Barf__ by inserting a close-paren before another.
 Notice the original is removed, due to rule #1.</div>
 <textarea id="code-barf">
 </textarea>
@@ -304,21 +303,21 @@ Notice the original is removed, due to rule #1.</div>
 <div class="caption">
 <div class="question">
 <i class="fa fa-question-circle"></i>
-Why can't I insert a right-paren in certain places?
+Why can't I insert a close-paren in certain places?
 </div>
-<div class="answer">Its corresponding left-paren must be there first. (see rule #1)</div>
+<div class="answer">Its corresponding open-paren must be there first. (see rule #1)</div>
 </div>
 
 ### Deleting Parens
 
 <div>
-<div class="caption">__Splice__ by removing a left-paren. Its corresponding right-paren is removed, due to rule #1.</div>
+<div class="caption">__Splice__ by removing a open-paren. Its corresponding close-paren is removed, due to rule #1.</div>
 <textarea id="code-splice">
 </textarea>
 </div>
 
 <div>
-<div class="caption">__Slurp__ by deleting a right-paren inside a line. It is replaced further down, due to rule #3.</div>
+<div class="caption">__Slurp__ by deleting a close-paren inside a line. It is replaced further down, due to rule #3.</div>
 <textarea id="code-slurp">
 </textarea>
 </div>
@@ -326,9 +325,9 @@ Why can't I insert a right-paren in certain places?
 <div class="caption">
 <div class="question">
 <i class="fa fa-question-circle"></i>
-Why can't I delete a right-paren in certain places?
+Why can't I delete a close-paren in certain places?
 </div>
-<div class="answer">You cannot delete an inferred right-paren. It is replaced as soon as you delete it. (see rule #3)</div>
+<div class="answer">You cannot delete an inferred close-paren. It is replaced as soon as you delete it. (see rule #3)</div>
 </div>
 
 ### Knowing When Parens Move
@@ -407,6 +406,16 @@ __Watch where the cursor is__ when pressing Enter. Inferred parens not displaced
 <textarea id="code-enter">
 </textarea>
 </div>
+
+## Editing Existing Files
+
+We must correct the indentation of a file before editing it in _Parinfer_.
+This turns out to be simple since our [mathematical basis] outlines a minimal
+set of whitespace changes and paren shifting to do so.
+
+We perform the following steps to correct indentation of a file prior to editing:
+
+...
 
 ## Conclusions
 
