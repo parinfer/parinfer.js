@@ -409,20 +409,88 @@ __Watch where the cursor is__ when pressing Enter. Inferred parens not displaced
 
 ## Editing Existing Files
 
-We must correct the indentation of a file before editing it in _Parinfer_.
-This turns out to be simple since our [mathematical basis] outlines a minimal
-set of whitespace changes and paren shifting to do so.
+The job of _Parinfer_ is to look at indentation as an _intention to correct
+structure_.  But this is not at all what we want when opening a file, since the
+intention of the file is literally represented by its parens, as normal.
 
-We perform the following steps to correct indentation of a file prior to editing:
+In order for _Parinfer_ to mark a starting point for interpreting "indentation
+as intention", we must start with a file that is correctly indented.  Thus, we
+perform the following steps to correct indentation of a file prior to editing:
 
-...
+1. Move close-parens at the start of a line, to the end of the previous non-empty line.
+1. Clamp the indentation of a line to the following range:
+  - min: x-position of the parent open-paren (if it exists)
+  - max: x-position of the open-paren belonging to the previous non-empty line's last close-paren
+1. Cancel processing if there are any unmatched parens.
 
-## Conclusions
+TODO: show side by side example (before and after, red-out if not processed)
+
+## The Case for an "Enforce Mode"
+
+As we saw in the previous section, it is sometimes useful for parens to be the
+source of truth rather than indentation.  And if parens are the source of
+truth, we can correct indentation to match them.  We will call this "Enforce
+Mode" since it enforces parens rather than inferring them from indentation,
+which we will retroactively label as "Infer Mode".
+
+### A staging area for correcting an existing file
+
+If we are trying to open a file with imbalanced parens, the editor should open
+the file in "Enforce Mode", allowing you to correct the parens. This mode runs
+the steps listed in the previous section as you correct the file.  Once all
+parens are balanced, then it will allow you to jump to "Infer Mode" as before.
+
+### Auto-indent the rest of an expression while editing it
+
+This new mode for auto-correcting indentation based on parens can come in handy
+while editing correctly-balanced code too.
+
+For example, this allows us to make any edits to the first line of a multi-line
+expression while maintaining the structure/indentation of subsequent lines.
+
+Compare this to the normal mode, which can cause indentation of subsequent
+lines to become out of sync with the line before it.
+
+### Adjusting indentation within thresholds
+
+_Parinfer_ does not differentiate indentation levels within bounded thresholds,
+defined by open-paren locations.  Thus, you can use "Enforce Mode" when you
+want to manually re-align your code without worrying about changing its
+structure.
+
+## Final Thoughts
+
+Regardless of how we choose to edit our Lisp code, there seems to always be a
+balancing act between maintaining the simplicity of how we interact with the
+editor and accepting some editor complexity to gain automation over these
+powerful but numerous parens.
+
+I don't yet know how well _Parinfer_ will play this balancing act since it does
+not currently exist in a form that I can use in my day-to-day work.  But the
+interactive examples have allowed me to explore, explain, and implement these
+concepts in CodeMirror. The _real test_ will come when implemented in a major
+editor.
+
+### Benefits
 
 Inferring parentheses based on indentation seems to lead to simpler editing
-mechanics for Lisp code.  Though the rules for inserting/deleting parens must
-be learned, it leads to a system that keeps our code formatted well, without
-requiring special hotkeys to use.
+mechanics for Lisp code.  It leads to a system that keeps our code formatted
+well. And it allows us to use paredit-like features without hotkeys.
+
+I think the biggest win is its potential to quell fear of managing end-of-line
+parens by enforcing a direct driving relationship with indentation.
+
+And just like _Paredit_ it maintains paren-balanced code.
+
+### Downsides
+
+The rules for what happens when inserting/deleting parens must be learned.
+Also, the case necessitating a "Paren Mode" comes at the cost of forcing the
+user to understand when and how to switch editing modes.
+
+Also, the preprocessor step performed when opening files will cause more
+formatting-related changes in your commit history when collaborating with
+others not using _Parinfer_.
 
 ## Source Code
 
