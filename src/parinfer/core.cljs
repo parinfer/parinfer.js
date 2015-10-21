@@ -12,6 +12,7 @@
                              create-regular-editor!
                              start-editor-sync!]]
     [parinfer.format.infer :as infer]
+    [parinfer.format.prep :as prep]
     [ajax.core :refer [GET]]))
 
 (enable-console-print!)
@@ -97,8 +98,17 @@
     (sync!)
     (.refresh cm-input)
     (.refresh cm-output))
-    
 
+  (let [cm-input (create-regular-editor! "code-edit-input")
+        cm-output (create-regular-editor! "code-edit-output" {:readOnly true
+                                                              :mode "clojure-parinfer"})
+        sync! #(.setValue cm-output (or (prep/format-text (.getValue cm-input))
+                                        "; ERROR: input must be balanced!"))]
+    (.on cm-input "change" sync!)
+    (sync!)
+    (.refresh cm-input)
+    (.refresh cm-output))
+    
   ;; create editor animations
   (swap! vcr update-in [:intro] merge vcr/intro)
   (swap! vcr update-in [:indent] merge vcr/indent)

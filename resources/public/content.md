@@ -410,20 +410,51 @@ __Watch where the cursor is__ when pressing Enter. Inferred parens not displaced
 ## Editing Existing Files
 
 The job of _Parinfer_ is to look at indentation as an _intention to correct
-structure_.  But this is not at all what we want when opening a file, since the
-intention of the file is literally represented by its parens, as normal.
+parens_.  But this is not at all what we want when opening a file since its
+parens must be taken literally. Thus, we perform the following steps to correct
+indentation of a file prior to editing:
 
-In order for _Parinfer_ to mark a starting point for interpreting "indentation
-as intention", we must start with a file that is correctly indented.  Thus, we
-perform the following steps to correct indentation of a file prior to editing:
-
-1. Move close-parens at the start of a line, to the end of the previous non-empty line.
+1. Move close-parens at the start of a line to the end of the previous non-empty line.
 1. Clamp the indentation of a line to the following range:
   - min: x-position of the parent open-paren (if it exists)
   - max: x-position of the open-paren belonging to the previous non-empty line's last close-paren
 1. Cancel processing if there are any unmatched parens.
 
-TODO: show side by side example (before and after, red-out if not processed)
+<div class="interact">
+<i class="fa fa-keyboard-o fa-lg"></i>
+__Try it!__ Edit the code below on the left to see how it is formatted on the right.
+</div>
+
+ <div class="two-col">
+<div class="col">
+<div class="caption">__Input:__ Any existing file. Must be correctly balanced, but can be incorrectly formatted.</div>
+<textarea id="code-edit-input">
+(defn foo
+  ([a]
+    (foo a 1))
+  ([a b]
+    (let [sum (+ a b)
+          prod (* a b)
+          result { ; gather vals
+            :sum sum
+            :prod prod
+          }]
+      result)
+    ; TODO: something
+    ))
+</textarea>
+</div>
+
+<div class="col">
+<div class="caption">__Output:__ Made ready for Parinfer by correcting indentation and moving close-parens.</div>
+<textarea id="code-edit-output">
+</textarea>
+</div>
+</div>
+
+Notice that this process is NOT an invasive pretty-printer.  It preserves as
+much as it can of the original code, only moving close-parens and changing
+indentation.
 
 ## The Case for an "Enforce Mode"
 
