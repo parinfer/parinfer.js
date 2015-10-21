@@ -41,6 +41,10 @@ body {
   margin-left: 40px;
 }
 
+.toc-level-4 {
+  margin-left: 60px;
+}
+
 #controls {
   position: fixed;
   left: 0;

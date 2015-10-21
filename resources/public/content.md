@@ -5,9 +5,10 @@ a theory on how to <em>simplify the way we write Lisp</em> by:
 </p>
 
   <ul class="features">
-<li> affecting structure through indentation
+<li> making code auto-adhere to formatting conventions
+<li> influencing expression-nesting with indentation
+<li> maintaining indentation when expressions shift
 <li> allowing [Paredit]-like features without memorizing hotkeys
-<li> naturally keeping your code properly formatted
 </ul>
 
 <div id="xkcd">
@@ -18,9 +19,8 @@ a theory on how to <em>simplify the way we write Lisp</em> by:
 
 ## Quick Look
 
-If you are familiar with Lisp, here's what it looks like to rapidly restructure
-your code by just indenting.  Click to play around with it if you're curious.
-Details ahead.
+If you are familiar with Lisp, here's what it looks like when using _Parinfer_.
+Click to play around with it if you're curious.  Details ahead.
 
 <textarea id="code-intro"> </textarea>
 
@@ -91,22 +91,46 @@ structural ambiguity.
 [Racket]:http://racket-lang.org/
 [Clojure]:http://clojure.org/
 
-## Indentation: the Holy Grail
+## Surveying how folks edit Lisp
 
-Since we can _skim_ code with indentation, is it possible to _sketch_ code with
-indentation as well?
-[Many][sweet-expressions]
-[have][i-expressions]
-[tried][indent-clj]
-by creating alternative syntaxes, removing parens to varying degrees.
+As we have seen, there is an obvious relationship between parens and indentation in Lisp.
+Different solutions manage this relationship differently.
 
-But perhaps we can __keep the parens__ and just allow our editor to move them
-around appropriately when we adjust indentation in our code.
+__Naive__ manually modifying one after changing the other.
+gears separated with the user spinning one, then the other.
 
-_Parinfer_ is a proof-of-concept that we use to explore this idea.  It treats
-the close-parens at the end of a line as _eager to move_.  That is, eager to
-extend to indented lines.  As a visual cue, we _dim_ these parens to signify
-their inferred mobility.
+__Auto-indent__ most editor features for newline, or realign in clojure-mode for example.
+indentation gear turns automatically after "enter", some "realign" hotkey (as in clojure-mode).
+Does not prevent manual adjustment.
+
+__Indentation-based syntax__
+paren gear becomes invisible
+
+__Paredit__
+paren gear tied to paredit
+
+__Pretty-Printers__ full-fledged
+
+## Introducing Parinfer
+
+The objective of _Parinfer_ is to keep parens and indentation in lockstep.
+Depending on the mode you're in, parens or indentation become inferred based on
+edits to the other.
+
+You imagine the tight relationship between parens and indentation as two gears
+joined together.  _Parinfer_ allows you to choose which gear is in control of
+the other.
+
+"Paren Mode" causes parens to drive indentation.  "Indent Mode" causes
+indentation to drive parens.  In both cases, your code stays properly formatted
+except when the input becomes imbalanced.
+
+## Indent Mode
+
+Indent Mode treats indentation as an _intention to correct surrounding parens_
+when possible.  Specifically, it treats the close-parens at the end of a line
+as _eager to extend to indented lines_.  As a visual cue, we _dim_ these parens
+to signify their inferred mobility.
 
 <div class="interact">
 <i class="fa fa-keyboard-o fa-lg"></i>
@@ -167,7 +191,7 @@ roughly equivalent to those listed.
 </textarea>
 </div>
 
-## How it works
+### How it works
 
 We perform the following steps to rearrange parens based on indentation.<br>
 <span class="side-point">We will refer to these later as rules #1, #2, and #3.
@@ -213,7 +237,7 @@ __Try it!__ Edit the code below on the left to see how parens are inferred on th
 </div>
 
 Notice that the code on the left encodes all structural information while
-eliminating piles of parentheses.  This is essentially how _Parinfer_ sees your
+eliminating piles of parentheses.  This is essentially how Indent Mode sees your
 code.  It _infers_ the rest.
 
 There are more steps performed that you can [read about in detail][formatter-details], but
@@ -221,9 +245,9 @@ we will just explore their effects in the next section.
 
 [formatter-details]:https://github.com/shaunlebron/parinfer/blob/master/doc/formatter-details.md
 
-## Cause and Effect: Typing
+### Cause and Effect: Typing
 
-You should be aware that the steps in the previous section have an effect on
+You should be aware that the steps in the previous section have a side effect on
 what you type.  Interestingly, these effects translate into four of the main
 [Paredit] operations.
 
@@ -285,7 +309,7 @@ i.e. the current list "slurps" all elements to the right of your cursor
 __Try it!__ Interrupt the animations below to try it for yourself. Click outside to restore it.
 </div>
 
-### Inserting Parens
+#### Inserting Parens
 
 <div>
 <div class="caption">__Wrap__ by inserting a open-paren. It will auto-close as far as it can, due to rule #3.</div>
@@ -308,7 +332,7 @@ Why can't I insert a close-paren in certain places?
 <div class="answer">Its corresponding open-paren must be there first. (see rule #1)</div>
 </div>
 
-### Deleting Parens
+#### Deleting Parens
 
 <div>
 <div class="caption">__Splice__ by removing a open-paren. Its corresponding close-paren is removed, due to rule #1.</div>
@@ -330,7 +354,7 @@ Why can't I delete a close-paren in certain places?
 <div class="answer">You cannot delete an inferred close-paren. It is replaced as soon as you delete it. (see rule #3)</div>
 </div>
 
-### Knowing When Parens Move
+#### Knowing When Parens Move
 
 As a courtesy, _Parinfer_ will not move your parens until you are done typing
 in front of them.  Just move your cursor away when you're done.  A helpful
@@ -349,7 +373,7 @@ parens from blowing away.
 </textarea>
 </div>
 
-### Inserting Quotes
+#### Inserting Quotes
 
 _Parinfer_ cannot infer anything about quote positions like it can with parens.
 So it doesn't try to do anything special with them, other than abandon
@@ -393,7 +417,7 @@ __GOOD__: Balance the quotes in the comment to prevent the problem.
 </div>
 </div>
 
-### Pressing Enter
+#### Pressing Enter
 
 Pressing enter will result in your cursor moving to an auto-indented line, as
 expected.  Just keep in mind that the inferred parens won't move until you
@@ -407,40 +431,39 @@ __Watch where the cursor is__ when pressing Enter. Inferred parens not displaced
 </textarea>
 </div>
 
-## Safe Mode
+## Paren Mode
 
-The job of _Parinfer_ thus far has been to look at indentation as an _intention
-to correct parens_.  We retroactively categorize all previously described
-features to be under "Infer Mode."
+In "Paren Mode", indentation is driven by parens.  This is a looser connection
+than in "Indent Mode".  You can still adjust indentation, but you won't be able
+indent/dedent past certain boundaries set by parens on previous lines.  As a
+courtesy, this mode also maintains relative indentation of child elements when
+their parent expressions shift.
 
-It is sometimes useful to use a "Safe Mode" instead.  This mode safely enforces
-indentation boundaries based on parens.   This is done by treating parens, rather
-than indentation, as the source of truth when formatting your code.
-
-To also make indentation changes within these boundaries reversible, we also
-maintain relative indentation of child elements inside moved expressions.
+Here are some things that cannot be done in Indent Mode:
 
 <div>
-<div class="caption">__Safely tune indentation__ without worrying about crossing a paren boundary:</div>
+<div class="caption">__Tune indentation__ without worrying about crossing a paren boundary:</div>
 <textarea id="code-safe-tune">
 </textarea>
 </div>
 
 <div>
-<div class="caption">__Safely avoid fracturing__ an expression when pushing parens forward:</div>
+<div class="caption">__Avoid fracturing__ an expression when pushing parens forward:</div>
 <textarea id="code-safe-frac">
 </textarea>
 </div>
 
 <div>
-<div class="caption">__Safely comment__ a whole expression too:</div>
+<div class="caption">__Comment__ a whole expression too:</div>
 <textarea id="code-safe-comment">
 </textarea>
 </div>
 
+TODO: examples for seeing indentation change after inserting/removing parens
+
 ### How it works
 
-Safe Mode performs the following steps:
+Indent Mode performs the following steps:
 
 1. Move close-parens at the start of a line to the end of the previous non-empty line.
 1. Clamp the indentation of a line to the following range:
@@ -451,16 +474,16 @@ Safe Mode performs the following steps:
 
 ### Safely quarantine paren imbalances
 
-If there are paren imbalances in Safe Mode, the code is not processed, and you
-are prevented from switching to Infer Mode.  This safely quarantines the
-imbalances that could be misinterpreted in Infer Mode.  Thus, Safe Mode gives
+If there are paren imbalances in Paren Mode, the code is not processed, and you
+are prevented from switching to Indent Mode.  This safely quarantines the
+imbalances that could be misinterpreted in Indent Mode.  Thus, Paren Mode gives
 you an environment to fix them, after which the code is automatically formatted
-and ready for Infer Mode should you choose to switch.
+and ready for Indent Mode should you choose to switch.
 
 ### Safely open existing files
 
 We must take parens literally when opening an existing file, so we run it
-through Safe Mode before trying to switch to Infer Mode.
+through Safe Mode before trying to switch to Indent Mode.
 
 <div class="interact">
 <i class="fa fa-keyboard-o fa-lg"></i>
@@ -498,7 +521,7 @@ Notice that this process is NOT an invasive pretty-printer.  It preserves as
 much as it can of the original code, only moving close-parens and changing
 indentation.
 
-_Parinfer_ should remain in Safe Mode if the file cannot be processed, due
+_Parinfer_ should remain in Paren Mode if the file cannot be processed, due
 to the reasons stated in the previous section.
 
 ## Final Thoughts
@@ -528,14 +551,14 @@ And just like _Paredit_ it maintains paren-balanced code.
 ### Downsides
 
 The rules for what happens when inserting/deleting parens must be learned.
-Also, the case necessitating a "Safe Mode" comes at the cost of forcing the
+Also, the case necessitating a "Paren Mode" comes at the cost of forcing the
 user to understand when and how to switch editing modes.
 
 Also, the preprocessor step performed when opening files will cause more
 formatting-related changes in your commit history when collaborating with
 others not using _Parinfer_.
 
-## Source Code
+### Source Code
 
 The text formatting code is implemented in portable Clojure/ClojureScript.  The
 editor demos are created in CodeMirror with hooks to apply our formatters and
@@ -543,7 +566,7 @@ update cursor position.
 
 <i class="fa fa-lg fa-code-fork"></i> <http://github.com/shaunlebron/parinfer>
 
-## Prior Art
+### Prior Art
 
 There are many ideas related to this concept.
 
