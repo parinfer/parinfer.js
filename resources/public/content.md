@@ -407,18 +407,60 @@ __Watch where the cursor is__ when pressing Enter. Inferred parens not displaced
 </textarea>
 </div>
 
-## Editing Existing Files
+## Safe Mode
 
-The job of _Parinfer_ is to look at indentation as an _intention to correct
-parens_.  But this is not at all what we want when opening a file since its
-parens must be taken literally. Thus, we perform the following steps to correct
-indentation of a file prior to editing:
+The job of _Parinfer_ thus far has been to look at indentation as an _intention
+to correct parens_.  We retroactively categorize all previously described
+features to be under "Infer Mode."
+
+It is sometimes useful to use a "Safe Mode" instead.  This mode safely enforces
+indentation boundaries based on parens.   This is done by treating parens, rather
+than indentation, as the source of truth when formatting your code.
+
+To also make indentation changes within these boundaries reversible, we also
+maintain relative indentation of child elements inside moved expressions.
+
+<div>
+<div class="caption">__Safely tune indentation__ without worrying about crossing a paren boundary:</div>
+<textarea id="code-safe-tune">
+</textarea>
+</div>
+
+<div>
+<div class="caption">__Safely avoid fracturing__ an expression when pushing parens forward:</div>
+<textarea id="code-safe-frac">
+</textarea>
+</div>
+
+<div>
+<div class="caption">__Safely comment__ a whole expression too:</div>
+<textarea id="code-safe-comment">
+</textarea>
+</div>
+
+### How it works
+
+Safe Mode performs the following steps:
 
 1. Move close-parens at the start of a line to the end of the previous non-empty line.
 1. Clamp the indentation of a line to the following range:
   - min: x-position of the parent open-paren (if it exists)
   - max: x-position of the open-paren belonging to the previous non-empty line's last close-paren
+1. Child elements of moved expressions should maintain their original relative indentation to them.
 1. Cancel processing if there are any unmatched parens.
+
+### Safely quarantine paren imbalances
+
+If there are paren imbalances in Safe Mode, the code is not processed, and you
+are prevented from switching to Infer Mode.  This safely quarantines the
+imbalances that could be misinterpreted in Infer Mode.  Thus, Safe Mode gives
+you an environment to fix them, after which the code is automatically formatted
+and ready for Infer Mode should you choose to switch.
+
+### Safely open existing files
+
+We must take parens literally when opening an existing file, so we run it
+through Safe Mode before trying to switch to Infer Mode.
 
 <div class="interact">
 <i class="fa fa-keyboard-o fa-lg"></i>
@@ -456,38 +498,8 @@ Notice that this process is NOT an invasive pretty-printer.  It preserves as
 much as it can of the original code, only moving close-parens and changing
 indentation.
 
-## The Case for an "Enforce Mode"
-
-As we saw in the previous section, it is sometimes useful for parens to be the
-source of truth rather than indentation.  And if parens are the source of
-truth, we can correct indentation to match them.  We will call this "Enforce
-Mode" since it enforces parens rather than inferring them from indentation,
-which we will retroactively label as "Infer Mode".
-
-### A staging area for correcting an existing file
-
-If we are trying to open a file with imbalanced parens, the editor should open
-the file in "Enforce Mode", allowing you to correct the parens. This mode runs
-the steps listed in the previous section as you correct the file.  Once all
-parens are balanced, then it will allow you to jump to "Infer Mode" as before.
-
-### Auto-indent the rest of an expression while editing it
-
-This new mode for auto-correcting indentation based on parens can come in handy
-while editing correctly-balanced code too.
-
-For example, this allows us to make any edits to the first line of a multi-line
-expression while maintaining the structure/indentation of subsequent lines.
-
-Compare this to the normal mode, which can cause indentation of subsequent
-lines to become out of sync with the line before it.
-
-### Adjusting indentation within thresholds
-
-_Parinfer_ does not differentiate indentation levels within bounded thresholds,
-defined by open-paren locations.  Thus, you can use "Enforce Mode" when you
-want to manually re-align your code without worrying about changing its
-structure.
+_Parinfer_ should remain in Safe Mode if the file cannot be processed, due
+to the reasons stated in the previous section.
 
 ## Final Thoughts
 
@@ -516,7 +528,7 @@ And just like _Paredit_ it maintains paren-balanced code.
 ### Downsides
 
 The rules for what happens when inserting/deleting parens must be learned.
-Also, the case necessitating a "Paren Mode" comes at the cost of forcing the
+Also, the case necessitating a "Safe Mode" comes at the cost of forcing the
 user to understand when and how to switch editing modes.
 
 Also, the preprocessor step performed when opening files will cause more
