@@ -156,7 +156,9 @@
     (set! (.-innerHTML element) html-text))
 
   (create-editor! "code-indent-mode" :indent-mode)
-  (create-editor! "code-paren-mode" :paren-mode))
+  (create-editor! "code-paren-mode" :paren-mode {:parinfer-mode :prep})
+  
+  (start-editor-sync!))
 
 (def pages
   {:dev   {:md "dev.md"   :render-fn render-dev!}

@@ -70,9 +70,18 @@
                :track-indent? false
                :dedent-x nil))))
 
+(defn handle-cursor-delta
+  [{:keys [line-no x-pos cursor-line cursor-x cursor-dx] :as state}]
+  (let [cursor-delta? (and (= cursor-line line-no)
+                           (= cursor-x x-pos)
+                           cursor-dx)]
+    (cond-> state
+      cursor-delta? (update :indent-delta + cursor-dx))))
+
 (defn process-indent
   "Update the state by handling a possible indentation trigger."
-  [{:keys [stack track-indent? lines line-no ch] :as state}]
+  [{:keys [stack track-indent? lines line-no ch
+           x-pos cursor-line cursor-x cursor-dx] :as state}]
   (let [check-indent? (and track-indent?
                         (in-code? stack)
                         (not (whitespace? ch))
@@ -85,7 +94,8 @@
         state (assoc state :process? (not skip?))]
     (cond-> state
       matching? append-delim-trail
-      at-indent? correct-indent)))
+      at-indent? correct-indent
+      true handle-cursor-delta)))
 
 (defn process-char
   "Update the state by processing the given character and its position."

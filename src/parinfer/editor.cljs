@@ -3,6 +3,7 @@
   (:require
     [clojure.string :as string :refer [join]]
     [parinfer.format.infer :as infer]
+    [parinfer.format.prep :as prep]
     [parinfer.state :refer [state
                             empty-editor-state]]
     [parinfer.vcr :refer [vcr
@@ -24,33 +25,62 @@
 ;; Operations
 ;;----------------------------------------------------------------------
 
+(defn compute-cursor-dx
+  [cursor change]
+  (when change
+    #_(js/console.log (.-origin change) (.-from change) (.-to change) (pr-str (js->clj (.-text change))))
+    (let [;; This is a hack for codemirror.
+          ;; For some reason codemirror triggers an "+input" change after the
+          ;; indent spaces are already applied.  So I modified codemirror to
+          ;; label these changes as +indenthack so we can ignore them.
+          ignore? (= "+indenthack" (.-origin change))]
+      (if ignore?
+        0
+        (let [start-x (.. change -to -ch)
+              new-lines (.. change -text)
+              len-last-line (count (last new-lines))
+              end-x (if (> (count new-lines) 1)
+                      len-last-line
+                      (+ len-last-line (.. change -from -ch)))]
+          (- end-x start-x))))))
+
+ 
 (defn fix-text!
   "Correctly format the text from the given editor."
-  [cm]
-  (let [;; get the current state of the editor
-        ;; (e.g. text, cursor, selections, scroll)
-        current-text (.getValue cm)
-        selection? (.somethingSelected cm)
-        selections (.listSelections cm)
-        cursor (.getCursor cm)
-        scroller (.getScrollerElement cm)
-        scroll-x (.-scrollLeft scroller)
-        scroll-y (.-scrollTop scroller) 
+  ([cm] (fix-text! cm nil))
+  ([cm change]
+   (let [;; get the current state of the editor
+         ;; (e.g. text, cursor, selections, scroll)
+         current-text (.getValue cm)
+         selection? (.somethingSelected cm)
+         selections (.listSelections cm)
+         cursor (.getCursor cm)
+         scroller (.getScrollerElement cm)
+         scroll-x (.-scrollLeft scroller)
+         scroll-y (.-scrollTop scroller) 
 
-        ;; format the text
-        opts {:cursor-line (.-line cursor)
-              :cursor-x (.-ch cursor)}
-        new-text (infer/format-text opts current-text)]
+         ;; format the text
+         opts {:cursor-line (.-line cursor)
+               :cursor-x (.-ch cursor)
+               :cursor-dx (compute-cursor-dx cursor change)}
 
-    ;; update the text
-    (swap! state assoc-in [(cm-key cm) :text] new-text)
+         key- (cm-key cm)
+         mode (or (get-in @state [key- :mode]) :infer)
+         format-fn (case mode
+                    :infer infer/format-text
+                    :prep prep/format-text
+                    nil)
+         new-text (format-fn opts current-text)]
 
-    ;; restore the selection, cursor, and scroll
-    ;; since these are reset when overwriting codemirror's value.
-    (if selection?
-      (.setSelections cm selections)
-      (.setCursor cm cursor))
-    (.scrollTo cm scroll-x scroll-y)))
+     ;; update the text
+     (swap! state assoc-in [key- :text] new-text)
+
+     ;; restore the selection, cursor, and scroll
+     ;; since these are reset when overwriting codemirror's value.
+     (if selection?
+       (.setSelections cm selections)
+       (.setCursor cm cursor))
+     (.scrollTo cm scroll-x scroll-y))))
 
 (defn update-cursor!
   "Correctly position cursor after text that was just typed.
@@ -113,7 +143,7 @@
   [cm change]
   (when (not= "setValue" (.-origin change))
     (record-change! cm {:change (parse-change change)})
-    (fix-text! cm)
+    (fix-text! cm change)
     (update-cursor! cm change)
     (set-frame-updated! cm true)))
 
@@ -163,7 +193,9 @@
   ([element-id key- opts]
    (let [element (js/document.getElementById element-id)
          cm (js/CodeMirror.fromTextArea element (clj->js (merge editor-opts opts)))
-         wrapper (.getWrapperElement cm)]
+         wrapper (.getWrapperElement cm)
+         initial-state (assoc empty-editor-state
+                              :mode (:parinfer-mode opts))]
 
 
      (set! (.-id wrapper) (str "cm-" element-id))
@@ -186,7 +218,7 @@
        (swap! frame-updates assoc key- {}))
 
      (swap! state update-in [key-]
-            #(-> (or % empty-editor-state)
+            #(-> (or % initial-state)
                  (assoc :cm cm)))
 
      (swap! vcr update-in [key-]

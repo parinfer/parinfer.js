@@ -7,4 +7,5 @@
 
 (def empty-editor-state
   {:text ""     ;; text of the editor
+   :mode :infer ;; editor mode (:infer, :prep)
    :cm nil})    ;; the CodeMirror instance

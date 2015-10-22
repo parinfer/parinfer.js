@@ -1,3 +1,7 @@
+/*
+ * Some modifications made for Parinfer.  Search PARINFER EDIT below
+*/
+
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
@@ -4708,7 +4712,9 @@
     if (pos < indentation) indentString += spaceStr(indentation - pos);
 
     if (indentString != curSpaceString) {
-      replaceRange(doc, indentString, Pos(n, 0), Pos(n, curSpaceString.length), "+input");
+      // PARINFER EDIT: "+indenthack" was: "+input"
+      replaceRange(doc, indentString, Pos(n, 0), Pos(n, curSpaceString.length), "+indenthack"); 
+
       line.stateAfter = null;
       return true;
     } else {
