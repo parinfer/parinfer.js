@@ -55,13 +55,13 @@
     x))
 
 (defn correct-indent
-  [{:keys [x-pos stack dedent-x line-no] :as state}]
+  [{:keys [indent-delta x-pos stack dedent-x line-no] :as state}]
   (let [opener (peek stack)
         delta (:indent-delta opener 0)
         new-x (-> (+ x-pos delta)
                   (min-indent state)
                   (min-dedent state))
-        new-delta (- new-x x-pos)
+        new-delta (+ indent-delta (- new-x x-pos))
         indent-str (apply str (repeat new-x " "))]
     (-> state
         (assoc-in [:lines line-no] indent-str)
@@ -71,7 +71,7 @@
                :dedent-x nil))))
 
 (defn handle-cursor-delta
-  [{:keys [line-no x-pos cursor-line cursor-x cursor-dx] :as state}]
+  [{:keys [indent-delta line-no x-pos cursor-line cursor-x cursor-dx] :as state}]
   (let [cursor-delta? (and (= cursor-line line-no)
                            (= cursor-x x-pos)
                            cursor-dx)]
@@ -94,8 +94,8 @@
         state (assoc state :process? (not skip?))]
     (cond-> state
       matching? append-delim-trail
-      at-indent? correct-indent
-      true handle-cursor-delta)))
+      true handle-cursor-delta
+      at-indent? correct-indent)))
 
 (defn process-char
   "Update the state by processing the given character and its position."
@@ -127,6 +127,8 @@
                   ;; different from process-line in parinfer.format.infer
                   ;; (even if the stack is empty, we still have to track indentation)
                   :track-indent? (not (in-str? stack))
+
+                  :indent-delta 0
 
                   :lines (conj lines "")
                   :line-no line-no
