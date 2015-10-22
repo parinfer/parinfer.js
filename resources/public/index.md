@@ -433,37 +433,41 @@ __Watch where the cursor is__ when pressing Enter. Inferred parens not displaced
 
 ## Paren Mode
 
-In "Paren Mode", indentation is driven by parens.  This is a looser connection
-than in "Indent Mode".  You can still adjust indentation, but you won't be able
-indent/dedent past certain boundaries set by parens on previous lines.  As a
-courtesy, this mode also maintains relative indentation of child elements when
-their parent expressions shift.
+In "Paren Mode", indentation is tightly controlled by parens at all times.  You
+can still adjust indentation, but you won't be able indent/dedent past certain
+boundaries set by parens on previous lines.  As a courtesy, this mode also
+maintains relative indentation of child elements when their parent expressions
+shift.
 
 Here are some things that cannot be done in Indent Mode:
 
 <div>
 <div class="caption">__Tune indentation__ without worrying about crossing a paren boundary:</div>
-<textarea id="code-safe-tune">
+<textarea id="code-paren-tune">
 </textarea>
 </div>
 
 <div>
-<div class="caption">__Avoid fracturing__ an expression when pushing parens forward:</div>
-<textarea id="code-safe-frac">
+<div class="caption">__Avoid fracturing__ a multi-line expression when pushing its open-paren forward:</div>
+<textarea id="code-paren-frac">
 </textarea>
 </div>
 
 <div>
-<div class="caption">__Comment__ a whole expression too:</div>
-<textarea id="code-safe-comment">
+<div class="caption">__Indentation is maintained__ when parens shift, ensuring reversible operations:</div>
+<textarea id="code-paren-comment">
 </textarea>
 </div>
 
-TODO: examples for seeing indentation change after inserting/removing parens
+<div>
+<div class="caption">__Nested expressions__ become automatically indented (temporary imbalances allowed):</div>
+<textarea id="code-paren-wrap">
+</textarea>
+</div>
 
 ### How it works
 
-Indent Mode performs the following steps:
+Paren Mode performs the following steps:
 
 1. Move close-parens at the start of a line to the end of the previous non-empty line.
 1. Clamp the indentation of a line to the following range:
@@ -472,7 +476,7 @@ Indent Mode performs the following steps:
 1. Child elements of moved expressions should maintain their original relative indentation to them.
 1. Cancel processing if there are any unmatched parens.
 
-### Safely quarantine paren imbalances
+### Indent Mode blocked until parens balanced
 
 If there are paren imbalances in Paren Mode, the code is not processed, and you
 are prevented from switching to Indent Mode.  This safely quarantines the
@@ -480,7 +484,7 @@ imbalances that could be misinterpreted in Indent Mode.  Thus, Paren Mode gives
 you an environment to fix them, after which the code is automatically formatted
 and ready for Indent Mode should you choose to switch.
 
-### Safely open existing files
+### Paren Mode used to fix existing files
 
 We must take parens literally when opening an existing file, so we run it
 through Safe Mode before trying to switch to Indent Mode.

@@ -2585,3 +2585,253 @@
     :last-time 1444693314063, 
     :recording? false, 
     :timescale 2})
+
+(def paren-tune
+  '{:timescale 2
+    :changes
+    [{:selections ({:anchor {:line 0, :ch 0}, :head {:line 0, :ch 0}}),
+      :dt 0}
+     {:change
+      {:from {:line 0, :ch 0},
+       :to {:line 0, :ch 0},
+       :text ("(assoc state" "   :foo 1" "  :bar 2" "    :baz 3)"),
+       :origin "paste"},
+      :dt 627}
+     {:selections ({:anchor {:line 3, :ch 11}, :head {:line 3, :ch 10}}),
+      :dt 477}
+     {:selections ({:anchor {:line 3, :ch 11}, :head {:line 3, :ch 9}}),
+      :dt 22}
+     {:selections ({:anchor {:line 3, :ch 11}, :head {:line 3, :ch 7}}),
+      :dt 12}
+     {:selections ({:anchor {:line 3, :ch 11}, :head {:line 3, :ch 6}}),
+      :dt 27}
+     {:selections ({:anchor {:line 3, :ch 11}, :head {:line 3, :ch 5}}),
+      :dt 9}
+     {:selections ({:anchor {:line 3, :ch 11}, :head {:line 2, :ch 4}}),
+      :dt 23}
+     {:selections ({:anchor {:line 3, :ch 11}, :head {:line 2, :ch 3}}),
+      :dt 17}
+     {:selections ({:anchor {:line 3, :ch 11}, :head {:line 2, :ch 2}}),
+      :dt 28}
+     {:selections ({:anchor {:line 3, :ch 11}, :head {:line 2, :ch 1}}),
+      :dt 17}
+     {:selections ({:anchor {:line 3, :ch 11}, :head {:line 2, :ch 0}}),
+      :dt 35}
+     {:selections ({:anchor {:line 3, :ch 11}, :head {:line 1, :ch 0}}),
+      :dt 62}
+     {:change
+      {:from {:line 1, :ch 0},
+       :to {:line 1, :ch 3},
+       :text (" "),
+       :origin "+indenthack"},
+      :dt 584}
+     {:change
+      {:from {:line 2, :ch 0},
+       :to {:line 2, :ch 2},
+       :text (""),
+       :origin "+indenthack"},
+      :dt 2}
+     {:change
+      {:from {:line 3, :ch 0},
+       :to {:line 3, :ch 4},
+       :text ("  "),
+       :origin "+indenthack"},
+      :dt 2}
+     {:change
+      {:from {:line 1, :ch 0},
+       :to {:line 1, :ch 1},
+       :text (""),
+       :origin "+indenthack"},
+      :dt 451}
+     {:change
+      {:from {:line 2, :ch 0},
+       :to {:line 2, :ch 1},
+       :text (""),
+       :origin "+indenthack"},
+      :dt 3}
+     {:change
+      {:from {:line 3, :ch 0},
+       :to {:line 3, :ch 2},
+       :text (""),
+       :origin "+indenthack"},
+      :dt 2}
+     {:change
+      {:from {:line 1, :ch 0},
+       :to {:line 1, :ch 1},
+       :text ("   "),
+       :origin "+indenthack"},
+      :dt 423}
+     {:change
+      {:from {:line 2, :ch 0},
+       :to {:line 2, :ch 1},
+       :text ("   "),
+       :origin "+indenthack"},
+      :dt 4}
+     {:change
+      {:from {:line 3, :ch 0},
+       :to {:line 3, :ch 1},
+       :text ("   "),
+       :origin "+indenthack"},
+      :dt 3}
+     {:selections ({:anchor {:line 3, :ch 10}, :head {:line 3, :ch 10}}),
+      :dt 819}],
+    :init-value "", 
+    :last-time 1445549397039, 
+    :recording? false})
+
+(def paren-frac
+  '{:changes
+    [{:selections ({:anchor {:line 0, :ch 0}, :head {:line 0, :ch 0}}),
+      :dt 0}
+     {:change
+      {:from {:line 0, :ch 0},
+       :to {:line 0, :ch 0},
+       :text ("(let [a 1" "      b 2]" "  (+ a b))"),
+       :origin "paste"},
+      :dt 834}
+     {:selections ({:anchor {:line 0, :ch 1}, :head {:line 0, :ch 1}}),
+      :dt 793}
+     {:change
+      {:from {:line 0, :ch 1},
+       :to {:line 0, :ch 1},
+       :text ("c"),
+       :origin "+input"},
+      :dt 645}
+     {:change
+      {:from {:line 0, :ch 2},
+       :to {:line 0, :ch 2},
+       :text ("o"),
+       :origin "+input"},
+      :dt 138}
+     {:change
+      {:from {:line 0, :ch 3},
+       :to {:line 0, :ch 3},
+       :text ("r"),
+       :origin "+input"},
+      :dt 161}
+     {:change
+      {:from {:line 0, :ch 4},
+       :to {:line 0, :ch 4},
+       :text ("e"),
+       :origin "+input"},
+      :dt 61}
+     {:change
+      {:from {:line 0, :ch 5},
+       :to {:line 0, :ch 5},
+       :text ("/"),
+       :origin "+input"},
+      :dt 156}],
+    :init-value "", 
+    :last-time 1445549762808, 
+    :recording? false})
+
+(def paren-comment
+  '{:changes
+    [{:selections ({:anchor {:line 0, :ch 0}, :head {:line 0, :ch 0}}),
+      :dt 0}
+     {:change
+      {:from {:line 0, :ch 0},
+       :to {:line 0, :ch 0},
+       :text ("#"),
+       :origin "+input"},
+      :dt 866}
+     {:change
+      {:from {:line 0, :ch 1},
+       :to {:line 0, :ch 1},
+       :text ("_"),
+       :origin "+input"},
+      :dt 186}
+     {:change
+      {:from {:line 0, :ch 1},
+       :to {:line 0, :ch 2},
+       :text (""),
+       :origin "+delete"},
+      :dt 725}
+     {:change
+      {:from {:line 0, :ch 0},
+       :to {:line 0, :ch 1},
+       :text (""),
+       :origin "+delete"},
+      :dt 223}
+     {:change
+      {:from {:line 0, :ch 0},
+       :to {:line 0, :ch 0},
+       :text ("#"),
+       :origin "+input"},
+      :dt 565}
+     {:change
+      {:from {:line 0, :ch 1},
+       :to {:line 0, :ch 1},
+       :text ("_"),
+       :origin "+input"},
+      :dt 173}
+     {:change
+      {:from {:line 0, :ch 1},
+       :to {:line 0, :ch 2},
+       :text (""),
+       :origin "+delete"},
+      :dt 871}
+     {:change
+      {:from {:line 0, :ch 0},
+       :to {:line 0, :ch 1},
+       :text (""),
+       :origin "+delete"},
+      :dt 186}],
+    :init-value "(defn foo\n  [a b]\n  (+ a b))",
+    :last-time 1445550928007, 
+    :recording? false})
+
+(def paren-wrap
+  '{:timescale 2
+    :changes
+    [{:selections ({:anchor {:line 0, :ch 0}, :head {:line 0, :ch 0}}),
+      :dt 0}
+     {:change
+      {:from {:line 0, :ch 0},
+       :to {:line 0, :ch 0},
+       :text ("[1 2 3" " 4 5 6" " 7 8 9]"),
+       :origin "paste"},
+      :dt 714}
+     {:selections ({:anchor {:line 0, :ch 0}, :head {:line 0, :ch 0}}),
+      :dt 559}
+     {:change
+      {:from {:line 0, :ch 0},
+       :to {:line 0, :ch 0},
+       :text ("("),
+       :origin "+input"},
+      :dt 804}
+     {:change
+      {:from {:line 0, :ch 1},
+       :to {:line 0, :ch 1},
+       :text ("f"),
+       :origin "+input"},
+      :dt 252}
+     {:change
+      {:from {:line 0, :ch 2},
+       :to {:line 0, :ch 2},
+       :text ("o"),
+       :origin "+input"},
+      :dt 83}
+     {:change
+      {:from {:line 0, :ch 3},
+       :to {:line 0, :ch 3},
+       :text ("o"),
+       :origin "+input"},
+      :dt 154}
+     {:change
+      {:from {:line 0, :ch 4},
+       :to {:line 0, :ch 4},
+       :text (" "),
+       :origin "+input"},
+      :dt 223}
+     {:selections ({:anchor {:line 2, :ch 7}, :head {:line 2, :ch 7}}),
+      :dt 613}
+     {:change
+      {:from {:line 2, :ch 7},
+       :to {:line 2, :ch 7},
+       :text (")"),
+       :origin "+input"},
+      :dt 652}],
+    :init-value "", 
+    :last-time 1445552518239, 
+    :recording? false})

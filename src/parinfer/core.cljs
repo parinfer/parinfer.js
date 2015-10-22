@@ -83,6 +83,12 @@
   (create-editor! "code-displaced" :displaced)
   (create-editor! "code-not-displaced" :not-displaced)
 
+  (let [opts {:parinfer-mode :prep}]
+    (create-editor! "code-paren-tune" :paren-tune opts)
+    (create-editor! "code-paren-frac" :paren-frac opts)
+    (create-editor! "code-paren-comment" :paren-comment opts)
+    (create-editor! "code-paren-wrap" :paren-wrap opts)) 
+
   (start-editor-sync!)
 
   (create-regular-editor! "code-lisp-style")
@@ -127,6 +133,11 @@
   (swap! vcr update-in [:warn-bad] merge vcr/warn-bad)
   (swap! vcr update-in [:warn-good] merge vcr/warn-good)
   (swap! vcr update-in [:enter] merge vcr/enter)
+  
+  (swap! vcr update-in [:paren-tune] merge vcr/paren-tune)
+  (swap! vcr update-in [:paren-frac] merge vcr/paren-frac)
+  (swap! vcr update-in [:paren-comment] merge vcr/paren-comment)
+  (swap! vcr update-in [:paren-wrap] merge vcr/paren-wrap)
 
   (play-recording! :intro)
   (play-recording! :indent)
@@ -144,6 +155,10 @@
   (play-recording! :displaced)
   (play-recording! :not-displaced)
   (play-recording! :enter)
+  (play-recording! :paren-tune)
+  (play-recording! :paren-frac)
+  (play-recording! :paren-comment)
+  (play-recording! :paren-wrap)
 
   (render-controls!))
 

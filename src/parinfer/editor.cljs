@@ -28,7 +28,6 @@
 (defn compute-cursor-dx
   [cursor change]
   (when change
-    (js/console.log (.-origin change) (.-from change) (.-to change) (pr-str (js->clj (.-text change))))
     (let [;; This is a hack for codemirror.
           ;; For some reason codemirror triggers an "+input" change after the
           ;; indent spaces are already applied.  So I modified codemirror to

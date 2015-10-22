@@ -301,6 +301,14 @@ code {
   height: 180px;
 }
 
+#cm-code-paren-tune,
+#cm-code-paren-frac,
+#cm-code-paren-comment,
+#cm-code-paren-wrap
+{
+  height: 100px;
+}
+
 p.centered
 {
   text-align: center;
