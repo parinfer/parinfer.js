@@ -12,3 +12,8 @@ pom.xml
 .repl
 .nrepl-port
 *.swp
+
+/todo
+/deploy
+/tweet
+/clojurescript
