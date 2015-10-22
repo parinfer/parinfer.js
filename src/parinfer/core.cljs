@@ -45,7 +45,7 @@
        [:div {:class (str "toc-link toc-level-" level)}
         [:a {:href (str "#" anchor)} text]])]))
 
-(defn render!
+(defn render-index!
   [md-text]
 
   ;; initialize page
@@ -147,7 +147,25 @@
 
   (render-controls!))
 
+(defn render-dev!
+  [md-text]
+  
+  ;; initialize page
+  (let [element (js/document.getElementById "app")
+        html-text (js/marked md-text)]
+    (set! (.-innerHTML element) html-text))
+
+  (create-editor! "code-indent-mode" :indent-mode)
+  (create-editor! "code-paren-mode" :paren-mode))
+
+(def pages
+  {:dev   {:md "dev.md"   :render-fn render-dev!}
+   :index {:md "index.md" :render-fn render-index!}})
+
 (defn init! []
-  (GET "content.md" {:handler render!}))
+  (let [devpage? js/window.parinfer_devpage
+        page-key (if devpage? :dev :index)
+        {:keys [md render-fn]} (get pages page-key)]
+    (GET md {:handler render-fn})))
 
 (init!)
