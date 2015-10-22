@@ -144,5 +144,6 @@
   "Format the given text by repositioning any trailing closing delimiters based on indentation."
   ([text] (format-text initial-state text))
   ([state text]
-   (when-let [state (process-text state text)]
-     (join "\n" (:lines state)))))
+   (if-let [state (process-text state text)]
+     (join "\n" (:lines state))
+     text)))
