@@ -117,13 +117,15 @@ The objective of _Parinfer_ is to keep parens and indentation in lockstep.
 Depending on the mode you're in, parens or indentation become inferred based on
 edits to the other.
 
-You imagine the tight relationship between parens and indentation as two gears
-joined together.  _Parinfer_ allows you to choose which gear is in control of
-the other.
+You can imagine the tight relationship between parens and indentation as two
+gears joined together.  _Parinfer_ allows you to choose which gear is in
+control of the other.
 
-"Paren Mode" causes parens to drive indentation.  "Indent Mode" causes
-indentation to drive parens.  In both cases, your code stays properly formatted
-except when the input becomes imbalanced.
+"Paren Mode" causes parens to control indentation.  "Indent Mode" causes
+indentation to control parens.  This allows you to choose the degree of freedom
+that _you_ want, while relinquishing control of the other to _Parinfer_.  In
+either case, your code stays properly formatted, except in cases when the input
+becomes imbalanced.
 
 ## Indent Mode
 
