@@ -1,7 +1,18 @@
 # Par<em>infer</em>
 
  <p class="subtitle">
-a theory on how to <em>simplify the way we write Lisp</em> by:
+a theory on how to <em>simplify the way we write Lisp</em>
+</p>
+
+ <p class="summary">
+Lisp is a programming syntax often dismissed due to a widely held uncertainty
+about how or why we must manage so many parentheses.  Thus, _Parinfer_ is a
+tool designed to guide you through how Lisp code is written by automating
+significant parts of it.  Perhaps once this barrier is down, the elegance and
+power of Lisp can become more widely learned.
+
+The tool is based on a somewhat formalized theorem on Lisp formatting.
+Some highlights:
 </p>
 
   <ul class="features">
@@ -13,6 +24,7 @@ a theory on how to <em>simplify the way we write Lisp</em> by:
 
 <div id="xkcd">
 <a href="https://xkcd.com/312/"><img src="img/xkcd-frost.png"></a>
+<div class="caption">__xkcd__ excerpt on using Lisp</div>
 </div>
 
 <div id="toc"></div>

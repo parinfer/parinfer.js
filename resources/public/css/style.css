@@ -9,11 +9,14 @@ body {
   border-top: 1px solid #dedede;
   padding-top: 20px;
   margin-bottom: -30px;
-  text-align: center;
 }
 
 #xkcd a {
   border-bottom: 0;
+}
+
+#xkcd .caption {
+  padding-top: 0;
 }
 
 
@@ -97,7 +100,6 @@ h1, h2, h3, h4, h5, h6 {
 
 h1 {
   font-size: 64px;
-  text-align: center;
   font-weight: 200;
   margin: 100px 0 0;
 }
@@ -120,7 +122,6 @@ h3 {
 
 .subtitle {
   font-size: 20px;
-  text-align: center;
   margin: 40px 0;
 }
 
@@ -129,11 +130,11 @@ h3 {
   border-bottom: 1px solid #111;
 }
 
+.summary {
+}
+
 .features {
-  width: 470px;
-  margin: 0px auto 50px;
   color: #888;
-  list-style-position: inside;
   list-style-type: square;
 }
 
