@@ -40,7 +40,6 @@
 (defn make-toc-html []
   (html
     [:div
-     [:h2 "Table of Contents"]
      (for [{:keys [anchor level text]} @toc]
        [:div {:class (str "toc-link toc-level-" level)}
         [:a {:href (str "#" anchor)} text]])]))
@@ -59,7 +58,7 @@
     (set! (.-innerHTML element) toc-html))
 
   ;; create editors
-  (create-editor! "code-intro" :intro {:styleActiveLine true})
+  #_(create-editor! "code-intro" :intro {:styleActiveLine true})
 
   (create-editor! "code-indent" :indent)
   (create-editor! "code-indent-far" :indent-far)
@@ -116,7 +115,7 @@
     (.refresh cm-output))
     
   ;; create editor animations
-  (swap! vcr update-in [:intro] merge vcr/intro)
+  #_(swap! vcr update-in [:intro] merge vcr/intro)
   (swap! vcr update-in [:indent] merge vcr/indent)
   (swap! vcr update-in [:indent-far] merge vcr/indent-far)
   (swap! vcr update-in [:indent-multi] merge vcr/indent-multi)
@@ -139,7 +138,7 @@
   (swap! vcr update-in [:paren-comment] merge vcr/paren-comment)
   (swap! vcr update-in [:paren-wrap] merge vcr/paren-wrap)
 
-  (play-recording! :intro)
+  #_(play-recording! :intro)
   (play-recording! :indent)
   (play-recording! :indent-far)
   (play-recording! :indent-multi)

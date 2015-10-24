@@ -1,4 +1,8 @@
-# Par<em>infer</em>
+ <div class="sidebar">
+<h1>Par<em>infer</em></h1>
+
+<div id="toc"></div>
+</div>
 
  <p class="subtitle">
 a theory on how to <em>simplify the way we write Lisp</em>
@@ -22,21 +26,16 @@ Some highlights:
 <li> allowing [Paredit]-like features without memorizing hotkeys
 </ul>
 
-<div id="xkcd">
-<a href="https://xkcd.com/312/"><img src="img/xkcd-frost.png"></a>
-<div class="caption">__xkcd__ excerpt on using Lisp</div>
-</div>
-
-<div id="toc"></div>
-
+<!--
 ## Quick Look
 
 If you are familiar with Lisp, here's what it looks like when using _Parinfer_.
 Click to play around with it if you're curious.  Details ahead.
 
 <textarea id="code-intro"> </textarea>
+-->
 
-## Background
+## Intro
 
 In Lisp, parentheses tend to bunch together at the end of a line. This
 [convention] can be jarring at first if you are used to curly braces in other
@@ -103,7 +102,7 @@ structural ambiguity.
 [Racket]:http://racket-lang.org/
 [Clojure]:http://clojure.org/
 
-## Surveying how folks edit Lisp
+### Visualizing how we edit
 
 As we have seen, there is an obvious relationship between parens and indentation in Lisp.
 Different solutions manage this relationship differently.
@@ -123,7 +122,7 @@ paren gear tied to paredit
 
 __Pretty-Printers__ full-fledged
 
-## Introducing Parinfer
+### Why Parinfer is different
 
 The objective of _Parinfer_ is to keep parens and indentation in lockstep.
 Depending on the mode you're in, parens or indentation become inferred based on
@@ -191,7 +190,7 @@ roughly equivalent to those listed.
 </tr>
 </table>
 
-### Some Interesting Consequences
+### Interesting Consequences
 
 <div>
 <div class="caption">__Insert or delete a line__ without rearranging parens:</div>
@@ -259,7 +258,7 @@ we will just explore their effects in the next section.
 
 [formatter-details]:https://github.com/shaunlebron/parinfer/blob/master/doc/formatter-details.md
 
-### Cause and Effect: Typing
+### Paredit emerges
 
 You should be aware that the steps in the previous section have a side effect on
 what you type.  Interestingly, these effects translate into four of the main
@@ -368,6 +367,10 @@ Why can't I delete a close-paren in certain places?
 <div class="answer">You cannot delete an inferred close-paren. It is replaced as soon as you delete it. (see rule #3)</div>
 </div>
 
+### Other Effects
+
+There are other side effects in Indent Mode that should be aware of.
+
 #### Knowing When Parens Move
 
 As a courtesy, _Parinfer_ will not move your parens until you are done typing
@@ -384,6 +387,20 @@ parens from blowing away.
 <div>
 <div class="caption">__Paren not displaced__ since you were given the chance to block it. (paren not at end of line)</div>
 <textarea id="code-not-displaced">
+</textarea>
+</div>
+
+#### Pressing Enter
+
+Pressing enter will result in your cursor moving to an auto-indented line, as
+expected.  Just keep in mind that the inferred parens won't move until you
+actually type something on the new line.
+
+<div>
+<div class="caption">
+__Watch where the cursor is__ when pressing Enter. Inferred parens not displaced until typing. (rule #2)
+</div>
+<textarea id="code-enter">
 </textarea>
 </div>
 
@@ -431,20 +448,6 @@ __GOOD__: Balance the quotes in the comment to prevent the problem.
 </div>
 </div>
 
-#### Pressing Enter
-
-Pressing enter will result in your cursor moving to an auto-indented line, as
-expected.  Just keep in mind that the inferred parens won't move until you
-actually type something on the new line.
-
-<div>
-<div class="caption">
-__Watch where the cursor is__ when pressing Enter. Inferred parens not displaced until typing. (rule #2)
-</div>
-<textarea id="code-enter">
-</textarea>
-</div>
-
 ## Paren Mode
 
 In "Paren Mode", indentation is tightly controlled by parens at all times.  You
@@ -490,7 +493,7 @@ Paren Mode performs the following steps:
 1. Child elements of moved expressions should maintain their original relative indentation to them.
 1. Cancel processing if there are any unmatched parens.
 
-### Indent Mode blocked until parens balanced
+### Switching Modes
 
 If there are paren imbalances in Paren Mode, the code is not processed, and you
 are prevented from switching to Indent Mode.  This safely quarantines the
@@ -498,10 +501,11 @@ imbalances that could be misinterpreted in Indent Mode.  Thus, Paren Mode gives
 you an environment to fix them, after which the code is automatically formatted
 and ready for Indent Mode should you choose to switch.
 
-### Paren Mode used to fix existing files
+### Fixing existing files
 
-We must take parens literally when opening an existing file, so we run it
-through Safe Mode before trying to switch to Indent Mode.
+We must take parens literally when opening an existing file. Incidentally,
+Paren Mode is perfect for this job, so we preprocess existing files with it
+before ever trying to switch to Indent Mode.
 
 <div class="interact">
 <i class="fa fa-keyboard-o fa-lg"></i>
@@ -596,10 +600,6 @@ There are many ideas related to this concept.
 - [clojure-validate-indent] - validates indentation of Clojure code
 - [The Clojure Style Guide] - indentation conventions in Clojure
 
-<footer>
-by [@shaunlebron](http://twitter.com/shaunlebron)
-</footer>
-
 [Haml]:http://haml.info/
 [Slim]:http://slim-lang.com/
 [Jade]:http://jade-lang.com/
@@ -613,3 +613,9 @@ by [@shaunlebron](http://twitter.com/shaunlebron)
 [clojure-validate-indent]:https://github.com/boxed/clojure-validate-indent
 [The Clojure Style Guide]:https://github.com/bbatsov/clojure-style-guide#source-code-layout--organization
 [CodeMirror]:https://codemirror.net/
+
+<div id="xkcd">
+<a href="https://xkcd.com/312/"><img src="img/xkcd-frost.png"></a>
+</div>
+
+<footer></footer>
