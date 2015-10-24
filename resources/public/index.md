@@ -9,14 +9,14 @@ a theory on how to <em>simplify the way we write Lisp</em>
 </p>
 
  <p class="summary">
-Lisp is a programming syntax often dismissed due to a widely held uncertainty
-about how or why we must manage so many parentheses.  Thus, _Parinfer_ is a
-tool designed to guide you through how Lisp code is written by automating
-significant parts of it.  Perhaps once this barrier is down, the elegance and
-power of Lisp can become more widely learned.
+__Lisp__ is a programming syntax often dismissed due to a widely held
+uncertainty about how or why we must manage so many parentheses.  Thus,
+_Parinfer_ is a tool designed to show you how Lisp code is written by
+automating significant parts of it.  Perhaps once this barrier is down, the
+elegance and power of Lisp can become more widely learned and understood.
 
-The tool is based on a somewhat formalized theorem on Lisp formatting.
-Some highlights:
+Based on a somewhat formalized theorem on Lisp formatting, we provide capabilities
+for:
 </p>
 
   <ul class="features">

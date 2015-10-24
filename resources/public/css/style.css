@@ -169,7 +169,7 @@ p, li {
   top: 0;
   padding-left: 20px;
   height: 100%;
-  /* border-right: 1px solid #DDD;*/
+  border-right: 1px solid #DDD;
   background-color: #f1f1f1;
   overflow-y: scroll;
 }
