@@ -1,13 +1,13 @@
 /**
  * @constructor
  */
-ElementWatcher = function(){};
+var ElementWatcher = function(){};
 
 ElementWatcher.prototype.enterViewport = function(){};
 ElementWatcher.prototype.exitViewport = function(){};
 
 
-scrollMonitor = {};
+var scrollMonitor = {};
 
 /**
  * @return {ElementWatcher}
