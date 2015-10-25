@@ -1,8 +1,5 @@
 (ns ^:figwheel-always parinfer.core
-  (:require-macros
-    [hiccups.core :as hiccups :refer [html]])
   (:require
-    [hiccups.runtime]
     [clojure.string :as string]
     [parinfer.vcr-data :as vcr]
     [parinfer.vcr :refer [vcr
@@ -13,33 +10,15 @@
                              start-editor-sync!]]
     [parinfer.format.infer :as infer]
     [parinfer.format.prep :as prep]
+    [parinfer.toc :as toc]
     [ajax.core :refer [GET]]))
 
 (enable-console-print!)
 
-(defn toc-headers []
-  (let [elements (.. js/document
-                     (getElementById "app")
-                     (querySelectorAll "h2,h3,h4,h5,h6"))]
-    (for [i (range (.-length elements))]
-      (let [e (aget elements i)]
-        {:id (.. e -parentElement -id)
-         :level (subs (.-tagName e) 1)
-         :text (.-textContent e)}))))
-
-(defn make-toc-html []
-  (html
-    [:div
-     (for [{:keys [id level text]} (toc-headers)]
-       [:div {:class (str "toc-link toc-level-" level)}
-        [:a {:href (str "#" id)} text]])]))
-
 (defn render-index! []
 
   ;; create table of contents
-  (let [element (js/document.getElementById "toc")
-        toc-html (make-toc-html)]
-    (set! (.-innerHTML element) toc-html))
+  (toc/init!)
 
   ;; create editors
   #_(create-editor! "code-intro" :intro {:styleActiveLine true})
@@ -60,8 +39,8 @@
   (let [opts {:readOnly true}
         cm-good (create-editor! "code-warn-good" :warn-good opts)
         cm-bad (create-editor! "code-warn-bad" :warn-bad opts)]
-    (.refresh cm-good)
-    (.refresh cm-bad))
+    (when cm-good (.refresh cm-good))
+    (when cm-bad (.refresh cm-bad)))
 
   (create-editor! "code-displaced" :displaced)
   (create-editor! "code-not-displaced" :not-displaced)
@@ -85,8 +64,8 @@
         sync! #(.setValue cm-output (infer/format-text (.getValue cm-input)))]
     (.on cm-input "change" sync!)
     (sync!)
-    (.refresh cm-input)
-    (.refresh cm-output))
+    (when cm-input (.refresh cm-input))
+    (when cm-output (.refresh cm-output)))
 
   (let [cm-input (create-regular-editor! "code-edit-input")
         cm-output (create-regular-editor! "code-edit-output" {:readOnly true
@@ -95,8 +74,8 @@
                                         "; ERROR: input must be balanced!"))]
     (.on cm-input "change" sync!)
     (sync!)
-    (.refresh cm-input)
-    (.refresh cm-output))
+    (when cm-input (.refresh cm-input))
+    (when cm-output (.refresh cm-output)))
     
   ;; create editor animations
   #_(swap! vcr update-in [:intro] merge vcr/intro)

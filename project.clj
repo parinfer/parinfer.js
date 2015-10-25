@@ -9,8 +9,7 @@
                  [org.clojure/core.async "0.1.346.0-17112a-alpha"]
                  [org.omcljs/om "0.9.0"]
                  [sablono "0.3.6"]
-                 [cljs-ajax "0.5.0"]
-                 [hiccups "0.3.0"]]
+                 [cljs-ajax "0.5.0"]]
 
   :plugins [[lein-cljsbuild "1.1.0"]
             [lein-figwheel "0.4.0"]]
@@ -36,7 +35,8 @@
              {:id "min"
               :source-paths ["src"]
               :compiler {:output-to "resources/public/js/compiled/parinfer.js"
-                         :externs ["resources/public/codemirror/lib/closure-externs.js"]
+                         :externs ["resources/public/codemirror/lib/closure-externs.js"
+                                   "resources/public/js/lib/scrollMonitor.externs.js"]
                          :main parinfer.core
                          :optimizations :advanced
                          :pretty-print false}}

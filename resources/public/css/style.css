@@ -18,17 +18,27 @@ body {
 
 #toc {
   text-align: left;
-  margin-left: 20px;
+  margin-left: 10px;
   font-size: 0.9em;
 }
 
 .toc-link a {
   border-bottom: 0;
-  color: #AAA;
+  color: #333;
 }
 
 .toc-link {
-  line-height: 1.5em;
+  line-height: 1.6em;
+  opacity: 0.4;
+  transition: opacity 0.3s;
+  margin-top: 2px;
+  margin-left: 2px;
+}
+
+.toc-link.toc-visible {
+  border-left: 2px solid #333;
+  margin-left: 0;
+  opacity: 1;
 }
 
 .toc-level-1 {
@@ -36,18 +46,15 @@ body {
 }
 
 .toc-level-2 {
-  margin-left: 0px;
-}
-
-.toc-level-2 a {
+  padding-left: 10px;
 }
 
 .toc-level-3 {
-  margin-left: 20px;
+  padding-left: 30px;
 }
 
 .toc-level-4 {
-  margin-left: 30px;
+  padding-left: 40px;
 }
 
 #controls {
