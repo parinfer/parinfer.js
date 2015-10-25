@@ -26,6 +26,7 @@
 
 <!------------------------------------------------------------------------------------>
 
+<section>
 <p class="subtitle">
 a theory on how to <em>simplify the way we write Lisp</em>
 </p>
@@ -49,16 +50,19 @@ for:
 <a href="http://danmidwood.com/content/2014/11/21/animated-paredit.html">Paredit</a>-like
 features without hotkeys
 </ul>
+</section>
 
 <!------------------------------------------------------------------------------------>
 
-<section>
-<h2 id="intro">Intro</h2>
+<section id="intro">
+<h2>Intro</h2>
 
+<p>
 In Lisp, parentheses tend to bunch together at the end of a line. This
 <a href="https://en.wikipedia.org/wiki/Indent_style#Lisp_style">convention</a>
 can be jarring at first if you are used to curly braces in other
 languages being on their own lines:
+</p>
 
 <div class="two-col">
 <div class="col">
@@ -130,8 +134,8 @@ use these extra delimiters to help visually separate certain constructs.
 
 <!------------------------------------------------------------------------------------>
 
-<section>
-<h3 id="visualizing-how-we-edit">Visualizing how we edit</h3>
+<section id="visualizing-how-we-edit">
+<h3>Visualizing how we edit</h3>
 
 <p>
 As we have seen, there is an obvious relationship between parens and indentation in Lisp.
@@ -166,8 +170,8 @@ paren gear tied to paredit
 
 <!------------------------------------------------------------------------------------>
 
-<section>
-<h3 id="why-parinfer-is-different">Why Parinfer is different</h3>
+<section id="why-parinfer-is-different">
+<h3>Why Parinfer is different</h3>
 
 <p>
 The objective of <em>Parinfer</em> is to keep parens and indentation in lockstep.
@@ -193,8 +197,8 @@ becomes imbalanced.
 
 <!------------------------------------------------------------------------------------>
 
-<section>
-<h2 id="indent-mode">Indent Mode</h2>
+<section id="indent-mode">
+<h2>Indent Mode</h2>
 
 <p>
 Indent Mode treats indentation as an <em>intention to correct surrounding parens</em>
@@ -253,8 +257,8 @@ roughly equivalent to those listed.
 
 <!------------------------------------------------------------------------------------>
 
-<section>
-<h3 id="interesting-consequences">Interesting Consequences</h3>
+<section id="interesting-consequences">
+<h3>Interesting Consequences</h3>
 
 <div>
 <div class="caption"><strong>Insert or delete a line</strong> without rearranging parens:</div>
@@ -271,8 +275,8 @@ roughly equivalent to those listed.
 
 <!------------------------------------------------------------------------------------>
 
-<section>
-<h3 id="indent-how-it-works">How it works</h3>
+<section id="indent-how-it-works">
+<h3>How it works</h3>
 
 <p>
 We perform the following steps to rearrange parens based on indentation.<br>
@@ -338,8 +342,8 @@ but we will just explore their effects in the next section.
 
 <!------------------------------------------------------------------------------------>
 
-<section>
-<h3 id="paredit-emerges">Paredit emerges</h3>
+<section id="paredit-emerges">
+<h3>Paredit emerges</h3>
 
 <p>
 You should be aware that the steps in the previous section have a side effect on
@@ -409,8 +413,8 @@ i.e. the current list "slurps" all elements to the right of your cursor
 
 <!------------------------------------------------------------------------------------>
 
-<section>
-<h4 id="inserting-parens">Inserting Parens</h4>
+<section id="inserting-parens">
+<h4>Inserting Parens</h4>
 
 <div>
 <div class="caption"><strong>Wrap</strong> by inserting a open-paren. It will auto-close as far as it can, due to rule #3.</div>
@@ -436,8 +440,8 @@ Why can't I insert a close-paren in certain places?
 
 <!------------------------------------------------------------------------------------>
 
-<section>
-<h4 id="deleting-parens">Deleting Parens</h4>
+<section id="deleting-parens">
+<h4>Deleting Parens</h4>
 
 <div>
 <div class="caption"><strong>Splice</strong> by removing a open-paren. Its corresponding close-paren is removed, due to rule #1.</div>
@@ -462,14 +466,18 @@ Why can't I delete a close-paren in certain places?
 
 <!------------------------------------------------------------------------------------>
 
-<section>
-<h3 id="other-effects">Other Effects</h3>
+<section id="other-effects">
+<h3>Other Effects</h3>
 
 <p>
 There are other side effects in Indent Mode that should be aware of.
 </p>
+</section>
 
-<h4 id="knowing-when-parens-move">Knowing When Parens Move</h4>
+<!------------------------------------------------------------------------------------>
+
+<section id="knowing-when-parens-move">
+<h4>Knowing When Parens Move</h4>
 
 <p>
 As a courtesy, <em>Parinfer</em> will not move your parens until you are done typing
@@ -493,8 +501,8 @@ parens from blowing away.
 
 <!------------------------------------------------------------------------------------>
 
-<section>
-<h4 id="pressing-enter">Pressing Enter</h4>
+<section id="pressing-enter">
+<h4>Pressing Enter</h4>
 
 <p>
 Pressing enter will result in your cursor moving to an auto-indented line, as
@@ -513,8 +521,8 @@ actually type something on the new line.
 
 <!------------------------------------------------------------------------------------>
 
-<section>
-<h4 id="inserting-quotes">Inserting Quotes</h4>
+<section id="inserting-quotes">
+<h4>Inserting Quotes</h4>
 
 <p>
 <em>Parinfer</em> cannot infer anything about quote positions like it can with parens.
@@ -563,8 +571,8 @@ thinking it is okay for processing.
 
 <!------------------------------------------------------------------------------------>
 
-<section>
-<h2 id="paren-mode">Paren Mode</h2>
+<section id="paren-mode">
+<h2>Paren Mode</h2>
 
 <p>
 In "Paren Mode", indentation is tightly controlled by parens at all times.  You
@@ -605,8 +613,8 @@ Here are some things that cannot be done in Indent Mode:
 
 <!------------------------------------------------------------------------------------>
 
-<section>
-<h3 id="paren-how-it-works">How it works</h3>
+<section id="paren-how-it-works">
+<h3>How it works</h3>
 
 <p>
 Paren Mode performs the following steps:
@@ -626,8 +634,8 @@ Paren Mode performs the following steps:
 
 <!------------------------------------------------------------------------------------>
 
-<section>
-<h3 id="switching-modes">Switching Modes</h3>
+<section id="switching-modes">
+<h3>Switching Modes</h3>
 
 <p>
 If there are paren imbalances in Paren Mode, the code is not processed, and you
@@ -640,8 +648,8 @@ and ready for Indent Mode should you choose to switch.
 
 <!------------------------------------------------------------------------------------>
 
-<section>
-<h3 id="fixing-existing-files">Fixing existing files</h3>
+<section id="fixing-existing-files">
+<h3>Fixing existing files</h3>
 
 <p>
 We must take parens literally when opening an existing file. Incidentally,
@@ -695,8 +703,8 @@ to the reasons stated in the previous section.
 
 <!------------------------------------------------------------------------------------>
 
-<section>
-<h2 id="final-thoughts">Final Thoughts</h2>
+<section id="final-thoughts">
+<h2>Final Thoughts</h2>
 
 <p>
 Regardless of how we choose to edit our Lisp code, there seems to always be a
@@ -716,8 +724,8 @@ editor.
 
 <!------------------------------------------------------------------------------------>
 
-<section>
-<h3 id="benefits">Benefits</h3>
+<section id="benefits">
+<h3>Benefits</h3>
 
 <p>
 Inferring parentheses based on indentation seems to lead to simpler editing
@@ -737,8 +745,8 @@ And just like <em>Paredit</em> it maintains paren-balanced code.
 
 <!------------------------------------------------------------------------------------>
 
-<section>
-<h3 id="downsides">Downsides</h3>
+<section id="downsides">
+<h3>Downsides</h3>
 
 <p>
 The rules for what happens when inserting/deleting parens must be learned.
@@ -755,8 +763,8 @@ others not using <em>Parinfer</em>.
 
 <!------------------------------------------------------------------------------------>
 
-<section>
-<h3 id="source-code">Source Code</h3>
+<section id="source-code">
+<h3>Source Code</h3>
 
 <p>
 The text formatting code is implemented in portable Clojure/ClojureScript.  The
@@ -771,8 +779,8 @@ update cursor position.
 
 <!------------------------------------------------------------------------------------>
 
-<section>
-<h3 id="prior-art">Prior Art</h3>
+<section id="prior-art">
+<h3>Prior Art</h3>
 
 <p>
 There are many ideas related to this concept.
