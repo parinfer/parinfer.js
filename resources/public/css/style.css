@@ -7,13 +7,6 @@ body {
   background: #F7F7F7;
 }
 
-#xkcd {
-  margin-top: 50px;
-  border-top: 1px solid #dedede;
-  padding-top: 20px;
-  margin-bottom: -30px;
-}
-
 #xkcd a {
   border-bottom: 0;
 }
@@ -105,9 +98,12 @@ body {
 
 h1, h2, h3, h4, h5, h6 {
   color: #222;
+  margin-top:0;
+  margin-bottom: 20px;
 }
 
 h1 {
+  margin: 32px 0;
   text-align: center;
   font-size: 48px;
   font-weight: 200;
@@ -117,16 +113,6 @@ h1 em {
   text-decoration: none;
   font-style: normal;
   opacity: 0.3;
-}
-
-h2 {
-  margin-top: 50px;
-  border-top: 1px solid #dedede;
-  padding-top: 20px;
-}
-
-h3 {
-  margin-top: 40px;
 }
 
 .subtitle {
@@ -175,8 +161,26 @@ p, li {
 }
 
 .wrapper {
-  width: 720px;
-  margin-left: 350px;
+  position: absolute;
+  left: 300px;
+  top: 0;
+  width: 822px;
+  border-right: 1px solid #dedede;
+}
+
+section {
+  margin: 0;
+  padding: 50px 50px;
+  border-top: 1px solid #dedede;
+}
+
+section:first-child {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
+}
+
+section.sep {
 }
 
 .caption {
@@ -401,20 +405,6 @@ td .side-point
 .answer
 {
   margin-left: 22px;
-}
-
-footer {
-  margin-top: 50px;
-  border-top: 1px solid #dedede;
-  padding-top: 20px;
-  margin-bottom: -30px;
-  text-align: center;
-  color: #555;
-}
-
-footer a {
-  color: #555;
-  border-bottom: 0px;
 }
 
 i.fa {
