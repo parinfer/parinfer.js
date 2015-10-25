@@ -19,11 +19,11 @@
   </div>
 </div>
 
-    <div class="wrapper">
       <div id="app">
 
 <!------------------------------------------------------------------------------------>
 
+<div class="wrapper">
 <section>
 <p class="subtitle">
 a theory on how to <em>simplify the way we write Lisp</em>
@@ -49,9 +49,11 @@ for:
 features without hotkeys
 </ul>
 </section>
+</div>
 
 <!------------------------------------------------------------------------------------>
 
+<div class="wrapper">
 <section id="intro">
 <h2>Intro</h2>
 
@@ -129,9 +131,11 @@ use these extra delimiters to help visually separate certain constructs.
 </blockquote>
 
 </section>
+</div>
 
 <!------------------------------------------------------------------------------------>
 
+<div class="wrapper">
 <section id="visualizing-how-we-edit">
 <h3>Visualizing how we edit</h3>
 
@@ -164,10 +168,12 @@ paren gear tied to paredit
 <p>
 <strong>Pretty-Printers</strong> full-fledged
 </section>
+</div>
 </p>
 
 <!------------------------------------------------------------------------------------>
 
+<div class="wrapper">
 <section id="why-parinfer-is-different">
 <h3>Why Parinfer is different</h3>
 
@@ -192,9 +198,11 @@ becomes imbalanced.
 </p>
 
 </section>
+</div>
 
 <!------------------------------------------------------------------------------------>
 
+<div class="wrapper">
 <section id="indent-mode">
 <h2>Indent Mode</h2>
 
@@ -252,9 +260,11 @@ roughly equivalent to those listed.
 </tr>
 </table>
 </section>
+</div>
 
 <!------------------------------------------------------------------------------------>
 
+<div class="wrapper">
 <section id="interesting-consequences">
 <h3>Interesting Consequences</h3>
 
@@ -270,9 +280,11 @@ roughly equivalent to those listed.
 </textarea>
 </div>
 </section>
+</div>
 
 <!------------------------------------------------------------------------------------>
 
+<div class="wrapper">
 <section id="indent-how-it-works">
 <h3>How it works</h3>
 
@@ -337,9 +349,11 @@ There are more steps performed that you can
 but we will just explore their effects in the next section.
 </p>
 </section>
+</div>
 
 <!------------------------------------------------------------------------------------>
 
+<div class="wrapper">
 <section id="paredit-emerges">
 <h3>Paredit emerges</h3>
 
@@ -402,15 +416,12 @@ i.e. the current list "slurps" all elements to the right of your cursor
 </tr>
 
 </table>
-
-<div class="interact">
-<i class="fa fa-keyboard-o fa-lg"></i>
-<strong>Try it!</strong> Interrupt the animations below to try it for yourself. Click outside to restore it.
-</div>
 </section>
+</div>
 
 <!------------------------------------------------------------------------------------>
 
+<div class="wrapper">
 <section id="inserting-parens">
 <h4>Inserting Parens</h4>
 
@@ -435,9 +446,11 @@ Why can't I insert a close-paren in certain places?
 <div class="answer">Its corresponding open-paren must be there first. (see rule #1)</div>
 </div>
 </section>
+</div>
 
 <!------------------------------------------------------------------------------------>
 
+<div class="wrapper">
 <section id="deleting-parens">
 <h4>Deleting Parens</h4>
 
@@ -461,9 +474,11 @@ Why can't I delete a close-paren in certain places?
 <div class="answer">You cannot delete an inferred close-paren. It is replaced as soon as you delete it. (see rule #3)</div>
 </div>
 </section>
+</div>
 
 <!------------------------------------------------------------------------------------>
 
+<div class="wrapper">
 <section id="other-effects">
 <h3>Other Effects</h3>
 
@@ -471,9 +486,11 @@ Why can't I delete a close-paren in certain places?
 There are other side effects in Indent Mode that should be aware of.
 </p>
 </section>
+</div>
 
 <!------------------------------------------------------------------------------------>
 
+<div class="wrapper">
 <section id="knowing-when-parens-move">
 <h4>Knowing When Parens Move</h4>
 
@@ -496,9 +513,11 @@ parens from blowing away.
 </textarea>
 </div>
 </section>
+</div>
 
 <!------------------------------------------------------------------------------------>
 
+<div class="wrapper">
 <section id="pressing-enter">
 <h4>Pressing Enter</h4>
 
@@ -516,9 +535,11 @@ actually type something on the new line.
 </textarea>
 </div>
 </section>
+</div>
 
 <!------------------------------------------------------------------------------------>
 
+<div class="wrapper">
 <section id="inserting-quotes">
 <h4>Inserting Quotes</h4>
 
@@ -566,9 +587,11 @@ thinking it is okay for processing.
 </div>
 </div>
 </section>
+</div>
 
 <!------------------------------------------------------------------------------------>
 
+<div class="wrapper">
 <section id="paren-mode">
 <h2>Paren Mode</h2>
 
@@ -608,9 +631,11 @@ Here are some things that cannot be done in Indent Mode:
 </textarea>
 </div>
 </section>
+</div>
 
 <!------------------------------------------------------------------------------------>
 
+<div class="wrapper">
 <section id="paren-how-it-works">
 <h3>How it works</h3>
 
@@ -629,9 +654,11 @@ Paren Mode performs the following steps:
 <li> Cancel processing if there are any unmatched parens.
 </ol>
 </section>
+</div>
 
 <!------------------------------------------------------------------------------------>
 
+<div class="wrapper">
 <section id="switching-modes">
 <h3>Switching Modes</h3>
 
@@ -642,10 +669,12 @@ imbalances that could be misinterpreted in Indent Mode.  Thus, Paren Mode gives
 you an environment to fix them, after which the code is automatically formatted
 and ready for Indent Mode should you choose to switch.
 </section>
+</div>
 </p>
 
 <!------------------------------------------------------------------------------------>
 
+<div class="wrapper">
 <section id="fixing-existing-files">
 <h3>Fixing existing files</h3>
 
@@ -698,9 +727,11 @@ indentation.
 to the reasons stated in the previous section.
 </p>
 </section>
+</div>
 
 <!------------------------------------------------------------------------------------>
 
+<div class="wrapper">
 <section id="final-thoughts">
 <h2>Final Thoughts</h2>
 
@@ -719,9 +750,11 @@ concepts in CodeMirror. The <em>real test</em> will come when implemented in a m
 editor.
 </p>
 </section>
+</div>
 
 <!------------------------------------------------------------------------------------>
 
+<div class="wrapper">
 <section id="benefits">
 <h3>Benefits</h3>
 
@@ -740,9 +773,11 @@ parens by enforcing a direct driving relationship with indentation.
 And just like <em>Paredit</em> it maintains paren-balanced code.
 </p>
 </section>
+</div>
 
 <!------------------------------------------------------------------------------------>
 
+<div class="wrapper">
 <section id="downsides">
 <h3>Downsides</h3>
 
@@ -758,9 +793,11 @@ formatting-related changes in your commit history when collaborating with
 others not using <em>Parinfer</em>.
 </p>
 </section>
+</div>
 
 <!------------------------------------------------------------------------------------>
 
+<div class="wrapper">
 <section id="source-code">
 <h3>Source Code</h3>
 
@@ -774,9 +811,11 @@ update cursor position.
 <i class="fa fa-lg fa-code-fork"></i> <a href="http://github.com/shaunlebron/parinfer">http://github.com/shaunlebron/parinfer</a>
 </p>
 </section>
+</div>
 
 <!------------------------------------------------------------------------------------>
 
+<div class="wrapper">
 <section id="prior-art">
 <h3>Prior Art</h3>
 
@@ -830,6 +869,7 @@ and
 
 </ul>
 </section>
+</div>
 
 <section>
 <div id="xkcd">
@@ -843,7 +883,6 @@ and
 
       <div id="controls">
       </div>
-    </div>
 
     <script src="codemirror/lib/codemirror.js"></script>
     <script src="codemirror/addon/selection/active-line.js"></script>

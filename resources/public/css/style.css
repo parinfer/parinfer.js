@@ -160,27 +160,29 @@ p, li {
   overflow-y: scroll;
 }
 
-.wrapper {
+#app {
   position: absolute;
   left: 300px;
   top: 0;
-  width: 822px;
-  border-right: 1px solid #dedede;
+  right: 0;
 }
 
-section {
-  margin: 0;
-  padding: 50px 50px;
+.wrapper {
+  right: 0;
+  margin:0;
   border-top: 1px solid #dedede;
 }
 
-section:first-child {
+section {
+  width: 862px;
+  margin: 70px 0;
+  padding: 0 70px;
+}
+
+.wrapper:first-child > section {
   margin-top: 0;
   padding-top: 0;
   border-top: 0;
-}
-
-section.sep {
 }
 
 .caption {
