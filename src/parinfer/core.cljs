@@ -25,7 +25,7 @@
       (let [e (aget elements i)]
         {:id (.. e -parentElement -id)
          :level (subs (.-tagName e) 1)
-         :text (.-innerText e)}))))
+         :text (.-textContent e)}))))
 
 (defn make-toc-html []
   (html
