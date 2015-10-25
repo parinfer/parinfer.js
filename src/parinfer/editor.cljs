@@ -180,11 +180,12 @@
   "Create a non-parinfer editor."
   ([element-id] (create-regular-editor! element-id {}))
   ([element-id opts]
-   (let [element (js/document.getElementById element-id)
-         cm (js/CodeMirror.fromTextArea element (clj->js (merge editor-opts {:mode "clojure"} opts)))
-         wrapper (.getWrapperElement cm)]
-     (set! (.-id wrapper) (str "cm-" element-id))
-     cm)))
+   (let [element (js/document.getElementById element-id)]
+     (when-not (= "none" (.. element -style -display))
+       (let [cm (js/CodeMirror.fromTextArea element (clj->js (merge editor-opts {:mode "clojure"} opts)))
+             wrapper (.getWrapperElement cm)]
+         (set! (.-id wrapper) (str "cm-" element-id))
+         cm)))))
 
 (defn create-editor!
   "Create a parinfer editor."
@@ -194,6 +195,7 @@
      (let [element (js/document.getElementById element-id)
            cm (js/CodeMirror.fromTextArea element (clj->js (merge editor-opts opts)))
            wrapper (.getWrapperElement cm)
+           watcher (js/scrollMonitor.create wrapper)
            initial-state (assoc empty-editor-state
                                 :mode (:parinfer-mode opts))]
 
@@ -205,7 +207,8 @@
          ;; on blur, start playing animation again, if we are not dev mode.
          (.on cm "blur" (fn [e]
                           (when-not (:show? @controls-state)
-                            (play-recording! key-))))
+                            (when (.-isInViewport watcher)
+                              (play-recording! key-)))))
 
          ;; on focus, set recording controls to focus on this editor.
          ;; and stop any animation.
@@ -219,7 +222,8 @@
 
        (swap! state update-in [key-]
               #(-> (or % initial-state)
-                   (assoc :cm cm)))
+                   (assoc :cm cm
+                          :watcher watcher)))
 
        (swap! vcr update-in [key-]
               #(or % empty-recording))

@@ -1,13 +1,15 @@
 (ns ^:figwheel-always parinfer.core
   (:require
     [clojure.string :as string]
-    [parinfer.vcr-data :as vcr]
+    [parinfer.vcr-data :as vcr-data]
     [parinfer.vcr :refer [vcr
                           play-recording!
+                          stop-playing!
                           render-controls!]]
     [parinfer.editor :refer [create-editor!
                              create-regular-editor!
                              start-editor-sync!]]
+    [parinfer.state :refer [state]]
     [parinfer.format.infer :as infer]
     [parinfer.format.prep :as prep]
     [parinfer.toc :as toc]
@@ -15,14 +17,7 @@
 
 (enable-console-print!)
 
-(defn render-index! []
-
-  ;; create table of contents
-  (toc/init!)
-
-  ;; create editors
-  #_(create-editor! "code-intro" :intro {:styleActiveLine true})
-
+(defn create-index-editors! []
   (create-editor! "code-indent" :indent)
   (create-editor! "code-indent-far" :indent-far)
   (create-editor! "code-indent-multi" :indent-multi)
@@ -62,8 +57,9 @@
         cm-output (create-regular-editor! "code-how-output" {:readOnly true
                                                              :mode "clojure-parinfer"})
         sync! #(.setValue cm-output (infer/format-text (.getValue cm-input)))]
-    (.on cm-input "change" sync!)
-    (sync!)
+    (when cm-input
+      (.on cm-input "change" sync!)
+      (sync!))
     (when cm-input (.refresh cm-input))
     (when cm-output (.refresh cm-output)))
 
@@ -72,56 +68,55 @@
                                                               :mode "clojure-parinfer"})
         sync! #(.setValue cm-output (or (prep/format-text (.getValue cm-input))
                                         "; ERROR: input must be balanced!"))]
-    (.on cm-input "change" sync!)
-    (sync!)
+    (when cm-input
+      (.on cm-input "change" sync!)
+      (sync!))
     (when cm-input (.refresh cm-input))
-    (when cm-output (.refresh cm-output)))
-    
-  ;; create editor animations
-  #_(swap! vcr update-in [:intro] merge vcr/intro)
-  (swap! vcr update-in [:indent] merge vcr/indent)
-  (swap! vcr update-in [:indent-far] merge vcr/indent-far)
-  (swap! vcr update-in [:indent-multi] merge vcr/indent-multi)
-  (swap! vcr update-in [:line] merge vcr/line)
-  (swap! vcr update-in [:wrap] merge vcr/wrap)
-  (swap! vcr update-in [:splice] merge vcr/splice)
-  (swap! vcr update-in [:barf] merge vcr/barf)
-  (swap! vcr update-in [:slurp] merge vcr/slurp-)
-  (swap! vcr update-in [:displaced] merge vcr/displaced)
-  (swap! vcr update-in [:not-displaced] merge vcr/not-displaced)
-  (swap! vcr update-in [:comment] merge vcr/comment-)
-  
-  (swap! vcr update-in [:string] merge vcr/string)
-  (swap! vcr update-in [:warn-bad] merge vcr/warn-bad)
-  (swap! vcr update-in [:warn-good] merge vcr/warn-good)
-  (swap! vcr update-in [:enter] merge vcr/enter)
-  
-  (swap! vcr update-in [:paren-tune] merge vcr/paren-tune)
-  (swap! vcr update-in [:paren-frac] merge vcr/paren-frac)
-  (swap! vcr update-in [:paren-comment] merge vcr/paren-comment)
-  (swap! vcr update-in [:paren-wrap] merge vcr/paren-wrap)
+    (when cm-output (.refresh cm-output))))
 
-  #_(play-recording! :intro)
-  (play-recording! :indent)
-  (play-recording! :indent-far)
-  (play-recording! :indent-multi)
-  (play-recording! :line)
-  (play-recording! :wrap)
-  (play-recording! :splice)
-  (play-recording! :barf)
-  (play-recording! :slurp)
-  (play-recording! :comment)
-  (play-recording! :string)
-  (play-recording! :warn-good)
-  (play-recording! :warn-bad)
-  (play-recording! :displaced)
-  (play-recording! :not-displaced)
-  (play-recording! :enter)
-  (play-recording! :paren-tune)
-  (play-recording! :paren-frac)
-  (play-recording! :paren-comment)
-  (play-recording! :paren-wrap)
+(defn animate-when-visible!
+  [key-]
+  (doto (get-in @state [key- :watcher])
+    (.enterViewport #(play-recording! key-))
+    (.exitViewport #(stop-playing! key-))))
 
+(def index-anims
+  {:indent vcr-data/indent
+   :indent-far vcr-data/indent-far
+   :indent-multi vcr-data/indent-multi
+   :line vcr-data/line
+   :wrap vcr-data/wrap
+   :splice vcr-data/splice
+   :barf vcr-data/barf
+   :slurp vcr-data/slurp-
+   :displaced vcr-data/displaced
+   :not-displaced vcr-data/not-displaced
+   :comment vcr-data/comment-
+   :string vcr-data/string
+   :warn-bad vcr-data/warn-bad
+   :warn-good vcr-data/warn-good
+   :enter vcr-data/enter
+   :paren-tune vcr-data/paren-tune
+   :paren-frac vcr-data/paren-frac
+   :paren-comment vcr-data/paren-comment
+   :paren-wrap vcr-data/paren-wrap})
+
+(defn load-index-anims! []
+  (swap! vcr
+    (fn [data]
+      (reduce
+        (fn [result [key- state]]
+          (update result key- merge state))
+        data
+        index-anims)))
+  
+  (doseq [[key- _] index-anims]
+    (animate-when-visible! key-)))
+
+(defn render-index! []
+  (toc/init!)
+  (create-index-editors!)
+  (load-index-anims!)
   (render-controls!))
 
 (defn render-dev! []
