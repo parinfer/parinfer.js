@@ -190,63 +190,64 @@
   "Create a parinfer editor."
   ([element-id key-] (create-editor! element-id key- {}))
   ([element-id key- opts]
-   (let [element (js/document.getElementById element-id)
-         cm (js/CodeMirror.fromTextArea element (clj->js (merge editor-opts opts)))
-         wrapper (.getWrapperElement cm)
-         initial-state (assoc empty-editor-state
-                              :mode (:parinfer-mode opts))]
+   (when-not (get @state key-)
+     (let [element (js/document.getElementById element-id)
+           cm (js/CodeMirror.fromTextArea element (clj->js (merge editor-opts opts)))
+           wrapper (.getWrapperElement cm)
+           initial-state (assoc empty-editor-state
+                                :mode (:parinfer-mode opts))]
 
 
-     (set! (.-id wrapper) (str "cm-" element-id))
+       (set! (.-id wrapper) (str "cm-" element-id))
 
-     (when-not (:readOnly opts)
+       (when-not (:readOnly opts)
 
-       ;; on blur, start playing animation again, if we are not dev mode.
-       (.on cm "blur" (fn [e]
-                        (when-not (:show? @controls-state)
-                          (play-recording! key-))))
+         ;; on blur, start playing animation again, if we are not dev mode.
+         (.on cm "blur" (fn [e]
+                          (when-not (:show? @controls-state)
+                            (play-recording! key-))))
 
-       ;; on focus, set recording controls to focus on this editor.
-       ;; and stop any animation.
-       (.on cm "focus" (fn [e]
-                         (swap! controls-state assoc :target-key key-)
-                         (stop-playing! key-)
-                         (on-cursor-activity cm))))
+         ;; on focus, set recording controls to focus on this editor.
+         ;; and stop any animation.
+         (.on cm "focus" (fn [e]
+                           (swap! controls-state assoc :target-key key-)
+                           (stop-playing! key-)
+                           (on-cursor-activity cm))))
 
-     (when-not (get @state key-)
-       (swap! frame-updates assoc key- {}))
+       (when-not (get @state key-)
+         (swap! frame-updates assoc key- {}))
 
-     (swap! state update-in [key-]
-            #(-> (or % initial-state)
-                 (assoc :cm cm)))
+       (swap! state update-in [key-]
+              #(-> (or % initial-state)
+                   (assoc :cm cm)))
 
-     (swap! vcr update-in [key-]
-            #(or % empty-recording))
+       (swap! vcr update-in [key-]
+              #(or % empty-recording))
 
-     ;; Extend the code mirror object with some utility methods.
-     (specify! cm
-               IEditor
-               (cm-key [this] key-)
-               (frame-updated? [this] (get-in @frame-updates [key- :frame-updated?]))
-               (set-frame-updated! [this value] (swap! frame-updates assoc-in [key- :frame-updated?] value))
-               (record-change! [this new-thing]
-                               (let [data (get @vcr key-)]
-                                 (when (:recording? data)
-                                   (let [last-time (:last-time data)
-                                         now (.getTime (js/Date.))
-                                         dt (if last-time (- now last-time) 0)
-                                         new-changes (conj (:changes data) (assoc new-thing :dt dt))
-                                         new-data (assoc data
-                                                         :last-time now
-                                                         :changes new-changes)]
-                                     (swap! vcr assoc key- new-data))))))
+       ;; Extend the code mirror object with some utility methods.
+       (specify! cm
+                 IEditor
+                 (cm-key [this] key-)
+                 (frame-updated? [this] (get-in @frame-updates [key- :frame-updated?]))
+                 (set-frame-updated! [this value] (swap! frame-updates assoc-in [key- :frame-updated?] value))
+                 (record-change! [this new-thing]
+                                 (let [data (get @vcr key-)]
+                                   (when (:recording? data)
+                                     (let [last-time (:last-time data)
+                                           now (.getTime (js/Date.))
+                                           dt (if last-time (- now last-time) 0)
+                                           new-changes (conj (:changes data) (assoc new-thing :dt dt))
+                                           new-data (assoc data
+                                                           :last-time now
+                                                           :changes new-changes)]
+                                       (swap! vcr assoc key- new-data))))))
 
-     ;; handle code mirror events
-     (.on cm "change" on-change)
-     (.on cm "beforeChange" before-change)
-     (.on cm "cursorActivity" on-cursor-activity)
+       ;; handle code mirror events
+       (.on cm "change" on-change)
+       (.on cm "beforeChange" before-change)
+       (.on cm "cursorActivity" on-cursor-activity)
 
-     cm)))
+       cm))))
 
 ;;----------------------------------------------------------------------
 ;; Setup
