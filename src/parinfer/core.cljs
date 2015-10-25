@@ -17,25 +17,22 @@
 
 (enable-console-print!)
 
-;; Create a Table of Contents for a Markdown file.
-;; from: https://github.com/chjj/marked/issues/545#issuecomment-74505539
-
-(def toc (atom []))
-
-(defn toc-heading
-  [text level raw]
-  (this-as this
-    (let [anchor (str (aget this "options" "headerPrefix")
-                      (-> raw string/lower-case (string/replace #"[^\w]+" "-")))]
-      (swap! toc conj {:text text :level level :anchor anchor})
-      (str "<h" level " id='" anchor "'>" text "</h" level">\n"))))
+(defn toc-headers []
+  (let [elements (.. js/document
+                     (getElementById "app")
+                     (querySelectorAll "h2,h3,h4,h5,h6"))]
+    (for [i (range (.-length elements))]
+      (let [e (aget elements i)]
+        {:id (.-id e)
+         :level (subs (.-tagName e) 1)
+         :text (.-innerText e)}))))
 
 (defn make-toc-html []
   (html
     [:div
-     (for [{:keys [anchor level text]} @toc]
+     (for [{:keys [id level text]} (toc-headers)]
        [:div {:class (str "toc-link toc-level-" level)}
-        [:a {:href (str "#" anchor)} text]])]))
+        [:a {:href (str "#" id)} text]])]))
 
 (defn render-index! []
 
