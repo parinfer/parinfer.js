@@ -30,13 +30,6 @@
       (swap! toc conj {:text text :level level :anchor anchor})
       (str "<h" level " id='" anchor "'>" text "</h" level">\n"))))
 
-(defn toc-renderer []
-  (let [renderer (js/marked.Renderer.)]
-    (aset renderer "heading" toc-heading)
-    renderer))
-
-(.setOptions js/marked #js {:renderer (toc-renderer)})
-
 (defn make-toc-html []
   (html
     [:div
@@ -44,13 +37,7 @@
        [:div {:class (str "toc-link toc-level-" level)}
         [:a {:href (str "#" anchor)} text]])]))
 
-(defn render-index!
-  [md-text]
-
-  ;; initialize page
-  (let [element (js/document.getElementById "app")
-        html-text (js/marked md-text)]
-    (set! (.-innerHTML element) html-text))
+(defn render-index! []
 
   ;; create table of contents
   (let [element (js/document.getElementById "toc")
@@ -161,27 +148,14 @@
 
   (render-controls!))
 
-(defn render-dev!
-  [md-text]
-  
-  ;; initialize page
-  (let [element (js/document.getElementById "app")
-        html-text (js/marked md-text)]
-    (set! (.-innerHTML element) html-text))
-
+(defn render-dev! []
   (create-editor! "code-indent-mode" :indent-mode)
   (create-editor! "code-paren-mode" :paren-mode {:parinfer-mode :prep})
-  
   (start-editor-sync!))
 
-(def pages
-  {:dev   {:md "dev.md"   :render-fn render-dev!}
-   :index {:md "index.md" :render-fn render-index!}})
-
 (defn init! []
-  (let [devpage? js/window.parinfer_devpage
-        page-key (if devpage? :dev :index)
-        {:keys [md render-fn]} (get pages page-key)]
-    (GET md {:handler render-fn})))
+  (if js/window.parinfer_devpage
+    (render-dev!)
+    (render-index!)))
 
 (init!)
