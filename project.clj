@@ -36,8 +36,7 @@
              {:id "min"
               :source-paths ["src"]
               :compiler {:output-to "resources/public/js/compiled/parinfer.js"
-                         :externs ["externs/marked.js"
-                                   "externs/codemirror.js"]
+                         :externs ["resources/public/codemirror/lib/closure-externs.js"]
                          :main parinfer.core
                          :optimizations :advanced
                          :pretty-print false}}
