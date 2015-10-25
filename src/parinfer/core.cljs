@@ -23,7 +23,7 @@
                      (querySelectorAll "h2,h3,h4,h5,h6"))]
     (for [i (range (.-length elements))]
       (let [e (aget elements i)]
-        {:id (.-id e)
+        {:id (.. e -parentElement -id)
          :level (subs (.-tagName e) 1)
          :text (.-innerText e)}))))
 
