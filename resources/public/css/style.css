@@ -164,7 +164,7 @@ p, li {
   height: 100%;
   border-right: 1px solid #DDD;
   background-color: #f1f1f1;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 #app {
