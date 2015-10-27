@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <title>Parinfer - simpler Lisp editing</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">    
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,400italic,700,700italic,300,300italic' rel='stylesheet' type='text/css'>
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet">
     <link href="codemirror/lib/codemirror.css" rel="stylesheet" type="text/css">
@@ -295,11 +295,12 @@ We perform the following steps to rearrange parens based on indentation.<br>
 </p>
 
 <ol>
-<li> all unmatched close-parens are removed (for housekeeping)
-<li> all close-parens at the start and end of each line are removed
+<li> <span class="removed">remove</span> all unmatched close-parens (for housekeeping)
+<li> <span class="removed">remove</span> all close-parens at the start and end of each line
+<li> <span class="kept">keep</span> all close-parens <em>inside</em> each line
 <li> for every resulting unmatched open-paren:
   <ul>
-    <li> a close-paren is inserted at the end of its line or its last non-empty indented line
+  <li> <span class="inserted">insert</span> a matching close-paren at the end of its line or its last non-empty indented line
   </ul>
 </ol>
 
@@ -310,28 +311,24 @@ We perform the following steps to rearrange parens based on indentation.<br>
 
 <div class="two-col">
 <div class="col">
-<div class="caption"><strong>Input:</strong> Close-parens removed from end of each line. Notice the ones inside are untouched.</div>
+<div class="caption"><strong>Input:</strong> Some close-parens are kept.  Others are removed.</div>
 <textarea id="code-how-input">
-(defn on-click [
-  (swap! s update-in [:x] inc
+(defn on-click []
+  (swap! s update-in [:x] inc)
+  )
 
 (defn component
-  "a hiccup style component.
-  second line of docstring."
-  [image-source
-  [:div
-   (if image-source
-     [:img {:src image-source
-            :on-click on-click
-     [:span "no image"
-   (for [[i msg] (indexed messages
-     [:div {:style {:color (color i
-      msg
+  "my docstring."
+  [messages]
+  [:div]
+   (for [[i msg] messages]
+     [:div msg])
+  )
 </textarea>
 </div>
 
 <div class="col">
-<div class="caption"><strong>Output:</strong> Close-parens (highlighted) are reinserted based purely on indentation.</div>
+<div class="caption"><strong>Output:</strong> Close-parens are reinserted based purely on indentation.</div>
 <textarea id="code-how-output">
 </textarea>
 </div>
@@ -483,7 +480,7 @@ Why can't I delete a close-paren in certain places?
 <h3>Other Effects</h3>
 
 <p>
-There are other side effects in Indent Mode that should be aware of.
+There are other side effects in Indent Mode that you should be aware of.
 </p>
 </section>
 </div>
@@ -555,7 +552,7 @@ processing if imbalanced quotes are detected.
 </textarea>
 </div>
 
-<div class="warning"> 
+<div class="warning">
 <div class="warning-title">
 <i class="fa fa-lg fa-warning"></i>
 WARNING: Always make sure quotes are balanced when inside comments!

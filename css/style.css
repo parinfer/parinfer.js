@@ -213,7 +213,7 @@ code {
   margin-bottom: 20px;
 }
 
-.cm-bracket.cm-trailing {
+.cm-bracket.cm-eol {
   opacity: 0.4;
 }
 
@@ -239,13 +239,13 @@ code {
 #cm-code-lisp-style,
 #cm-code-c-style
 {
-  height: 170px;
+  height: 174px;
 }
 
 #cm-code-skim,
 #cm-code-inspect
 {
-  height: 90px;
+  height: 96px;
 }
 
 #cm-code-skim span.cm-bracket
@@ -310,8 +310,7 @@ code {
 #cm-code-how-input,
 #cm-code-how-output
 {
-  font-size: 14px;
-  height: 280px;
+  height: 240px;
 }
 
 #cm-code-how-output
@@ -319,10 +318,56 @@ code {
   opacity: 0.75;
 }
 
-#cm-code-how-output
-.cm-bracket.cm-trailing {
+#cm-code-how-output .cm-bracket.cm-eol
+{
   opacity: 1;
   background: #AAFFC2;
+}
+
+#cm-code-how-input .cm-bracket.cm-eol,
+#cm-code-how-input .cm-bracket.cm-sol
+{
+  opacity: 1;
+  background: #FFBEBE;
+}
+
+.removed {
+  background: #FFBEBE;
+}
+
+.kept {
+  background: #FFE8B0;
+}
+
+.inserted {
+  background: #AAFFC2;
+}
+
+#cm-code-how-output .cm-bracket.cm-mol,
+#cm-code-how-input .cm-bracket.cm-mol
+{
+  background: #FFE8B0;
+}
+
+#cm-code-how-output span.cm-keyword,
+#cm-code-how-output span.cm-variable,
+#cm-code-how-output span.cm-builtin,
+#cm-code-how-output span.cm-string,
+#cm-code-how-output span.cm-def,
+#cm-code-how-output span.cm-atom,
+#cm-code-how-output span.cm-number,
+#cm-code-how-output span.cm-comment,
+#cm-code-how-input span.cm-keyword,
+#cm-code-how-input span.cm-variable,
+#cm-code-how-input span.cm-builtin,
+#cm-code-how-input span.cm-string,
+#cm-code-how-input span.cm-def,
+#cm-code-how-input span.cm-atom,
+#cm-code-how-input span.cm-number,
+#cm-code-how-input span.cm-comment
+{
+  opacity: 0.3;
+  color: #000;
 }
 
 #cm-code-warn-good,

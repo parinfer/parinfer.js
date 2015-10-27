@@ -12,12 +12,13 @@
     <link href="css/theme.css" rel="stylesheet" type="text/css">
   </head>
   <body>
-    <div class="wrapper">
       <div id="app">
 
-<h1>Par<em>infer</em></h1>
-
+<div class="wrapper">
+<section>
+<p>
 Use the editors below to try out each mode.
+</p>
 
 <div>
 <div class="caption"><strong>Indent Mode</strong>:</div>
@@ -36,17 +37,18 @@ Use the editors below to try out each mode.
     (println "The sum is" x)))
 </textarea>
 </div>
+</section>
+</div>
 
       </div>
-      <div id="controls">
-      </div>
-    </div>
 
     <script src="codemirror/lib/codemirror.js"></script>
     <script src="codemirror/addon/selection/active-line.js"></script>
     <script src="codemirror/addon/edit/matchbrackets.js"></script>
     <script src="codemirror/mode/clojure/clojure.js"></script>
     <script src="codemirror/mode/clojure/clojure-parinfer.js"></script>
+
+    <script src="js/lib/scrollMonitor.js"></script>
 
     <script>
     window.parinfer_devpage = true;

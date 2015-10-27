@@ -41,7 +41,8 @@
 CodeMirror.defineMode("clojure-parinfer", function (options) {
     var BUILTIN = "builtin", COMMENT = "comment", STRING = "string", CHARACTER = "string-2",
         ATOM = "atom", NUMBER = "number", BRACKET = "bracket", KEYWORD = "keyword", VAR = "variable",
-        TRAILING = "trailing", DEF = "def";
+        SOL = "sol", EOL = "eol", MOL = "mol", // close-paren styles
+        DEF = "def";
     var INDENT_WORD_SKIP = options.indentUnit || 2;
     var NORMAL_INDENT_UNIT = options.indentUnit || 2;
 
@@ -155,11 +156,17 @@ CodeMirror.defineMode("clojure-parinfer", function (options) {
                 previousToken: null,
                 indentStack: null,
                 indentation: 0,
-                mode: false
+                mode: false,
+                atStart: false
             };
         },
 
         token: function (stream, state) {
+
+            if (stream.sol()) {
+                state.atStart = (state.mode != "string");
+            }
+
             if (state.indentStack == null && stream.sol()) {
                 // update indentation, but only if indentStack is empty
                 state.indentation = stream.indentation();
@@ -241,7 +248,11 @@ CodeMirror.defineMode("clojure-parinfer", function (options) {
                         // Parinfer: (style trailing delimiters)
                         stream.eatWhile(/[\s,\]})]/);
                         if (stream.eol() || stream.peek() == ";") {
-                            returnType += " " + TRAILING;
+                            returnType += " " + EOL;
+                        } else if (state.atStart) {
+                            returnType += " " + SOL;
+                        } else {
+                            returnType += " " + MOL;
                         }
                         stream.backUp(stream.current().length - 1);
 
@@ -269,6 +280,10 @@ CodeMirror.defineMode("clojure-parinfer", function (options) {
                         if (state.previousToken == "(" && defs && defs.propertyIsEnumerable(stream.current())) {
                           previousToken = "def";
                         }
+                    }
+
+                    if (!(ch == ")" || ch == "]" || ch == "}")) {
+                        state.atStart = false;
                     }
             }
 
