@@ -239,13 +239,13 @@ code {
 #cm-code-lisp-style,
 #cm-code-c-style
 {
-  height: 170px;
+  height: 174px;
 }
 
 #cm-code-skim,
 #cm-code-inspect
 {
-  height: 90px;
+  height: 96px;
 }
 
 #cm-code-skim span.cm-bracket
