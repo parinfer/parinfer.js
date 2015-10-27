@@ -31,11 +31,9 @@
   (create-editor! "code-string" :string)
   (create-editor! "code-enter" :enter)
 
-  (let [opts {:readOnly true}
-        cm-good (create-editor! "code-warn-good" :warn-good opts)
-        cm-bad (create-editor! "code-warn-bad" :warn-bad opts)]
-    (when cm-good (.refresh cm-good))
-    (when cm-bad (.refresh cm-bad)))
+  (let [opts {:readOnly true}]
+    (create-editor! "code-warn-good" :warn-good opts)
+    (create-editor! "code-warn-bad" :warn-bad opts))
 
   (create-editor! "code-displaced" :displaced)
   (create-editor! "code-not-displaced" :not-displaced)
@@ -59,9 +57,7 @@
         sync! #(.setValue cm-output (infer/format-text (.getValue cm-input)))]
     (when cm-input
       (.on cm-input "change" sync!)
-      (sync!))
-    (when cm-input (.refresh cm-input))
-    (when cm-output (.refresh cm-output)))
+      (sync!)))
 
   (let [cm-input (create-regular-editor! "code-edit-input")
         cm-output (create-regular-editor! "code-edit-output" {:readOnly true
@@ -70,9 +66,7 @@
                                         "; ERROR: input must be balanced!"))]
     (when cm-input
       (.on cm-input "change" sync!)
-      (sync!))
-    (when cm-input (.refresh cm-input))
-    (when cm-output (.refresh cm-output))))
+      (sync!))))
 
 (defn animate-when-visible!
   [key-]
