@@ -23,7 +23,7 @@
    :line-no -1                         ;; current line number we are processing.
    :track-indent? false                ;; "true" when we are looking for the first char on a line to signify indentation.
    :delim-trail {:start nil :end nil}  ;; track EOL delims since we replace them wholesale with inferred delims.
-   :insert {:line-no nil :x-pos nil}   ;; the place to insert closing delimiters whenever we hit appropriate indentation.
+   :insert {:line-dy nil :x-pos nil}   ;; the place to insert closing delimiters whenever we hit appropriate indentation.
    :stack []                           ;; the delimiter stack, maps of [:x-pos :ch :indent-delta]
    :backup []                          ;; (unused, but required by the reader because of the infer process)
    :dedent-x nil                       ;; current x-position subsequent lines cannot be nested inside
@@ -38,7 +38,7 @@
     (-> state
         (assoc :stack stack
                :dedent-x (:x-pos opener))
-        (update-in [:lines (:line-no insert)] insert-string (:x-pos insert) close-ch)
+        (update-in [:lines (+ line-no (:line-dy insert))] insert-string (:x-pos insert) close-ch)
         (update-in [:insert :x-pos] inc))))
 
 (defn min-indent
@@ -133,6 +133,7 @@
                   :lines (conj lines "")
                   :line-no line-no
                   :removed-delims [])
+         state (update-in state [:insert :line-dy] #(when % (dec %)))
          state (reduce process-char state (str line "\n"))
          state (-> state
                    remove-delim-trail

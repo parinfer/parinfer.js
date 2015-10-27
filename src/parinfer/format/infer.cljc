@@ -23,7 +23,7 @@
    :line-no -1                         ;; current line number we are processing.
    :track-indent? false                ;; "true" when we are looking for the first char on a line to signify indentation.
    :delim-trail {:start nil :end nil}  ;; track EOL delims since we replace them wholesale with inferred delims.
-   :insert {:line-no nil :x-pos nil}   ;; the place to insert closing delimiters whenever we hit appropriate indentation.
+   :insert {:line-dy nil :x-pos nil}   ;; the place to insert closing delimiters whenever we hit appropriate indentation.
    :stack []                           ;; the delimiter stack, maps of [:x-pos :ch :indent-delta]
    :backup []})                          ;; trailing delims that are pushed back onto the stack at EOL
 
@@ -53,7 +53,8 @@
                  [stack delims]))))
 
          ;; Insert the delims in the correct place, then update the state
-         {:keys [line-no x-pos]} (:insert state)
+         {:keys [line-dy x-pos]} (:insert state)
+         line-no (+ (:line-no state) line-dy)
          state (-> state
                     (update-in [:lines line-no] insert-string x-pos delims)
                     (assoc :track-indent? false
@@ -163,7 +164,7 @@
                               :stack stack
                               :removed-delims delims))
 
-            insert-line? (= (:line-no insert) line-no)
+            insert-line? (zero? (:line-dy insert))
             state (cond-> state
                      insert-line? (update-in [:insert :x-pos] min start))]
         state)
@@ -203,7 +204,7 @@
 
         ;; Add potential insert point for closing delimiters if required.
         insert (when insert-at-char?
-                 {:line-no line-no
+                 {:line-dy 0
                   :x-pos (inc x-pos)})]
 
     (cond-> state
@@ -246,7 +247,7 @@
   process-text-change."
   [{:keys [line-no insert lines] :as state}]
   (cond-> state
-    (= line-no (:line-no insert))
+    (zero? (:line-dy insert))
     (assoc-in [:insert :line] (get lines line-no))))
 
 (defn cache-postline-state
@@ -287,6 +288,7 @@
                   :lines (conj lines "")
                   :line-no line-no
                   :removed-delims [])
+         state (update-in state [:insert :line-dy] #(when % (dec %)))
          state (reduce process-char state (str line "\n"))
          state (-> state
                    block-delim-trail
@@ -342,15 +344,17 @@
         [start-line end-line] (if (number? line-no) [line-no (inc line-no)] line-no)
         replacing-lines (if (string? new-line) [new-line] new-line)
 
-        cache (get postline-states (dec start-line))
+        cache-line-no (dec start-line)
+        cache (get postline-states cache-line-no)
 
         lines-before (subvec (:line prev-state) 0 start-line)
 
         ;; There is only one previous line that can be affected by our change.
         ;; We restore that line to its original state (trailing delims removed).
         ;; Processing our changed line's indentation will correct it.
-        lines-before (if-let [{:keys [line-no line]} (:insert cache)]
-                       (assoc lines-before line-no line))
+        lines-before (when-let [{:keys [line-dy line]} (:insert cache)]
+                       (let [line-no (+ line-dy cache-line-no)]
+                         (assoc lines-before (+ line-dy) line)))
 
         ;; create initial state for starting at first changed line
         state (-> initial-state
@@ -374,7 +378,6 @@
                         can-skip? (= new-cache cache)]
                     (if (and can-skip? more?)
                       (-> state
-                          ;; FIXME: postline-states' insert points need to be offset
                           (update :postline-states into (subvec postline-states (inc old-i)))
                           (update :lines into (subvec old-lines (inc old-i)))
                           reduced)
