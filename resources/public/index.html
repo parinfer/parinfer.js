@@ -290,7 +290,7 @@ roughly equivalent to those listed.
 
 <p>
 We perform the following steps to rearrange parens based on indentation.<br>
-<span class="side-point">We will refer to these later as rules #1, #2, and #3.
+<span class="side-point">We will refer to these later as rules #1, #2, #3 and #4.
 (See the [mathematical basis] for a closer look at why these rules work.)</span>
 </p>
 
@@ -309,9 +309,10 @@ We perform the following steps to rearrange parens based on indentation.<br>
 <strong>Try it!</strong> Edit the code below on the left to see how parens are inferred on the right.
 </div>
 
+
 <div class="two-col">
 <div class="col">
-<div class="caption"><strong>Input:</strong> Some close-parens are kept.  Others are removed.</div>
+<div class="caption"><strong>Input:</strong> close-parens are removed or kept.</div>
 <textarea id="code-how-input">
 (defn on-click []
   (swap! s update-in [:x] inc)
@@ -328,20 +329,14 @@ We perform the following steps to rearrange parens based on indentation.<br>
 </div>
 
 <div class="col">
-<div class="caption"><strong>Output:</strong> Close-parens are reinserted based purely on indentation.</div>
+<div class="caption"><strong>Output:</strong> close-parens are inserted.</div>
 <textarea id="code-how-output">
 </textarea>
 </div>
 </div>
 
 <p>
-Notice that the code on the left encodes all structural information while
-eliminating piles of parentheses.  This is essentially how Indent Mode sees your
-code.  It <em>infers</em> the rest.
-</p>
-
-<p>
-There are more steps performed that you can
+This is the gist of what's happening.  There are more steps performed that you can
 <a href="https://github.com/shaunlebron/parinfer/blob/master/doc/infer-details.md">read about in detail</a>,
 but we will just explore their effects in the next section.
 </p>
@@ -413,6 +408,11 @@ i.e. the current list "slurps" all elements to the right of your cursor
 </tr>
 
 </table>
+
+<p>
+We illustrate these operations in the following examples.
+</p>
+
 </section>
 </div>
 
@@ -423,7 +423,7 @@ i.e. the current list "slurps" all elements to the right of your cursor
 <h4>Inserting Parens</h4>
 
 <div>
-<div class="caption"><strong>Wrap</strong> by inserting a open-paren. It will auto-close as far as it can, due to rule #3.</div>
+<div class="caption"><strong>Wrap</strong> by inserting an open-paren. It will auto-close as far as it can, due to rule #4.</div>
 <textarea id="code-wrap">
 </textarea>
 </div>
@@ -452,13 +452,13 @@ Why can't I insert a close-paren in certain places?
 <h4>Deleting Parens</h4>
 
 <div>
-<div class="caption"><strong>Splice</strong> by removing a open-paren. Its corresponding close-paren is removed, due to rule #1.</div>
+<div class="caption"><strong>Splice</strong> by removing an open-paren. Its corresponding close-paren is removed, due to rule #1.</div>
 <textarea id="code-splice">
 </textarea>
 </div>
 
 <div>
-<div class="caption"><strong>Slurp</strong> by deleting a close-paren inside a line. It is replaced further down, due to rule #3.</div>
+<div class="caption"><strong>Slurp</strong> by deleting a close-paren inside a line. It is replaced further down, due to rule #4.</div>
 <textarea id="code-slurp">
 </textarea>
 </div>
@@ -468,7 +468,7 @@ Why can't I insert a close-paren in certain places?
 <i class="fa fa-question-circle"></i>
 Why can't I delete a close-paren in certain places?
 </div>
-<div class="answer">You cannot delete an inferred close-paren. It is replaced as soon as you delete it. (see rule #3)</div>
+<div class="answer">You cannot delete an inferred close-paren. It is replaced as soon as you delete it. (see rule #4)</div>
 </div>
 </section>
 </div>
