@@ -53,7 +53,7 @@
   (create-regular-editor! "code-skim")
   (create-regular-editor! "code-inspect" {:matchBrackets true})
 
-  (let [cm-input (create-regular-editor! "code-how-input")
+  (let [cm-input (create-regular-editor! "code-how-input" {:mode "clojure-parinfer"})
         cm-output (create-regular-editor! "code-how-output" {:readOnly true
                                                              :mode "clojure-parinfer"})
         sync! #(.setValue cm-output (infer/format-text (.getValue cm-input)))]

@@ -31,12 +31,10 @@
   }
 
   // Parinfer edit:
-  // (trailing delimiters should match non-trailing delimiters too)
+  // (we add style classes to closing brackets, so we ignore them here)
   function bracketStylesMatch(a, b) {
-    return (
-      a == b ||
-      a == "bracket trailing" && b == "bracket" ||
-      b == "bracket trailing" && a == "bracket");
+    var valid = function(x) { return x.indexOf("bracket") == 0; }
+    return (a == b || valid(a) && valid(b));
   }
 
   // bracketRegex is used to specify which type of bracket to scan
