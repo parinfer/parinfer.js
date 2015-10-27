@@ -19,13 +19,13 @@
 (def initial-state
   "An initial state of our running state."
   {:lines []                           ;; final lines containing the inferenced closing delimiters.
+   :postline-states []
    :line-no -1                         ;; current line number we are processing.
    :track-indent? false                ;; "true" when we are looking for the first char on a line to signify indentation.
    :delim-trail {:start nil :end nil}  ;; track EOL delims since we replace them wholesale with inferred delims.
    :insert {:line-no nil :x-pos nil}   ;; the place to insert closing delimiters whenever we hit appropriate indentation.
    :stack []                           ;; the delimiter stack, maps of [:x-pos :ch :indent-delta]
    :backup []})                          ;; trailing delims that are pushed back onto the stack at EOL
-   
 
 (defn close-delims
   "Update the state by inferring closing delimiters.
@@ -236,9 +236,25 @@
       at-indent? (close-delims x-pos))))
 
 (defn update-line
-  "Update the state by addding processed character to the line."
+  "Update the state by adding processed character to the line."
   [{:keys [ch line-no] :as state}]
   (update-in state [:lines line-no] str ch))
+
+(defn save-preinsert-line
+  "Save the text of a line before trailing delims were inserted.
+  This allows to restore them when skipping to changed lines in
+  process-text-change."
+  [{:keys [line-no insert lines] :as state}]
+  (cond-> state
+    (= line-no (:line-no insert))
+    (assoc-in [:insert :line] (get lines line-no))))
+
+(defn cache-postline-state
+  "Cache a subset of the state after the current line has been processed.
+  This is used by process-text-change."
+  [state]
+  (let [cached (select-keys state [:stack :insert])]
+    (update state :postline-states conj cached)))
 
 (defn process-char*
   [state]
@@ -274,7 +290,9 @@
          state (reduce process-char state (str line "\n"))
          state (-> state
                    block-delim-trail
-                   remove-delim-trail)]
+                   remove-delim-trail
+                   save-preinsert-line
+                   cache-postline-state)]
      state)))
 
 (defn process-text
@@ -301,3 +319,73 @@
    (if-let [state (process-text state text)]
      (join "\n" (:lines state))
      text)))
+
+;;----------------------------------------------------------------------
+;; faster processing for incremental changes
+;;----------------------------------------------------------------------
+
+
+
+(defn process-text-change
+  "A faster way to process an incremental change.
+
+  prev-state: previous state
+
+  change:
+    a map of
+      :line-no  (num or min,max line range)
+      :new-line (string or seq if multiple lines)
+  "
+  [{:keys [postline-states] :as prev-state}
+   {:keys [line-no new-line] :as change}]
+  (let [; normalize args (allowing multiple line replacements)
+        [start-line end-line] (if (number? line-no) [line-no (inc line-no)] line-no)
+        replacing-lines (if (string? new-line) [new-line] new-line)
+
+        cache (get postline-states (dec start-line))
+
+        lines-before (subvec (:line prev-state) 0 start-line)
+
+        ;; There is only one previous line that can be affected by our change.
+        ;; We restore that line to its original state (trailing delims removed).
+        ;; Processing our changed line's indentation will correct it.
+        lines-before (if-let [{:keys [line-no line]} (:insert cache)]
+                       (assoc lines-before line-no line))
+
+        ;; create initial state for starting at first changed line
+        state (-> initial-state
+                  (assoc :lines lines-before
+                         :postline-states (subvec postline-states 0 start-line)
+                         :line-no (dec start-line))
+                  (merge cache) ;; sets correct stack and insert point
+                  )
+
+        ;; process changed lines
+        state (reduce process-line state replacing-lines)
+
+        old-lines (:lines prev-state)
+
+        ;; process after changed lines
+        state (reduce
+                (fn [state [old-i line cache]]
+                  (let [state (process-line state line)
+                        new-cache (last (:postline-states state))
+                        more? (< (inc old-i) (count old-lines))
+                        can-skip? (= new-cache cache)]
+                    (if (and can-skip? more?)
+                      (-> state
+                          ;; FIXME: postline-states' insert points need to be offset
+                          (update :postline-states into (subvec postline-states (inc old-i)))
+                          (update :lines into (subvec old-lines (inc old-i)))
+                          reduced)
+                      state)))
+                state
+                (map vector
+                     (iterate inc end-line) ;; old line numbers
+                     (subvec old-lines end-line) ;; old lines
+                     (subvec postline-states end-line))) ;; old line states
+        stack (:stack state)]
+
+    (when-not (in-str? stack)
+      (cond-> state (seq stack) close-delims))))
+
