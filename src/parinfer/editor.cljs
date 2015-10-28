@@ -17,6 +17,7 @@
 (defprotocol IEditor
   "Custom data/methods for a CodeMirror editor."
   (cm-key [this])
+  (get-prev-state [this])
   (frame-updated? [this])
   (set-frame-updated! [this value])
   (record-change! [this thing]))
@@ -43,6 +44,17 @@
                       (+ len-last-line (.. change -from -ch)))]
           (- end-x start-x))))))
 
+(defn cm-process-text-change
+  [cm change prev-state]
+  (let [start-line (.. change -from -line)
+        end-line (inc (.. change -to -line))
+        num-new-lines (alength (.-text change))
+        lines (for [i (range start-line (+ start-line num-new-lines))]
+                (.getLine cm i))]
+    (infer/process-text-change
+      prev-state
+      {:line-no [start-line end-line]
+       :new-lines lines})))
  
 (defn fix-text!
   "Correctly format the text from the given editor."
@@ -59,17 +71,33 @@
          scroll-y (.-scrollTop scroller) 
 
          ;; format the text
-         opts {:cursor-line (.-line cursor)
-               :cursor-x (.-ch cursor)
-               :cursor-dx (compute-cursor-dx cursor change)}
+         cursor-data {:cursor-line (.-line cursor)
+                      :cursor-x (.-ch cursor)
+                      :cursor-dx (compute-cursor-dx cursor change)}
 
          key- (cm-key cm)
          mode (or (get-in @state [key- :mode]) :infer)
-         format-fn (case mode
-                    :infer infer/format-text
-                    :prep prep/format-text
-                    nil)
-         new-text (format-fn opts current-text)]
+
+         prev-state (get-prev-state cm)
+
+         new-text
+         (case mode
+           :infer
+           (let [state (if (and @prev-state change)
+                         (cm-process-text-change cm change (merge @prev-state cursor-data))
+                         (infer/process-text cursor-data current-text))]
+
+             ;; uncomment this to try fast infer
+             ;; (when state
+             ;;   (reset! prev-state state))
+             (if state
+               (join "\n" (:lines state))
+               current-text))
+
+           :prep
+           (prep/format-text cursor-data current-text)
+
+           nil)]
 
      ;; update the text
      (swap! state assoc-in [key- :text] new-text)
@@ -197,7 +225,8 @@
            wrapper (.getWrapperElement cm)
            watcher (js/scrollMonitor.create wrapper)
            initial-state (assoc empty-editor-state
-                                :mode (:parinfer-mode opts))]
+                                :mode (:parinfer-mode opts))
+           prev-editor-state (atom nil)]
 
 
        (set! (.-id wrapper) (str "cm-" element-id))
@@ -231,6 +260,7 @@
        ;; Extend the code mirror object with some utility methods.
        (specify! cm
                  IEditor
+                 (get-prev-state [this] prev-editor-state)
                  (cm-key [this] key-)
                  (frame-updated? [this] (get-in @frame-updates [key- :frame-updated?]))
                  (set-frame-updated! [this value] (swap! frame-updates assoc-in [key- :frame-updated?] value))
