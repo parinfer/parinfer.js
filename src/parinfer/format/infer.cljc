@@ -247,7 +247,7 @@
   process-text-change."
   [{:keys [line-no insert lines] :as state}]
   (cond-> state
-    (zero? (:line-dy insert))
+    (= 0 (:line-dy insert))
     (assoc-in [:insert :line] (get lines line-no))))
 
 (defn cache-postline-state
