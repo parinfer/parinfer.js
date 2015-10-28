@@ -464,3 +464,17 @@ td .side-point
 i.fa {
   margin-right: 5px;
 }
+
+#cm-code-editor {
+  height: auto;
+  float: left;
+  width: 50%;
+}
+
+#debug-state {
+  padding-left: 10px;
+  overflow-x: auto;
+  width: 50%;
+  white-space: pre;
+  font-size: 11px;
+}

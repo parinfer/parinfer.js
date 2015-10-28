@@ -1,5 +1,7 @@
 (ns ^:figwheel-always parinfer.core
   (:require
+    [om.core :as om :include-macros true]
+    [sablono.core :refer-macros [html]]
     [clojure.string :as string]
     [parinfer.vcr-data :as vcr-data]
     [parinfer.vcr :refer [vcr
@@ -8,7 +10,9 @@
                           render-controls!]]
     [parinfer.editor :refer [create-editor!
                              create-regular-editor!
-                             start-editor-sync!]]
+                             start-editor-sync!
+                             get-prev-state
+                             ]]
     [parinfer.state :refer [state]]
     [parinfer.format.infer :as infer]
     [parinfer.format.prep :as prep]
@@ -118,9 +122,31 @@
   (create-editor! "code-paren-mode" :paren-mode {:parinfer-mode :prep})
   (start-editor-sync!))
 
+(defn state-viewer
+  [{:keys [postline-states]} owner]
+  (reify
+    om/IRender
+    (render [_]
+      (html
+        [:table.state-table
+        (for [[i {:keys [insert stack]}] (map-indexed vector postline-states)]
+          [:tr
+           [:td (inc i)]
+           [:td (pr-str insert)]
+           [:td (pr-str stack)]])]))))
+
+(defn render-debug-state! []
+  (let [cm (create-editor! "code-editor" :editor {:viewportMargin Infinity :lineNumbers true})]
+    (start-editor-sync!)
+    (om/root
+      state-viewer
+      (get-prev-state cm)
+      {:target (js/document.getElementById "debug-state")})))
+
 (defn init! []
-  (if js/window.parinfer_devpage
-    (render-dev!)
-    (render-index!)))
+  (cond
+    js/window.parinfer_devpage (render-dev!)
+    js/window.parinfer_debug_state (render-debug-state!)
+    :else (render-index!)))
 
 (init!)
