@@ -342,19 +342,20 @@
    {:keys [line-no new-line] :as change}]
   (let [; normalize args (allowing multiple line replacements)
         [start-line end-line] (if (number? line-no) [line-no (inc line-no)] line-no)
-        replacing-lines (if (string? new-line) [new-line] new-line)
+        line-replacements (if (string? new-line) [new-line] new-line)
 
         cache-line-no (dec start-line)
         cache (get postline-states cache-line-no)
 
-        lines-before (subvec (:line prev-state) 0 start-line)
+        old-lines (:lines prev-state)
+        lines-before (subvec old-lines 0 start-line)
 
         ;; There is only one previous line that can be affected by our change.
         ;; We restore that line to its original state (trailing delims removed).
         ;; Processing our changed line's indentation will correct it.
         lines-before (when-let [{:keys [line-dy line]} (:insert cache)]
                        (let [line-no (+ line-dy cache-line-no)]
-                         (assoc lines-before (+ line-dy) line)))
+                         (assoc lines-before line-no line)))
 
         ;; create initial state for starting at first changed line
         state (-> initial-state
@@ -365,9 +366,7 @@
                   )
 
         ;; process changed lines
-        state (reduce process-line state replacing-lines)
-
-        old-lines (:lines prev-state)
+        state (reduce process-line state line-replacements)
 
         ;; process after changed lines
         state (reduce
