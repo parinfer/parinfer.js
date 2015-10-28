@@ -472,9 +472,18 @@ i.fa {
 }
 
 #debug-state {
-  padding-left: 10px;
   overflow-x: auto;
   width: 50%;
   white-space: pre;
-  font-size: 11px;
+}
+
+.state-table {
+  margin-top: 6px;;
+  font: 14px Menlo;
+}
+
+.state-table td {
+  margin: 0;
+  padding: 0px 10px;
+  height: 17px;
 }
