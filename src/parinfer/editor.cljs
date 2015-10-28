@@ -45,7 +45,7 @@
           (- end-x start-x))))))
 
 (defn cm-process-text-change
-  [cm change prev-state]
+  [cm change prev-state extra-data]
   (let [start-line (.. change -from -line)
         end-line (inc (.. change -to -line))
         num-new-lines (alength (.-text change))
@@ -54,7 +54,8 @@
     (infer/process-text-change
       prev-state
       {:line-no [start-line end-line]
-       :new-line lines})))
+       :new-line lines}
+      extra-data)))
  
 (defn fix-text!
   "Correctly format the text from the given editor."
@@ -70,23 +71,23 @@
          scroll-x (.-scrollLeft scroller)
          scroll-y (.-scrollTop scroller) 
 
-         ;; format the text
-         cursor-data {:cursor-line (.-line cursor)
-                      :cursor-x (.-ch cursor)
-                      :cursor-dx (compute-cursor-dx cursor change)}
+         extra-data {:cursor-line (.-line cursor)
+                     :cursor-x (.-ch cursor)
+                     :cursor-dx (compute-cursor-dx cursor change)}
 
          key- (cm-key cm)
          mode (or (get-in @state [key- :mode]) :infer)
 
          prev-state (get-prev-state cm)
 
+         ;; format the text
          new-text
          (case mode
            :infer
-           (let [use-cache? false
+           (let [use-cache? true
                  state (if (and use-cache? @prev-state change)
-                         (cm-process-text-change cm change (merge @prev-state cursor-data))
-                         (infer/process-text cursor-data current-text))]
+                         (cm-process-text-change cm change @prev-state extra-data)
+                         (infer/process-text extra-data current-text))]
 
              (when state
                (reset! prev-state state))
@@ -95,7 +96,7 @@
                current-text))
 
            :prep
-           (prep/format-text cursor-data current-text)
+           (prep/format-text extra-data current-text)
 
            nil)]
 

@@ -344,7 +344,8 @@
       :new-line (string or seq if multiple lines)
   "
   [{:keys [postline-states] :as prev-state}
-   {:keys [line-no new-line] :as change}]
+   {:keys [line-no new-line] :as change}
+   {:keys [cursor-line cursor-x cursor-dx] :as extra-data}]
   (let [; normalize args (allowing multiple line replacements)
         [start-line end-line] (if (number? line-no) [line-no (inc line-no)] line-no)
         line-replacements (if (string? new-line) [new-line] new-line)
@@ -365,6 +366,7 @@
 
         ;; create initial state for starting at first changed line
         state (-> initial-state
+                  (merge extra-data)
                   (assoc :lines lines-before
                          :postline-states (subvec postline-states 0 start-line)
                          :line-no (dec start-line))

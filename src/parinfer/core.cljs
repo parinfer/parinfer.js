@@ -136,7 +136,7 @@
            [:td (pr-str stack)]])]))))
 
 (defn render-debug-state! []
-  (let [cm (create-editor! "code-editor" :editor {:viewportMargin Infinity :lineNumbers true})]
+  (when-let [cm (create-editor! "code-editor" :editor {:viewportMargin Infinity :lineNumbers true})]
     (start-editor-sync!)
     (om/root
       state-viewer
