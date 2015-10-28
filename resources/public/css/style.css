@@ -487,3 +487,15 @@ i.fa {
   padding: 0px 10px;
   height: 17px;
 }
+
+.state-table .line-no {
+  opacity: 0.5;
+}
+
+.state-table .line-dy {
+  text-align: right;
+}
+
+.state-table .active-line {
+  background: #FF0;
+}

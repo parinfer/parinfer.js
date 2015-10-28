@@ -123,20 +123,31 @@
   (start-editor-sync!))
 
 (defn state-viewer
-  [{:keys [postline-states]} owner]
+  [{:keys [postline-states cursor-line]} owner]
   (reify
     om/IRender
     (render [_]
       (html
         [:table.state-table
         (for [[i {:keys [insert stack]}] (map-indexed vector postline-states)]
-          [:tr
-           [:td (inc i)]
-           [:td (pr-str insert)]
-           [:td (pr-str stack)]])]))))
+          [:tr {:class (when (= i cursor-line) "active-line")}
+           [:td.line-no (inc i)]
+           [:td.line-dy (:line-dy insert)]
+           [:td (:x-pos insert)]
+           [:td (:string (reduce
+                  (fn [{:keys [next-x] :as result}
+                       {:keys [x-pos ch]}]
+                    (let [pad (apply str (repeat (- x-pos next-x) " "))]
+                      (-> result
+                          (update :string str pad ch)
+                          (assoc :next-x (inc x-pos)))))
+                  {:next-x 0 :string ""}
+                  stack))]])]))))
 
 (defn render-debug-state! []
-  (when-let [cm (create-editor! "code-editor" :editor {:viewportMargin Infinity :lineNumbers true})]
+  (when-let [cm (create-editor! "code-editor" :editor {:viewportMargin Infinity
+                                                       :lineNumbers true
+                                                       :styleActiveLine true})]
     (start-editor-sync!)
     (om/root
       state-viewer

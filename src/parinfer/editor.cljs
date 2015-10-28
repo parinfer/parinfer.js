@@ -56,7 +56,7 @@
       {:line-no [start-line end-line]
        :new-line lines}
       extra-data)))
- 
+
 (defn fix-text!
   "Correctly format the text from the given editor."
   ([cm] (fix-text! cm nil))
