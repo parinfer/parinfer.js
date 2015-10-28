@@ -54,7 +54,7 @@
     (infer/process-text-change
       prev-state
       {:line-no [start-line end-line]
-       :new-lines lines})))
+       :new-line lines})))
  
 (defn fix-text!
   "Correctly format the text from the given editor."
@@ -83,13 +83,13 @@
          new-text
          (case mode
            :infer
-           (let [state (if (and @prev-state change)
+           (let [use-cache? false
+                 state (if (and use-cache? @prev-state change)
                          (cm-process-text-change cm change (merge @prev-state cursor-data))
                          (infer/process-text cursor-data current-text))]
 
-             ;; uncomment this to try fast infer
-             ;; (when state
-             ;;   (reset! prev-state state))
+             (when state
+               (reset! prev-state state))
              (if state
                (join "\n" (:lines state))
                current-text))

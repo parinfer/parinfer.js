@@ -327,6 +327,11 @@
 ;;----------------------------------------------------------------------
 
 
+(defn safe-subvec
+  [v i]
+  (if (< i (count v))
+    (subvec v i)
+    []))
 
 (defn process-text-change
   "A faster way to process an incremental change.
@@ -353,9 +358,10 @@
         ;; There is only one previous line that can be affected by our change.
         ;; We restore that line to its original state (trailing delims removed).
         ;; Processing our changed line's indentation will correct it.
-        lines-before (when-let [{:keys [line-dy line]} (:insert cache)]
+        lines-before (if-let [{:keys [line-dy line]} (:insert cache)]
                        (let [line-no (+ line-dy cache-line-no)]
-                         (assoc lines-before line-no line)))
+                         (assoc lines-before line-no line))
+                       lines-before)
 
         ;; create initial state for starting at first changed line
         state (-> initial-state
@@ -377,15 +383,15 @@
                         can-skip? (= new-cache cache)]
                     (if (and can-skip? more?)
                       (-> state
-                          (update :postline-states into (subvec postline-states (inc old-i)))
-                          (update :lines into (subvec old-lines (inc old-i)))
+                          (update :postline-states into (safe-subvec postline-states (inc old-i)))
+                          (update :lines into (safe-subvec old-lines (inc old-i)))
                           reduced)
                       state)))
                 state
                 (map vector
                      (iterate inc end-line) ;; old line numbers
-                     (subvec old-lines end-line) ;; old lines
-                     (subvec postline-states end-line))) ;; old line states
+                     (safe-subvec old-lines end-line) ;; old lines
+                     (safe-subvec postline-states end-line))) ;; old line states
         stack (:stack state)]
 
     (when-not (in-str? stack)
