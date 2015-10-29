@@ -89,9 +89,9 @@
                            overrides)
                          (infer/process-text overrides current-text))]
 
-             (when state
+             (when (:valid? state)
                (reset! prev-state state))
-             (if state
+             (if (:valid? state)
                (join "\n" (:lines state))
                current-text))
 
