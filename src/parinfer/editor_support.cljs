@@ -79,9 +79,8 @@
            :end-line (inc (.. change -to -line))
            :num-new-lines (alength (.-text change))}
 
-          (let [[start end] (sort [(:cursor-line prev-state)
-                                   (:cursor-line overrides)])
-                end (inc end)]
+          (let [start (:cursor-line prev-state)
+                end (inc start)]
             {:start-line start
              :end-line end
              :num-new-lines (- end start)}))
