@@ -8,6 +8,7 @@
     [sablono.core :refer-macros [html]]
 
     [parinfer.state :refer [state]]
+    [parinfer.editor-support :refer [get-prev-state]]
     [cljs.pprint :refer [pprint]]
     [goog.dom :as gdom]))
 
@@ -92,6 +93,7 @@
           cursor (gdom/getElementByClass "CodeMirror-cursors" element)]
       (set! (.. cursor -style -visibility) "visible")
       (go-loop []
+        (reset! (get-prev-state cm) nil)
         (swap! state assoc-in [key- :text] (:init-value recording))
         (loop [changes (:changes recording)]
           (when (seq changes)
