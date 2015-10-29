@@ -356,13 +356,14 @@
         old-lines (:lines prev-state)
         lines-before (subvec old-lines 0 start-line)
 
-        ;; There is only one previous line that can be affected by our change.
-        ;; We restore that line to its original state (trailing delims removed).
-        ;; Processing our changed line's indentation will correct it.
-        lines-before (if-let [{:keys [line-dy line]} (:insert cache)]
-                       (let [line-no (+ line-dy cache-line-no)]
-                         (assoc lines-before line-no line))
-                       lines-before)
+        restore-insert-line
+        (fn [{:keys [insert line-no] :as state}]
+          (println "restoring:" (pr-str insert) line-no)
+          (let [{:keys [line-dy line]} insert]
+            (if (and line-dy line (>= line-no 0))
+              (let [line-no (+ line-dy line-no)]
+                (assoc-in state [:lines line-no] line))
+              state)))
 
         ;; create initial state for starting at first changed line
         state (-> initial-state
@@ -371,25 +372,37 @@
                          :postline-states (subvec postline-states 0 start-line)
                          :line-no (dec start-line))
                   (merge cache) ;; sets correct stack and insert point
-                  )
+                  restore-insert-line)
 
         ;; process changed lines
         state (reduce process-line state line-replacements)
 
-        ;; process after changed lines
-        state (reduce
-                (fn [state [old-i line cache]]
-                  (let [state (process-line state line)
-                        new-cache (last (:postline-states state))
-                        more? (< (inc old-i) (count old-lines))
-                        can-skip? (= new-cache cache)]
-                    (if (and can-skip? more?)
-                      (-> state
-                          (update :postline-states into (safe-subvec postline-states (inc old-i)))
-                          (update :lines into (safe-subvec old-lines (inc old-i)))
-                          reduced)
-                      state)))
-                state
+        ;; process unchanged lines
+
+        fill-rest-with-cache
+        (fn [state start-i]
+          (let [state (-> state
+                          (update :postline-states into (safe-subvec postline-states start-i))
+                          (update :lines into (safe-subvec old-lines start-i))
+                          (merge (last postline-states)))
+                state (-> state
+                          (assoc :line-no (dec (count (:lines state))))
+                          restore-insert-line)]
+            state))
+
+        process-unchanged-line
+        (fn [state [old-i line cache]]
+          (let [state (process-line state line)
+                new-cache (last (:postline-states state))
+                more? (< (inc old-i) (count old-lines))
+                can-skip? (= new-cache cache)]
+            (if (and can-skip? more?)
+              (-> state
+                  (fill-rest-with-cache (inc old-i))
+                  reduced)
+              state)))
+
+        state (reduce process-unchanged-line state
                 (map vector
                      (iterate inc end-line) ;; old line numbers
                      (safe-subvec old-lines end-line) ;; old lines
