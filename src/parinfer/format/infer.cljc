@@ -297,30 +297,30 @@
                    cache-postline-state)]
      state)))
 
-(defn process-text
-  "Update the state by processing the given text."
-  ([text] (process-text initial-state text))
-  ([state text]
-   (let [state (merge initial-state state)
-         lines (get-lines text)
-         state (reduce process-line state lines)
-         stack (:stack state)]
+(defn finalize-state
+  [{:keys [stack] :as state}]
+  (let [valid? (not (in-str? stack)) ;; invalid if unclosed string
+        close-delims? (and valid? (seq stack))]
+    (cond-> (assoc state :valid? valid?)
+      close-delims? close-delims)))
 
-     ;; VERY IMPORTANT!!!!
-     ;; Return nil if there is an unclosed string, meaning we must cancel
-     ;; processing the text.  If we don't this, the simple act of typing two
-     ;; quotes in succession could silently delete delimiters in subsequent
-     ;; strings.
-     (when-not (in-str? stack)
-       (cond-> state (seq stack) close-delims)))))
+(defn process-text
+  "Fully process the given text and return the state."
+  ([text] (process-text nil text))
+  ([overrides text]
+   (let [state (merge initial-state overrides)
+         lines (get-lines text)
+         state (reduce process-line state lines)]
+     (finalize-state state))))
 
 (defn format-text
-  "Format the given text by repositioning any trailing closing delimiters based on indentation."
-  ([text] (format-text initial-state text))
-  ([state text]
-   (if-let [state (process-text state text)]
-     (join "\n" (:lines state))
-     text)))
+  "Fully process the given text and return the new text if formatting was successful."
+  ([text] (format-text nil text))
+  ([overrides text]
+   (let [state (process-text overrides text)]
+     (if (:valid? state)
+       (join "\n" (:lines state))
+       text))))
 
 ;;----------------------------------------------------------------------
 ;; faster processing for incremental changes
@@ -402,16 +402,12 @@
         [start-line-no end-line-no] (if (number? line-no) [line-no (inc line-no)] line-no)
         line-replacements (if (string? new-line) [new-line] new-line)
 
-        ;; create initial state for starting at first changed line
+        ;; 1. create initial state for starting at first changed line
+        ;; 2. process changed lines
+        ;; 3. process unchanged lines that come after
         state (initial-cached-state prev-state overrides start-line-no)
-
-        ;; process changed lines
         state (reduce process-line state line-replacements)
+        state (process-unchanged-lines prev-state state end-line-no)]
 
-        ;; process unchanged lines that come after
-        state (process-unchanged-lines prev-state state end-line-no)
-        stack (:stack state)]
-
-    (when-not (in-str? stack)
-      (cond-> state (seq stack) close-delims))))
+   (finalize-state state)))
 
