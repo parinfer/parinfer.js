@@ -344,10 +344,11 @@
 
 (defn fill-rest-with-cache
   "fill the rest of the lines with info from cache."
-  [prev-state state start-i]
+  [prev-state state last-i]
   (let [state (-> state
-                  (update :postline-states into (safe-subvec (:postline-states prev-state) start-i))
-                  (update :lines into (safe-subvec (:lines prev-state) start-i))
+                  (update :lines pop) ;; to restore the version of the line _with_ its trailing delims
+                  (update :lines into (safe-subvec (:lines prev-state) last-i))
+                  (update :postline-states into (safe-subvec (:postline-states prev-state) (inc last-i)))
                   (merge (last (:postline-states prev-state))))
         state (-> state
                   (assoc :line-no (dec (count (:lines state))))
@@ -363,7 +364,7 @@
         more? (< (inc old-i) (count (:lines prev-state)))
         can-skip? (= new-cache cache)]
     (if (and can-skip? more?)
-      (reduced (fill-rest-with-cache prev-state state (inc old-i)))
+      (reduced (fill-rest-with-cache prev-state state old-i))
       state)))
 
 (defn process-unchanged-lines
