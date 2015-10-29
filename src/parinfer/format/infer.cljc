@@ -19,11 +19,14 @@
 (def initial-state
   "An initial state of our running state."
   {:lines []                           ;; final lines containing the inferenced closing delimiters.
-   :postline-states []
+   :postline-states []                 ;; state cache after each line
+   :postindent-states []               ;; state cache after each line's indentation point (nil if none)
+   :insert {:line-dy nil :x-pos nil}   ;; the place to insert closing delimiters whenever we hit appropriate indentation.
    :line-no -1                         ;; current line number we are processing.
+
+   ;; transient line vars
    :track-indent? false                ;; "true" when we are looking for the first char on a line to signify indentation.
    :delim-trail {:start nil :end nil}  ;; track EOL delims since we replace them wholesale with inferred delims.
-   :insert {:line-dy nil :x-pos nil}   ;; the place to insert closing delimiters whenever we hit appropriate indentation.
    :stack []                           ;; the delimiter stack, maps of [:x-pos :ch :indent-delta]
    :backup []})                          ;; trailing delims that are pushed back onto the stack at EOL
 
@@ -57,8 +60,7 @@
          line-no (+ (:line-no state) line-dy)
          state (-> state
                     (update-in [:lines line-no] insert-string x-pos delims)
-                    (assoc :track-indent? false
-                           :stack stack))]
+                    (assoc :stack stack))]
      state)))
 
 (defn update-delim-trail
@@ -210,6 +212,16 @@
     (cond-> state
       insert (assoc :insert insert))))
 
+(defn get-cached-state
+  [state]
+  (select-keys state [:stack :insert]))
+
+(defn commit-cached-state
+  "Cache a subset of the state after some event.
+  This is used by process-text-change."
+  [state key-]
+  (update state key- conj (get-cached-state state)))
+
 (defn process-indent
   "Update the state by handling a possible indentation trigger.
 
@@ -233,8 +245,13 @@
         skip? (and check-indent? (closing-delim? ch))
         at-indent? (and check-indent? (not skip?))
         state (assoc state :process? (not skip?))]
-    (cond-> state
-      at-indent? (close-delims x-pos))))
+    (if at-indent?
+      (-> state
+          (close-delims x-pos)
+          (commit-cached-state :postindent-states)
+          (assoc :track-indent? false
+                 :processed-indent? true))
+      state)))
 
 (defn update-line
   "Update the state by adding processed character to the line."
@@ -249,13 +266,6 @@
   (cond-> state
     (= 0 (:line-dy insert))
     (assoc-in [:insert :line] (get lines line-no))))
-
-(defn cache-postline-state
-  "Cache a subset of the state after the current line has been processed.
-  This is used by process-text-change."
-  [state]
-  (let [cached (select-keys state [:stack :insert])]
-    (update state :postline-states conj cached)))
 
 (defn process-char*
   [state]
@@ -285,6 +295,7 @@
                   :cursor-in-comment? false
                   :delim-trail {:start nil :end nil}
                   :track-indent? (and (seq stack) (not (in-str? stack)))
+                  :processed-indent? false
                   :lines (conj lines "")
                   :line-no line-no
                   :removed-delims [])
@@ -294,7 +305,13 @@
                    block-delim-trail
                    remove-delim-trail
                    save-preinsert-line
-                   cache-postline-state)]
+                   (commit-cached-state :postline-states))
+
+         ;; if this did not have an indentation trigger point,
+         ;; pad postindent-states with a nil.
+         state (cond-> state
+                 (not (:processed-indent? state))
+                 (update :postindent-states conj nil))]
      state)))
 
 (defn finalize-state
@@ -349,6 +366,7 @@
                   (update :lines pop) ;; to restore the version of the line _with_ its trailing delims
                   (update :lines into (safe-subvec (:lines prev-state) last-i))
                   (update :postline-states into (safe-subvec (:postline-states prev-state) (inc last-i)))
+                  (update :postindent-states into (safe-subvec (:postindent-states prev-state) (inc last-i)))
                   (merge (last (:postline-states prev-state))))
         state (-> state
                   (assoc :line-no (dec (count (:lines state))))
@@ -360,9 +378,9 @@
   'reduced' will halt further processing."
   [prev-state state [old-i line cache]]
   (let [state (process-line state line)
-        new-cache (last (:postline-states state))
+        new-cache (last (:postindent-states state))
         more? (< (inc old-i) (count (:lines prev-state)))
-        can-skip? (= new-cache cache)]
+        can-skip? (and new-cache (= new-cache cache))]
     (if (and can-skip? more?)
       (reduced (fill-rest-with-cache prev-state state old-i))
       state)))
@@ -374,12 +392,13 @@
           (map vector
                (iterate inc start-i) ;; old line numbers
                (safe-subvec (:lines prev-state) start-i) ;; old lines
-               (safe-subvec (:postline-states prev-state) start-i))))
+               (safe-subvec (:postindent-states prev-state) start-i))))
 
 (defn initial-cached-state
   "build an initial state based on our starting line and previous cache."
-  [{:keys [lines postline-states] :as prev-state} overrides i]
+  [{:keys [lines postline-states postindent-states] :as prev-state} overrides i]
   (let [line-data {:lines (subvec lines 0 i)
+                   :postindent-states (subvec postindent-states 0 i)
                    :postline-states (subvec postline-states 0 i)
                    :line-no (dec i)}
         last-cache (get postline-states (dec i))]
