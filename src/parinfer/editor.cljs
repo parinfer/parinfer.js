@@ -44,18 +44,15 @@
                       (+ len-last-line (.. change -from -ch)))]
           (- end-x start-x))))))
 
-(defn cm-process-text-change
-  [cm change prev-state extra-data]
-  (let [start-line (.. change -from -line)
-        end-line (inc (.. change -to -line))
-        num-new-lines (alength (.-text change))
+(defn compute-cm-change
+  [cm change {:keys [cursor-line] :as overrides}]
+  (let [start-line    (if change (.. change -from -line) cursor-line)
+        end-line      (if change (inc (.. change -to -line)) (inc cursor-line))
+        num-new-lines (if change (alength (.-text change)) 1)
         lines (for [i (range start-line (+ start-line num-new-lines))]
                 (.getLine cm i))]
-    (infer/process-text-change
-      prev-state
-      {:line-no [start-line end-line]
-       :new-line lines}
-      extra-data)))
+    {:line-no [start-line end-line]
+     :new-line lines}))
 
 (defn fix-text!
   "Correctly format the text from the given editor."
@@ -71,9 +68,9 @@
          scroll-x (.-scrollLeft scroller)
          scroll-y (.-scrollTop scroller) 
 
-         extra-data {:cursor-line (.-line cursor)
-                     :cursor-x (.-ch cursor)
-                     :cursor-dx (compute-cursor-dx cursor change)}
+         overrides {:cursor-line (.-line cursor)
+                    :cursor-x (.-ch cursor)
+                    :cursor-dx (compute-cursor-dx cursor change)}
 
          key- (cm-key cm)
          mode (or (get-in @state [key- :mode]) :infer)
@@ -85,9 +82,12 @@
          (case mode
            :infer
            (let [use-cache? true
-                 state (if (and use-cache? @prev-state change)
-                         (cm-process-text-change cm change @prev-state extra-data)
-                         (infer/process-text extra-data current-text))]
+                 state (if (and use-cache? @prev-state)
+                         (infer/process-text-change
+                           @prev-state
+                           (compute-cm-change cm change overrides)
+                           overrides)
+                         (infer/process-text overrides current-text))]
 
              (when state
                (reset! prev-state state))
@@ -96,7 +96,7 @@
                current-text))
 
            :prep
-           (prep/format-text extra-data current-text)
+           (prep/format-text overrides current-text)
 
            nil)]
 
