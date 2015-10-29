@@ -10,9 +10,8 @@
                           render-controls!]]
     [parinfer.editor :refer [create-editor!
                              create-regular-editor!
-                             start-editor-sync!
-                             get-prev-state
-                             ]]
+                             start-editor-sync!]]
+    [parinfer.editor-support :refer [get-prev-state]]
     [parinfer.state :refer [state]]
     [parinfer.format.infer :as infer]
     [parinfer.format.prep :as prep]
