@@ -45,10 +45,20 @@
           (- end-x start-x))))))
 
 (defn compute-cm-change
-  [cm change {:keys [cursor-line] :as overrides}]
-  (let [start-line    (if change (.. change -from -line) cursor-line)
-        end-line      (if change (inc (.. change -to -line)) (inc cursor-line))
-        num-new-lines (if change (alength (.-text change)) 1)
+  [cm change overrides prev-state]
+  (let [{:keys [start-line end-line num-new-lines]}
+        (if change
+          {:start-line (.. change -from -line)
+           :end-line (inc (.. change -to -line))
+           :num-new-lines (alength (.-text change))}
+
+          (let [[start end] (sort [(:cursor-line prev-state)
+                                   (:cursor-line overrides)])
+                end (inc end)]
+            {:start-line start
+             :end-line end
+             :num-new-lines (- end start)}))
+
         lines (for [i (range start-line (+ start-line num-new-lines))]
                 (.getLine cm i))]
     {:line-no [start-line end-line]
@@ -85,7 +95,7 @@
                  state (if (and use-cache? @prev-state)
                          (infer/process-text-change
                            @prev-state
-                           (compute-cm-change cm change overrides)
+                           (compute-cm-change cm change overrides @prev-state)
                            overrides)
                          (infer/process-text overrides current-text))]
 
