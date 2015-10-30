@@ -108,7 +108,9 @@
         index-anims)))
   
   (doseq [[key- _] index-anims]
-    (animate-when-visible! key-)))
+    (animate-when-visible! key-))
+
+  (js/scrollMonitor.recalculateLocations))
 
 (defn render-index! []
   (toc/init!)

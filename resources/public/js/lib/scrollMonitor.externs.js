@@ -14,5 +14,5 @@ var scrollMonitor = {};
  * @return {ElementWatcher}
  */
 scrollMonitor.create = function(){};
-
+scrollMonitor.recalculateLocations = function(){};
 
