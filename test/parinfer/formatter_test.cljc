@@ -59,19 +59,88 @@
         (-> state
             (assoc :block-key block-key)
             (assoc-in [:test-case block-key] {:file-line-no file-line-no
-                                              :lines []}))))))
+                                              :lines []
+                                              :cursor nil
+                                              :diff nil}))))))
+
+(defn index-of
+  [string ch]
+  (let [i (.indexOf string)]
+    (when-not (= -1 i) i)))
 
 (defmethod parse-test-line :inside-block
-  [{:keys [block-key test-case test-cases] :as state} [file-line-no line]]
-  (let [cursor-x (.indexOf line "|")
-        cursor-line (when (and (= :in block-key)
-                               (not= -1 cursor-x))
-                      (dec (- file-line-no (:file-line-no (:in test-case)))))
-        line (string/replace line "|" "")]
-    (-> state
-        (update-in [:test-case block-key :lines] conj line)
-        (update-in [:test-case block-key :cursor-x] #(or % cursor-x))
-        (update-in [:test-case block-key :cursor-line] #(or % cursor-line)))))
+  [{:keys [block-key] :as state} [file-line-no line]]
+  (let [block (get-in state [:test-case block-key])
+        diff (:diff block)
+
+        ;; process and remove cursor char
+        cursor-x (index-of line "|")
+        line-without-cursor (string/replace line "|" "")
+        multiple-cursors? (< (count line-without-cursor) (dec (count line)))
+        line (if multiple-cursors?
+               (throw (error-msg file-line-no "only one cursor allowed on a line"))
+               line-without-cursor)
+
+        ;; process and remove diff char
+        diff-ch (#{"-" "+"} (str (first line)))
+        line (if diff-ch
+               (if (:closed? diff)
+                 (throw (error-msg file-line-no "diff lines must be contiguous"))
+                 (str " " (subs line 1)))
+               line)
+
+        ;; prevent special chars in 'out' block
+        _ (when (= :out block-key)
+            (when cursor-x (throw (error-msg file-line-no "no cursor allowed in 'out' block yet")))
+            (when diff-ch (throw (error-msg file-line-no "no diff chars allowed in 'out' block"))))
+
+        ;; prevent multiple cursors
+        _ (when cursor-x
+            (if (= diff-ch "+")
+              (when (:cursor diff) (throw (error-msg file-line-no "only one cursor allowed in all '+' diff lines")))
+              (when (:cursor block) (throw (error-msg file-line-no "only one cursor allowed in all normal and '-' diff lines")))))
+
+        ;; initialize or close diff
+        diff (if-not diff
+
+               ;; initialize diff
+               (when diff-ch
+                 (let [line-no (count (:lines block))]
+                   {:start-line-no line-no
+                    :end-line-no line-no
+                    :lines []}))
+
+               ;; close diff
+               (cond-> diff
+                 (not diff-ch) (assoc :closed? true)))
+
+        ;; update diff end line
+        diff (cond-> diff
+               (= diff-ch "-") (update :end-line-no inc))
+
+        ;; finish determining cursor
+        cursor (when cursor-x
+                 {:cursor-x cursor-x
+                  :cursor-line (if (= diff-ch "+")
+                                 (+ (:start-line-no diff) (count (:lines diff)))
+                                 (count (:lines block)))})
+
+        ;; set appropriate cursor
+        block (if cursor
+                (if (= diff-ch "+")
+                  (assoc-in block [:diff :cursor] cursor)
+                  (assoc block :cursor cursor))
+                block)
+
+        ;; conj line to appropriate vector
+        block (if (= diff-ch "+")
+                (update-in block [:diff :lines] conj line)
+                (update block :lines conj line))
+
+        ;; update state
+        state (assoc-in state [:test-case block-key] block)]
+
+    state))
 
 (defmethod parse-test-line :default
   [state [line-no line]]
@@ -94,35 +163,65 @@
     (:test-cases state)))
 
 (defn idempotent-check
-  [type- message result overrides format-text]
-  (let [post-result (format-text overrides result)
+  [type- message result overrides process-text]
+  (let [post-result (process-text overrides result)
         message (str type- " idempotence over " message)]
     (is (= result post-result) message)))
 
 (defn run-test-cases
-  ([type- format-text] (run-test-cases type- format-text nil))
-  ([type- format-text post-test]
-   (let [filename (str "doc/" type- "-tests.md")
-         text #?(:clj (slurp filename)
-                 :cljs (.readFileSync fs filename))
-         test-cases (parse-test-cases text)]
-     (doseq [{:keys [in out]} test-cases]
-       (let [cursor-line (:cursor-line in)
-             cursor-x (:cursor-x in)
-             cursor? (and cursor-line cursor-x)
-             overrides (select-keys in [:cursor-line :cursor-x])
-             message (cond-> (str type- " test case @ line #" (:file-line-no in))
-                       cursor? (str " with cursor at line=" cursor-line " x=" cursor-x))
-             text-in (join "\n" (:lines in))
-             text-out (join "\n" (:lines out))
-             result (format-text overrides text-in)]
-         (is (= text-out result))
-         (idempotent-check "infer" message result overrides infer/format-text)
-         (when-not cursor?
-           (idempotent-check "prep" message result overrides prep/format-text)))))))
+  [type- process-text process-change]
+  (let [filename (str "doc/" type- "-tests.md")
+        text #?(:clj (slurp filename)
+                     :cljs (.readFileSync fs filename))
+        test-cases (parse-test-cases text)]
+    (doseq [{:keys [in out]} test-cases]
+      (let [
+            ;; cursor states
+            cursor (:cursor in)
+            diff-cursor (:cursor (:diff in))
+            final-cursor (if change diff-cursor cursor)
+
+            ;; overrides allow the initial state to be overwritten by something
+            ;; (we only use it for the cursor right now)
+            overrides (merge cursor)
+            diff-overrides (merge diff-cursor)
+            final-overrides (merge final-cursor)
+
+            ;; message needed for tracking errors
+            message (cond-> (str type- " test case @ line #" (:file-line-no in))
+                      cursor      (str "\n   with cursor at line=" (:cursor-line cursor) " x=" (:cursor-x cursor))
+                      diff-cursor (str "\n   with diff-cursor at line=" (:cursor-line diff-cursor) " x=" (:cursor-x diff-cursor)))
+
+            ;; input and expected output
+            text-in (join "\n" (:lines in))
+            text-expected (join "\n" (:lines out))
+
+            ;; calculate input change if needed
+            change (when-let [diff (:diff in)]
+                     (is (not (nil? process-text-change)) message)
+                     {:line-no [(:start-line-no diff) (:end-line-no diff)]
+                      :new-line (:lines diff)})
+
+            ;; calculate result (with change if needed)
+            result (cond-> (process-text overrides text-in)
+                     change (process-text-change change diff-overrides))
+            text-actual (join "\n" (:lines result))]
+
+        (is (= text-expected text-actual) message)
+
+        (idempotent-check "infer" message text-actual final-overrides infer/format-text)
+        (when-not final-cursor
+          (idempotent-check "prep" message text-actual final-overrides prep/format-text))))))
 
 (deftest run-infer-cases
-  (run-test-cases "infer" infer/format-text))
+  (run-test-cases
+    "infer"
+    infer/process-text
+    infer/process-text-change))
 
 (deftest run-prep-cases
-  (run-test-cases "prep" prep/format-text))
+  (run-test-cases
+    "prep"
+    prep/process-text
+    nil ;; no process-text-change for prep yet
+    ))
