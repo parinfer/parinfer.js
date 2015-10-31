@@ -4,28 +4,28 @@
   (:require
     #?(:clj  [clojure.test :refer [is deftest]]
        :cljs [cljs.test :refer-macros [is deftest]])
-    [clojure.string :as string :refer [split-lines]]
+    [clojure.string :as string :refer [join split-lines]]
     [parinfer.format.infer :as infer]
     [parinfer.format.prep :as prep]))
 
 #?(:cljs (def fs (js/require "fs")))
 
 (defn error-msg
-  [line-no msg]
-  (str "error at test-case line #" line-no ": " msg))
+  [file-line-no msg]
+  (str "error at test-case line #" file-line-no ": " msg))
 
 (defmulti parse-test-line
-  (fn [state [line-no line]]
+  (fn [state [file-line-no line]]
     (cond
       (= "```" line)          :end-block
       (re-find #"^```" line)  :start-block
-      (:block-key state)      :in-block
+      (:block-key state)      :inside-block
       :else                   :default)))
 
 (defmethod parse-test-line :end-block
-  [{:keys [block-key test-case test-cases] :as state} [line-no line]]
+  [{:keys [block-key test-case test-cases] :as state} [file-line-no line]]
   (if-not block-key
-    (throw (error-msg line-no "opening block must have a name: 'in' or 'out'"))
+    (throw (error-msg file-line-no "opening block must have a name: 'in' or 'out'"))
     (let [test-case-done? (:out test-case)]
       (if test-case-done?
 
@@ -39,36 +39,37 @@
         (assoc state :block-key nil)))))
 
 (defmethod parse-test-line :start-block
-  [{:keys [block-key test-case test-cases] :as state} [line-no line]]
+  [{:keys [block-key test-case test-cases] :as state} [file-line-no line]]
   (if block-key
-    (throw (error-msg line-no "must close previous block before starting new one"))
+    (throw (error-msg file-line-no "must close previous block before starting new one"))
     (let [block-name (second (re-find #"^```(.*)$" line))
           block-key (keyword block-name)]
       (cond
 
         (not (#{:in :out} block-key))
-        (throw (error-msg line-no (str "block name " (pr-str block-name) "must be either 'in' or 'out'")))
+        (throw (error-msg file-line-no (str "block name " (pr-str block-name) "must be either 'in' or 'out'")))
 
         (and (= :in block-key) (:in test-case))
-        (throw (error-msg line-no (str "there is already an 'in' block for this test case.")))
+        (throw (error-msg file-line-no (str "there is already an 'in' block for this test case.")))
 
         (and (= :out block-key) (not (:in test-case)))
-        (throw (error-msg line-no (str "must include an 'in' block before an 'out' block.")))
+        (throw (error-msg file-line-no (str "must include an 'in' block before an 'out' block.")))
 
         :else
         (-> state
             (assoc :block-key block-key)
-            (assoc-in [:test-case block-key] {:line-no line-no :text ""}))))))
+            (assoc-in [:test-case block-key] {:file-line-no file-line-no
+                                              :lines []}))))))
 
-(defmethod parse-test-line :in-block
-  [{:keys [block-key test-case test-cases] :as state} [line-no line]]
+(defmethod parse-test-line :inside-block
+  [{:keys [block-key test-case test-cases] :as state} [file-line-no line]]
   (let [cursor-x (.indexOf line "|")
         cursor-line (when (and (= :in block-key)
                                (not= -1 cursor-x))
-                      (- line-no (:line-no (:in test-case))))
+                      (dec (- file-line-no (:file-line-no (:in test-case)))))
         line (string/replace line "|" "")]
     (-> state
-        (update-in [:test-case block-key :text] str "\n" line)
+        (update-in [:test-case block-key :lines] conj line)
         (update-in [:test-case block-key :cursor-x] #(or % cursor-x))
         (update-in [:test-case block-key :cursor-line] #(or % cursor-line)))))
 
@@ -93,8 +94,8 @@
     (:test-cases state)))
 
 (defn idempotent-check
-  [type- message result state format-text]
-  (let [post-result (format-text state result)
+  [type- message result overrides format-text]
+  (let [post-result (format-text overrides result)
         message (str type- " idempotence over " message)]
     (is (= result post-result) message)))
 
@@ -103,20 +104,22 @@
   ([type- format-text post-test]
    (let [filename (str "doc/" type- "-tests.md")
          text #?(:clj (slurp filename)
-                      :cljs (.readFileSync fs filename))
+                 :cljs (.readFileSync fs filename))
          test-cases (parse-test-cases text)]
      (doseq [{:keys [in out]} test-cases]
        (let [cursor-line (:cursor-line in)
              cursor-x (:cursor-x in)
              cursor? (and cursor-line cursor-x)
-             state (select-keys in [:cursor-line :cursor-x])
-             message (cond-> (str type- " test case @ line #" (:line-no in))
+             overrides (select-keys in [:cursor-line :cursor-x])
+             message (cond-> (str type- " test case @ line #" (:file-line-no in))
                        cursor? (str " with cursor at line=" cursor-line " x=" cursor-x))
-             result (format-text state (:text in))]
-         (is (= (:text out) result))
-         (idempotent-check "infer" message result state infer/format-text)
+             text-in (join "\n" (:lines in))
+             text-out (join "\n" (:lines out))
+             result (format-text overrides text-in)]
+         (is (= text-out result))
+         (idempotent-check "infer" message result overrides infer/format-text)
          (when-not cursor?
-           (idempotent-check "prep" message result state prep/format-text)))))))
+           (idempotent-check "prep" message result overrides prep/format-text)))))))
 
 (deftest run-infer-cases
   (run-test-cases "infer" infer/format-text))
