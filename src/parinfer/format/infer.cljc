@@ -323,8 +323,8 @@
 
 (defn process-text
   "Fully process the given text and return the state."
-  ([text] (process-text nil text))
-  ([overrides text]
+  ([text] (process-text text nil))
+  ([text overrides]
    (let [state (merge initial-state overrides)
          lines (get-lines text)
          state (reduce process-line state lines)]
@@ -332,12 +332,15 @@
 
 (defn format-text
   "Fully process the given text and return the new text if formatting was successful."
-  ([text] (format-text nil text))
-  ([overrides text]
-   (let [state (process-text overrides text)]
-     (if (:valid? state)
-       (join "\n" (:lines state))
-       text))))
+  ([text] (format-text text nil))
+  ([text overrides]
+   (let [state (process-text text overrides)
+         out-text (if (:valid? state)
+                    (join "\n" (:lines state))
+                    text)]
+     {:text out-text
+      :valid? (:valid? state)
+      :state state})))
 
 ;;----------------------------------------------------------------------
 ;; faster processing for incremental changes
@@ -429,4 +432,14 @@
         state (process-unchanged-lines prev-state state end-line-no)]
 
    (finalize-state state)))
+
+(defn format-text-change
+  [text prev-state change overrides]
+  (let [state (process-text-change prev-state change overrides)
+        out-text (if (:valid? state)
+                   (join "\n" (:lines state))
+                   text)]
+    {:text out-text
+     :valid? (:valid? state)
+     :state state}))
 

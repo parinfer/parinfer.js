@@ -118,21 +118,20 @@
         new-text
         (case mode
           :infer
-          (let [state (if (and use-cache? @prev-state)
-                        (infer/process-text-change
+          (let [result (if (and use-cache? @prev-state)
+                        (infer/format-text-change
+                          current-text
                           @prev-state
                           (compute-cm-change cm change overrides @prev-state)
                           overrides)
-                        (infer/process-text overrides current-text))]
-
-            (when (:valid? state)
-              (reset! prev-state state))
-            (if (:valid? state)
-              (join "\n" (:lines state))
-              current-text))
+                        (infer/process-text current-text overrides))]
+            (when (:valid? result)
+              (reset! prev-state (:state result)))
+            (:text result))
 
           :prep
-          (prep/format-text overrides current-text)
+          (let [result (prep/format-text current-text overrides)]
+            (:text result))
 
           nil)]
 

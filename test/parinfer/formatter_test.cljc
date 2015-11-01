@@ -65,7 +65,7 @@
 
 (defn index-of
   [string ch]
-  (let [i (.indexOf string)]
+  (let [i (.indexOf string ch)]
     (when-not (= -1 i) i)))
 
 (defmethod parse-test-line :inside-block
@@ -108,7 +108,8 @@
                  (let [line-no (count (:lines block))]
                    {:start-line-no line-no
                     :end-line-no line-no
-                    :lines []}))
+                    :lines (:lines block)
+                    :new-lines []}))
 
                ;; close diff
                (cond-> diff
@@ -122,7 +123,7 @@
         cursor (when cursor-x
                  {:cursor-x cursor-x
                   :cursor-line (if (= diff-ch "+")
-                                 (+ (:start-line-no diff) (count (:lines diff)))
+                                 (count (:lines diff))
                                  (count (:lines block)))})
 
         ;; set appropriate cursor
@@ -133,9 +134,14 @@
                 block)
 
         ;; conj line to appropriate vector
-        block (if (= diff-ch "+")
-                (update-in block [:diff :lines] conj line)
-                (update block :lines conj line))
+        block (case diff-ch
+                "+" (-> block
+                        (update-in [:diff :lines] conj line)
+                        (update-in [:diff :new-lines] conj line))
+                "-" (update block :lines conj line)
+                (cond-> block
+                  true (update :lines conj line)
+                  diff (update-in [:diff :lines] conj line)))
 
         ;; update state
         state (assoc-in state [:test-case block-key] block)]
@@ -163,13 +169,13 @@
     (:test-cases state)))
 
 (defn idempotent-check
-  [type- message result overrides process-text]
-  (let [post-result (process-text overrides result)
+  [type- message text overrides format-text]
+  (let [result (format-text text overrides)
         message (str type- " idempotence over " message)]
-    (is (= result post-result) message)))
+    (is (= text (:text result)) message)))
 
 (defn run-test-cases
-  [type- process-text process-change]
+  [type- format-text format-text-change]
   (let [filename (str "doc/" type- "-tests.md")
         text #?(:clj (slurp filename)
                      :cljs (.readFileSync fs filename))
@@ -179,7 +185,7 @@
             ;; cursor states
             cursor (:cursor in)
             diff-cursor (:cursor (:diff in))
-            final-cursor (if change diff-cursor cursor)
+            final-cursor (if (:diff in) diff-cursor cursor)
 
             ;; overrides allow the initial state to be overwritten by something
             ;; (we only use it for the cursor right now)
@@ -198,14 +204,18 @@
 
             ;; calculate input change if needed
             change (when-let [diff (:diff in)]
-                     (is (not (nil? process-text-change)) message)
+                     (is (not (nil? format-text-change)) message)
                      {:line-no [(:start-line-no diff) (:end-line-no diff)]
-                      :new-line (:lines diff)})
+                      :new-line (:new-lines diff)})
+            text-in2 (when change
+                       (join "\n" (get-in in [:diff :lines])))
 
             ;; calculate result (with change if needed)
-            result (cond-> (process-text overrides text-in)
-                     change (process-text-change change diff-overrides))
-            text-actual (join "\n" (:lines result))]
+            result (format-text text-in overrides)
+            result (if change
+                     (format-text-change text-in2 (:state result) change diff-overrides)
+                     result)
+            text-actual (:text result)]
 
         (is (= text-expected text-actual) message)
 
@@ -216,12 +226,12 @@
 (deftest run-infer-cases
   (run-test-cases
     "infer"
-    infer/process-text
-    infer/process-text-change))
+    infer/format-text
+    infer/format-text-change))
 
 (deftest run-prep-cases
   (run-test-cases
     "prep"
-    prep/process-text
-    nil ;; no process-text-change for prep yet
+    prep/format-text
+    nil ;; no format-text-change for prep yet
     ))
