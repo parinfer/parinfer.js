@@ -124,7 +124,7 @@
                           @prev-state
                           (compute-cm-change cm change overrides @prev-state)
                           overrides)
-                        (infer/process-text current-text overrides))]
+                        (infer/format-text current-text overrides))]
             (when (:valid? result)
               (reset! prev-state (:state result)))
             (:text result))

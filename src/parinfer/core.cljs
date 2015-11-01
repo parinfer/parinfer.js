@@ -57,7 +57,7 @@
   (let [cm-input (create-regular-editor! "code-how-input" {:mode "clojure-parinfer"})
         cm-output (create-regular-editor! "code-how-output" {:readOnly true
                                                              :mode "clojure-parinfer"})
-        sync! #(.setValue cm-output (infer/format-text (.getValue cm-input)))]
+        sync! #(.setValue cm-output (:text (infer/format-text (.getValue cm-input))))]
     (when cm-input
       (.on cm-input "change" sync!)
       (sync!)))
@@ -65,8 +65,7 @@
   (let [cm-input (create-regular-editor! "code-edit-input")
         cm-output (create-regular-editor! "code-edit-output" {:readOnly true
                                                               :mode "clojure-parinfer"})
-        sync! #(.setValue cm-output (or (prep/format-text (.getValue cm-input))
-                                        "; ERROR: input must be balanced!"))]
+        sync! #(.setValue cm-output (:text (prep/format-text (.getValue cm-input))))]
     (when cm-input
       (.on cm-input "change" sync!)
       (sync!))))
