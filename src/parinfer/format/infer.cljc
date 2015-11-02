@@ -322,25 +322,14 @@
       close-delims? close-delims)))
 
 (defn process-text
-  "Fully process the given text and return the state."
+  "Fully processes the given text.  Returns new state.
+  See `format-text` for usage."
   ([text] (process-text text nil))
-  ([text overrides]
-   (let [state (merge initial-state overrides)
+  ([text options]
+   (let [state (merge initial-state options)
          lines (get-lines text)
          state (reduce process-line state lines)]
      (finalize-state state))))
-
-(defn format-text
-  "Fully process the given text and return the new text if formatting was successful."
-  ([text] (format-text text nil))
-  ([text overrides]
-   (let [state (process-text text overrides)
-         out-text (if (:valid? state)
-                    (join "\n" (:lines state))
-                    text)]
-     {:text out-text
-      :valid? (:valid? state)
-      :state state})))
 
 ;;----------------------------------------------------------------------
 ;; faster processing for incremental changes
@@ -399,47 +388,95 @@
 
 (defn initial-cached-state
   "build an initial state based on our starting line and previous cache."
-  [{:keys [lines postline-states postindent-states] :as prev-state} overrides i]
+  [{:keys [lines postline-states postindent-states] :as prev-state} options i]
   (let [line-data {:lines (subvec lines 0 i)
                    :postindent-states (subvec postindent-states 0 i)
                    :postline-states (subvec postline-states 0 i)
                    :line-no (dec i)}
         last-cache (get postline-states (dec i))]
   (-> initial-state
-      (merge overrides line-data last-cache)
+      (merge options line-data last-cache)
       restore-insert-line)))
 
 (defn process-text-change
-  "A faster way to process an incremental change.
+  "Processes the given change for the given state.  Returns new state.
+  See `format-text-change` for usage."
+  ([prev-state change]
+   (process-text-change prev-state change nil))
+  ([prev-state {:keys [line-no new-line] :as change} options]
+   (let [; normalize args (allowing multiple line replacements)
+         [start-line-no end-line-no] (if (number? line-no) [line-no (inc line-no)] line-no)
+         line-replacements (if (string? new-line) [new-line] new-line)
 
-  prev-state: previous state
+         ;; 1. create initial state for starting at first changed line
+         ;; 2. process changed lines
+         ;; 3. process unchanged lines that come after
+         state (initial-cached-state prev-state options start-line-no)
+         state (reduce process-line state line-replacements)
+         state (process-unchanged-lines prev-state state end-line-no)]
 
-  change:
-    a map of
-      :line-no  (num or min,max line range)
-      :new-line (string or seq if multiple lines)
+     (finalize-state state))))
+
+;;----------------------------------------------------------------------
+;; public functions
+;;----------------------------------------------------------------------
+
+(defn format-text
+  "Fully process the given text.
+
+  'text' is the full text.
+
+  'options' is an optional map with supported keys:
+    :cursor-x     - x position of the cursor
+    :cursor-line  - line number of the cursor
+
+  Returns a map:
+    :text     - full text output
+    :valid?   - indicates if the input was valid
+    :state    - cached state to be passed to `format-text-change`
   "
-  [prev-state {:keys [line-no new-line] :as change} overrides]
-  (let [; normalize args (allowing multiple line replacements)
-        [start-line-no end-line-no] (if (number? line-no) [line-no (inc line-no)] line-no)
-        line-replacements (if (string? new-line) [new-line] new-line)
-
-        ;; 1. create initial state for starting at first changed line
-        ;; 2. process changed lines
-        ;; 3. process unchanged lines that come after
-        state (initial-cached-state prev-state overrides start-line-no)
-        state (reduce process-line state line-replacements)
-        state (process-unchanged-lines prev-state state end-line-no)]
-
-   (finalize-state state)))
+  ([text] (format-text text nil))
+  ([text options]
+   (let [state (process-text text options)
+         out-text (if (:valid? state)
+                    (join "\n" (:lines state))
+                    text)]
+     {:text out-text
+      :valid? (:valid? state)
+      :state state})))
 
 (defn format-text-change
-  [text prev-state change overrides]
-  (let [state (process-text-change prev-state change overrides)
-        out-text (if (:valid? state)
-                   (join "\n" (:lines state))
-                   text)]
-    {:text out-text
-     :valid? (:valid? state)
-     :state state}))
+  "Process changed lines in a previously processed text.
+
+  'text' is the full text (including the change).
+
+  'prev-state' is the state after processing 'text' before the 'change' occurred.
+    - found in the :state key of the result returned by `format-text` or this function.
+
+  'change' is a map:
+
+    KEY        |  DESCRIPTION             |  TYPE
+    -----------+--------------------------+------------------------------------
+    :line-no   |  line range to replace   |  a num or min,max line range
+    :new-line  |  new line(s) to insert   |  a string or seq if multiple lines
+
+  'options' is an optional map with supported keys:
+    :cursor-x     - x position of the cursor
+    :cursor-line  - line number of the cursor
+
+  Returns a map:
+    :text     - full text output
+    :valid?   - indicates if the input was valid
+    :state    - cached state to be passed to `format-text-change`
+  "
+  ([text prev-state change]
+   (format-text-change text prev-state change nil))
+  ([text prev-state change options]
+   (let [state (process-text-change prev-state change options)
+         out-text (if (:valid? state)
+                    (join "\n" (:lines state))
+                    text)]
+     {:text out-text
+      :valid? (:valid? state)
+      :state state})))
 

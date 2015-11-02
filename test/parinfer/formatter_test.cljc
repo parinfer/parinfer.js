@@ -174,8 +174,8 @@
     (:test-cases state)))
 
 (defn idempotent-check
-  [type- message text overrides format-text]
-  (let [result (format-text text overrides)
+  [type- message text options format-text]
+  (let [result (format-text text options)
         message (str type- " idempotence over " message)]
     (is (= text (:text result)) message)))
 
@@ -192,11 +192,11 @@
             diff-cursor (:cursor (:diff in))
             final-cursor (if (:diff in) diff-cursor cursor)
 
-            ;; overrides allow the initial state to be overwritten by something
+            ;; options allow the initial state to be overwritten by something
             ;; (we only use it for the cursor right now)
-            overrides (merge cursor)
-            diff-overrides (merge diff-cursor)
-            final-overrides (merge final-cursor)
+            options (merge cursor)
+            diff-options (merge diff-cursor)
+            final-options (merge final-cursor)
 
             ;; message needed for tracking errors
             message (cond-> (str type- " test case @ line #" (:file-line-no in))
@@ -216,9 +216,9 @@
                        (join "\n" (get-in in [:diff :lines])))
 
             ;; calculate result (with change if needed)
-            result (format-text text-in overrides)
+            result (format-text text-in options)
             result (if change
-                     (format-text-change text-in2 (:state result) change diff-overrides)
+                     (format-text-change text-in2 (:state result) change diff-options)
                      result)
             text-actual (:text result)]
 
@@ -229,9 +229,9 @@
                         "actual------------------------------------"
                         text-actual]))
 
-        (idempotent-check "infer" message text-actual final-overrides infer/format-text)
+        (idempotent-check "infer" message text-actual final-options infer/format-text)
         (when-not final-cursor
-          (idempotent-check "prep" message text-actual final-overrides prep/format-text))))))
+          (idempotent-check "prep" message text-actual final-options prep/format-text))))))
 
 (deftest run-infer-cases
   (run-test-cases

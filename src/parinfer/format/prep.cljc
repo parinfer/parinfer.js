@@ -148,8 +148,8 @@
 (defn process-text
   "Update the state by processing the given text."
   ([text] (process-text text nil))
-  ([text overrides]
-   (let [state (merge initial-state overrides)
+  ([text options]
+   (let [state (merge initial-state options)
          lines (get-lines text)
          state (reduce process-line state lines)
          state (finalize-state state)]
@@ -158,8 +158,8 @@
 (defn format-text
   "Format the given text by repositioning any trailing closing delimiters based on indentation."
   ([text] (format-text text nil))
-  ([text overrides]
-   (let [state (process-text text overrides)
+  ([text options]
+   (let [state (process-text text options)
          out-text (if (:valid? state)
                    (join "\n" (:lines state))
                    text)]

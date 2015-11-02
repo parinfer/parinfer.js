@@ -72,7 +72,7 @@
           (- end-x start-x))))))
 
 (defn compute-cm-change
-  [cm change overrides prev-state]
+  [cm change options prev-state]
   (let [{:keys [start-line end-line num-new-lines]}
         (if change
           {:start-line (.. change -from -line)
@@ -105,9 +105,9 @@
         scroll-x (.-scrollLeft scroller)
         scroll-y (.-scrollTop scroller) 
 
-        overrides {:cursor-line (.-line cursor)
-                   :cursor-x (.-ch cursor)
-                   :cursor-dx (compute-cursor-dx cursor change)}
+        options {:cursor-line (.-line cursor)
+                 :cursor-x (.-ch cursor)
+                 :cursor-dx (compute-cursor-dx cursor change)}
 
         key- (cm-key cm)
         mode (or (get-in @state [key- :mode]) :infer)
@@ -122,15 +122,15 @@
                         (infer/format-text-change
                           current-text
                           @prev-state
-                          (compute-cm-change cm change overrides @prev-state)
-                          overrides)
-                        (infer/format-text current-text overrides))]
+                          (compute-cm-change cm change options @prev-state)
+                          options)
+                        (infer/format-text current-text options))]
             (when (:valid? result)
               (reset! prev-state (:state result)))
             (:text result))
 
           :prep
-          (let [result (prep/format-text current-text overrides)]
+          (let [result (prep/format-text current-text options)]
             (:text result))
 
           nil)]
