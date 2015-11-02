@@ -4,6 +4,8 @@
   (:require
     #?(:clj  [clojure.test :refer [is deftest]]
        :cljs [cljs.test :refer-macros [is deftest]])
+    #?(:clj  [clojure.pprint :refer [pprint]]
+       :cljs [cljs.pprint :refer [pprint]])
     [clojure.string :as string :refer [join split-lines]]
     [parinfer.format.infer :as infer]
     [parinfer.format.prep :as prep]))
@@ -119,6 +121,9 @@
         diff (cond-> diff
                (= diff-ch "-") (update :end-line-no inc))
 
+        ;; commit diff to block
+        block (assoc block :diff diff)
+
         ;; finish determining cursor
         cursor (when cursor-x
                  {:cursor-x cursor-x
@@ -222,8 +227,7 @@
                         "expected----------------------------------"
                         text-expected
                         "actual------------------------------------"
-                        text-actual
-                        "------------------------------------------"]))
+                        text-actual]))
 
         (idempotent-check "infer" message text-actual final-overrides infer/format-text)
         (when-not final-cursor
@@ -232,6 +236,12 @@
 (deftest run-infer-cases
   (run-test-cases
     "infer"
+    infer/format-text
+    infer/format-text-change))
+
+(deftest run-infer-change-cases
+  (run-test-cases
+    "infer-change"
     infer/format-text
     infer/format-text-change))
 

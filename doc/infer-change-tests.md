@@ -174,7 +174,6 @@ Deleting many lines:
 -
 -
 -(defn frac [a b]
-+
    (let [result (/ a b)]
       result))
 ```
@@ -186,7 +185,6 @@ Deleting many lines:
  
  (defn prod [a b]
    (let [result (* a b)])
-
    (let [result (/ a b)]
       result))
 ```
