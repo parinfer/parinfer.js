@@ -217,7 +217,13 @@
                      result)
             text-actual (:text result)]
 
-        (is (= text-expected text-actual) message)
+        (is (= text-expected text-actual)
+            (join "\n" ["" message
+                        "expected----------------------------------"
+                        text-expected
+                        "actual------------------------------------"
+                        text-actual
+                        "------------------------------------------"]))
 
         (idempotent-check "infer" message text-actual final-overrides infer/format-text)
         (when-not final-cursor
