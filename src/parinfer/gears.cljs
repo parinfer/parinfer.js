@@ -46,7 +46,7 @@
         (.text text))))
 
 (defn make-gear
-  [svg drag-behavior {:keys [factor x y style-class caption
+  [svg drag-behavior {:keys [factor x y classes caption
                              addendum dedendum thickness profile-slope hole-radius] :as opts}]
   (let [radius (/ factor 2)
         teeth (/ radius 4)
@@ -64,9 +64,11 @@
                      :dedendum dedendum
                      :thickness thickness
                      :profileSlope profile-slope}
-        gear (doto (js/Gear.create svg js-opts)
-               (.call drag-behavior)
-               (.classed style-class true))]
+        gear (js/Gear.create svg js-opts)]
+
+    (.call gear drag-behavior)
+    (doseq [c classes]
+      (.classed gear c true))
 
     (when caption
       (add-gear-caption! gear caption))
@@ -86,8 +88,14 @@
 (defn apply-gear-attrs!
   [gear-obj attrs]
   (doseq [[k v] attrs]
-    (if (= k :power)
+    (case k
+      :power
       (js/Gear.setPower gear-obj v)
+
+      :classes
+      (doseq [[style-class enabled?] v]
+        (.classed gear-obj style-class enabled?))
+
       (.attr gear-obj (name k) v))))
 
 (defonce reload-index (atom 0))

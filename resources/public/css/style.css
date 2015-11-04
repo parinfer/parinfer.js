@@ -499,3 +499,14 @@ i.fa {
 .state-table .active-line {
   background: #FF0;
 }
+
+
+
+.gear {
+  opacity: 0.5;
+  transition: opacity 0.2s;
+}
+
+.gear.powered {
+  opacity: 0.8;
+}
