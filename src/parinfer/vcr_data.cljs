@@ -2686,43 +2686,43 @@
      {:change
       {:from {:line 0, :ch 0},
        :to {:line 0, :ch 0},
-       :text ("(let [a 1" "      b 2]" "  (+ a b))"),
+       :text ("(def m {:foo 1" "        :bar 2" "        :baz 3})"),
        :origin "paste"},
-      :dt 834}
-     {:selections ({:anchor {:line 0, :ch 1}, :head {:line 0, :ch 1}}),
-      :dt 793}
+      :dt 480}
+     {:selections ({:anchor {:line 0, :ch 6}, :head {:line 0, :ch 6}}),
+      :dt 883}
      {:change
-      {:from {:line 0, :ch 1},
-       :to {:line 0, :ch 1},
-       :text ("c"),
+      {:from {:line 0, :ch 6},
+       :to {:line 0, :ch 6},
+       :text ("y"),
        :origin "+input"},
-      :dt 645}
+      :dt 930}
      {:change
-      {:from {:line 0, :ch 2},
-       :to {:line 0, :ch 2},
-       :text ("o"),
+      {:from {:line 0, :ch 7},
+       :to {:line 0, :ch 7},
+       :text ("-"),
        :origin "+input"},
-      :dt 138}
+      :dt 136}
      {:change
-      {:from {:line 0, :ch 3},
-       :to {:line 0, :ch 3},
-       :text ("r"),
+      {:from {:line 0, :ch 8},
+       :to {:line 0, :ch 8},
+       :text ("m"),
        :origin "+input"},
-      :dt 161}
+      :dt 112}
      {:change
-      {:from {:line 0, :ch 4},
-       :to {:line 0, :ch 4},
-       :text ("e"),
+      {:from {:line 0, :ch 9},
+       :to {:line 0, :ch 9},
+       :text ("a"),
        :origin "+input"},
-      :dt 61}
+      :dt 152}
      {:change
-      {:from {:line 0, :ch 5},
-       :to {:line 0, :ch 5},
-       :text ("/"),
+      {:from {:line 0, :ch 10},
+       :to {:line 0, :ch 10},
+       :text ("p"),
        :origin "+input"},
-      :dt 156}],
+      :dt 208}],
     :init-value "", 
-    :last-time 1445549762808, 
+    :last-time 1446661662368, 
     :recording? false})
 
 (def paren-comment
