@@ -16,6 +16,7 @@
     [parinfer.format.infer :as infer]
     [parinfer.format.prep :as prep]
     [parinfer.toc :as toc]
+    [parinfer.gears :refer [create-gears!]]
     [ajax.core :refer [GET]]))
 
 (enable-console-print!)
@@ -113,7 +114,20 @@
 
 (defn create-index-gears!
   []
-  )
+  (create-gears!
+    "#naive-gears"
+    {:gears {:paren  {:x 50 :y 50
+                      :factor 110 :hole-radius 0.5
+                      :style-class "paren-gear"
+                      :caption {:text "Parens" :side :left}}
+             :indent {:x 150 :y 50
+                      :factor 96
+                      :style-class "indent-gear"
+                      :caption {:text "Indentation" :side :bottom}
+                      }}
+     :anims []}
+    {:width 722
+     :height 200}))
 
 (defn render-index! []
   (toc/init!)
