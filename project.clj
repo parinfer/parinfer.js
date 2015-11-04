@@ -37,7 +37,8 @@
               :compiler {:output-to "resources/public/js/compiled/parinfer.js"
                          :externs ["resources/public/codemirror/lib/closure-externs.js"
                                    "resources/public/js/lib/scrollMonitor.externs.js"
-                                   "resources/public/js/lib/gears.d3.externs.js"]
+                                   "resources/public/js/lib/gears.d3.externs.js"
+                                   "resources/public/js/lib/d3.ext.js"]
                          :main parinfer.core
                          :optimizations :advanced
                          :pretty-print false}}

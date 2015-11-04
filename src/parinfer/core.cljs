@@ -111,9 +111,14 @@
 
   (js/scrollMonitor.recalculateLocations))
 
+(defn create-index-gears!
+  []
+  )
+
 (defn render-index! []
   (toc/init!)
   (create-index-editors!)
+  (create-index-gears!)
   (load-index-anims!)
   (render-controls!))
 
