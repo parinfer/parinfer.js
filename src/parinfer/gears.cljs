@@ -71,9 +71,9 @@
 
 (defn tick-svg!
   [svg]
-  (.. svg
-      (selectAll ".gear-path")
-      (attr "transform"
+  (-> svg
+      (.selectAll ".gear-path")
+      (.attr "transform"
             (fn [d]
               (set! (.-angle d) (+ (.-angle d) (.-speed d)))
               (let [degrees (* (.-angle d) (/ 180 Math/PI))]
@@ -87,14 +87,17 @@
 
 (defn create-gears!
   [selector {:keys [gears anims]} {:keys [width height] :as svg-opts}]
-  (.. (js/$ selector)
-      (on "mousedown" (fn [e] (.. e -originalEvent (preventDefault)))))
-  (let [svg (.. js/d3
-                (select selector)
-                (append "svg")
-                (attr "viewbox" (str "0 0 " width " " height))
-                (attr "width" width)
-                (attr "height" height))
+  (-> (js/$ selector)
+      (.on "mousedown" (fn [e] (-> e .-originalEvent (.preventDefault)))))
+  (let [container (js/d3.select selector)
+        _ (-> container
+              (.select "svg")
+              (.remove))
+        svg (-> container
+                (.append "svg")
+                (.attr "viewbox" (str "0 0 " width " " height))
+                (.attr "width" width)
+                (.attr "height" height))
         gear-array #js []
         drag-behavior (js/Gear.dragBehaviour gear-array svg)
         gear-objs (for [[name- opts] gears]
