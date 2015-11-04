@@ -1,4 +1,8 @@
-(ns parinfer.gears)
+(ns parinfer.gears
+  (:require-macros
+    [cljs.core.async.macros :refer [go go-loop]])
+  (:require
+    [cljs.core.async :refer [<! timeout chan alts! close!]]))
 
 (def default-options
   {:radius 16
@@ -79,14 +83,43 @@
               (let [degrees (* (.-angle d) (/ 180 Math/PI))]
                 (str "rotate(" degrees ")"))))))
 
-(defonce state (atom {}))
+(defn apply-gear-attrs!
+  [gear-obj attrs]
+  (doseq [[k v] attrs]
+    (if (= k :power)
+      (js/Gear.setPower gear-obj v)
+      (.attr gear-obj (name k) v))))
+
+(defonce reload-index (atom 0))
 
 (defn animate-gears!
-  [svg gear-map anims]
-  (js/d3.timer #(tick-svg! svg)))
+  [svg gear-map gear-array anim-frames]
+
+  (let [index (swap! reload-index inc)]
+
+    (when (seq anim-frames)
+      (go-loop []
+        (doseq [{:keys [gear-attrs dt]} anim-frames]
+          (doseq [[key- attrs] gear-attrs]
+            (apply-gear-attrs! (gear-map key-) attrs))
+          (js/Gear.updateGears gear-array)
+          (<! (timeout dt)))
+
+        ;; only continue if this is still the active timer
+        (when (= index @reload-index)
+          (recur)))
+
+      (js/d3.timer
+        (fn []
+          (tick-svg! svg)
+
+          ;; only continue if this is still the active timer
+          (not= index @reload-index))))))
 
 (defn create-gears!
-  [selector {:keys [gears anims]} {:keys [width height] :as svg-opts}]
+  [selector
+   {:keys [init-gears anim-frames]}
+   {:keys [width height] :as svg-opts}]
   (-> (js/$ selector)
       (.on "mousedown" (fn [e] (-> e .-originalEvent (.preventDefault)))))
   (let [container (js/d3.select selector)
@@ -100,12 +133,12 @@
                 (.attr "height" height))
         gear-array #js []
         drag-behavior (js/Gear.dragBehaviour gear-array svg)
-        gear-objs (for [[name- opts] gears]
+        gear-objs (for [[name- opts] init-gears]
                     (make-gear svg drag-behavior (merge default-options opts)))
-        gear-map (zipmap (keys gears) gear-objs)]
+        gear-map (zipmap (keys init-gears) gear-objs)]
 
     (doseq [g gear-objs]
       (.push gear-array g))
 
-    (animate-gears! svg gear-map anims)))
+    (animate-gears! svg gear-map gear-array anim-frames)))
 

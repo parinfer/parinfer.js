@@ -116,16 +116,21 @@
   []
   (create-gears!
     "#naive-gears"
-    {:gears {:paren  {:x 50 :y 50
-                      :factor 110 :hole-radius 0.5
-                      :style-class "paren-gear"
-                      :caption {:text "Parens" :side :left}}
-             :indent {:x 150 :y 50
-                      :factor 96
-                      :style-class "indent-gear"
-                      :caption {:text "Indentation" :side :bottom}
-                      }}
-     :anims []}
+    {:init-gears {:paren  {:x 240 :y 70
+                           :factor 96 ;:hole-radius 0.5
+                           :style-class "paren-gear"
+                           :caption {:text "Parens" :side :left}}
+                  :indent {:x 460 :y 70
+                           :factor 96
+                           :style-class "indent-gear"
+                           :caption {:text "Indentation" :side :right}
+                           }}
+     :anim-frames [{:gear-attrs {:paren {:power 0.01}
+                                 :indent {:power 0}}
+                    :dt 1000}
+                   {:gear-attrs {:paren {:power 0}
+                                 :indent {:power 0.01}}
+                    :dt 1000}]}
     {:width 722
      :height 200}))
 
