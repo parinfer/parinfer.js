@@ -14,8 +14,7 @@
        (subs orig end)))
 
 (defn get-lines
-  "fix split-lines by including the last empty line."
+  "get all lines (even empty ones)
+  source: http://stackoverflow.com/a/29614863/142317"
   [text]
-  (let [last-char (str (last text))]
-    (cond-> (vec (string/split-lines text))
-      (= "\n" last-char) (conj ""))))
+  (string/split text #"\n" -1))
