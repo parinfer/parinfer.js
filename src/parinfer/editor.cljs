@@ -13,8 +13,8 @@
                                      get-prev-state
                                      frame-updated?
                                      set-frame-updated!
-                                     record-change!
-                                     ]]
+                                     record-change!]]
+                                     
     [parinfer.vcr :refer [vcr
                           empty-recording
                           parse-change

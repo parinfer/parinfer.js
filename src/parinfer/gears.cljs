@@ -149,4 +149,3 @@
       (.push gear-array g))
 
     (animate-gears! svg gear-map gear-array anim-frames)))
-

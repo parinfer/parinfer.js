@@ -166,4 +166,3 @@
     {:text out-text
      :valid? (:valid? state)
      :state state})))
-

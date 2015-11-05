@@ -394,9 +394,9 @@
                    :postline-states (subvec postline-states 0 i)
                    :line-no (dec i)}
         last-cache (get postline-states (dec i))]
-  (-> initial-state
-      (merge options line-data last-cache)
-      restore-insert-line)))
+    (-> initial-state
+        (merge options line-data last-cache)
+        restore-insert-line)))
 
 (defn process-text-change
   "Processes the given change for the given state.  Returns new state.
@@ -479,4 +479,3 @@
      {:text out-text
       :valid? (:valid? state)
       :state state})))
-

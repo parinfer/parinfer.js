@@ -9,5 +9,5 @@
   {:text ""     ;; text of the editor
    :mode :infer ;; editor mode (:infer, :prep)
    :cm nil      ;; the CodeMirror instance 
-   :watcher nil ;; the ScrollMonitor instance
-   })
+   :watcher nil}) ;; the ScrollMonitor instance
+   

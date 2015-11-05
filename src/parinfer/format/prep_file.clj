@@ -10,7 +10,7 @@
   [filename]
   (println "Reading" filename "...")
   (let [orig-text (slurp filename)
-        prep-text (prep/format-text orig-text)]
+        prep-text (:text (prep/format-text orig-text))]
     (println "Writing" filename "...")
     (spit filename prep-text)
     (spit (str filename ".bak") orig-text)))

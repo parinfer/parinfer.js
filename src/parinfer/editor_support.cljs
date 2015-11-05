@@ -3,8 +3,8 @@
     [clojure.string :as string :refer [join]]
     [parinfer.format.infer :as infer]
     [parinfer.format.prep :as prep]
-    [parinfer.state :refer [state]]
-    ))
+    [parinfer.state :refer [state]]))
+    
 
 (defprotocol IEditor
   "Custom data/methods for a CodeMirror editor."
@@ -144,4 +144,3 @@
       (.setSelections cm selections)
       (.setCursor cm cursor))
     (.scrollTo cm scroll-x scroll-y)))
-

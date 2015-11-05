@@ -120,8 +120,8 @@
    :indent {:x 460 :y 70
             :factor 96
             :classes ["indent-gear"]
-            :caption {:text "Indentation" :side :right}
-            }})
+            :caption {:text "Indentation" :side :right}}})
+            
 
 (defn create-index-gears!
   []
@@ -156,20 +156,20 @@
     (render [_]
       (html
         [:table.state-table
-        (for [[i {:keys [insert stack]}] (map-indexed vector postline-states)]
-          [:tr {:class (when (= i cursor-line) "active-line")}
-           [:td.line-no (inc i)]
-           [:td.line-dy (:line-dy insert)]
-           [:td (:x-pos insert)]
-           [:td (:string (reduce
-                  (fn [{:keys [next-x] :as result}
-                       {:keys [x-pos ch]}]
-                    (let [pad (apply str (repeat (- x-pos next-x) " "))]
-                      (-> result
-                          (update :string str pad ch)
-                          (assoc :next-x (inc x-pos)))))
-                  {:next-x 0 :string ""}
-                  stack))]])]))))
+         (for [[i {:keys [insert stack]}] (map-indexed vector postline-states)]
+           [:tr {:class (when (= i cursor-line) "active-line")}
+            [:td.line-no (inc i)]
+            [:td.line-dy (:line-dy insert)]
+            [:td (:x-pos insert)]
+            [:td (:string (reduce
+                           (fn [{:keys [next-x] :as result}
+                                {:keys [x-pos ch]}]
+                             (let [pad (apply str (repeat (- x-pos next-x) " "))]
+                               (-> result
+                                   (update :string str pad ch)
+                                   (assoc :next-x (inc x-pos)))))
+                           {:next-x 0 :string ""}
+                           stack))]])]))))
 
 (defn render-debug-state! []
   (when-let [cm (create-editor! "code-editor" :editor {:viewportMargin Infinity
