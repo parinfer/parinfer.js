@@ -513,10 +513,11 @@ i.fa {
 
 .gear.auto-indent-gear
 {
-  opacity: 0;
+  opacity: 0.8;
 }
 
-.gear.auto-indent-gear.powered {
-  opacity: 0.8;
+.gear.auto-indent-gear.invisible
+{
+  opacity: 0;
 }
 

@@ -133,20 +133,34 @@
                                        :indent {:power -0.01}}
                           :dt 1000}]}}
 
-   "auto-indent-gears"
+   "helper-gears"
    {:svg-opts {:width "100%" :height 200}
     :data {:init-gears (merge
                          base-gears
-                         {:auto {:x 509 :y 123
-                                 :factor 64
-                                 :classes ["auto-indent-gear"]
-                                 :caption {:text "auto-indent" :side :right}}})
-           :anim-frames [{:gear-attrs {:auto {:power 0.01}}
-                          :dt 2000}
-                         {:gear-attrs {:auto {:power 0}}
-                          :dt 1000}]
-           }
-    }
+                         {:auto-indent {:x 509 :y 123
+                                        :factor 64
+                                        :classes ["auto-indent-gear"]
+                                        :caption {:text "auto-indent" :side :right}}
+                          :paredit {:x 191 :y 123
+                                    :factor 64
+                                    :classes ["paredit-gear"]
+                                    :caption {:text "paredit" :side :left}}})
+           :anim-frames [{:gear-attrs {:auto-indent {:classes {"invisible" false}}}
+                          :dt 500}
+                         {:gear-attrs {:auto-indent {:power 0.15
+                                              :classes {"invisible" false}}}
+                          :dt 500}
+                         {:gear-attrs {:auto-indent {:power 0}}
+                          :dt 500}
+                         {:gear-attrs {:auto-indent {:classes {"invisible" true}}}
+                          :dt 1000}
+
+                         {:gear-attrs {:paredit {:power 0.05}}
+                          :dt 1000}
+                         {:gear-attrs {:paredit {:power 0}}
+                          :dt 1000}
+                         ]}}
+
    })
 
 (defn create-index-gears! []
