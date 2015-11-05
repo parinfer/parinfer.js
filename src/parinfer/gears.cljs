@@ -98,12 +98,16 @@
 
       (.attr gear-obj (name k) v))))
 
-(defonce reload-index (atom 0))
+(defonce reload-indexes (atom {}))
 
 (defn animate-gears!
-  [svg gear-map gear-array anim-frames]
+  [svg selector gear-map gear-array anim-frames]
 
-  (let [index (swap! reload-index inc)]
+  (let [update-index #(inc (or % 0))
+        _ (swap! reload-indexes update selector update-index)
+        latest-index #(get @reload-indexes selector)
+        index (latest-index)
+        should-continue? #(= index (latest-index))]
 
     (when (seq anim-frames)
       (go-loop []
@@ -112,17 +116,13 @@
             (apply-gear-attrs! (gear-map key-) attrs))
           (js/Gear.updateGears gear-array)
           (<! (timeout dt)))
-
-        ;; only continue if this is still the active timer
-        (when (= index @reload-index)
+        (when (should-continue?)
           (recur)))
 
       (js/d3.timer
         (fn []
           (tick-svg! svg)
-
-          ;; only continue if this is still the active timer
-          (not= index @reload-index))))))
+          (not (should-continue?)))))))
 
 (defn create-gears!
   [selector
@@ -148,4 +148,4 @@
     (doseq [g gear-objs]
       (.push gear-array g))
 
-    (animate-gears! svg gear-map gear-array anim-frames)))
+    (animate-gears! svg selector gear-map gear-array anim-frames)))
