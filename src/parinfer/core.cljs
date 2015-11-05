@@ -137,25 +137,13 @@
    {:svg-opts {:width "100%" :height 200}
     :data {:init-gears (merge
                          base-gears
-                         {:auto {:x 410 :y 122
+                         {:auto {:x 509 :y 123
                                  :factor 64
                                  :classes ["auto-indent-gear"]
-                                 :caption {:text "newline auto-indent" :side :right}}
-                          :force {:x 510 :y 122
-                                  :factor 64
-                                  :classes ["force-realign-gear"]
-                                  :caption {:text "realign selection" :side :right}}})
-           :anim-frames [{:gear-attrs {:auto {:power 0.01}
-                                      :force {:power 0}}
+                                 :caption {:text "auto-indent" :side :right}}})
+           :anim-frames [{:gear-attrs {:auto {:power 0.01}}
                           :dt 2000}
-                         {:gear-attrs {:auto {:power 0}
-                                       :force {:power 0}}
-                          :dt 1000}
-                         {:gear-attrs {:auto {:power 0}
-                                      :force {:power 0.01}}
-                          :dt 2000}
-                         {:gear-attrs {:auto {:power 0}
-                                       :force {:power 0}}
+                         {:gear-attrs {:auto {:power 0}}
                           :dt 1000}]
            }
     }

@@ -511,8 +511,7 @@ i.fa {
   opacity: 0.8;
 }
 
-.gear.auto-indent-gear,
-.gear.force-realign-gear
+.gear.auto-indent-gear
 {
   opacity: 0;
 }
@@ -521,6 +520,3 @@ i.fa {
   opacity: 0.8;
 }
 
-.gear.force-realign-gear.powered {
-  opacity: 0.8;
-}

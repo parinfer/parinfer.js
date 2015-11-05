@@ -256,8 +256,10 @@ var Gear = {
         for (i = 0; i < gears.length; i += 1) {
             gearA = gears[i];
 
-            if (!gearA.classed('dragging'))
-                continue;
+            // EDIT: we want gears to always mesh, not just ones we're dragging
+            //if (!gearA.classed('dragging'))
+                //continue;
+
 
             var nextGear = gearA.datum(),
                 connectedKeys = Gear.Utility.keys(nextGear.connected);
