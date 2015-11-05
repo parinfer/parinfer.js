@@ -112,26 +112,29 @@
 
   (js/scrollMonitor.recalculateLocations))
 
+(def base-gears
+  {:paren  {:x 240 :y 70
+            :factor 96 ;:hole-radius 0.5
+            :classes ["paren-gear"]
+            :caption {:text "Parens" :side :left}}
+   :indent {:x 460 :y 70
+            :factor 96
+            :classes ["indent-gear"]
+            :caption {:text "Indentation" :side :right}
+            }})
+
 (defn create-index-gears!
   []
   (create-gears!
     "#naive-gears"
-    {:init-gears {:paren  {:x 240 :y 70
-                           :factor 96 ;:hole-radius 0.5
-                           :classes ["paren-gear"]
-                           :caption {:text "Parens" :side :left}}
-                  :indent {:x 460 :y 70
-                           :factor 96
-                           :classes ["indent-gear"]
-                           :caption {:text "Indentation" :side :right}
-                           }}
+    {:init-gears base-gears
      :anim-frames [{:gear-attrs {:paren {:power 0.01}
                                  :indent {:power 0}}
                     :dt 1000}
                    {:gear-attrs {:paren {:power 0}
                                  :indent {:power -0.01}}
                     :dt 1000}]}
-    {:width 722
+    {:width "100%"
      :height 200}))
 
 (defn render-index! []
