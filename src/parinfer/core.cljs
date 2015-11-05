@@ -148,7 +148,7 @@
            :anim-frames [{:gear-attrs {:auto-indent {:classes {"invisible" false}}}
                           :dt 500}
                          {:gear-attrs {:auto-indent {:power 0.15
-                                              :classes {"invisible" false}}}
+                                                     :classes {"invisible" false}}}
                           :dt 500}
                          {:gear-attrs {:auto-indent {:power 0}}
                           :dt 500}
@@ -158,6 +158,24 @@
                          {:gear-attrs {:paredit {:power 0.05}}
                           :dt 1000}
                          {:gear-attrs {:paredit {:power 0}}
+                          :dt 1000}
+                         ]}}
+
+   "parinfer-gears"
+   {:svg-opts {:width "100%" :height 200}
+    :data {:init-gears (merge
+                         base-gears
+                         {:parinfer {:x 350 :y 95
+                                     :factor 64
+                                     :classes ["parinfer-gear"]
+                                     :caption {:text "parinfer" :side :bottom}}})
+           :anim-frames [{:gear-attrs {:indent {:power 0.05}}
+                          :dt 1000}
+                         {:gear-attrs {:indent {:power 0}}
+                          :dt 1000}
+                         {:gear-attrs {:paren {:power -0.05}}
+                          :dt 1000}
+                         {:gear-attrs {:paren {:power 0}}
                           :dt 1000}
                          ]}}
 

@@ -46,7 +46,7 @@
         (.text text))))
 
 (defn make-gear
-  [svg drag-behavior {:keys [factor x y classes caption
+  [svg drag-behavior {:keys [factor x y angle classes caption
                              addendum dedendum thickness profile-slope hole-radius] :as opts}]
   (let [radius (/ factor 2)
         teeth (/ radius 4)
@@ -59,6 +59,7 @@
                      :teeth teeth
                      :x x
                      :y y
+                     :angle angle
                      :holeRadius hole-radius
                      :addendum addendum
                      :dedendum dedendum
@@ -126,7 +127,7 @@
 
 (defn create-gears!
   [selector
-   {:keys [init-gears anim-frames]}
+   {:keys [init-gears mesh-gears anim-frames]}
    {:keys [width height] :as svg-opts}]
   (-> (js/$ selector)
       (.on "mousedown" (fn [e] (-> e .-originalEvent (.preventDefault)))))
@@ -147,5 +148,7 @@
 
     (doseq [g gear-objs]
       (.push gear-array g))
+
+    (js/d3.timer (fn [] (tick-svg! svg)))
 
     (animate-gears! svg selector gear-map gear-array anim-frames)))
