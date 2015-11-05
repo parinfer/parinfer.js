@@ -113,11 +113,11 @@
   (js/scrollMonitor.recalculateLocations))
 
 (def base-gears
-  {:paren  {:x 240 :y 70
+  {:paren  {:x 280 :y 70
             :factor 96 ;:hole-radius 0.5
             :classes ["paren-gear"]
             :caption {:text "Parens" :side :left}}
-   :indent {:x 460 :y 70
+   :indent {:x 420 :y 70
             :factor 96
             :classes ["indent-gear"]
             :caption {:text "Indentation" :side :right}}})
@@ -137,12 +137,12 @@
    {:svg-opts {:width "100%" :height 200}
     :data {:init-gears (merge
                          base-gears
-                         {:auto-indent {:x 509 :y 123
-                                        :factor 64
+                         {:auto-indent {:x 465 :y 116
+                                        :factor 48
                                         :classes ["auto-indent-gear"]
                                         :caption {:text "auto-indent" :side :right}}
-                          :paredit {:x 191 :y 123
-                                    :factor 64
+                          :paredit {:x 235 :y 116
+                                    :factor 48
                                     :classes ["paredit-gear"]
                                     :caption {:text "paredit" :side :left}}})
            :anim-frames [{:gear-attrs {:auto-indent {:classes {"invisible" false}}}
