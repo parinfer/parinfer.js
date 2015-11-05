@@ -121,21 +121,49 @@
             :factor 96
             :classes ["indent-gear"]
             :caption {:text "Indentation" :side :right}}})
-            
 
-(defn create-index-gears!
-  []
-  (create-gears!
-    "#naive-gears"
-    {:init-gears base-gears
-     :anim-frames [{:gear-attrs {:paren {:power 0.01}
-                                 :indent {:power 0}}
-                    :dt 1000}
-                   {:gear-attrs {:paren {:power 0}
-                                 :indent {:power -0.01}}
-                    :dt 1000}]}
-    {:width "100%"
-     :height 200}))
+(def index-gears
+  {"naive-gears"
+   {:svg-opts {:width "100%" :height 200}
+    :data {:init-gears base-gears
+           :anim-frames [{:gear-attrs {:paren {:power 0.01}
+                                       :indent {:power 0}}
+                          :dt 1000}
+                         {:gear-attrs {:paren {:power 0}
+                                       :indent {:power -0.01}}
+                          :dt 1000}]}}
+
+   "auto-indent-gears"
+   {:svg-opts {:width "100%" :height 200}
+    :data {:init-gears (merge
+                         base-gears
+                         {:auto {:x 410 :y 122
+                                 :factor 64
+                                 :classes ["auto-indent-gear"]
+                                 :caption {:text "newline auto-indent" :side :right}}
+                          :force {:x 510 :y 122
+                                  :factor 64
+                                  :classes ["force-realign-gear"]
+                                  :caption {:text "realign selection" :side :right}}})
+           :anim-frames [{:gear-attrs {:auto {:power 0.01}
+                                      :force {:power 0}}
+                          :dt 2000}
+                         {:gear-attrs {:auto {:power 0}
+                                       :force {:power 0}}
+                          :dt 1000}
+                         {:gear-attrs {:auto {:power 0}
+                                      :force {:power 0.01}}
+                          :dt 2000}
+                         {:gear-attrs {:auto {:power 0}
+                                       :force {:power 0}}
+                          :dt 1000}]
+           }
+    }
+   })
+
+(defn create-index-gears! []
+  (doseq [[id {:keys [data svg-opts]}] index-gears]
+    (create-gears! (str "#" id) data svg-opts)))
 
 (defn render-index! []
   (toc/init!)
