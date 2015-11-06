@@ -387,3 +387,4 @@ CodeMirrorObj.prototype.indentSelection = function(){};
 CodeMirrorObj.prototype.replaceSelection = function(){};
 CodeMirrorObj.prototype.listSelections = function(){};
 CodeMirrorObj.prototype.setSelections = function(){};
+CodeMirrorObj.prototype.getAllMarks = function(){};

@@ -2,7 +2,7 @@ var Gear = {
   create: function(){},
   setPower: function(){},
   randomArrange: function(){},
-  dragBehavior: function(){},
+  dragBehaviour: function(){},
   anyGearCollides: function(){},
   gearCollides: function(){},
   propagateGears: function(){},
