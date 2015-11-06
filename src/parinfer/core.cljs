@@ -54,15 +54,15 @@
                     (let [changes (js/JsDiff.diffChars in out)]
                       (reduce
                         (fn [{:keys [in-x out-x] :as result} change]
-                          (let [value (.-value change)
+                          (let [value (aget change "value")
                                 length (count value)]
                             (cond
-                              (.-added change)
+                              (aget change "added")
                               (do
                                 (add-mark! cm-output line-no out-x value "inserted")
                                 (update result :out-x + length))
 
-                              (.-removed change)
+                              (aget change "removed")
                               (do
                                 (add-mark! cm-input line-no in-x value "removed")
                                 (update result :in-x + length))
