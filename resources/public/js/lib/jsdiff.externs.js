@@ -1,0 +1,2 @@
+JsDiff = {};
+JsDiff.diffChars = function(){};
