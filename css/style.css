@@ -307,25 +307,25 @@ code {
   height: 90px;
 }
 
-#cm-code-how-input,
-#cm-code-how-output
+#cm-code-indent-input,
+#cm-code-indent-output
 {
-  height: 240px;
+  height: 250px;
 }
 
-#cm-code-how-output
+#cm-code-indent-output
 {
   opacity: 0.75;
 }
 
-#cm-code-how-output .cm-bracket.cm-eol
+#cm-code-indent-output .cm-bracket.cm-eol
 {
   opacity: 1;
   background: #AAFFC2;
 }
 
-#cm-code-how-input .cm-bracket.cm-eol,
-#cm-code-how-input .cm-bracket.cm-sol
+#cm-code-indent-input .cm-bracket.cm-eol,
+#cm-code-indent-input .cm-bracket.cm-sol
 {
   opacity: 1;
   background: #FFBEBE;
@@ -343,28 +343,28 @@ code {
   background: #AAFFC2;
 }
 
-#cm-code-how-output .cm-bracket.cm-mol,
-#cm-code-how-input .cm-bracket.cm-mol
+#cm-code-indent-output .cm-bracket.cm-mol,
+#cm-code-indent-input .cm-bracket.cm-mol
 {
   background: #FFE8B0;
 }
 
-#cm-code-how-output span.cm-keyword,
-#cm-code-how-output span.cm-variable,
-#cm-code-how-output span.cm-builtin,
-#cm-code-how-output span.cm-string,
-#cm-code-how-output span.cm-def,
-#cm-code-how-output span.cm-atom,
-#cm-code-how-output span.cm-number,
-#cm-code-how-output span.cm-comment,
-#cm-code-how-input span.cm-keyword,
-#cm-code-how-input span.cm-variable,
-#cm-code-how-input span.cm-builtin,
-#cm-code-how-input span.cm-string,
-#cm-code-how-input span.cm-def,
-#cm-code-how-input span.cm-atom,
-#cm-code-how-input span.cm-number,
-#cm-code-how-input span.cm-comment
+#cm-code-indent-output span.cm-keyword,
+#cm-code-indent-output span.cm-variable,
+#cm-code-indent-output span.cm-builtin,
+#cm-code-indent-output span.cm-string,
+#cm-code-indent-output span.cm-def,
+#cm-code-indent-output span.cm-atom,
+#cm-code-indent-output span.cm-number,
+#cm-code-indent-output span.cm-comment,
+#cm-code-indent-input span.cm-keyword,
+#cm-code-indent-input span.cm-variable,
+#cm-code-indent-input span.cm-builtin,
+#cm-code-indent-input span.cm-string,
+#cm-code-indent-input span.cm-def,
+#cm-code-indent-input span.cm-atom,
+#cm-code-indent-input span.cm-number,
+#cm-code-indent-input span.cm-comment
 {
   opacity: 0.3;
   color: #000;
@@ -464,3 +464,68 @@ td .side-point
 i.fa {
   margin-right: 5px;
 }
+
+#cm-code-editor {
+  height: auto;
+  float: left;
+  width: 50%;
+}
+
+#debug-state {
+  overflow-x: auto;
+  width: 50%;
+  white-space: pre;
+}
+
+.state-table {
+  margin-top: 6px;;
+  font: 14px Menlo;
+}
+
+.state-table td {
+  margin: 0;
+  padding: 0px 10px;
+  height: 17px;
+}
+
+.state-table .line-no {
+  opacity: 0.5;
+}
+
+.state-table .line-dy {
+  text-align: right;
+}
+
+.state-table .active-line {
+  background: #FF0;
+}
+
+
+.gear {
+  opacity: 0.3;
+  transition: opacity 0.2s;
+}
+
+.gear.powered {
+  opacity: 0.8;
+}
+
+.gear.auto-indent-gear
+{
+  opacity: 0.8;
+}
+
+.gear.auto-indent-gear.invisible
+{
+  opacity: 0;
+}
+
+.parinfer-gear
+{
+  opacity: 0.15;
+}
+
+.gearbox {
+  margin-bottom: 80px;
+}
+

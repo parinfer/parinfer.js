@@ -137,65 +137,76 @@ use these extra delimiters to help visually separate certain constructs.
 
 <div class="wrapper">
 <section id="visualizing-how-we-edit">
-<h3>Visualizing how we edit</h3>
+<h3>A Visual Metaphor</h3>
 
 <p>
-As we have seen, there is an obvious relationship between parens and indentation in Lisp.
-Different solutions manage this relationship differently.
+Since we see an obvious relationship between Parens and Indentation in Lisp, a
+lot of our editing revolves around correcting one when the other changes.  We
+will visualize these actions below as spinning gears, since some actions can influence
+others.
 </p>
 
-<p>
-<strong>Naive</strong> manually modifying one after changing the other.
-gears separated with the user spinning one, then the other.
-</p>
+<div class="interact">
+<i class="fa fa-gear fa-lg"></i>
+<strong>The black gear</strong> represents the current action we are taking.
+</div>
 
 <p>
-<strong>Auto-indent</strong> most editor features for newline, or realign in clojure-mode for example.
-indentation gear turns automatically after "enter", some "realign" hotkey (as in clojure-mode).
-Does not prevent manual adjustment.
+<strong>The menial and default</strong> way to edit Lisp is to manually ensure
+our parens are balanced after inserting or removing them.  Then, we adjust
+the indentation to match it in kind.
 </p>
 
-<p>
-<strong>Indentation-based syntax</strong>
-paren gear becomes invisible
-</p>
+<div class="gearbox" id="naive-gears">
+</div>
 
 <p>
-<strong>Paredit</strong>
-paren gear tied to paredit
+<strong>Existing tools automate</strong> some of these editing tasks.
+For example, <em>Paredit</em> forces you to transform or add parens in a
+balanced way through special hotkeys.  And <em>Auto-indent</em> allows you to
+auto-correct indentation of selected lines when desired.
 </p>
 
+<div class="gearbox" id="helper-gears">
+</div>
+
 <p>
-<strong>Pretty-Printers</strong> full-fledged
+<strong>Parinfer <em>combines and simplifies</em></strong> this type of automation by
+naturally keeping Parens and Indentation in lockstep.  It formally
+<em>infers</em> changes to one based on the other.
+</p>
+
+<div class="gearbox" id="parinfer-gears">
+</div>
+
 </section>
 </div>
-</p>
 
 <!------------------------------------------------------------------------------------>
 
 <div class="wrapper">
 <section id="why-parinfer-is-different">
-<h3>Why Parinfer is different</h3>
+<h3>Two Modes</h3>
 
 <p>
-The objective of <em>Parinfer</em> is to keep parens and indentation in lockstep.
-Depending on the mode you're in, parens or indentation become inferred based on
-edits to the other.
+Parinfer consists of two modes allowing you to choose the source of the
+inference (i.e. the master gear).  This allows you to choose the degree of
+freedom that <em>you</em> want, while relinquishing control of the other to
+<em>Parinfer</em>.  In either case, your code stays properly formatted.
 </p>
 
-<p>
-You can imagine the tight relationship between parens and indentation as two
-gears joined together.  <em>Parinfer</em> allows you to choose which gear is in
-control of the other.
-</p>
+<ol>
+<li>
+<strong>Indent Mode</strong> causes indentation to control parens, and is
+certainly the most useful for editing tasks, seen in the next section.
+</li>
 
-<p>
-"Paren Mode" causes parens to control indentation.  "Indent Mode" causes
-indentation to control parens.  This allows you to choose the degree of freedom
-that <em>you</em> want, while relinquishing control of the other to <em>Parinfer</em>.  In
-either case, your code stays properly formatted, except in cases when the input
-becomes imbalanced.
-</p>
+<li>
+<strong>Paren Mode</strong> causes parens to control indentation.  This plays
+an important role in preparing existing files for use in Parinfer, as well as
+enabling some other useful editing tasks that we will see.
+</li>
+</ol>
 
 </section>
 </div>
@@ -290,7 +301,7 @@ roughly equivalent to those listed.
 
 <p>
 We perform the following steps to rearrange parens based on indentation.<br>
-<span class="side-point">We will refer to these later as rules #1, #2, and #3.
+<span class="side-point">We will refer to these later as rules #1, #2, #3 and #4.
 (See the [mathematical basis] for a closer look at why these rules work.)</span>
 </p>
 
@@ -309,10 +320,11 @@ We perform the following steps to rearrange parens based on indentation.<br>
 <strong>Try it!</strong> Edit the code below on the left to see how parens are inferred on the right.
 </div>
 
+
 <div class="two-col">
 <div class="col">
-<div class="caption"><strong>Input:</strong> Some close-parens are kept.  Others are removed.</div>
-<textarea id="code-how-input">
+<div class="caption"><strong>Input:</strong> close-parens are removed or kept.</div>
+<textarea id="code-indent-input">
 (defn on-click []
   (swap! s update-in [:x] inc)
   )
@@ -328,20 +340,14 @@ We perform the following steps to rearrange parens based on indentation.<br>
 </div>
 
 <div class="col">
-<div class="caption"><strong>Output:</strong> Close-parens are reinserted based purely on indentation.</div>
-<textarea id="code-how-output">
+<div class="caption"><strong>Output:</strong> close-parens are inserted.</div>
+<textarea id="code-indent-output">
 </textarea>
 </div>
 </div>
 
 <p>
-Notice that the code on the left encodes all structural information while
-eliminating piles of parentheses.  This is essentially how Indent Mode sees your
-code.  It <em>infers</em> the rest.
-</p>
-
-<p>
-There are more steps performed that you can
+This is the gist of what's happening.  There are more steps performed that you can
 <a href="https://github.com/shaunlebron/parinfer/blob/master/doc/infer-details.md">read about in detail</a>,
 but we will just explore their effects in the next section.
 </p>
@@ -413,6 +419,11 @@ i.e. the current list "slurps" all elements to the right of your cursor
 </tr>
 
 </table>
+
+<p>
+We illustrate these operations in the following examples.
+</p>
+
 </section>
 </div>
 
@@ -423,7 +434,7 @@ i.e. the current list "slurps" all elements to the right of your cursor
 <h4>Inserting Parens</h4>
 
 <div>
-<div class="caption"><strong>Wrap</strong> by inserting a open-paren. It will auto-close as far as it can, due to rule #3.</div>
+<div class="caption"><strong>Wrap</strong> by inserting an open-paren. It will auto-close as far as it can, due to rule #4.</div>
 <textarea id="code-wrap">
 </textarea>
 </div>
@@ -452,13 +463,13 @@ Why can't I insert a close-paren in certain places?
 <h4>Deleting Parens</h4>
 
 <div>
-<div class="caption"><strong>Splice</strong> by removing a open-paren. Its corresponding close-paren is removed, due to rule #1.</div>
+<div class="caption"><strong>Splice</strong> by removing an open-paren. Its corresponding close-paren is removed, due to rule #1.</div>
 <textarea id="code-splice">
 </textarea>
 </div>
 
 <div>
-<div class="caption"><strong>Slurp</strong> by deleting a close-paren inside a line. It is replaced further down, due to rule #3.</div>
+<div class="caption"><strong>Slurp</strong> by deleting a close-paren inside a line. It is replaced further down, due to rule #4.</div>
 <textarea id="code-slurp">
 </textarea>
 </div>
@@ -468,7 +479,7 @@ Why can't I insert a close-paren in certain places?
 <i class="fa fa-question-circle"></i>
 Why can't I delete a close-paren in certain places?
 </div>
-<div class="answer">You cannot delete an inferred close-paren. It is replaced as soon as you delete it. (see rule #3)</div>
+<div class="answer">You cannot delete an inferred close-paren. It is replaced as soon as you delete it. (see rule #4)</div>
 </div>
 </section>
 </div>
@@ -689,7 +700,7 @@ before ever trying to switch to Indent Mode.
 <div class="two-col">
 <div class="col">
 <div class="caption"><strong>Input:</strong> Any existing file. Must be correctly balanced, but can be incorrectly formatted.</div>
-<textarea id="code-edit-input">
+<textarea id="code-paren-input">
 (defn foo
   ([a]
     (foo a 1))
@@ -708,7 +719,7 @@ before ever trying to switch to Indent Mode.
 
 <div class="col">
 <div class="caption"><strong>Output:</strong> Made ready for Parinfer by correcting indentation and moving close-parens.</div>
-<textarea id="code-edit-output">
+<textarea id="code-paren-output">
 </textarea>
 </div>
 </div>
@@ -848,6 +859,11 @@ and
 </li>
 
 <li>
+<a href="https://github.com/Cirru/sepal.clj">Cirru Sepal in Clojure</a>
+- infers Clojure parens from indentation, <code>$</code>, <code>$ []</code>, <code>$ {}</code> and <code>,</code>.
+</li>
+
+<li>
 <a href="https://github.com/mkremins/flense">Flense</a>
 and
 <a href="https://github.com/darwin/plastic">Plastic</a>
@@ -888,6 +904,12 @@ and
     <script src="codemirror/mode/clojure/clojure-parinfer.js"></script>
 
     <script src="js/lib/scrollMonitor.js"></script>
+
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/d3/3.3.3/d3.min.js"></script>
+    <script src="js/lib/gears.d3.js"></script>
+
+    <script src="js/lib/jsdiff.min.js"></script>
 
     <script src="js/compiled/parinfer.js" type="text/javascript"></script>
   </body>
