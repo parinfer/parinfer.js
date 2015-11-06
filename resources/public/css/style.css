@@ -501,7 +501,6 @@ i.fa {
 }
 
 
-
 .gear {
   opacity: 0.3;
   transition: opacity 0.2s;
@@ -524,4 +523,8 @@ i.fa {
 .parinfer-gear
 {
   opacity: 0.15;
+}
+
+.gearbox {
+  margin-bottom: 80px;
 }

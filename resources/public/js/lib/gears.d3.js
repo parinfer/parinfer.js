@@ -41,13 +41,17 @@ var Gear = {
             .datum(datum);
 
         gear.on('mouseover', function() {
+          /*
             var $this = d3.select(this);
                 $this.attr('transform', $this.attr('transform') + ' scale(1.06)');
+                */
         });
 
         gear.on('mouseout', function() {
+          /*
             var $this = d3.select(this);
                 $this.attr('transform', $this.attr('transform').replace(' scale(1.06)', ''));
+                */
         });
 
         gear.append('path')

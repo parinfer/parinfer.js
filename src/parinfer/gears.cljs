@@ -67,7 +67,9 @@
                      :profileSlope profile-slope}
         gear (js/Gear.create svg js-opts)]
 
-    (.call gear drag-behavior)
+    ;; NOTE: to allow repositioning of the gears, uncomment this:
+    #_(.call gear drag-behavior)
+
     (doseq [c classes]
       (.classed gear c true))
 
@@ -90,6 +92,11 @@
   [gear-obj attrs]
   (doseq [[k v] attrs]
     (case k
+      :text
+      (-> gear-obj
+          (.select "text")
+          (.text v))
+
       :power
       (js/Gear.setPower gear-obj v)
 
@@ -148,7 +155,5 @@
 
     (doseq [g gear-objs]
       (.push gear-array g))
-
-    (js/d3.timer (fn [] (tick-svg! svg)))
 
     (animate-gears! svg selector gear-map gear-array anim-frames)))

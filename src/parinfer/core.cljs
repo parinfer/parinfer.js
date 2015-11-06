@@ -116,15 +116,17 @@
   {:paren  {:x 280 :y 70
             :factor 96 ;:hole-radius 0.5
             :classes ["paren-gear"]
-            :caption {:text "Parens" :side :left}}
+            :caption {:text "change parens" :side :left}}
    :indent {:x 420 :y 70
             :factor 96
             :classes ["indent-gear"]
-            :caption {:text "Indentation" :side :right}}})
+            :caption {:text "change indentation" :side :right}}})
+
+(def svg-opts {:width "100%" :height 170})
 
 (def index-gears
   {"naive-gears"
-   {:svg-opts {:width "100%" :height 200}
+   {:svg-opts svg-opts
     :data {:init-gears base-gears
            :anim-frames [{:gear-attrs {:paren {:power 0.01}}
                           :dt 2000}
@@ -137,7 +139,7 @@
                          ]}}
 
    "helper-gears"
-   {:svg-opts {:width "100%" :height 200}
+   {:svg-opts svg-opts
     :data {:init-gears (merge
                          base-gears
                          {:auto-indent {:x 465 :y 116
@@ -165,24 +167,24 @@
                          ]}}
 
    "parinfer-gears"
-   {:svg-opts {:width "100%" :height 200}
+   {:svg-opts svg-opts
     :data {:init-gears (merge
                          base-gears
                          {:parinfer {:x 350 :y 95
                                      :factor 64
                                      :classes ["parinfer-gear"]
-                                     :caption {:text "parinfer" :side :bottom}}})
-           :anim-frames [{:gear-attrs {:indent {:power 0.01}}
+                                     :caption {:text "Parinfer" :side :bottom}}})
+           :anim-frames [{:gear-attrs {:indent {:power 0.01}
+                                       }
                           :dt 2000}
                          {:gear-attrs {:indent {:power 0}}
                           :dt 1000}
-                         {:gear-attrs {:paren {:power -0.01}}
+                         {:gear-attrs {:paren {:power -0.01}
+                                       }
                           :dt 2000}
                          {:gear-attrs {:paren {:power 0}}
                           :dt 1000}
-                         ]}}
-
-   })
+                         ]}}})
 
 (defn create-index-gears! []
   (doseq [[id {:keys [data svg-opts]}] index-gears]

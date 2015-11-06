@@ -137,33 +137,41 @@ use these extra delimiters to help visually separate certain constructs.
 
 <div class="wrapper">
 <section id="visualizing-how-we-edit">
-<h3>Visualizing how we edit</h3>
+<h3>A Visual Metaphor</h3>
 
 <p>
-As we have seen, there is an obvious relationship between parens and indentation in Lisp.
-Different solutions manage this relationship differently.
+Since we see an obvious relationship between Parens and Indentation in Lisp, a
+lot of our editing revolves around correcting one when the other changes.  We
+will visualize these actions below as spinning gears, since some actions can influence
+others.
 </p>
+
+<div class="interact">
+<i class="fa fa-gear fa-lg"></i>
+<strong>The black gear</strong> represents the current action we are taking.
+</div>
 
 <p>
 <strong>Naive</strong> manually modifying one after changing the other.
-gears separated with the user spinning one, then the other.
 </p>
 
-<div id="naive-gears">
+<div class="gearbox" id="naive-gears">
 </div>
 
 <p>
 <strong>Auto-helpers</strong> most editor features for newline, or realign in clojure-mode for example.
 </p>
 
-<div id="helper-gears">
+<div class="gearbox" id="helper-gears">
 </div>
 
 <p>
-<strong>Parinfer</strong>
+<strong>Parinfer was created</strong> after recognizing the redundancy of our
+actions above.  It turns out that we can formally <em>infer</em> changes to one
+based on the other, thus naturally keeping Parens and Indentation in lockstep.
 </p>
 
-<div id="parinfer-gears">
+<div class="gearbox" id="parinfer-gears">
 </div>
 
 </section>
@@ -173,7 +181,7 @@ gears separated with the user spinning one, then the other.
 
 <div class="wrapper">
 <section id="why-parinfer-is-different">
-<h3>Why Parinfer is different</h3>
+<h3>Two New Modes</h3>
 
 <p>
 The objective of <em>Parinfer</em> is to keep parens and indentation in lockstep.
