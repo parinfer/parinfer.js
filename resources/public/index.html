@@ -324,7 +324,7 @@ We perform the following steps to rearrange parens based on indentation.<br>
 <div class="two-col">
 <div class="col">
 <div class="caption"><strong>Input:</strong> close-parens are removed or kept.</div>
-<textarea id="code-how-input">
+<textarea id="code-indent-input">
 (defn on-click []
   (swap! s update-in [:x] inc)
   )
@@ -341,7 +341,7 @@ We perform the following steps to rearrange parens based on indentation.<br>
 
 <div class="col">
 <div class="caption"><strong>Output:</strong> close-parens are inserted.</div>
-<textarea id="code-how-output">
+<textarea id="code-indent-output">
 </textarea>
 </div>
 </div>
@@ -700,7 +700,7 @@ before ever trying to switch to Indent Mode.
 <div class="two-col">
 <div class="col">
 <div class="caption"><strong>Input:</strong> Any existing file. Must be correctly balanced, but can be incorrectly formatted.</div>
-<textarea id="code-edit-input">
+<textarea id="code-paren-input">
 (defn foo
   ([a]
     (foo a 1))
@@ -719,7 +719,7 @@ before ever trying to switch to Indent Mode.
 
 <div class="col">
 <div class="caption"><strong>Output:</strong> Made ready for Parinfer by correcting indentation and moving close-parens.</div>
-<textarea id="code-edit-output">
+<textarea id="code-paren-output">
 </textarea>
 </div>
 </div>
@@ -908,6 +908,8 @@ and
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
     <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/d3/3.3.3/d3.min.js"></script>
     <script src="js/lib/gears.d3.js"></script>
+
+    <script src="js/lib/jsdiff.min.js"></script>
 
     <script src="js/compiled/parinfer.js" type="text/javascript"></script>
   </body>

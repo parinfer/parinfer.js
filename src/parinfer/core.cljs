@@ -15,11 +15,73 @@
     [parinfer.state :refer [state]]
     [parinfer.format.infer :as infer]
     [parinfer.format.prep :as prep]
+    [parinfer.format.string :refer [get-lines]]
     [parinfer.toc :as toc]
     [parinfer.gears :refer [create-gears!]]
     [ajax.core :refer [GET]]))
 
 (enable-console-print!)
+
+(defn create-indent-before-after! []
+  (let [cm-input (create-regular-editor! "code-indent-input" {:mode "clojure-parinfer"})
+        cm-output (create-regular-editor! "code-indent-output" {:readOnly true
+                                                                :mode "clojure-parinfer"})
+        sync! #(.setValue cm-output (:text (infer/format-text (.getValue cm-input))))]
+    (when cm-input
+      (.on cm-input "change" sync!)
+      (sync!))))
+
+(defn create-paren-before-after! []
+  (let [cm-input (create-regular-editor! "code-paren-input")
+        cm-output (create-regular-editor! "code-paren-output" {:readOnly true
+                                                               :mode "clojure-parinfer"})
+        clear-marks! (fn [cm]
+                       (doseq [m (.getAllMarks cm)]
+                         (.clear m)))
+
+        add-mark! (fn [cm line-no x value class-name]
+                    (let [from #js {:line line-no :ch x}
+                          to #js {:line line-no :ch (+ x (count value))}
+                          opts #js {:className class-name}]
+                      (.markText cm from to opts)))
+
+        diff! (fn []
+                (clear-marks! cm-input)
+                (clear-marks! cm-output)
+                (let [in-lines (get-lines (.getValue cm-input))
+                      out-lines (get-lines (.getValue cm-output))]
+                  (doseq [[line-no in out] (map vector (range) in-lines out-lines)]
+                    (let [changes (js/JsDiff.diffChars in out)]
+                      (reduce
+                        (fn [{:keys [in-x out-x] :as result} change]
+                          (let [value (.-value change)
+                                length (count value)]
+                            (cond
+                              (.-added change)
+                              (do
+                                (add-mark! cm-output line-no out-x value "inserted")
+                                (update result :out-x + length))
+
+                              (.-removed change)
+                              (do
+                                (add-mark! cm-input line-no in-x value "removed")
+                                (update result :in-x + length))
+
+                              :else
+                              {:in-x (+ in-x length)
+                               :out-x (+ out-x length)})))
+                        {:in-x 0 :out-x 0}
+                        changes)))))
+        sync! (fn []
+                (let [in-text (.getValue cm-input)
+                      out-text (:text (prep/format-text in-text))]
+                  (.setValue cm-output out-text)
+                  (diff!)))]
+
+    (when cm-input
+      (.on cm-input "change" sync!)
+      (sync!))))
+
 
 (defn create-index-editors! []
   (create-editor! "code-indent" :indent)
@@ -55,21 +117,8 @@
   (create-regular-editor! "code-skim")
   (create-regular-editor! "code-inspect" {:matchBrackets true})
 
-  (let [cm-input (create-regular-editor! "code-how-input" {:mode "clojure-parinfer"})
-        cm-output (create-regular-editor! "code-how-output" {:readOnly true
-                                                             :mode "clojure-parinfer"})
-        sync! #(.setValue cm-output (:text (infer/format-text (.getValue cm-input))))]
-    (when cm-input
-      (.on cm-input "change" sync!)
-      (sync!)))
-
-  (let [cm-input (create-regular-editor! "code-edit-input")
-        cm-output (create-regular-editor! "code-edit-output" {:readOnly true
-                                                              :mode "clojure-parinfer"})
-        sync! #(.setValue cm-output (:text (prep/format-text (.getValue cm-input))))]
-    (when cm-input
-      (.on cm-input "change" sync!)
-      (sync!))))
+  (create-indent-before-after!)
+  (create-paren-before-after!))
 
 (defn animate-when-visible!
   [key-]
