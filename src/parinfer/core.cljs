@@ -126,12 +126,15 @@
   {"naive-gears"
    {:svg-opts {:width "100%" :height 200}
     :data {:init-gears base-gears
-           :anim-frames [{:gear-attrs {:paren {:power 0.01}
-                                       :indent {:power 0}}
+           :anim-frames [{:gear-attrs {:paren {:power 0.01}}
+                          :dt 2000}
+                         {:gear-attrs {:paren {:power 0}}
                           :dt 1000}
-                         {:gear-attrs {:paren {:power 0}
-                                       :indent {:power -0.01}}
-                          :dt 1000}]}}
+                         {:gear-attrs {:indent {:power -0.01}}
+                          :dt 2000}
+                         {:gear-attrs {:indent {:power 0}}
+                          :dt 1000}
+                         ]}}
 
    "helper-gears"
    {:svg-opts {:width "100%" :height 200}
@@ -169,12 +172,12 @@
                                      :factor 64
                                      :classes ["parinfer-gear"]
                                      :caption {:text "parinfer" :side :bottom}}})
-           :anim-frames [{:gear-attrs {:indent {:power 0.05}}
-                          :dt 1000}
+           :anim-frames [{:gear-attrs {:indent {:power 0.01}}
+                          :dt 2000}
                          {:gear-attrs {:indent {:power 0}}
                           :dt 1000}
-                         {:gear-attrs {:paren {:power -0.05}}
-                          :dt 1000}
+                         {:gear-attrs {:paren {:power -0.01}}
+                          :dt 2000}
                          {:gear-attrs {:paren {:power 0}}
                           :dt 1000}
                          ]}}
