@@ -152,23 +152,28 @@ others.
 </div>
 
 <p>
-<strong>Naive</strong> manually modifying one after changing the other.
+<strong>The menial and default</strong> way to edit Lisp is to manually ensure
+our parens are balanced after inserting or removing them.  Then, we adjust
+the indentation to match it in kind.
 </p>
 
 <div class="gearbox" id="naive-gears">
 </div>
 
 <p>
-<strong>Auto-helpers</strong> most editor features for newline, or realign in clojure-mode for example.
+<strong>Existing tools automate</strong> some of these editing tasks.
+For example, <em>Paredit</em> forces you to transform or add parens in a
+balanced way through special hotkeys.  And <em>Auto-indent</em> allows you to
+auto-correct indentation of selected lines when desired.
 </p>
 
 <div class="gearbox" id="helper-gears">
 </div>
 
 <p>
-<strong>Parinfer was created</strong> after recognizing the redundancy of our
-actions above.  It turns out that we can formally <em>infer</em> changes to one
-based on the other, thus naturally keeping Parens and Indentation in lockstep.
+<strong>Parinfer <em>combines and simplifies</em></strong> this type of automation by
+naturally keeping Parens and Indentation in lockstep.  It formally
+<em>infers</em> changes to one based on the other.
 </p>
 
 <div class="gearbox" id="parinfer-gears">
@@ -181,27 +186,27 @@ based on the other, thus naturally keeping Parens and Indentation in lockstep.
 
 <div class="wrapper">
 <section id="why-parinfer-is-different">
-<h3>Two New Modes</h3>
+<h3>Two Modes</h3>
 
 <p>
-The objective of <em>Parinfer</em> is to keep parens and indentation in lockstep.
-Depending on the mode you're in, parens or indentation become inferred based on
-edits to the other.
+Parinfer consists of two modes allowing you to choose the source of the
+inference (i.e. the master gear).  This allows you to choose the degree of
+freedom that <em>you</em> want, while relinquishing control of the other to
+<em>Parinfer</em>.  In either case, your code stays properly formatted.
 </p>
 
-<p>
-You can imagine the tight relationship between parens and indentation as two
-gears joined together.  <em>Parinfer</em> allows you to choose which gear is in
-control of the other.
-</p>
+<ol>
+<li>
+<strong>Indent Mode</strong> causes indentation to control parens, and is
+certainly the most useful for editing tasks, seen in the next section.
+</li>
 
-<p>
-"Paren Mode" causes parens to control indentation.  "Indent Mode" causes
-indentation to control parens.  This allows you to choose the degree of freedom
-that <em>you</em> want, while relinquishing control of the other to <em>Parinfer</em>.  In
-either case, your code stays properly formatted, except in cases when the input
-becomes imbalanced.
-</p>
+<li>
+<strong>Paren Mode</strong> causes parens to control indentation.  This plays
+an important role in preparing existing files for use in Parinfer, as well as
+enabling some other useful editing tasks that we will see.
+</li>
+</ol>
 
 </section>
 </div>
