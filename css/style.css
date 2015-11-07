@@ -22,6 +22,13 @@ body {
   font-size: 0.9em;
 }
 
+a.header-link {
+  color: #CCC;
+  position: absolute;
+  left: -1em;
+  border-bottom: 0;
+}
+
 .toc-link a {
   border-bottom: 0;
   color: #333;
@@ -29,15 +36,21 @@ body {
 
 .toc-link {
   line-height: 1.6em;
-  opacity: 0.4;
+  opacity: 0.25;
   transition: opacity 0.3s;
   margin-top: 2px;
-  margin-left: 2px;
+  margin-right: 2px;
 }
 
-.toc-link.toc-visible {
-  border-left: 2px solid #333;
-  margin-left: 0;
+.toc-link.toc-current {
+  border-right: 2px solid #333;
+  margin-right: 0px;
+  opacity: 1;
+}
+
+.toc-link.toc-parent {
+  border-right: 2px solid #CCC;
+  margin-right: 0;
   opacity: 1;
 }
 
@@ -107,6 +120,7 @@ h1, h2, h3, h4, h5, h6 {
   color: #222;
   margin-top:0;
   margin-bottom: 20px;
+  position: relative;
 }
 
 h1 {
@@ -182,8 +196,7 @@ p, li {
 
 section {
   width: 862px;
-  margin: 70px 0;
-  padding: 0 70px;
+  padding: 70px;
 }
 
 .wrapper:first-child > section {
