@@ -36,15 +36,21 @@ a.header-link {
 
 .toc-link {
   line-height: 1.6em;
-  opacity: 0.4;
+  opacity: 0.25;
   transition: opacity 0.3s;
   margin-top: 2px;
-  margin-left: 2px;
+  margin-right: 2px;
 }
 
-.toc-link.toc-visible {
-  border-left: 2px solid #333;
-  margin-left: 0;
+.toc-link.toc-current {
+  border-right: 2px solid #333;
+  margin-right: 0px;
+  opacity: 1;
+}
+
+.toc-link.toc-parent {
+  border-right: 2px solid #CCC;
+  margin-right: 0;
   opacity: 1;
 }
 
