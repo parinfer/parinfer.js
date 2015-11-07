@@ -2,7 +2,9 @@
   "table of contents generator and highlighting"
   (:require
     [om.core :as om :include-macros true]
-    [sablono.core :refer-macros [html]]))
+    [sablono.core :refer-macros [html]]
+    [goog.dom :as gdom]
+    ))
 
 (defonce state
   (atom {:sections nil
@@ -16,11 +18,20 @@
                      (querySelectorAll "h2,h3,h4,h5,h6"))]
     (for [i (range (.-length headers))]
       (let [header (aget headers i)
-            section (.-parentElement header)]
-        {:id (.-id section)
+            section (.-parentElement header)
+            id (.-id section)
+            title (.-textContent header)
+            prefix (gdom/createDom
+                     "a"
+                     #js {:href (str "#" id)
+                          :class "header-link"
+                          }
+                     "#")]
+        (gdom/insertChildAt header prefix 0)
+        {:id id
          :level (subs (.-tagName header) 1)
          :section section
-         :title (.-textContent header)}))))
+         :title title}))))
 
 (defn toc-component
   [{:keys [sections visible?]} owner]
