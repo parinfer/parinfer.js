@@ -25,7 +25,7 @@ body {
 a.header-link {
   color: #CCC;
   position: absolute;
-  left: -20px;
+  left: -1em;
   border-bottom: 0;
 }
 
