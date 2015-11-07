@@ -36,24 +36,27 @@ Let's dramatically simplify the way we write Lisp...
 </div>
 
 <p>
-<strong>Lisp</strong> is a programming syntax often dismissed for its excessive
-parentheses.  Those who have adopted Lisp recognize its strengths, but there is
-still a widely held uncertainty among newcomers about how or even
-<em>why</em> we must manage so many parentheses.
+<strong>Lisp is often dismissed</strong> as an undesirable programming syntax
+due to excessive parentheses.  Those who have adopted Lisp have long recognized its
+amazing strengths, but there is still a widely held uncertainty among newcomers about
+how or even <em>why</em> we must manage so many parens.  As a result, Lisp's
+unique power remains invisible to most under this guise of difficulty.
 </p>
 
 <p>
-<strong>Parinfer</strong> is a proof-of-concept to address this problem.  It is
-a simple editor plugin designed to make paren management fun and easy without
-resorting to expert-level editors (Emacs, Vim), advanced hotkeys (Paredit), or
-alternative syntaxes (Lisps without parens).  Perhaps once this barrier is
-down, the elegance and power of Lisp can become more widely learned
-and understood.
+<strong>Newcomers aren't satisfied</strong> with the current tools designed for
+editing Lisp.  Expert-level editors (Emacs, Vim) and advanced hotkeys (Paredit)
+are powerful but steepen the learning curve.  And alternative syntaxes (Lisps
+without parens) have faultered since they sacrifice some of Lisp's power that
+seasoned users aren't willing to part with.
 </p>
 
 <p>
-Parinfer is demonstrated through interactive proof-of-concept demos below.
-Through a somewhat formalized theorem on Lisp formatting, we provide
+<strong>Parinfer tries instead</strong> to fix this problem at its source.  We
+distill the true nature of parens and its relationship to indentation through a
+formalized theorem (<em>paper pending</em>).  With it, we create an intuitive
+editor mode to make paren management fun and easy without sacrificing power.
+We demonstrate this through interactive proof-of-concept demos below, providing
 capabilities for:
 </p>
 
@@ -65,6 +68,18 @@ capabilities for:
 <a href="http://danmidwood.com/content/2014/11/21/animated-paredit.html">Paredit</a>-like
 features without hotkeys
 </ul>
+
+<blockquote>
+<p>
+<strong>NOTE: When I say "parens"</strong> (parentheses), I also mean <em>[square]</em> or <em>{curly}</em>
+brackets.  Some Lisps (e.g.
+<a href="http://racket-lang.org/">Racket</a>,
+<a href="http://clojure.org/">Clojure</a>)
+use these extra delimiters to help visually separate certain constructs.
+</p>
+</blockquote>
+
+
 </section>
 </div>
 
@@ -72,13 +87,13 @@ features without hotkeys
 
 <div class="wrapper">
 <section id="intro">
-<h2>Intro</h2>
+<h2>Uncovering Lisp</h2>
 
 <p>
 In Lisp, parentheses tend to bunch together at the end of a line. This
 <a href="https://en.wikipedia.org/wiki/Indent_style#Lisp_style">convention</a>
-can be jarring at first if you are used to curly braces in other
-languages being on their own lines:
+can be jarring at first if you are used to curly braces in other languages
+being on their own lines:
 </p>
 
 <div class="two-col">
@@ -106,11 +121,10 @@ languages being on their own lines:
 </div>
 
 <p>
-But the convention in Lisp favors high information density, while still
-employing an indentation style not unlike Python for readability.  Indentation
-allows you to <em>skim</em> while the parens allow you to <em>inspect</em>.  It's natural in
-this way to choose the resolution at which to view your code:
-</p>
+The convention in Lisp is to make every line inform with content rather than
+just parens. Readability is helped by employing a Python-like indentation
+style.  This achieves a sort of balance&mdash; Indentation allows you to
+<em>skim</em> while the parens allow you to <em>inspect</em>:</p>
 
 <div class="two-col">
 <div class="col">
@@ -133,19 +147,40 @@ this way to choose the resolution at which to view your code:
 </div>
 
 <p>
-It is the balance of these two views that gives us readability without causing
-structural ambiguity.
+Though both <em>perspectives</em> are visible at once, some argue that it
+becomes natural to focus on one or the other when needed.
+A popular but perhaps cryptic
+<a href="https://twitter.com/paulg/status/588511912331055104">LEGO analogy</a>
+helps here.  Humor me for a moment...
 </p>
 
-<blockquote>
 <p>
-<strong>When I say "parens"</strong> (parentheses), I also mean <em>[square]</em> or <em>{curly}</em>
-brackets.  Some Lisps (e.g.
-<a href="http://racket-lang.org/">Racket</a>,
-<a href="http://clojure.org/">Clojure</a>)
-use these extra delimiters to help visually separate certain constructs.
+Lisp programs are comprised of uniformly-shaped pieces (lists) which snap
+together however you see fit, much like LEGOs.  In contrast, other languages
+have special syntaxes for different constructs which only fit together in
+special ways.  But whichever you think is the better idea, LEGOs can help model
+the dual perspectives of Lisp quite well:
 </p>
-</blockquote>
+
+<div class="two-col">
+<div class="col">
+<div class="caption"><strong>Indentation</strong> implies structure.</div>
+<textarea id="code-skim">
+(defn foo [a b]
+  (let [x (+ a b)]
+    (println "The sum is" x)))
+</textarea>
+</div>
+
+<div class="col">
+<div class="caption"><strong>Tilting</strong> clarifies structure.</div>
+<textarea id="code-inspect">
+(defn foo [a b]
+  (let [x (+ a b)]
+    (println "The sum is" x)))
+</textarea>
+</div>
+</div>
 
 </section>
 </div>
@@ -154,7 +189,7 @@ use these extra delimiters to help visually separate certain constructs.
 
 <div class="wrapper">
 <section id="visualizing-how-we-edit">
-<h3>A Visual Metaphor</h3>
+<h3>The Space of Tooling</h3>
 
 <p>
 Since we see an obvious relationship between Parens and Indentation in Lisp, a
@@ -188,9 +223,9 @@ auto-correct indentation of selected lines when desired.
 </div>
 
 <p>
-<strong>Parinfer <em>combines and simplifies</em></strong> this type of automation by
-naturally keeping Parens and Indentation in lockstep.  It formally
-<em>infers</em> changes to one based on the other.
+<strong>Parinfer is a new tool to <em>combine and simplify</em></strong> this
+type of automation by naturally keeping Parens and Indentation in lockstep.  It
+formally <em>infers</em> changes to one based on the other.
 </p>
 
 <div class="gearbox" id="parinfer-gears">
