@@ -26,18 +26,35 @@
 <div class="wrapper">
 <section>
 <p class="subtitle">
-a theory on how to <em>simplify the way we write Lisp</em>
+Let's dramatically simplify the way we write Lisp...
 </p>
 
-<p class="summary">
-<strong>Lisp</strong> is a programming syntax often dismissed due to a widely
-held uncertainty about how or why we must manage so many parentheses.  Thus,
-<em>Parinfer</em> is a tool designed to show you how Lisp code is written by
-automating significant parts of it.  Perhaps once this barrier is down, the
-elegance and power of Lisp can become more widely learned and understood.
+<div>
+<div class="caption"><strong>Preview</strong> of indentation-based editing (close-parens become inferred)</div>
+<textarea id="code-intro">
+</textarea>
+</div>
 
-Based on a somewhat formalized theorem on Lisp formatting, we provide capabilities
-for:
+<p>
+<strong>Lisp</strong> is a programming syntax often dismissed for its excessive
+parentheses.  Those who have adopted Lisp recognize its strengths, but there is
+still a widely held uncertainty among newcomers about how or even
+<em>why</em> we must manage so many parentheses.
+</p>
+
+<p>
+<strong>Parinfer</strong> is a proof-of-concept to address this problem.  It is
+a simple editor plugin designed to make paren management fun and easy without
+resorting to expert-level editors (Emacs, Vim), advanced hotkeys (Paredit), or
+alternative syntaxes (Lisps without parens).  Perhaps once this barrier is
+down, the elegance and power of Lisp can become more widely learned
+and understood.
+</p>
+
+<p>
+Parinfer is demonstrated through interactive proof-of-concept demos below.
+Through a somewhat formalized theorem on Lisp formatting, we provide
+capabilities for:
 </p>
 
 <ul class="features">

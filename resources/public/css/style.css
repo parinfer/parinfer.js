@@ -147,9 +147,6 @@ h1 em {
   border-bottom: 1px solid #111;
 }
 
-.summary {
-}
-
 .features {
   color: #888;
   list-style-type: square;
@@ -247,6 +244,7 @@ code {
 
 #cm-code-intro {
   height: 200px;
+  margin-bottom: 80px;
 }
 
 #cm-code-lisp-style,

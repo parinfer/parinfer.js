@@ -84,6 +84,7 @@
 
 
 (defn create-index-editors! []
+  (create-editor! "code-intro" :intro)
   (create-editor! "code-indent" :indent)
   (create-editor! "code-indent-far" :indent-far)
   (create-editor! "code-indent-multi" :indent-multi)
@@ -127,7 +128,8 @@
     (.exitViewport #(stop-playing! key-))))
 
 (def index-anims
-  {:indent vcr-data/indent
+  {:intro vcr-data/intro
+   :indent vcr-data/indent
    :indent-far vcr-data/indent-far
    :indent-multi vcr-data/indent-multi
    :line vcr-data/line
