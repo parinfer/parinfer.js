@@ -542,3 +542,7 @@ i.fa {
   margin-bottom: 80px;
 }
 
+.lego-img {
+  width: 100%;
+  border: 1px solid #EEE;
+}
