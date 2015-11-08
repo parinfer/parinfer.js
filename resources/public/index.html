@@ -24,7 +24,8 @@
 <!------------------------------------------------------------------------------------>
 
 <div class="wrapper">
-<section>
+<section id="overview">
+<h2 style="display:none">Overview</h2>
 <p class="subtitle">
 Let's dramatically simplify the way we write Lisp...
 </p>
@@ -87,7 +88,7 @@ use these extra delimiters to help visually separate certain constructs.
 
 <div class="wrapper">
 <section id="uncovering-lisp">
-<h2>Uncovering Lisp</h2>
+<h3>Uncovering Lisp</h3>
 
 <p>
 In Lisp, parentheses tend to bunch together at the end of a line. This
@@ -181,13 +182,19 @@ perspective.  Now let's look at the space of tooling solutions that we use for
 
 <div class="wrapper">
 <section id="the-space-of-tooling">
-<h3>The Space of Tooling</h3>
+<h3>Tools for Writing Lisp</h3>
 
 <p>
-Since we see an obvious relationship between Parens and Indentation in Lisp, a
-lot of our editing revolves around correcting one when the other changes.  We
-will visualize these actions below as spinning gears, since some actions can influence
-others.
+In the previous section, we saw how Parens and Indentation provide the two
+perspectives that allow us to read Lisp in a natural way.  Unfortunately, this
+incurs some redundancy when <em>writing</em> Lisp since we must edit both for
+every change, ensuring that one will correctly imply the other.
+</p>
+
+<p>
+There are existing tools to help with this.  To best represent how Parinfer
+compares to them, we will represent this complex space of tooling in a way that
+can be visually compared below.
 </p>
 
 <div class="interact">
@@ -197,8 +204,9 @@ others.
 
 <p>
 <strong>The menial and default</strong> way to edit Lisp is to manually ensure
-our parens are balanced after inserting or removing them.  Then, we adjust
-the indentation to match it in kind.
+our parens are balanced after inserting or removing them.  Then, we adjust the
+indentation to match it in kind.  This back-and-forth happens for most editing
+tasks.
 </p>
 
 <div class="gearbox" id="naive-gears">
@@ -208,8 +216,8 @@ the indentation to match it in kind.
 <strong>Existing tools automate</strong> some of these editing tasks.
 For example, <em>Paredit</em> forces you to transform or add parens in a
 balanced way through special hotkeys.  And <em>Auto-indent</em> allows you to
-auto-correct indentation of selected lines when desired.
-</p>
+auto-correct indentation of selected lines when desired.  This automates
+the tasks, but the back-and-forth actions are still manually triggered.</p>
 
 <div class="gearbox" id="helper-gears">
 </div>
@@ -217,7 +225,8 @@ auto-correct indentation of selected lines when desired.
 <p>
 <strong>Parinfer is a new tool to <em>combine and simplify</em></strong> this
 type of automation by naturally keeping Parens and Indentation in lockstep.  It
-formally <em>infers</em> changes to one based on the other.
+formally <em>infers</em> changes to one based on the other.  The back-and-forth
+actions have been reduced with special modes, which we will explore next.
 </p>
 
 <div class="gearbox" id="parinfer-gears">
@@ -230,7 +239,7 @@ formally <em>infers</em> changes to one based on the other.
 
 <div class="wrapper">
 <section id="why-parinfer-is-different">
-<h3>Two Modes</h3>
+<h3>Writing with Parinfer</h3>
 
 <p>
 Parinfer consists of two modes allowing you to choose the source of the
