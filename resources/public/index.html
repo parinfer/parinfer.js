@@ -54,9 +54,8 @@ seasoned users aren't willing to part with.
 
 <p>
 <strong>Parinfer is a new system</strong> that tries instead to fix this
-problem at its source.  We distill the true nature of parens and its
-relationship to indentation through a formalized theorem (<em>paper
-pending</em>).  With it, we create an intuitive editor mode to make paren
+problem at its source.  We formally define the relationship between Parens and
+Indentation. With it, we create an intuitive editor mode to make paren
 management fun and easy without sacrificing power.  We demonstrate this through
 interactive proof-of-concept demos below, providing capabilities for:
 </p>
@@ -178,13 +177,12 @@ you to <em>skim</em> while the parens allow you to <em>inspect</em>:</p>
 </div>
 
 <p>
-Though both <em>perspectives</em> are visible at once, we must focus on one or
-the other.  A
+Though both <em>perspectives</em> are visible at once, we must focus on one at
+a time.  A
 <a href="https://twitter.com/paulg/status/588511912331055104">LEGO analogy</a>
-helps here. Notice that these lists snap together however you see fit, much
-like LEGOs.  So if each list in the previous example is a LEGO block, you can
-imagine tilting the expression when you need to check the layers below (i.e.
-the close-parens).
+helps here. Imagine each list in the previous example as a LEGO block
+stacked over its parent. Checking the sides to see the layers below is like
+checking the parens at the end of a line.
 </p>
 
 <div class="two-col">
@@ -200,9 +198,9 @@ the close-parens).
 </div>
 
 <p>
-This is the natural way in which we read Lisp code, through these complementary
-perspectives.  Now let's look at the space of tooling solutions that we use for
-<em>writing</em> Lisp code and specifically how Parinfer can help.
+This is a physical analog to the way we read Lisp code.  Now let's look at the
+space of tooling solutions that we use for <em>writing</em> Lisp code and
+specifically how Parinfer can help.
 </p>
 
 </section>
@@ -215,10 +213,10 @@ perspectives.  Now let's look at the space of tooling solutions that we use for
 <h3>Tools for Writing Lisp</h3>
 
 <p>
-In the previous section, we saw how Parens and Indentation provide the two
-perspectives that allow us to read Lisp in a natural way.  Unfortunately, this
-incurs some redundancy when <em>writing</em> Lisp since we must edit both for
-every change, ensuring that one will correctly imply the other.
+In the previous section, we saw how Parens and Indentation provide two
+perspectives for reading Lisp code.  Unfortunately, this incurs some redundancy
+when <em>writing</em> Lisp since we must edit both for every change, ensuring
+that one will correctly imply the other.
 </p>
 
 <p>
