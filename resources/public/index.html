@@ -349,10 +349,10 @@ informal ones follow).
 <h2>Indent Mode</h2>
 
 <p>
-Indent Mode treats indentation as an <em>intention to correct surrounding parens</em>
-when possible.  Specifically, it treats the close-parens at the end of a line
-as <em>eager to extend to indented lines</em>.  As a visual cue, we <em>dim</em> these parens
-to signify their inferred mobility.
+Indent Mode gives you full control of indentation, while Parinfer corrects or
+inserts close-parens where appropriate.  Specifically, it only touches the
+groups of close-parens at the end of each line.  As a visual cue, we
+<em>slightly dim</em> these parens to signify their inferred nature.
 </p>
 
 <div class="interact">
@@ -431,9 +431,8 @@ roughly equivalent to those listed.
 <h3>How it works</h3>
 
 <p>
-We perform the following steps to rearrange parens based on indentation.<br>
-<span class="side-point">We will refer to these later as rules #1, #2, #3 and #4.
-(See the [mathematical basis] for a closer look at why these rules work.)</span>
+We perform the following steps to rearrange close-parens based on indentation.<br>
+<span class="side-point">We will refer to these later as rules #1, #2, #3 and #4.</span>
 </p>
 
 <ol>
@@ -735,8 +734,8 @@ thinking it is okay for processing.
 <h2>Paren Mode</h2>
 
 <p>
-In "Paren Mode", indentation is tightly controlled by parens at all times.  You
-can still adjust indentation, but you won't be able indent/dedent past certain
+Paren Mode gives you full control of parens, while Parinfer corrects indentation.
+You can still adjust indentation, but you won't be able indent/dedent past certain
 boundaries set by parens on previous lines.  As a courtesy, this mode also
 maintains relative indentation of child elements when their parent expressions
 shift.
