@@ -552,3 +552,10 @@ i.fa {
   width: 100%;
   border: 1px solid #EEE;
 }
+
+.math {
+  background: #fefefe;
+  border: 1px solid #EEE;
+  padding: 30px;
+  font-family: "Computer Modern Serif";
+}

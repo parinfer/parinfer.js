@@ -5,7 +5,9 @@
     <title>Parinfer - simpler Lisp editing</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,400italic,700,700italic,300,300italic' rel='stylesheet' type='text/css'>
+    <link href="fonts/Serif/cmun-serif.css" rel="stylesheet"></link>
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet">
+
     <link href="codemirror/lib/codemirror.css" rel="stylesheet" type="text/css">
     <link href="css/lib/keys.css" rel="stylesheet" type="text/css">
     <link href="css/style.css" rel="stylesheet" type="text/css">
@@ -322,7 +324,7 @@ we will see.</span>
 <strong>Feel free to skip this</strong> if you have no interest in the math that makes Parinfer possible.
 </div>
 
-<div id="math">
+<div class="math">
 <p>
 We wish to define necessary conditions for determining if a given file of Lisp
 code is "correctly formatted".
@@ -374,10 +376,8 @@ Thus, we formally define that a file of Lisp code is "correctly formatted" if:
 <p>
 There rules are necessary and sufficient for determining when indentation is
 what we consider "unambiguous", but they are not sufficient in determining if
-code is "pretty". For example, under these rules:
-</p>
+code is "pretty". For example:
 
-<p>
 <ul>
 <li>single-line files are okay</li>
 <li>indentation is flexible within defined thresholds (one-space, two-space, etc)</li>
