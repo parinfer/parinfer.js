@@ -113,8 +113,10 @@
 
   (start-editor-sync!)
 
-  (create-regular-editor! "code-lisp-style")
-  (create-regular-editor! "code-c-style")
+  (create-regular-editor! "code-c-expr" {:mode "javascript"})
+  (create-regular-editor! "code-lisp-expr")
+  (create-regular-editor! "code-c-indent")
+  (create-regular-editor! "code-lisp-indent")
   (create-regular-editor! "code-skim")
   (create-regular-editor! "code-inspect" {:matchBrackets true})
 

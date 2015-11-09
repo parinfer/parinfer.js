@@ -247,8 +247,14 @@ code {
   margin-bottom: 80px;
 }
 
-#cm-code-lisp-style,
-#cm-code-c-style
+#cm-code-lisp-expr,
+#cm-code-c-expr
+{
+  height: 120px;
+}
+
+#cm-code-lisp-indent,
+#cm-code-c-indent
 {
   height: 174px;
 }

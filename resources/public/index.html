@@ -91,7 +91,37 @@ use these extra delimiters to help visually separate certain constructs.
 <h3>Uncovering Lisp</h3>
 
 <p>
-In Lisp, parentheses tend to bunch together at the end of a line. This
+Most programming languages have several syntax rules.  Lisp has one&mdash;
+everything is a list.  The first element is a function name, and the rest are
+its arguments.  Thus, the language is simply a collection of compile- and
+run-time functions, trivially extensible.
+</p>
+
+<div class="two-col">
+<div class="col">
+<div class="caption"><strong>C Style</strong> expressions:</div>
+<textarea id="code-c-expr">
+foo(1, 2, 3);
+const a = 1;
+if (a == 1) foo(); else bar();
+const b = (a == 1) ? 2 : 3;
+</textarea>
+</div>
+
+<div class="col">
+<div class="caption"><strong>Lisp Style</strong> expressions:</div>
+<textarea id="code-lisp-expr">
+(foo 1 2 3)
+(def a 1)
+(if (= a 1) (foo) (bar))
+(def b (if (= a 1) 2 3))
+</textarea>
+</div>
+</div>
+
+<p>
+But parentheses in Lisp are infamous for bunching together at the end of long
+expressions. This indentation
 <a href="https://en.wikipedia.org/wiki/Indent_style#Lisp_style">convention</a>
 can be jarring at first if you are used to curly braces in other languages
 being on their own lines:
@@ -99,17 +129,8 @@ being on their own lines:
 
 <div class="two-col">
 <div class="col">
-<div class="caption"><strong>Lisp Style</strong> indentation:</div>
-<textarea id="code-lisp-style" rows="5">
-(defn foo [a b]
-  (let [x (+ a b)]
-    (println "The sum is" x)))
-</textarea>
-</div>
-
-<div class="col">
-<div class="caption"><strong>C Style</strong> indentation:</div>
-<textarea id="code-c-style">
+<div class="caption"><strong>C Style</strong> indentation (unusual in Lisp):</div>
+<textarea id="code-c-indent">
 (defn foo [a b]
   (let [
      x (+ a b)
@@ -119,13 +140,22 @@ being on their own lines:
 )
 </textarea>
 </div>
+
+<div class="col">
+<div class="caption"><strong>Lisp Style</strong> indentation:</div>
+<textarea id="code-lisp-indent">
+(defn foo [a b]
+  (let [x (+ a b)]
+    (println "The sum is" x)))
+</textarea>
+</div>
 </div>
 
 <p>
-The convention in Lisp is to make every line inform with content rather than
-just parens. Readability is helped by employing a Python-like indentation
-style.  This achieves a sort of balance&mdash; Indentation allows you to
-<em>skim</em> while the parens allow you to <em>inspect</em>:</p>
+The idea behind this convention is to make every line inform with content
+rather than just parens. Readability is helped by employing a Python-like
+indentation style.  This achieves a sort of balance&mdash; Indentation allows
+you to <em>skim</em> while the parens allow you to <em>inspect</em>:</p>
 
 <div class="two-col">
 <div class="col">
@@ -148,23 +178,23 @@ style.  This achieves a sort of balance&mdash; Indentation allows you to
 </div>
 
 <p>
-Though both <em>perspectives</em> are visible at once, some argue that it
-becomes natural to focus on one or the other when needed.
-A popular
+Though both <em>perspectives</em> are visible at once, we must focus on one or
+the other.  A
 <a href="https://twitter.com/paulg/status/588511912331055104">LEGO analogy</a>
-helps here.  Lisp programs are comprised of uniformly-shaped pieces (lists)
-which snap together however you see fit, much like LEGOs.  If each list in the
-previous example has a unique color, one can imagine it with LEGOs below:
+helps here. Notice that these lists snap together however you see fit, much
+like LEGOs.  So if each list in the previous example is a LEGO block, you can
+imagine tilting the expression when you need to check the layers below (i.e.
+the close-parens).
 </p>
 
 <div class="two-col">
 <div class="col">
-<div class="caption"><strong>Indentation</strong> implies structure.</div>
+<div class="caption"><strong>Indentation</strong> implies nesting.</div>
 <img class="lego-img" src="img/lego-indent.png">
 </div>
 
 <div class="col">
-<div class="caption"><strong>Tilting</strong> clarifies structure (close-parens shown).</div>
+<div class="caption"><strong>Tilting</strong> clarifies nesting (close-parens shown).</div>
 <img class="lego-img" src="img/lego-parens.png">
 </div>
 </div>
@@ -291,7 +321,7 @@ we will see.</span>
 
 <div class="interact">
 <i class="fa fa-rocket fa-lg"></i>
-<strong>Feel free to skip</strong> this if you have no interest in the math that makes Parinfer possible.
+<strong>Feel free to skip this</strong> if you have no interest in the math that makes Parinfer possible.
 </div>
 
 <p>
@@ -1001,6 +1031,7 @@ and
     <script src="codemirror/lib/codemirror.js"></script>
     <script src="codemirror/addon/selection/active-line.js"></script>
     <script src="codemirror/addon/edit/matchbrackets.js"></script>
+    <script src="codemirror/mode/javascript/javascript.js"></script>
     <script src="codemirror/mode/clojure/clojure.js"></script>
     <script src="codemirror/mode/clojure/clojure-parinfer.js"></script>
 
