@@ -53,12 +53,12 @@ seasoned users aren't willing to part with.
 </p>
 
 <p>
-<strong>Parinfer tries instead</strong> to fix this problem at its source.  We
-distill the true nature of parens and its relationship to indentation through a
-formalized theorem (<em>paper pending</em>).  With it, we create an intuitive
-editor mode to make paren management fun and easy without sacrificing power.
-We demonstrate this through interactive proof-of-concept demos below, providing
-capabilities for:
+<strong>Parinfer is a new system</strong> that tries instead to fix this
+problem at its source.  We distill the true nature of parens and its
+relationship to indentation through a formalized theorem (<em>paper
+pending</em>).  With it, we create an intuitive editor mode to make paren
+management fun and easy without sacrificing power.  We demonstrate this through
+interactive proof-of-concept demos below, providing capabilities for:
 </p>
 
 <ul class="features">
@@ -170,8 +170,8 @@ previous example has a unique color, one can imagine it with LEGOs below:
 </div>
 
 <p>
-This is the natural way in which we read Lisp code, through this duality of
-perspective.  Now let's look at the space of tooling solutions that we use for
+This is the natural way in which we read Lisp code, through these complementary
+perspectives.  Now let's look at the space of tooling solutions that we use for
 <em>writing</em> Lisp code and specifically how Parinfer can help.
 </p>
 
@@ -242,22 +242,35 @@ actions have been reduced with special modes, which we will explore next.
 <h3>Writing with Parinfer</h3>
 
 <p>
-Parinfer consists of two modes allowing you to choose the source of the
-inference (i.e. the <strong>master gear</strong>).  This allows you to choose the degree of
-freedom that <em>you</em> want, while relinquishing control of the other to
-<em>Parinfer</em>.  In either case, your code stays properly formatted.
+As we saw with the previous visualization, Parinfer will infer some changes to
+keep Parens and Indentation inline with one another.  To keep this inference
+simple and predictable, we have the user explicitly choose the degree of
+freedom that <em>they</em> want full control of, while relinquishing some
+control of the other to <em>Parinfer</em>.
+</p>
+
+<p>
+Thus, Parinfer consists of two user modes:
 </p>
 
 <ol>
 <li>
-<strong>Indent Mode</strong> causes indentation to control parens, and is
-certainly the most useful for editing tasks, seen in the next section.
+<strong>Indent Mode</strong> gives you full control of indentation, while
+Parinfer corrects parens.<br>
+<span class="side-point">
+Quite surprisingly, manually adding/removing Parens in this mode naturally
+results in the main Paredit features without employing hotkeys.  (details
+later)
+</span>
 </li>
 
 <li>
-<strong>Paren Mode</strong> causes parens to control indentation.  This plays
-an important role in preparing existing files for use in Parinfer, as well as
-enabling some other useful editing tasks that we will see.
+<strong>Paren Mode</strong> gives you full control of parens, while Parinfer
+corrects indentation.<br>
+<span class="side-point">
+This plays an important role in preparing existing files
+for use in Parinfer, as well as enabling some other useful editing tasks that
+we will see.</span>
 </li>
 </ol>
 
@@ -266,6 +279,35 @@ enabling some other useful editing tasks that we will see.
 <strong>To make this easier</strong>, Indent Mode is default. Paren Mode can be an advanced option.
 </div>
 
+
+</section>
+</div>
+
+<!------------------------------------------------------------------------------------>
+
+<div class="wrapper">
+<section id="mathematically-correct">
+<h3>Mathematically Correct</h3>
+
+<div class="interact">
+<i class="fa fa-rocket fa-lg"></i>
+<strong>Feel free to skip</strong> this if you have no interest in the math that makes Parinfer possible.
+</div>
+
+<p>
+Parinfer is only enabled by formally defining what it means for Lisp code to be
+correctly formatted.  To this end, we define a special condition which must be
+true for every line of code (i.e. an invariant).
+</p>
+
+...
+
+<p>
+Thus, the job of Parinfer is to correct the formatting of our code by changing
+either the Parens or Indentation of a line such that the above invariant
+remains true.  (paper pending for a formal explanation of these operations, but
+informal ones follow).
+</p>
 
 </section>
 </div>
