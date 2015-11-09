@@ -316,8 +316,8 @@ we will see.</span>
 <!------------------------------------------------------------------------------------>
 
 <div class="wrapper">
-<section id="mathematically-correct">
-<h3>Mathematically Stable</h3>
+<section id="a-mathematical-basis">
+<h3>A Mathematical Basis</h3>
 
 <div class="interact">
 <i class="fa fa-rocket fa-lg"></i>
@@ -337,15 +337,22 @@ references to line number `n` will refer to the `n`th non-empty line.
 </p>
 
 <p>
-let
+To proceed, we define the following:
 
+<ul>
+<li>
 t_n = index of non-whitespace, non-comment tokens at line n
-
+</li>
+<li>
 i_n = x-position of t_n[0] (indentation)
-
+</li>
+<li>
 p_n = number of close-parens at the end of t_n
-
-s_n = index of x-positions of all open-parens that are not closed before t_n[-p_n]
+</li>
+<li>
+s_n = index of x-positions of all open-parens unclosed before t_n[-p_n]
+</li>
+</ul>
 </p>
 
 <p>
@@ -374,26 +381,26 @@ Thus, we formally define that a file of Lisp code is "correctly formatted" if:
 </div>
 
 <p>
-There rules are necessary and sufficient for determining when indentation is
+These rules are necessary and sufficient for determining when indentation is
 what we consider "unambiguous", but they are not sufficient in determining if
 code is "pretty". For example:
 
 <ul>
 <li>single-line files are okay</li>
-<li>indentation is flexible within defined thresholds (one-space, two-space, etc)</li>
-<li>lines starting with atomic symbols are not required to have the same indentation</li>
+<li>"tab" lengths are flexible (one space, two spaces, etc)</li>
+<li>indentation of sibling lines are not required to be aligned</li>
 </ul>
 </p>
 
 <p>
-But the importance of these rules is that they dramatically simplify what
-Parinfer has to do.  They make clear that for every line, Parinfer only has to
-correct either `i_n` or `p_n` to make our predefined rules true:
+<strong>The importance of these rules</strong> is that they allow Parinfer to
+correct indentation or parens simply by choosing correct values of `i_n` or
+`p_n` for every line:
 </p>
 
 <ul>
-  <li><strong>Indent Mode</strong> Parinfer corrects all `p_n`</li>
-  <li><strong>Paren Mode</strong> Parinfer corrects all `i_n`</li>
+  <li><strong>Indent Mode</strong> forces correct values of `p_n`</li>
+  <li><strong>Paren Mode</strong> forces correct values of `i_n`</li>
 </ul>
 
 <p>
@@ -1002,9 +1009,9 @@ others not using <em>Parinfer</em>.
 <h3>Source Code</h3>
 
 <p>
-The text formatting code is implemented in portable Clojure/ClojureScript.  The
-editor demos are created in CodeMirror with hooks to apply our formatters and
-update cursor position.
+The text formatting code is implemented in portable Clojure/ClojureScript. We
+have test suites for both modes. The editor demos are created in CodeMirror
+with hooks to apply our formatters and update cursor position.
 </p>
 
 <p>
