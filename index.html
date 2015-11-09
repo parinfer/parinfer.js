@@ -54,9 +54,8 @@ seasoned users aren't willing to part with.
 
 <p>
 <strong>Parinfer is a new system</strong> that tries instead to fix this
-problem at its source.  We distill the true nature of parens and its
-relationship to indentation through a formalized theorem (<em>paper
-pending</em>).  With it, we create an intuitive editor mode to make paren
+problem at its source.  We formally define the relationship between Parens and
+Indentation. With it, we create an intuitive editor mode to make paren
 management fun and easy without sacrificing power.  We demonstrate this through
 interactive proof-of-concept demos below, providing capabilities for:
 </p>
@@ -91,7 +90,37 @@ use these extra delimiters to help visually separate certain constructs.
 <h3>Uncovering Lisp</h3>
 
 <p>
-In Lisp, parentheses tend to bunch together at the end of a line. This
+Most programming languages have several syntax rules.  Lisp has one&mdash;
+everything is a list.  The first element is a function name, and the rest are
+its arguments.  Thus, the language is simply a collection of compile- and
+run-time functions, trivially extensible.
+</p>
+
+<div class="two-col">
+<div class="col">
+<div class="caption"><strong>C Style</strong> expressions:</div>
+<textarea id="code-c-expr">
+foo(1, 2, 3);
+const a = 1;
+if (a == 1) foo(); else bar();
+const b = (a == 1) ? 2 : 3;
+</textarea>
+</div>
+
+<div class="col">
+<div class="caption"><strong>Lisp Style</strong> expressions:</div>
+<textarea id="code-lisp-expr">
+(foo 1 2 3)
+(def a 1)
+(if (= a 1) (foo) (bar))
+(def b (if (= a 1) 2 3))
+</textarea>
+</div>
+</div>
+
+<p>
+But parentheses in Lisp are infamous for bunching together at the end of long
+expressions. This indentation
 <a href="https://en.wikipedia.org/wiki/Indent_style#Lisp_style">convention</a>
 can be jarring at first if you are used to curly braces in other languages
 being on their own lines:
@@ -99,17 +128,8 @@ being on their own lines:
 
 <div class="two-col">
 <div class="col">
-<div class="caption"><strong>Lisp Style</strong> indentation:</div>
-<textarea id="code-lisp-style" rows="5">
-(defn foo [a b]
-  (let [x (+ a b)]
-    (println "The sum is" x)))
-</textarea>
-</div>
-
-<div class="col">
-<div class="caption"><strong>C Style</strong> indentation:</div>
-<textarea id="code-c-style">
+<div class="caption"><strong>C Style</strong> indentation (unusual in Lisp):</div>
+<textarea id="code-c-indent">
 (defn foo [a b]
   (let [
      x (+ a b)
@@ -119,13 +139,22 @@ being on their own lines:
 )
 </textarea>
 </div>
+
+<div class="col">
+<div class="caption"><strong>Lisp Style</strong> indentation:</div>
+<textarea id="code-lisp-indent">
+(defn foo [a b]
+  (let [x (+ a b)]
+    (println "The sum is" x)))
+</textarea>
+</div>
 </div>
 
 <p>
-The convention in Lisp is to make every line inform with content rather than
-just parens. Readability is helped by employing a Python-like indentation
-style.  This achieves a sort of balance&mdash; Indentation allows you to
-<em>skim</em> while the parens allow you to <em>inspect</em>:</p>
+The idea behind this convention is to make every line inform with content
+rather than just parens. Readability is helped by employing a Python-like
+indentation style.  This achieves a sort of balance&mdash; Indentation allows
+you to <em>skim</em> while the parens allow you to <em>inspect</em>:</p>
 
 <div class="two-col">
 <div class="col">
@@ -148,31 +177,30 @@ style.  This achieves a sort of balance&mdash; Indentation allows you to
 </div>
 
 <p>
-Though both <em>perspectives</em> are visible at once, some argue that it
-becomes natural to focus on one or the other when needed.
-A popular
+Though both <em>perspectives</em> are visible at once, we must focus on one at
+a time.  A
 <a href="https://twitter.com/paulg/status/588511912331055104">LEGO analogy</a>
-helps here.  Lisp programs are comprised of uniformly-shaped pieces (lists)
-which snap together however you see fit, much like LEGOs.  If each list in the
-previous example has a unique color, one can imagine it with LEGOs below:
+helps here. Imagine each list in the previous example as a LEGO block
+stacked over its parent. Checking the sides to see the layers below is like
+checking the parens at the end of a line.
 </p>
 
 <div class="two-col">
 <div class="col">
-<div class="caption"><strong>Indentation</strong> implies structure.</div>
+<div class="caption"><strong>Indentation</strong> implies nesting.</div>
 <img class="lego-img" src="img/lego-indent.png">
 </div>
 
 <div class="col">
-<div class="caption"><strong>Tilting</strong> clarifies structure (close-parens shown).</div>
+<div class="caption"><strong>Tilting</strong> clarifies nesting (close-parens shown).</div>
 <img class="lego-img" src="img/lego-parens.png">
 </div>
 </div>
 
 <p>
-This is the natural way in which we read Lisp code, through these complementary
-perspectives.  Now let's look at the space of tooling solutions that we use for
-<em>writing</em> Lisp code and specifically how Parinfer can help.
+This is a physical analog to the way we read Lisp code.  Now let's look at the
+space of tooling solutions that we use for <em>writing</em> Lisp code and
+specifically how Parinfer can help.
 </p>
 
 </section>
@@ -185,10 +213,10 @@ perspectives.  Now let's look at the space of tooling solutions that we use for
 <h3>Tools for Writing Lisp</h3>
 
 <p>
-In the previous section, we saw how Parens and Indentation provide the two
-perspectives that allow us to read Lisp in a natural way.  Unfortunately, this
-incurs some redundancy when <em>writing</em> Lisp since we must edit both for
-every change, ensuring that one will correctly imply the other.
+In the previous section, we saw how Parens and Indentation provide two
+perspectives for reading Lisp code.  Unfortunately, this incurs some redundancy
+when <em>writing</em> Lisp since we must edit both for every change, ensuring
+that one will correctly imply the other.
 </p>
 
 <p>
@@ -291,7 +319,7 @@ we will see.</span>
 
 <div class="interact">
 <i class="fa fa-rocket fa-lg"></i>
-<strong>Feel free to skip</strong> this if you have no interest in the math that makes Parinfer possible.
+<strong>Feel free to skip this</strong> if you have no interest in the math that makes Parinfer possible.
 </div>
 
 <p>
@@ -319,10 +347,10 @@ informal ones follow).
 <h2>Indent Mode</h2>
 
 <p>
-Indent Mode treats indentation as an <em>intention to correct surrounding parens</em>
-when possible.  Specifically, it treats the close-parens at the end of a line
-as <em>eager to extend to indented lines</em>.  As a visual cue, we <em>dim</em> these parens
-to signify their inferred mobility.
+Indent Mode gives you full control of indentation, while Parinfer corrects or
+inserts close-parens where appropriate.  Specifically, it only touches the
+groups of close-parens at the end of each line.  As a visual cue, we
+<em>slightly dim</em> these parens to signify their inferred nature.
 </p>
 
 <div class="interact">
@@ -401,9 +429,8 @@ roughly equivalent to those listed.
 <h3>How it works</h3>
 
 <p>
-We perform the following steps to rearrange parens based on indentation.<br>
-<span class="side-point">We will refer to these later as rules #1, #2, #3 and #4.
-(See the [mathematical basis] for a closer look at why these rules work.)</span>
+We perform the following steps to rearrange close-parens based on indentation.<br>
+<span class="side-point">We will refer to these later as rules #1, #2, #3 and #4.</span>
 </p>
 
 <ol>
@@ -705,8 +732,8 @@ thinking it is okay for processing.
 <h2>Paren Mode</h2>
 
 <p>
-In "Paren Mode", indentation is tightly controlled by parens at all times.  You
-can still adjust indentation, but you won't be able indent/dedent past certain
+Paren Mode gives you full control of parens, while Parinfer corrects indentation.
+You can still adjust indentation, but you won't be able indent/dedent past certain
 boundaries set by parens on previous lines.  As a courtesy, this mode also
 maintains relative indentation of child elements when their parent expressions
 shift.
@@ -1001,6 +1028,7 @@ and
     <script src="codemirror/lib/codemirror.js"></script>
     <script src="codemirror/addon/selection/active-line.js"></script>
     <script src="codemirror/addon/edit/matchbrackets.js"></script>
+    <script src="codemirror/mode/javascript/javascript.js"></script>
     <script src="codemirror/mode/clojure/clojure.js"></script>
     <script src="codemirror/mode/clojure/clojure-parinfer.js"></script>
 
