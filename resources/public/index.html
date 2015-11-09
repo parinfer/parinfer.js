@@ -315,20 +315,61 @@ we will see.</span>
 
 <div class="wrapper">
 <section id="mathematically-correct">
-<h3>Mathematically Correct</h3>
+<h3>Mathematically Stable</h3>
 
 <div class="interact">
 <i class="fa fa-rocket fa-lg"></i>
 <strong>Feel free to skip this</strong> if you have no interest in the math that makes Parinfer possible.
 </div>
 
+<div id="math">
 <p>
-Parinfer is only enabled by formally defining what it means for Lisp code to be
-correctly formatted.  To this end, we define a special condition which must be
-true for every line of code (i.e. an invariant).
+We wish to define necessary conditions for determining if a given file of Lisp
+code is "correctly formatted".
 </p>
 
-...
+<p>
+We start with a clarification that we only consider non-empty lines (i.e. line
+that have at least one non-whitespace, non-comment token).  Thus, all following
+references to line number `n` will refer to the `n`th non-empty line.
+</p>
+
+<p>
+let
+
+t_n = index of non-whitespace, non-comment tokens at line n
+
+i_n = x-position of t_n[0] (indentation)
+
+p_n = number of close-parens at the end of t_n
+
+s_n = index of x-positions of all open-parens that are not closed before t_n[-p_n]
+</p>
+
+<p>
+TODO: define `f`
+</p>
+
+<p>
+Thus, we define that a file of Lisp code is "correctly formatted" if:
+
+<ol>
+  <li>for every line `n > 0`:
+    <ul>
+      <li>t_n[0] != ")"</li>
+      <li>`f(i_n, p_(n-1), s_(n-1))` is true</li>
+    </ul>
+  </li>
+  <li>and for the last line `N`
+    <ul>
+      <li>`|s_N| = p_N`</li>
+      <li>`f(0, p_N, s_N)` is true</li>
+    </ul>
+  </li>
+</ol>
+</p>
+
+</div>
 
 <p>
 Thus, the job of Parinfer is to correct the formatting of our code by changing
