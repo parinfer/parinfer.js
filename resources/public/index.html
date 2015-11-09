@@ -329,7 +329,7 @@ code is "correctly formatted".
 </p>
 
 <p>
-We start with a clarification that we only consider non-empty lines (i.e. line
+We start with a clarification that we only consider non-empty lines (i.e. lines
 that have at least one non-whitespace, non-comment token).  Thus, all following
 references to line number `n` will refer to the `n`th non-empty line.
 </p>
@@ -351,7 +351,7 @@ TODO: define `f`
 </p>
 
 <p>
-Thus, we define that a file of Lisp code is "correctly formatted" if:
+Thus, we formally define that a file of Lisp code is "correctly formatted" if:
 
 <ol>
   <li>for every line `n > 0`:
@@ -372,10 +372,33 @@ Thus, we define that a file of Lisp code is "correctly formatted" if:
 </div>
 
 <p>
-Thus, the job of Parinfer is to correct the formatting of our code by changing
-either the Parens or Indentation of a line such that the above invariant
-remains true.  (paper pending for a formal explanation of these operations, but
-informal ones follow).
+There rules are necessary and sufficient for determining when indentation is
+what we consider "unambiguous", but they are not sufficient in determining if
+code is "pretty". For example, under these rules:
+</p>
+
+<p>
+<ul>
+<li>single-line files are okay</li>
+<li>indentation is flexible within defined thresholds (one-space, two-space, etc)</li>
+<li>lines starting with atomic symbols are not required to have the same indentation</li>
+</ul>
+</p>
+
+<p>
+But the importance of these rules is that they dramatically simplify what
+Parinfer has to do.  They make clear that for every line, Parinfer only has to
+correct either `i_n` or `p_n` to make our predefined rules true:
+</p>
+
+<ul>
+  <li><strong>Indent Mode</strong> Parinfer corrects all `p_n`</li>
+  <li><strong>Paren Mode</strong> Parinfer corrects all `i_n`</li>
+</ul>
+
+<p>
+Formal descriptions of the operations performed by the modes are pending,
+but informal ones follow in their respective sections below.
 </p>
 
 </section>
