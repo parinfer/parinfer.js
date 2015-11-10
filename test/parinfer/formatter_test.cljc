@@ -7,8 +7,8 @@
     #?(:clj  [clojure.pprint :refer [pprint]]
        :cljs [cljs.pprint :refer [pprint]])
     [clojure.string :as string :refer [join split-lines]]
-    [parinfer.format.infer :as infer]
-    [parinfer.format.prep :as prep]))
+    [parinfer.format.indent-mode :as indent-mode]
+    [parinfer.format.paren-mode :as paren-mode]))
 
 #?(:cljs (def fs (js/require "fs")))
 
@@ -229,25 +229,25 @@
                         "actual------------------------------------"
                         text-actual]))
 
-        (idempotent-check "infer" message text-actual final-options infer/format-text)
+        (idempotent-check "indent-mode" message text-actual final-options indent-mode/format-text)
         (when-not final-cursor
-          (idempotent-check "prep" message text-actual final-options prep/format-text))))))
+          (idempotent-check "paren-mode" message text-actual final-options paren-mode/format-text))))))
 
-(deftest run-infer-cases
+(deftest run-indent-mode-cases
   (run-test-cases
-    "infer"
-    infer/format-text
-    infer/format-text-change))
+    "indent-mode"
+    indent-mode/format-text
+    indent-mode/format-text-change))
 
-(deftest run-infer-change-cases
+(deftest run-indent-mode-change-cases
   (run-test-cases
-    "infer-change"
-    infer/format-text
-    infer/format-text-change))
+    "indent-mode-change"
+    indent-mode/format-text
+    indent-mode/format-text-change))
 
-(deftest run-prep-cases
+(deftest run-paren-mode-cases
   (run-test-cases
-    "prep"
-    prep/format-text
-    nil ;; no format-text-change for prep yet
+    "paren-mode"
+    paren-mode/format-text
+    nil ;; no format-text-change for paren-mode yet
     ))
