@@ -11,6 +11,8 @@ Parinfer is an experiment to simplify the way we write Lisp by auto-adjusting
 parens when indentation changes and vice versa.  It is intended to simplify
 the main [Paredit] operations in an intuitive way.
 
+[Paredit]:http://danmidwood.com/content/2014/11/21/animated-paredit.html
+
 Parinfer is currently built with Clojure(Script) and CodeMirror.
 
 ## Running the site
