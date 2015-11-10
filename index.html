@@ -28,17 +28,78 @@
 <!------------------------------------------------------------------------------------>
 
 <div class="wrapper">
-<section id="overview">
-<h2 style="display:none">Overview</h2>
+<section>
 <p class="subtitle">
 Let's dramatically simplify the way we write Lisp...
 </p>
 
+<div class="interact">
+<i class="fa fa-keyboard-o fa-lg"></i>
+<strong>Try it!</strong> Interrupt the animations below to try it for yourself. Click outside to restore it.
+</div>
+
+
 <div>
-<div class="caption"><strong>Preview</strong> of indentation-based editing (close-parens become inferred)</div>
-<textarea id="code-intro">
+<div class="caption"><strong>Parinfer's "Indent Mode"</strong> rearranges parens when you change indentation:</div>
+<textarea id="code-intro-indent">
 </textarea>
 </div>
+
+<div>
+<div class="caption"><strong>Insert or delete a line</strong> without rearranging parens:</div>
+<textarea id="code-intro-insert">
+</textarea>
+</div>
+
+<div>
+<div class="caption"><strong>Comment a line</strong> without rearranging parens:</div>
+<textarea id="code-intro-comment">
+</textarea>
+</div>
+
+<div>
+<div class="caption"><strong>Basic Paredit without hotkeys</strong> thanks to simple paren inference. (wrap, splice, slurp, barf)</div>
+<textarea id="code-intro-paredit">
+</textarea>
+</div>
+
+<div>
+<div class="caption"><strong>Preserve indentation</strong> when editing in "Paren Mode":</div>
+<textarea id="code-intro-paren">
+</textarea>
+</div>
+</section>
+</div>
+
+<!------------------------------------------------------------------------------------>
+
+<div class="wrapper">
+<section>
+
+<p>
+<strong>Parinfer</strong> is a proof-of-concept editor mode for Lisp
+programming languages.
+</p>
+
+<p>
+<i class="fa fa-lg fa-github"></i> <a href="http://github.com/shaunlebron/parinfer">http://github.com/shaunlebron/parinfer</a><br>
+<i class="fa fa-lg fa-twitter"></i> <a href="http://twitter.com/shaunlebron">@shaunlebron</a><br>
+</p>
+
+<div class="interact">
+<i class="fa fa-book fa-lg"></i>
+<strong>Read on</strong> for a full exploration of the motivations, rules, and effects of Parinfer.
+</div>
+
+
+</section>
+</div>
+
+<!------------------------------------------------------------------------------------>
+
+<div class="wrapper">
+<section id="introduction">
+<h2>Introduction</h2>
 
 <p>
 <strong>Lisp is often dismissed</strong> as an undesirable programming syntax

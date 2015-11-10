@@ -139,6 +139,7 @@ h1 em {
 
 .subtitle {
   font-size: 20px;
+  font-weight: bold;
   line-height: 65px;
   margin: 32px 0;
 }
@@ -291,17 +292,20 @@ code {
   height: 70px;
 }
 
-#cm-code-indent-multi
+#cm-code-indent-multi,
+#cm-code-intro-indent
 {
   height: 130px;
 }
 
-#cm-code-line
+#cm-code-line,
+#cm-code-intro-insert
 {
   height: 150px;
 }
 
-#cm-code-comment
+#cm-code-comment,
+#cm-code-intro-comment
 {
   height: 130px;
 }
@@ -403,7 +407,13 @@ code {
 #cm-code-paren-tune,
 #cm-code-paren-frac,
 #cm-code-paren-comment,
-#cm-code-paren-wrap
+#cm-code-paren-wrap,
+#cm-code-intro-paren
+{
+  height: 100px;
+}
+
+#cm-code-intro-paredit
 {
   height: 100px;
 }
