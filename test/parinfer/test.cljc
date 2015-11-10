@@ -1,4 +1,4 @@
-(ns parinfer.formatter-test
+(ns parinfer.test
   "Parses and verifies tests written in doc/*-tests.md
   (cljs stuff is Node.js specific)"
   (:require

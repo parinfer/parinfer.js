@@ -3,7 +3,7 @@
   (:require
     [cljs.nodejs :refer [enable-util-print!]]
     [cljs.test :refer-macros [run-tests]]
-    [parinfer.formatter-test]))
+    [parinfer.test]))
     
 
 (enable-util-print!)
@@ -11,7 +11,7 @@
 (defn runner []
   (if (cljs.test/successful?
         (run-tests
-          'parinfer.formatter-test))
+          'parinfer.test))
     0
     1))
 
