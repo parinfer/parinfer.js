@@ -5,13 +5,17 @@
     <title>Parinfer - simpler Lisp editing</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,400italic,700,700italic,300,300italic' rel='stylesheet' type='text/css'>
+    <link href="fonts/Serif/cmun-serif.css" rel="stylesheet"></link>
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet">
+
     <link href="codemirror/lib/codemirror.css" rel="stylesheet" type="text/css">
     <link href="css/lib/keys.css" rel="stylesheet" type="text/css">
     <link href="css/style.css" rel="stylesheet" type="text/css">
     <link href="css/theme.css" rel="stylesheet" type="text/css">
   </head>
-  <body>
+
+  <body class="no-mathjax">
+
 <div class="sidebar">
   <h1>Par<em>infer</em></h1>
   <div id="toc">
@@ -314,8 +318,8 @@ we will see.</span>
 <!------------------------------------------------------------------------------------>
 
 <div class="wrapper">
-<section id="mathematically-correct">
-<h3>Mathematically Correct</h3>
+<section id="a-mathematical-basis">
+<h3>A Mathematical Basis</h3>
 
 <div class="interact">
 <i class="fa fa-rocket fa-lg"></i>
@@ -323,18 +327,104 @@ we will see.</span>
 </div>
 
 <p>
-Parinfer is only enabled by formally defining what it means for Lisp code to be
-correctly formatted.  To this end, we define a special condition which must be
-true for every line of code (i.e. an invariant).
+Parinfer relies on the following definitions:
 </p>
 
-...
+<div class="math-page mathjax">
+<p>
+We wish to define necessary conditions for determining if a given file of Lisp
+code is "correctly formatted".
+</p>
 
 <p>
-Thus, the job of Parinfer is to correct the formatting of our code by changing
-either the Parens or Indentation of a line such that the above invariant
-remains true.  (paper pending for a formal explanation of these operations, but
-informal ones follow).
+We start with a clarification that we only consider non-empty lines (i.e. lines
+that have at least one non-whitespace, non-comment token).  Thus, all following
+references to line number $n$ will refer to the $n$th non-empty line.
+</p>
+
+<p>
+To proceed, we define the following:
+
+<ul>
+<li>
+$t_n$ = (tokens) index of non-whitespace, non-comment tokens at line $n$
+</li>
+<li>
+$i_n$ = (indentation) x-position of $t_n[0]$
+</li>
+<li>
+$p_n$ = (parens) number of close-parens at the end of $t_n$
+</li>
+<li>
+$s_n$ = (stack) index of x-positions of all open-parens unclosed before $t_n[-p_n]$
+</li>
+</ul>
+</p>
+
+<p>
+Next, we define a function which determines if indentation is valid:
+
+<ul>
+  <li>$f(i,p,s) = ( x_\text{min} \lt i \leq x_\text{max} )$</li>
+</ul>
+</p>
+
+<p>
+where:
+<ul>
+  <li>$x_\text{min} = \begin{cases} s[-p-1] & \text{if } |s| > p, \\ -1 & \text{otherwise} \end{cases}$</li>
+  <li>$x_\text{max} = \begin{cases} s[-p] & \text{if } p \gt 0, \\ \infty & \text{otherwise} \end{cases}$</li>
+</ul>
+</p>
+
+
+<p>
+Finally, we define that a file of Lisp code is "correctly formatted" if:
+
+<ol>
+  <li>for every line $n > 0$:
+    <ul>
+      <li>$t_n[0] \ne $ ")", and</li>
+      <li>$f(i_n, p_{n-1}, s_{n-1})$ is true</li>
+    </ul>
+  </li>
+  <li>and for the last line $N$
+    <ul>
+      <li>$|s_N| = p_N$, and</li>
+      <li>$f(0, p_N, s_N)$ is true</li>
+    </ul>
+  </li>
+</ol>
+</p>
+
+</div>
+
+<p>
+These rules are necessary and sufficient for determining when indentation is
+what we consider "unambiguous", but they are not sufficient in determining if
+code is "pretty". For example:
+
+<ul>
+<li>single-line files are okay</li>
+<li>"tab" lengths are flexible (one space, two spaces, etc)</li>
+<li>indentation of sibling lines are not required to be aligned</li>
+</ul>
+</p>
+
+<p class="mathjax">
+<strong>The importance of these rules</strong> is that they allow Parinfer to
+correct indentation or parens simply by choosing correct values of $i_n$ or
+$p_n$ for every line:
+</p>
+
+<ul class="mathjax">
+  <li><strong>Indent Mode</strong> forces correct values of $p_n$</li>
+  <li><strong>Paren Mode</strong> forces correct values of $i_n$</li>
+</ul>
+
+<p>
+Formal descriptions of the operations performed by the modes are pending,
+but informal ones follow in their respective sections below.
 </p>
 
 </section>
@@ -938,9 +1028,9 @@ others not using <em>Parinfer</em>.
 <h3>Source Code</h3>
 
 <p>
-The text formatting code is implemented in portable Clojure/ClojureScript.  The
-editor demos are created in CodeMirror with hooks to apply our formatters and
-update cursor position.
+The text formatting code is implemented in portable Clojure/ClojureScript. We
+have test suites for both modes. The editor demos are created in CodeMirror
+with hooks to apply our formatters and update cursor position.
 </p>
 
 <p>
@@ -1037,6 +1127,17 @@ and
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
     <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/d3/3.3.3/d3.min.js"></script>
     <script src="js/lib/gears.d3.js"></script>
+
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [['$','$']],
+          processClass: "mathjax",
+          ignoreClass: "no-mathjax"
+        }
+      });
+    </script>
 
     <script src="js/lib/jsdiff.min.js"></script>
 
