@@ -380,7 +380,7 @@ we will see.</span>
 
 <div class="wrapper">
 <section id="a-mathematical-basis">
-<h3>A Mathematical Basis</h3>
+<h3>Mathematical Foundation</h3>
 
 <div class="interact">
 <i class="fa fa-rocket fa-lg"></i>
@@ -388,7 +388,83 @@ we will see.</span>
 </div>
 
 <p>
-Parinfer relies on the following definitions:
+The foundation of Parinfer relies on a few somewhat formalized definitions and
+properties:
+</p>
+
+<div class="math-page mathjax">
+<p>
+We wish to define properties that each Parinfer mode should exhibit.
+</p>
+
+<p>
+With the following definitions:
+<ul>
+  <li>$I$ = (Indent Mode) function accepting code text and returning new text.</li>
+  <li>$P$ = (Paren Mode) function accepting code text and returning new text.</li>
+  <li>$R$ = (Reader) function accepting code text and returning its AST data.</li>
+</ul>
+</p>
+
+<p>
+The following should be true:
+<ul>
+  <li>let $y = P(x)$
+        <div class="side-note">
+          $\leftarrow$ run Paren-Mode on $x$ to get $y$
+        </div>
+    <ul>
+      <li>$\Longrightarrow R(x) = R(y)$
+        <div class="side-note">
+          $\leftarrow$ Paren-Mode should never change the AST
+        </div>
+      <li>$\Longrightarrow P(y) = y$
+        <div class="side-note">
+          $\leftarrow$ Paren-Mode should be idempotent
+        </div>
+      <li>$\Longrightarrow I(y) = y$
+        <div class="side-note">
+          $\leftarrow$ Indent-Mode should never change the result of Paren-Mode
+        </div>
+    </ul>
+</ul>
+
+<ul>
+  <li>let $z = I(x)$
+        <div class="side-note">
+          $\leftarrow$ run Indent-Mode on $x$ to get $z$
+        </div>
+    <ul>
+      <li>$\mathrel{\rlap{\hskip .5em/}}\Longrightarrow R(x) = R(z)$
+        <div class="side-note">
+          $\leftarrow$ Indent-Mode may change the AST (by design)
+        </div>
+      <li>$\Longrightarrow I(z) = z$
+        <div class="side-note">
+          $\leftarrow$ Indent-Mode should be idempotent
+        </div>
+    </ul>
+</ul>
+</p>
+
+</div>
+
+<p class="mathjax">
+The actual operations performed by the modes rely on a formal definition
+of what it means for Lisp code to be "correctly formatted".  We establish an
+invariant&mdash; something that must be true for every line of code.  From that,
+Parinfer corrects indentation or parens simply by choosing correct values for
+$i_n$ or $p_n$ (defined later) to satisfy this invariant:
+</p>
+
+<ul class="mathjax">
+  <li><strong>Indent Mode</strong> forces correct values of $p_n$</li>
+  <li><strong>Paren Mode</strong> forces correct values of $i_n$</li>
+</ul>
+
+<p>
+The following is a concise reference (not a guide) to establishing this
+invariant that Parinfer's modes rely on.
 </p>
 
 <div class="math-page mathjax">
@@ -493,20 +569,9 @@ code is "pretty". For example:
 </ul>
 </p>
 
-<p class="mathjax">
-<strong>The importance of these rules</strong> is that they allow Parinfer to
-correct indentation or parens simply by choosing correct values of $i_n$ or
-$p_n$ for every line:
-</p>
-
-<ul class="mathjax">
-  <li><strong>Indent Mode</strong> forces correct values of $p_n$</li>
-  <li><strong>Paren Mode</strong> forces correct values of $i_n$</li>
-</ul>
-
 <p>
-Formal descriptions of the operations performed by the modes are pending,
-but informal ones follow in their respective sections below.
+Formal descriptions of the actual operations performed by the modes are
+pending, but informal ones follow in their respective sections below.
 </p>
 
 </section>
