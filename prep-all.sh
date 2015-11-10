@@ -1,5 +1,7 @@
 #!/bin/sh
 
+# See http://shaunlebron.github.io/parinfer/#fixing-existing-files
+
 if [ "$#" -ne 1 ]; then
   echo
   echo "prep-all.sh:  correct indentation of all clojure files in the given directory (recursive)"

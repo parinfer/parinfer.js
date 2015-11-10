@@ -1105,9 +1105,9 @@
        :origin "+delete"},
       :dt 203}],
     :init-value "(defn foo [a b])\n(+ a b)",
-    :last-time 1444084526856, 
-    :recording? false}) 
-  
+    :last-time 1444084526856,
+    :recording? false})
+
 
 (def indent-far
   '{:changes
@@ -1223,8 +1223,8 @@
       :dt 195}],
     :init-value "(let [m {:foo 1}])\n:bar 2",
     :last-time 1444670828840,
-    :recording? false, 
-    :loop-delay 1000, 
+    :recording? false,
+    :loop-delay 1000,
     :timescale 2})
 
 (def indent-multi
@@ -1315,8 +1315,8 @@
        :origin "+input"},
       :dt 578}],
     :init-value "",
-    :last-time 1444670969215, 
-    :recording? false, 
+    :last-time 1444670969215,
+    :recording? false,
     :timescale 2})
 
 (def line
@@ -1571,7 +1571,7 @@
        :origin "+delete"},
       :dt 507}],
     :init-value "",
-    :last-time 1444670641434, 
+    :last-time 1444670641434,
     :recording? false})
 
 (def comment-
@@ -1627,7 +1627,7 @@
       :dt 323}],
     :init-value
     "(cljs.build.api/build \"src\"\n  {:main 'hello-world.core\n   :output-to \"out/main.js\"\n   :verbose true})",
-    :last-time 1444400762946, 
+    :last-time 1444400762946,
     :recording? false})
 
 (def wrap
@@ -1718,7 +1718,7 @@
        :origin "+input"},
       :dt 130}],
     :init-value "",
-    :last-time 1444574204081, 
+    :last-time 1444574204081,
     :recording? false})
 
 (def splice
@@ -1749,7 +1749,7 @@
        :origin "+delete"},
       :dt 446}],
     :init-value "",
-    :last-time 1444575352287, 
+    :last-time 1444575352287,
     :recording? false})
 
 (def barf
@@ -1779,8 +1779,8 @@
        :text (")"),
        :origin "+input"},
       :dt 889}],
-    :init-value "", 
-    :last-time 1444574335406, 
+    :init-value "",
+    :last-time 1444574335406,
     :recording? false})
 
 (def slurp-
@@ -1815,7 +1815,7 @@
      {:selections ({:anchor {:line 1, :ch 11}, :head {:line 1, :ch 11}}),
       :dt 510}],
     :init-value "",
-    :last-time 1444643570209, 
+    :last-time 1444643570209,
     :recording? false})
 
 (def string
@@ -2056,7 +2056,7 @@
        :origin "+input"},
       :dt 182}],
     :init-value "(defn foo [a b]\n  (+ a b))",
-    :last-time 1444150093903, 
+    :last-time 1444150093903,
     :recording? false})
 
 (def displaced
@@ -2080,8 +2080,8 @@
       :dt 1522}
      {:selections ({:anchor {:line 1, :ch 11}, :head {:line 1, :ch 11}}),
       :dt 2099}],
-    :init-value "", 
-    :last-time 1444261412937, 
+    :init-value "",
+    :last-time 1444261412937,
     :recording? false})
 
 (def not-displaced
@@ -2118,7 +2118,7 @@
      {:selections ({:anchor {:line 1, :ch 11}, :head {:line 1, :ch 11}}),
       :dt 875}],
     :init-value "",
-    :last-time 1444261858898, 
+    :last-time 1444261858898,
     :recording? false})
 
 (def warn-bad
@@ -2151,8 +2151,8 @@
        :text ("\""),
        :origin "+input"},
       :dt 290}],
-    :init-value "", 
-    :last-time 1444508331824, 
+    :init-value "",
+    :last-time 1444508331824,
     :recording? false})
 
 (def warn-good
@@ -2185,8 +2185,8 @@
        :text ("\""),
        :origin "+input"},
       :dt 290}],
-    :init-value "", 
-    :last-time 1444508331824, 
+    :init-value "",
+    :last-time 1444508331824,
     :recording? false})
 
 (def enter
@@ -2582,8 +2582,8 @@
        :origin "+input"},
       :dt 138}],
     :init-value "",
-    :last-time 1444693314063, 
-    :recording? false, 
+    :last-time 1444693314063,
+    :recording? false,
     :timescale 2})
 
 (def paren-tune
@@ -2675,8 +2675,8 @@
       :dt 3}
      {:selections ({:anchor {:line 3, :ch 10}, :head {:line 3, :ch 10}}),
       :dt 819}],
-    :init-value "", 
-    :last-time 1445549397039, 
+    :init-value "",
+    :last-time 1445549397039,
     :recording? false})
 
 (def paren-frac
@@ -2721,8 +2721,8 @@
        :text ("p"),
        :origin "+input"},
       :dt 208}],
-    :init-value "", 
-    :last-time 1446661662368, 
+    :init-value "",
+    :last-time 1446661662368,
     :recording? false})
 
 (def intro-paren
@@ -2821,8 +2821,8 @@
     :text ("o"),
     :origin "+input"},
    :dt 168}],
- :init-value "", 
- :last-time 1447143188681, 
+ :init-value "",
+ :last-time 1447143188681,
  :recording? false})
 
 (def intro-paredit
@@ -2933,8 +2933,8 @@
     :text (""),
     :origin "+delete"},
    :dt 1484}],
- :init-value "", 
- :last-time 1447143951531, 
+ :init-value "",
+ :last-time 1447143951531,
  :recording? false})
 
 (def paren-comment
@@ -2990,7 +2990,7 @@
        :origin "+delete"},
       :dt 186}],
     :init-value "(defn foo\n  [a b]\n  (+ a b))",
-    :last-time 1445550928007, 
+    :last-time 1445550928007,
     :recording? false})
 
 (def paren-wrap
@@ -3044,6 +3044,6 @@
        :text (")"),
        :origin "+input"},
       :dt 652}],
-    :init-value "", 
-    :last-time 1445552518239, 
+    :init-value "",
+    :last-time 1445552518239,
     :recording? false})

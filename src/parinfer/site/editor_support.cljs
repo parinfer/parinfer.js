@@ -5,7 +5,7 @@
     [parinfer.indent-mode :as indent-mode]
     [parinfer.paren-mode :as paren-mode]
     [parinfer.site.state :refer [state]]))
-    
+
 
 (defprotocol IEditor
   "Custom data/methods for a CodeMirror editor."
@@ -104,7 +104,7 @@
         cursor (.getCursor cm)
         scroller (.getScrollerElement cm)
         scroll-x (.-scrollLeft scroller)
-        scroll-y (.-scrollTop scroller) 
+        scroll-y (.-scrollTop scroller)
 
         options {:cursor-line (.-line cursor)
                  :cursor-x (.-ch cursor)

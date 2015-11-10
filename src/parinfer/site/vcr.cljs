@@ -50,7 +50,7 @@
   [selection]
   {:anchor (parse-pos (.-anchor selection))
    :head (parse-pos (.-head selection))})
-   
+
 
 (defn parse-selections
   [selections]

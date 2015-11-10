@@ -1,6 +1,6 @@
 (ns parinfer.indent-mode
   "Corrects parens based on indentation.
-  (used while editing a file)"
+  See http://shaunlebron.github.io/parinfer/#indent-mode"
   (:require
     [clojure.string :refer [join]]
     [parinfer.string :refer [insert-string
@@ -33,9 +33,9 @@
 (defn close-delims
   "Update the state by inferring closing delimiters.
   Do this by using the given indentation level.
-  
+
   Example:
-  
+
   (defn foo [a b
      ret           ;; <---  When we process `r`, we detect indentation, then...
 
@@ -69,7 +69,7 @@
   content below can cause the delims to move.
 
   Example:
-  
+
   (foo (+ 2 3) [(bar)] )    ;; a potential comment
                     ^^^^
                      |
@@ -77,7 +77,7 @@
                           (notice whitespace will also be removed)
   "
   [{:keys [stack delim-trail backup x-pos ch cursor-line line-no cursor-x cursor-in-comment?] :as state}]
-  (let [ 
+  (let [
 
         ;; these characters won't block, unless they're escaped
         pass-char? (or (= ";" ch)
@@ -136,7 +136,7 @@
   while also restoring their matching delims onto the stack.
 
   Example:
-  
+
   (foo (+ 2 3) [(bar)] )    ;; a potential comment
   ^            ^^   ^^^^
   |            |     |
@@ -174,9 +174,9 @@
 
 (defn update-insertion-pt
   "Update the state's trailing delimiter insertion point as we scan the line.
-  
+
   Example:
-  
+
   (defn foo [a b] ret)
   ^^^^^ ^^^ ^^ ^  ^^^
                     |
@@ -189,7 +189,7 @@
   [{:keys [track-indent? cursor-line lines line-no stack x-pos ch] :as state}]
   (let [prev-ch (str (last (get lines line-no)))
 
-        insert-at-char? (and 
+        insert-at-char? (and
                           ;; must be in code (after push-char)
                           (in-code? stack)
 
@@ -226,7 +226,7 @@
   "Update the state by handling a possible indentation trigger.
 
   Example:
-  
+
   (defn foo [a b
      ret           ;; <---  When we process `r`, we detect indentation, then
                    ;;       we start backtracking to insert closing delimiters on a previous line.

@@ -51,7 +51,7 @@
 ;;------------------------------------------------------------------------
 ;; Delimiter Stack operations
 ;;
-;; 
+;;
 ;;   We track delimiters by using a stack of maps containing [:x-pos :ch :indent-delta].
 ;;   State is tracked by checking last character.
 ;;------------------------------------------------------------------------

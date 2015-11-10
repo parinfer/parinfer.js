@@ -1,4 +1,6 @@
 (ns parinfer.prep-file
+  "Fix indentation of a file.
+  See: http://shaunlebron.github.io/parinfer/#fixing-existing-files"
   (:require
     [parinfer.paren-mode :refer [format-text]]))
 

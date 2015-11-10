@@ -115,7 +115,7 @@
     (create-editor! "code-paren-tune" :paren-tune opts)
     (create-editor! "code-paren-frac" :paren-frac opts)
     (create-editor! "code-paren-comment" :paren-comment opts)
-    (create-editor! "code-paren-wrap" :paren-wrap opts)) 
+    (create-editor! "code-paren-wrap" :paren-wrap opts))
 
   (start-editor-sync!)
 
@@ -170,7 +170,7 @@
           (update result key- merge state))
         data
         index-anims)))
-  
+
   (doseq [[key- _] index-anims]
     (animate-when-visible! key-))
 
