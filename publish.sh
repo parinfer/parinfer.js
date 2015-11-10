@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# cleans, builds, and publishes the parinfer site to:
+# http://shaunlebron.github.io/parinfer
+
 set -ex
 
 lein clean
