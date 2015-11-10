@@ -330,7 +330,7 @@ we will see.</span>
 Parinfer relies on the following definitions:
 </p>
 
-<div class="math mathjax">
+<div class="math-page mathjax">
 <p>
 We wish to define necessary conditions for determining if a given file of Lisp
 code is "correctly formatted".
@@ -347,48 +347,50 @@ To proceed, we define the following:
 
 <ul>
 <li>
-$t_n$ = index of non-whitespace, non-comment tokens at line $n$
+$t_n$ = (tokens) index of non-whitespace, non-comment tokens at line $n$
 </li>
 <li>
-$i_n$ = x-position of $t_n[0]$ (indentation)
+$i_n$ = (indentation) x-position of $t_n[0]$
 </li>
 <li>
-$p_n$ = number of close-parens at the end of $t_n$
+$p_n$ = (parens) number of close-parens at the end of $t_n$
 </li>
 <li>
-$s_n$ = index of x-positions of all open-parens unclosed before $t_n[-p_n]$
+$s_n$ = (stack) index of x-positions of all open-parens unclosed before $t_n[-p_n]$
 </li>
 </ul>
 </p>
 
 <p>
-TODO: example table
+Next, we define a function which determines if indentation is valid:
+
+<ul>
+  <li>$f(i,p,s) = ( x_\text{min} \lt i \leq x_\text{max} )$</li>
+</ul>
 </p>
 
 <p>
-Let
-$$f(i,p,s) = ( x_{min} \lt i \leq x_{max} )$$
-
-where
-<div class="where-x">
-$x_{min} = \begin{cases} s[-p-1] & \text{if } |s| > p, \\ -1 & \text{otherwise} \end{cases}$ <br>
-$x_{max} = \begin{cases} s[-p] & \text{if } p \gt 0, \\ \infty & \text{otherwise} \end{cases}$
-</div>
+where:
+<ul>
+  <li>$x_\text{min} = \begin{cases} s[-p-1] & \text{if } |s| > p, \\ -1 & \text{otherwise} \end{cases}$</li>
+  <li>$x_\text{max} = \begin{cases} s[-p] & \text{if } p \gt 0, \\ \infty & \text{otherwise} \end{cases}$</li>
+</ul>
 </p>
 
+
 <p>
-Thus, we formally define that a file of Lisp code is "correctly formatted" if:
+Finally, we define that a file of Lisp code is "correctly formatted" if:
 
 <ol>
   <li>for every line $n > 0$:
     <ul>
-      <li>$t_n[0] \ne $ ")"</li>
+      <li>$t_n[0] \ne $ ")", and</li>
       <li>$f(i_n, p_{n-1}, s_{n-1})$ is true</li>
     </ul>
   </li>
   <li>and for the last line $N$
     <ul>
-      <li>$|s_N| = p_N$</li>
+      <li>$|s_N| = p_N$, and</li>
       <li>$f(0, p_N, s_N)$ is true</li>
     </ul>
   </li>
@@ -409,15 +411,15 @@ code is "pretty". For example:
 </ul>
 </p>
 
-<p>
+<p class="mathjax">
 <strong>The importance of these rules</strong> is that they allow Parinfer to
-correct indentation or parens simply by choosing correct values of `i_n` or
-`p_n` for every line:
+correct indentation or parens simply by choosing correct values of $i_n$ or
+$p_n$ for every line:
 </p>
 
-<ul>
-  <li><strong>Indent Mode</strong> forces correct values of `p_n`</li>
-  <li><strong>Paren Mode</strong> forces correct values of `i_n`</li>
+<ul class="mathjax">
+  <li><strong>Indent Mode</strong> forces correct values of $p_n$</li>
+  <li><strong>Paren Mode</strong> forces correct values of $i_n$</li>
 </ul>
 
 <p>

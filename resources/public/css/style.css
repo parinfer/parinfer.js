@@ -4,6 +4,7 @@
 
 body {
   font-family: "Open Sans", Arial, freesans, sans-serif;
+  color: #555;
   background: #F7F7F7;
 }
 
@@ -553,7 +554,7 @@ i.fa {
   border: 1px solid #EEE;
 }
 
-.math {
+.math-page {
   background: #fefefe;
   border: 1px solid #EEE;
   padding: 30px;
@@ -561,8 +562,20 @@ i.fa {
   font-size: 18px;
 }
 
+.math-page ul li {
+  list-style-type: none;
+}
+
+.math-page li {
+  margin-bottom: 5px;
+}
+
 .where-x {
   display: block;
   margin: 0 auto;
   width: 250px;
+}
+
+.math-page .MathJax {
+  font-size: 20px;
 }
