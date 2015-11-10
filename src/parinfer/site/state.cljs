@@ -6,8 +6,8 @@
   (atom {}))
 
 (def empty-editor-state
-  {:text ""     ;; text of the editor
-   :mode :infer ;; editor mode (:infer, :prep)
-   :cm nil      ;; the CodeMirror instance 
-   :watcher nil}) ;; the ScrollMonitor instance
+  {:text ""             ;; text of the editor
+   :mode :indent-mode   ;; editor mode (:indent-mode, :paren-mode)
+   :cm nil              ;; the CodeMirror instance 
+   :watcher nil})       ;; the ScrollMonitor instance
    

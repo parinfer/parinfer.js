@@ -89,7 +89,7 @@
   (create-editor! "code-intro-insert" :intro-insert)
   (create-editor! "code-intro-comment" :intro-comment)
   (create-editor! "code-intro-paredit" :intro-paredit)
-  (create-editor! "code-intro-paren" :intro-paren {:parinfer-mode :prep})
+  (create-editor! "code-intro-paren" :intro-paren {:parinfer-mode :paren-mode})
 
   (create-editor! "code-indent" :indent)
   (create-editor! "code-indent-far" :indent-far)
@@ -111,7 +111,7 @@
   (create-editor! "code-displaced" :displaced)
   (create-editor! "code-not-displaced" :not-displaced)
 
-  (let [opts {:parinfer-mode :prep}]
+  (let [opts {:parinfer-mode :paren-mode}]
     (create-editor! "code-paren-tune" :paren-tune opts)
     (create-editor! "code-paren-frac" :paren-frac opts)
     (create-editor! "code-paren-comment" :paren-comment opts)
@@ -263,7 +263,7 @@
 
 (defn render-dev! []
   (create-editor! "code-indent-mode" :indent-mode)
-  (create-editor! "code-paren-mode" :paren-mode {:parinfer-mode :prep})
+  (create-editor! "code-paren-mode" :paren-mode {:parinfer-mode :paren-mode})
   (start-editor-sync!))
 
 (defn state-viewer

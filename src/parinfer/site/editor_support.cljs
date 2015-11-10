@@ -111,14 +111,14 @@
                  :cursor-dx (compute-cursor-dx cursor change)}
 
         key- (cm-key cm)
-        mode (or (get-in @state [key- :mode]) :infer)
+        mode (or (get-in @state [key- :mode]) :indent-mode)
 
         prev-state (get-prev-state cm)
 
         ;; format the text
         new-text
         (case mode
-          :infer
+          :indent-mode
           (let [result (if (and use-cache? @prev-state)
                         (indent-mode/format-text-change
                           current-text
@@ -130,7 +130,7 @@
               (reset! prev-state (:state result)))
             (:text result))
 
-          :prep
+          :paren-mode
           (let [result (paren-mode/format-text current-text options)]
             (:text result))
 
