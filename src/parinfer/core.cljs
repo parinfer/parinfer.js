@@ -84,7 +84,13 @@
 
 
 (defn create-index-editors! []
-  (create-editor! "code-intro" :intro)
+
+  (create-editor! "code-intro-indent" :intro-indent)
+  (create-editor! "code-intro-insert" :intro-insert)
+  (create-editor! "code-intro-comment" :intro-comment)
+  (create-editor! "code-intro-paredit" :intro-paredit)
+  (create-editor! "code-intro-paren" :intro-paren {:parinfer-mode :prep})
+
   (create-editor! "code-indent" :indent)
   (create-editor! "code-indent-far" :indent-far)
   (create-editor! "code-indent-multi" :indent-multi)
@@ -130,7 +136,12 @@
     (.exitViewport #(stop-playing! key-))))
 
 (def index-anims
-  {:intro vcr-data/intro
+  {:intro-indent vcr-data/indent-multi
+   :intro-insert vcr-data/line
+   :intro-comment vcr-data/comment-
+   :intro-paredit vcr-data/intro-paredit
+   :intro-paren vcr-data/intro-paren
+
    :indent vcr-data/indent
    :indent-far vcr-data/indent-far
    :indent-multi vcr-data/indent-multi

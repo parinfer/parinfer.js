@@ -2725,6 +2725,218 @@
     :last-time 1446661662368, 
     :recording? false})
 
+(def intro-paren
+  '{:changes
+ [{:selections ({:anchor {:line 0, :ch 0}, :head {:line 0, :ch 0}}),
+   :dt 0}
+  {:change
+   {:from {:line 0, :ch 0},
+    :to {:line 0, :ch 0},
+    :text ("(def m {:foo 1" "        :bar 2" "        :baz 3})"),
+    :origin "paste"},
+   :dt 571}
+  {:selections ({:anchor {:line 0, :ch 6}, :head {:line 0, :ch 6}}),
+   :dt 894}
+  {:change
+   {:from {:line 0, :ch 6},
+    :to {:line 0, :ch 6},
+    :text ("y"),
+    :origin "+input"},
+   :dt 423}
+  {:change
+   {:from {:line 0, :ch 7},
+    :to {:line 0, :ch 7},
+    :text ("-"),
+    :origin "+input"},
+   :dt 129}
+  {:change
+   {:from {:line 0, :ch 8},
+    :to {:line 0, :ch 8},
+    :text ("m"),
+    :origin "+input"},
+   :dt 147}
+  {:change
+   {:from {:line 0, :ch 9},
+    :to {:line 0, :ch 9},
+    :text ("a"),
+    :origin "+input"},
+   :dt 101}
+  {:change
+   {:from {:line 0, :ch 10},
+    :to {:line 0, :ch 10},
+    :text ("p"),
+    :origin "+input"},
+   :dt 136}
+  {:change
+   {:from {:line 0, :ch 10},
+    :to {:line 0, :ch 11},
+    :text (""),
+    :origin "+delete"},
+   :dt 812}
+  {:change
+   {:from {:line 0, :ch 9},
+    :to {:line 0, :ch 10},
+    :text (""),
+    :origin "+delete"},
+   :dt 167}
+  {:change
+   {:from {:line 0, :ch 8},
+    :to {:line 0, :ch 9},
+    :text (""),
+    :origin "+delete"},
+   :dt 140}
+  {:change
+   {:from {:line 0, :ch 7},
+    :to {:line 0, :ch 8},
+    :text (""),
+    :origin "+delete"},
+   :dt 144}
+  {:change
+   {:from {:line 0, :ch 6},
+    :to {:line 0, :ch 7},
+    :text (""),
+    :origin "+delete"},
+   :dt 152}
+  {:change
+   {:from {:line 0, :ch 5},
+    :to {:line 0, :ch 6},
+    :text (""),
+    :origin "+delete"},
+   :dt 148}
+  {:change
+   {:from {:line 0, :ch 5},
+    :to {:line 0, :ch 5},
+    :text ("f"),
+    :origin "+input"},
+   :dt 167}
+  {:change
+   {:from {:line 0, :ch 6},
+    :to {:line 0, :ch 6},
+    :text ("o"),
+    :origin "+input"},
+   :dt 115}
+  {:change
+   {:from {:line 0, :ch 7},
+    :to {:line 0, :ch 7},
+    :text ("o"),
+    :origin "+input"},
+   :dt 168}],
+ :init-value "", 
+ :last-time 1447143188681, 
+ :recording? false})
+
+(def intro-paredit
+  '{:timescale 2
+    :changes
+ [{:selections ({:anchor {:line 0, :ch 0}, :head {:line 0, :ch 0}}),
+   :dt 0}
+  {:change
+   {:from {:line 0, :ch 0},
+    :to {:line 0, :ch 0},
+    :text
+    ("(defn foo a b" "  (let x + a b" "    (println \"sum is\" x)))"),
+    :origin "paste"},
+   :dt 1197}
+  {:selections ({:anchor {:line 0, :ch 10}, :head {:line 0, :ch 10}}),
+   :dt 1483}
+  {:change
+   {:from {:line 0, :ch 10},
+    :to {:line 0, :ch 10},
+    :text ("["),
+    :origin "+input"},
+   :dt 683}
+  {:change
+   {:from {:line 0, :ch 10},
+    :to {:line 0, :ch 11},
+    :text (""),
+    :origin "+delete"},
+   :dt 483}
+  {:change
+   {:from {:line 0, :ch 10},
+    :to {:line 0, :ch 10},
+    :text ("["),
+    :origin "+input"},
+   :dt 551}
+  {:change
+   {:from {:line 0, :ch 10},
+    :to {:line 0, :ch 11},
+    :text (""),
+    :origin "+delete"},
+   :dt 786}
+  {:change
+   {:from {:line 0, :ch 10},
+    :to {:line 0, :ch 10},
+    :text ("["),
+    :origin "+input"},
+   :dt 545}
+  {:selections ({:anchor {:line 1, :ch 3}, :head {:line 1, :ch 3}}),
+   :dt 1268}
+  {:change
+   {:from {:line 1, :ch 2},
+    :to {:line 1, :ch 3},
+    :text (""),
+    :origin "+delete"},
+   :dt 1225}
+  {:change
+   {:from {:line 1, :ch 2},
+    :to {:line 1, :ch 2},
+    :text ("("),
+    :origin "+input"},
+   :dt 563}
+  {:change
+   {:from {:line 1, :ch 2},
+    :to {:line 1, :ch 3},
+    :text (""),
+    :origin "+delete"},
+   :dt 472}
+  {:change
+   {:from {:line 1, :ch 2},
+    :to {:line 1, :ch 2},
+    :text ("("),
+    :origin "+input"},
+   :dt 800}
+  {:selections ({:anchor {:line 1, :ch 7}, :head {:line 1, :ch 7}}),
+   :dt 1475}
+  {:change
+   {:from {:line 1, :ch 7},
+    :to {:line 1, :ch 7},
+    :text ("["),
+    :origin "+input"},
+   :dt 1015}
+  {:selections ({:anchor {:line 1, :ch 10}, :head {:line 1, :ch 10}}),
+   :dt 866}
+  {:change
+   {:from {:line 1, :ch 10},
+    :to {:line 1, :ch 10},
+    :text ("("),
+    :origin "+input"},
+   :dt 1070}
+  {:selections ({:anchor {:line 1, :ch 14}, :head {:line 1, :ch 14}}),
+   :dt 1221}
+  {:change
+   {:from {:line 1, :ch 14},
+    :to {:line 1, :ch 14},
+    :text (")"),
+    :origin "+input"},
+   :dt 1114}
+  {:selections ({:anchor {:line 1, :ch 12}, :head {:line 1, :ch 12}}),
+   :dt 1748}
+  {:change
+   {:from {:line 1, :ch 12},
+    :to {:line 1, :ch 12},
+    :text (")"),
+    :origin "+input"},
+   :dt 389}
+  {:change
+   {:from {:line 1, :ch 12},
+    :to {:line 1, :ch 13},
+    :text (""),
+    :origin "+delete"},
+   :dt 1484}],
+ :init-value "", 
+ :last-time 1447143951531, 
+ :recording? false})
+
 (def paren-comment
   '{:changes
     [{:selections ({:anchor {:line 0, :ch 0}, :head {:line 0, :ch 0}}),
