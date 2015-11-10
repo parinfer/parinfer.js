@@ -124,7 +124,7 @@
                   :cursor-in-comment? false
                   :delim-trail {:start nil :end nil}
 
-                  ;; different from process-line in parinfer.format.infer
+                  ;; different from process-line in parinfer.format.indent-mode
                   ;; (even if the stack is empty, we still have to track indentation)
                   :track-indent? (not (in-str? stack))
 
