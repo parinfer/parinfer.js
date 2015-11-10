@@ -18,6 +18,10 @@
 
 <div class="sidebar">
   <h1>Par<em>infer</em></h1>
+  <div class="credits">
+    <a href="http://twitter.com/shaunlebron">@shaunlebron</a> |
+    <a href="https://github.com/shaunlebron/parinfer">GitHub</a>
+  </div>
   <div id="toc">
     <span class="caption">building table of contents...</a>
   </div>
@@ -1189,61 +1193,107 @@ with hooks to apply our formatters and update cursor position.
 <!------------------------------------------------------------------------------------>
 
 <div class="wrapper">
-<section id="prior-art">
-<h3>Prior Art</h3>
-
-<p>
-There are many ideas related to this concept.
-</p>
+<section id="acknowledgements">
+<h3>Acknowledgements</h3>
 
 <ul>
-<li>
-<a href="http://danmidwood.com/content/2014/11/21/animated-paredit.html">Paredit</a>
-- structural editing and auto-balancing of Lisp text
-</li>
 
-<li>
-<a href="http://haml.info">Haml</a>,
-<a href="http://slim-lang.com/">Slim</a>,
-and
-<a href="http://jade-lang.com/">Jade</a>
-- indented HTML templating langs (close to indented lisps)
-</li>
+  <li>
+    <a href="http://haml.info">Haml</a>,
+    <a href="http://slim-lang.com/">Slim</a>,
+    <a href="http://jade-lang.com/">Jade</a> &mdash;
+    comparing these indented-templating languages to Clojure's Hiccups is what
+    made me realize Lisp close-parens could be inferred from indentation.
+  </li>
 
-<li>
-<a href="http://learnyouahaskell.com/higher-order-functions#function-application">Haskell's $ operator</a>
-- infers a closing paren after all expressions to the right
-</li>
+  <li>
+    Thanks to
+    <a href="https://github.com/boxed">Anders Hovmöller</a> and
+    <a href="https://github.com/darwin">Antonin Hildebrand</a> for humoring me on an
+    <a href="https://github.com/boxed/indent-clj/issues/1">early crazy idea</a>
+    and connecting me to some ideas about indentation and structural editors.
+  </li>
 
-<li>
-<a href="http://readable.sourceforge.net/">sweet-expressions</a>,
-<a href="http://srfi.schemers.org/srfi-49/srfi-49.html">i-expressions</a>,
-and
-<a href="https://github.com/boxed/indent-clj">indent-clj</a>
-- infers both left and right parens
-</li>
+  <li>
+    <a href="http://readable.sourceforge.net/">sweet-expressions</a>,
+    <a href="http://srfi.schemers.org/srfi-49/srfi-49.html">i-expressions</a>,
+    <a href="https://github.com/boxed/indent-clj">indent-clj</a>, et al
+    explored how parentheses can be inferred (but hidden).
+  </li>
 
-<li>
-<a href="https://github.com/Cirru/sepal.clj">Cirru Sepal in Clojure</a>
-- infers Clojure parens from indentation, <code>$</code>, <code>$ []</code>, <code>$ {}</code> and <code>,</code>.
-</li>
+  <li>
+    <a href="http://learnyouahaskell.com/higher-order-functions#function-application">Haskell's $ operator</a>
+    infers a closing paren after all expressions to the right, even after
+    subsequent indented expressions, which is basically what Indent Mode in
+    Parinfer does.
+  </li>
 
-<li>
-<a href="https://github.com/mkremins/flense">Flense</a>
-and
-<a href="https://github.com/darwin/plastic">Plastic</a>
-- structural editing concepts for Clojure text
-</li>
+  <li>
+    <a href="https://github.com/Cirru/sepal.clj">Cirru Sepal in Clojure</a>
+    has an interesting approach to inferring Clojure parens from indentation
+    and other syntax sugar&mdash; <code>$</code>, <code>$ []</code>, <code>$
+    {}</code> and <code>,</code>.
+  </li>
 
-<li>
-<a href="https://github.com/boxed/clojure-validate-indent">clojure-validate-indent</a>
-- validates indentation of Clojure code
-</li>
+  <li>
+    It's worth mentioning
+    <a href="https://github.com/mkremins/flense">Flense</a>
+    and
+    <a href="https://github.com/darwin/plastic">Plastic</a>
+    as tools with ambitious structural editing concepts for Clojure text.
+  </li>
 
-<li>
-<a href="https://github.com/bbatsov/clojure-style-guide#source-code-layout--organization">The Clojure Style Guide</a>
-- indentation conventions in Clojure
-</li>
+  <li>
+    <a href="http://danmidwood.com/content/2014/11/21/animated-paredit.html">Paredit animations</a>
+    inspired the editor animations here.
+  </li>
+
+  <li>
+    <a href="https://github.com/bbatsov/clojure-style-guide#source-code-layout--organization">The Clojure Style Guide</a>
+    helped me confirm some indentation conventions when formalizing Parinfer.
+  </li>
+
+  <li>
+    <a href="https://twitter.com/escherize">Bryan Mass</a>
+    explained to me how Lisp is like Lego&mdash; everything being the same
+    shape so they can snap together any way you see fit, while other syntaxes
+    have different shaped pieces which only fit together in special ways.
+  </li>
+
+  <li>
+    Thanks to
+    <a href="https://twitter.com/4c4fc7">Chris Oakman</a>
+    for proof-reading this page, pushing me to make an efficient implementation
+    of Indent Mode, and starting the
+    <a href="https://github.com/oakmac/atom-parinfer">atom-parinfer</a>
+    plugin.
+  </li>
+
+  <li>
+    Thanks to my friends at PROS for looking at an early draft of this page.
+  </li>
+
+  <li>
+    Thanks to the Clojure/ClojureScript community for making me fall in love
+    with Lisp.
+  </li>
+
+  <li>
+    When John Carmack adopted Lisp (Racket) for Oculus Rift scripting,
+    it gave me a little more momentum to finish writing this!
+  </li>
+
+  <li>
+    I used the really cool <a href="https://github.com/liabru/gears-d3-js">gears.d3.js</a>
+    library for the animated gears here.
+  </li>
+
+  <li>
+    I built Parinfer as an augmentation to the
+    <a href="https://codemirror.net/">CodeMirror</a>
+    editor, which I really enjoyed working with and studying to learn about
+    editors.
+  </li>
 
 </ul>
 </section>
