@@ -1,8 +1,8 @@
 (ns parinfer.editor-support
   (:require
     [clojure.string :as string :refer [join]]
-    [parinfer.format.infer :as infer]
-    [parinfer.format.prep :as prep]
+    [parinfer.format.indent-mode :as indent-mode]
+    [parinfer.format.paren-mode :as paren-mode]
     [parinfer.state :refer [state]]))
     
 
@@ -119,18 +119,18 @@
         (case mode
           :infer
           (let [result (if (and use-cache? @prev-state)
-                        (infer/format-text-change
+                        (indent-mode/format-text-change
                           current-text
                           @prev-state
                           (compute-cm-change cm change options @prev-state)
                           options)
-                        (infer/format-text current-text options))]
+                        (indent-mode/format-text current-text options))]
             (when (:valid? result)
               (reset! prev-state (:state result)))
             (:text result))
 
           :prep
-          (let [result (prep/format-text current-text options)]
+          (let [result (paren-mode/format-text current-text options)]
             (:text result))
 
           nil)]

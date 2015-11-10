@@ -1,4 +1,4 @@
-(ns parinfer.format.infer
+(ns parinfer.format.indent-mode
   "Corrects parens based on indentation.
   (used while editing a file)"
   (:require

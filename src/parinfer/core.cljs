@@ -13,8 +13,8 @@
                              start-editor-sync!]]
     [parinfer.editor-support :refer [get-prev-state]]
     [parinfer.state :refer [state]]
-    [parinfer.format.infer :as infer]
-    [parinfer.format.prep :as prep]
+    [parinfer.format.indent-mode :as indent-mode]
+    [parinfer.format.paren-mode :as paren-mode]
     [parinfer.format.string :refer [get-lines]]
     [parinfer.toc :as toc]
     [parinfer.gears :refer [create-gears!]]
@@ -26,7 +26,7 @@
   (let [cm-input (create-regular-editor! "code-indent-input" {:mode "clojure-parinfer"})
         cm-output (create-regular-editor! "code-indent-output" {:readOnly true
                                                                 :mode "clojure-parinfer"})
-        sync! #(.setValue cm-output (:text (infer/format-text (.getValue cm-input))))]
+        sync! #(.setValue cm-output (:text (indent-mode/format-text (.getValue cm-input))))]
     (when cm-input
       (.on cm-input "change" sync!)
       (sync!))))
@@ -74,7 +74,7 @@
                         changes)))))
         sync! (fn []
                 (let [in-text (.getValue cm-input)
-                      out-text (:text (prep/format-text in-text))]
+                      out-text (:text (paren-mode/format-text in-text))]
                   (.setValue cm-output out-text)
                   (diff!)))]
 

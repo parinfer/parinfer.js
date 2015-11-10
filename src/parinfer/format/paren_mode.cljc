@@ -1,4 +1,4 @@
-(ns parinfer.format.prep
+(ns parinfer.format.paren-mode
   "Corrects indentation based on parens.
   (used to preprocess existing files)"
   (:require
@@ -8,11 +8,11 @@
                                     valid-closer?
                                     matching-delim
                                     closing-delim?]]
-    [parinfer.format.infer :refer [update-delim-trail
-                                   remove-delim-trail
-                                   update-insertion-pt
-                                   update-line
-                                   process-char*]]
+    [parinfer.format.indent-mode :refer [update-delim-trail
+                                         remove-delim-trail
+                                         update-insertion-pt
+                                         update-line
+                                         process-char*]]
     [parinfer.format.string :refer [insert-string
                                     get-lines]]
     [clojure.string :refer [join]]))
