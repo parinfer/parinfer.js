@@ -560,3 +560,9 @@ i.fa {
   font-family: "Computer Modern Serif";
   font-size: 18px;
 }
+
+.where-x {
+  display: block;
+  margin: 0 auto;
+  width: 250px;
+}
