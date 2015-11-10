@@ -13,7 +13,9 @@
     <link href="css/style.css" rel="stylesheet" type="text/css">
     <link href="css/theme.css" rel="stylesheet" type="text/css">
   </head>
-  <body>
+
+  <body class="no-mathjax">
+
 <div class="sidebar">
   <h1>Par<em>infer</em></h1>
   <div id="toc">
@@ -328,7 +330,7 @@ we will see.</span>
 Parinfer relies on the following definitions:
 </p>
 
-<div class="math">
+<div class="math mathjax">
 <p>
 We wish to define necessary conditions for determining if a given file of Lisp
 code is "correctly formatted".
@@ -337,7 +339,7 @@ code is "correctly formatted".
 <p>
 We start with a clarification that we only consider non-empty lines (i.e. lines
 that have at least one non-whitespace, non-comment token).  Thus, all following
-references to line number `n` will refer to the `n`th non-empty line.
+references to line number $n$ will refer to the $n$th non-empty line.
 </p>
 
 <p>
@@ -345,16 +347,16 @@ To proceed, we define the following:
 
 <ul>
 <li>
-t_n = index of non-whitespace, non-comment tokens at line n
+$t_n$ = index of non-whitespace, non-comment tokens at line $n$
 </li>
 <li>
-i_n = x-position of t_n[0] (indentation)
+$i_n$ = x-position of $t_n[0]$ (indentation)
 </li>
 <li>
-p_n = number of close-parens at the end of t_n
+$p_n$ = number of close-parens at the end of $t_n$
 </li>
 <li>
-s_n = index of x-positions of all open-parens unclosed before t_n[-p_n]
+$s_n$ = index of x-positions of all open-parens unclosed before $t_n[-p_n]$
 </li>
 </ul>
 </p>
@@ -364,28 +366,29 @@ TODO: example table
 </p>
 
 <p>
-let f(i,p,s) = ( x_min < i <= x_max )
+Let
+$$f(i,p,s) = ( x_{min} \lt i \leq x_{max} )$$
+
 where
-     x_min = { s[-p-1]  if |s| > p
-               -1      otherwise }
-     x_max = { s[-p]    if p > 0
-               infinity otherwise }
+
+$$x_{min} = \begin{cases} s[-p-1] & \text{if } |s| > p \\ -1 & \text{otherwise} \end{cases}$$
+$$x_{max} = \begin{cases} s[-p] & \text{if } p \gt 0 \\ \infty & \text{otherwise} \end{cases}$$
 </p>
 
 <p>
 Thus, we formally define that a file of Lisp code is "correctly formatted" if:
 
 <ol>
-  <li>for every line `n > 0`:
+  <li>for every line $n > 0$:
     <ul>
-      <li>t_n[0] != ")"</li>
-      <li>`f(i_n, p_(n-1), s_(n-1))` is true</li>
+      <li>$t_n[0] \ne $ ")"</li>
+      <li>$f(i_n, p_{n-1}, s_{n-1})$ is true</li>
     </ul>
   </li>
-  <li>and for the last line `N`
+  <li>and for the last line $N$
     <ul>
-      <li>`|s_N| = p_N`</li>
-      <li>`f(0, p_N, s_N)` is true</li>
+      <li>$|s_N| = p_N$</li>
+      <li>$f(0, p_N, s_N)$ is true</li>
     </ul>
   </li>
 </ol>
@@ -1121,6 +1124,17 @@ and
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
     <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/d3/3.3.3/d3.min.js"></script>
     <script src="js/lib/gears.d3.js"></script>
+
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [['$','$']],
+          processClass: "mathjax",
+          ignoreClass: "no-mathjax"
+        }
+      });
+    </script>
 
     <script src="js/lib/jsdiff.min.js"></script>
 
