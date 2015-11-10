@@ -180,6 +180,19 @@ p, li {
   overflow-y: auto;
 }
 
+.credits {
+  font-size: 0.8em;
+  text-align: center;
+  margin-top: -20px;
+  margin-bottom: 20px;
+}
+
+.credits a {
+  opacity: 0.5;
+  color: #333;
+  border-bottom: 0;
+}
+
 #app {
   position: absolute;
   left: 300px;
