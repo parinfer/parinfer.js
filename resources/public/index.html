@@ -324,6 +324,10 @@ we will see.</span>
 <strong>Feel free to skip this</strong> if you have no interest in the math that makes Parinfer possible.
 </div>
 
+<p>
+Parinfer relies on the following definitions:
+</p>
+
 <div class="math">
 <p>
 We wish to define necessary conditions for determining if a given file of Lisp
@@ -356,7 +360,16 @@ s_n = index of x-positions of all open-parens unclosed before t_n[-p_n]
 </p>
 
 <p>
-TODO: define `f`
+TODO: example table
+</p>
+
+<p>
+let f(i,p,s) = ( x_min < i <= x_max )
+where
+     x_min = { s[-p-1]  if |s| > p
+               -1      otherwise }
+     x_max = { s[-p]    if p > 0
+               infinity otherwise }
 </p>
 
 <p>
