@@ -362,18 +362,28 @@ $s_n$ = (stack) index of x-positions of all open-parens unclosed before $t_n[-p_
 </p>
 
 <p>
-Next, we define a function which determines if indentation is valid:
+Next, we define a function which determines if a line's indentation is valid:
 
 <ul>
-  <li>$f(i,p,s) = ( x_\text{min} \lt i \leq x_\text{max} )$</li>
+  <li>$f(i,p,s) = ( x_\text{min} \lt i \leq x_\text{max} )$
+    <div class="side-note">$\leftarrow$ verifies indentation is within a threshold defined below</div>
+  </li>
 </ul>
 </p>
 
 <p>
 where:
 <ul>
-  <li>$x_\text{min} = \begin{cases} s[-p-1] & \text{if } |s| > p, \\ -1 & \text{otherwise} \end{cases}$</li>
-  <li>$x_\text{max} = \begin{cases} s[-p] & \text{if } p \gt 0, \\ \infty & \text{otherwise} \end{cases}$</li>
+  <li>$x_\text{min} = \begin{cases} s[-p-1] & \text{if } |s| > p, \\ -1 & \text{otherwise} \end{cases}$
+    <div class="side-note">
+      $\leftarrow$ x-position of open-paren of parent list if it exists
+    </div>
+  </li>
+  <li>$x_\text{max} = \begin{cases} s[-p] & \text{if } p \gt 0, \\ \infty & \text{otherwise} \end{cases}$
+    <div class="side-note">
+      $\leftarrow$ x-position of open-paren of previous sibling if it is a list
+    </div>
+  </li>
 </ul>
 </p>
 
@@ -384,14 +394,25 @@ Finally, we define that a file of Lisp code is "correctly formatted" if:
 <ol>
   <li>for every line $n > 0$:
     <ul>
-      <li>$t_n[0] \ne $ ")", and</li>
-      <li>$f(i_n, p_{n-1}, s_{n-1})$ is true</li>
+      <li>$t_n[0] \ne $ ")", and
+        <div class="side-note">
+          $\leftarrow$ no line must start with an open-paren
+        </div>
+      </li>
+      <li>$f(i_n, p_{n-1}, s_{n-1})$ is true
+        <div class="side-note">
+          $\leftarrow$ indentation threshold that we defined above
+        </div>
+      </li>
     </ul>
   </li>
   <li>and for the last line $N$
     <ul>
-      <li>$|s_N| = p_N$, and</li>
-      <li>$f(0, p_N, s_N)$ is true</li>
+      <li>$|s_N| = p_N$
+        <div class="side-note">
+          $\leftarrow$ all open-parens must be closed at the last line
+        </div>
+      </li>
     </ul>
   </li>
 </ol>
