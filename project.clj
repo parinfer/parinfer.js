@@ -16,7 +16,7 @@
 
   :clean-targets ^{:protect false} ["resources/public/js/compiled" "target"]
 
-  :aliases {"prep" ["run" "-m" "parinfer.format.prep-file"]}
+  :aliases {"prep" ["run" "-m" "parinfer.prep-file"]}
 
   :cljsbuild {
     :test-commands {"test" ["node" "resources/public/js/compiled/parinfer-test.js"]}
@@ -53,9 +53,9 @@
              ]}
 
   :figwheel {
-             ;; :http-server-root "public" ;; default and assumes "resources" 
+             ;; :http-server-root "public" ;; default and assumes "resources"
              ;; :server-port 3449 ;; default
-             ;; :server-ip "127.0.0.1" 
+             ;; :server-ip "127.0.0.1"
 
              :css-dirs ["resources/public/css"] ;; watch and update CSS
 
@@ -81,5 +81,5 @@
              ;; :repl false
 
              ;; to configure a different figwheel logfile path
-             ;; :server-logfile "tmp/logs/figwheel-logfile.log" 
+             ;; :server-logfile "tmp/logs/figwheel-logfile.log"
              })

@@ -199,8 +199,8 @@
                          {:gear-attrs {:indent {:power -0.01}}
                           :dt 2000}
                          {:gear-attrs {:indent {:power 0}}
-                          :dt 1000}
-                         ]}}
+                          :dt 1000}]}}
+
 
    "helper-gears"
    {:svg-opts svg-opts
@@ -227,8 +227,8 @@
                          {:gear-attrs {:paredit {:power 0.05}}
                           :dt 1000}
                          {:gear-attrs {:paredit {:power 0}}
-                          :dt 1000}
-                         ]}}
+                          :dt 1000}]}}
+
 
    "parinfer-gears"
    {:svg-opts svg-opts
@@ -238,17 +238,17 @@
                                      :factor 64
                                      :classes ["parinfer-gear"]
                                      :caption {:text "Parinfer" :side :bottom}}})
-           :anim-frames [{:gear-attrs {:indent {:power 0.01}
-                                       }
+           :anim-frames [{:gear-attrs {:indent {:power 0.01}}
+
                           :dt 2000}
                          {:gear-attrs {:indent {:power 0}}
                           :dt 1000}
-                         {:gear-attrs {:paren {:power -0.01}
-                                       }
+                         {:gear-attrs {:paren {:power -0.01}}
+
                           :dt 2000}
                          {:gear-attrs {:paren {:power 0}}
-                          :dt 1000}
-                         ]}}})
+                          :dt 1000}]}}})
+
 
 (defn create-index-gears! []
   (doseq [[id {:keys [data svg-opts]}] index-gears]

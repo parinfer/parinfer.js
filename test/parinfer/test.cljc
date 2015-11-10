@@ -249,5 +249,5 @@
   (run-test-cases
     "paren-mode"
     paren-mode/format-text
-    nil ;; no format-text-change for paren-mode yet
-    ))
+    nil)) ;; no format-text-change for paren-mode yet
+

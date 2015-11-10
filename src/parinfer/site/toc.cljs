@@ -3,8 +3,8 @@
   (:require
     [om.core :as om :include-macros true]
     [sablono.core :refer-macros [html]]
-    [goog.dom :as gdom]
-    ))
+    [goog.dom :as gdom]))
+
 
 (defonce state
   (atom {:sections nil
