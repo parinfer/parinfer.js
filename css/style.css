@@ -579,3 +579,10 @@ i.fa {
 .math-page .MathJax {
   font-size: 20px;
 }
+
+.math-page .side-note {
+  float: right;
+  font-style: italic;
+  font-size: 0.8em;
+  color: #BBB;
+}
