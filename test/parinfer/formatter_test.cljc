@@ -181,7 +181,7 @@
 
 (defn run-test-cases
   [type- format-text format-text-change]
-  (let [filename (str "doc/" type- "-tests.md")
+  (let [filename (str "test-cases/" type- ".md")
         text #?(:clj (slurp filename)
                      :cljs (.readFileSync fs filename))
         test-cases (parse-test-cases text)]

@@ -1,4 +1,4 @@
-# Parinfer - Prep Tests
+# Paren Mode
 
 minimal indent.
 
