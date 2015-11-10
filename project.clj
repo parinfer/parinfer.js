@@ -25,7 +25,7 @@
     :builds [{:id "dev"
               :source-paths ["src"]
 
-              :figwheel { :on-jsload "parinfer.core/on-js-reload" }
+              :figwheel {:on-jsload "parinfer.site.core/on-js-reload" }
 
               :compiler {:main parinfer.site.core
                          :asset-path "js/compiled/out"
