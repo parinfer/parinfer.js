@@ -7,8 +7,8 @@
     #?(:clj  [clojure.pprint :refer [pprint]]
        :cljs [cljs.pprint :refer [pprint]])
     [clojure.string :as string :refer [join split-lines]]
-    [parinfer.format.indent-mode :as indent-mode]
-    [parinfer.format.paren-mode :as paren-mode]))
+    [parinfer.indent-mode :as indent-mode]
+    [parinfer.paren-mode :as paren-mode]))
 
 #?(:cljs (def fs (js/require "fs")))
 

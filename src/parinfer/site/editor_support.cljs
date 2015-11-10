@@ -1,9 +1,10 @@
-(ns parinfer.editor-support
+(ns parinfer.site.editor-support
+  "Connects parinfer mode functions to CodeMirror"
   (:require
     [clojure.string :as string :refer [join]]
-    [parinfer.format.indent-mode :as indent-mode]
-    [parinfer.format.paren-mode :as paren-mode]
-    [parinfer.state :refer [state]]))
+    [parinfer.indent-mode :as indent-mode]
+    [parinfer.paren-mode :as paren-mode]
+    [parinfer.site.state :refer [state]]))
     
 
 (defprotocol IEditor

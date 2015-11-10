@@ -1,4 +1,4 @@
-(ns parinfer.vcr
+(ns parinfer.site.vcr
   "VCR - editor animation recording and playback"
   (:require-macros
     [cljs.core.async.macros :refer [go go-loop]])
@@ -7,8 +7,8 @@
     [om.core :as om :include-macros true]
     [sablono.core :refer-macros [html]]
 
-    [parinfer.state :refer [state]]
-    [parinfer.editor-support :refer [get-prev-state]]
+    [parinfer.site.state :refer [state]]
+    [parinfer.site.editor-support :refer [get-prev-state]]
     [cljs.pprint :refer [pprint]]
     [goog.dom :as gdom]))
 

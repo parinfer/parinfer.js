@@ -1,20 +1,20 @@
-(ns parinfer.format.paren-mode
+(ns parinfer.paren-mode
   "Corrects indentation based on parens.
   (used to preprocess existing files)"
   (:require
-    [parinfer.format.reader :refer [in-str?
-                                    in-code?
-                                    whitespace?
-                                    valid-closer?
-                                    matching-delim
-                                    closing-delim?]]
-    [parinfer.format.indent-mode :refer [update-delim-trail
-                                         remove-delim-trail
-                                         update-insertion-pt
-                                         update-line
-                                         process-char*]]
-    [parinfer.format.string :refer [insert-string
-                                    get-lines]]
+    [parinfer.reader :refer [in-str?
+                             in-code?
+                             whitespace?
+                             valid-closer?
+                             matching-delim
+                             closing-delim?]]
+    [parinfer.indent-mode :refer [update-delim-trail
+                                  remove-delim-trail
+                                  update-insertion-pt
+                                  update-line
+                                  process-char*]]
+    [parinfer.string :refer [insert-string
+                             get-lines]]
     [clojure.string :refer [join]]))
 
 (def initial-state

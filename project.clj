@@ -27,7 +27,7 @@
 
               :figwheel { :on-jsload "parinfer.core/on-js-reload" }
 
-              :compiler {:main parinfer.core
+              :compiler {:main parinfer.site.core
                          :asset-path "js/compiled/out"
                          :output-to "resources/public/js/compiled/parinfer.js"
                          :output-dir "resources/public/js/compiled/out"
@@ -40,7 +40,7 @@
                                    "resources/public/js/lib/gears.d3.externs.js"
                                    "resources/public/js/lib/d3.ext.js"
                                    "resources/public/js/lib/jsdiff.externs.js"]
-                         :main parinfer.core
+                         :main parinfer.site.core
                          :optimizations :advanced
                          :pretty-print false}}
 

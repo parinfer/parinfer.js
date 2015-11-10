@@ -1,4 +1,4 @@
-(ns parinfer.vcr-data
+(ns parinfer.site.vcr-data
   "VCR data - editor animations pasted from the 'print' button in devmode")
 
 (def intro

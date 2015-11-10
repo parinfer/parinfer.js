@@ -1,6 +1,6 @@
-(ns parinfer.format.prep-file
+(ns parinfer.prep-file
   (:require
-    [parinfer.format.paren-mode :refer [format-text]]))
+    [parinfer.paren-mode :refer [format-text]]))
 
 (def usage
   "prep-file <filenames>
