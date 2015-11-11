@@ -137,8 +137,6 @@
   [selector
    {:keys [init-gears mesh-gears anim-frames]}
    {:keys [width height] :as svg-opts}]
-  (-> (js/$ selector)
-      (.on "mousedown" (fn [e] (-> e .-originalEvent (.preventDefault)))))
   (let [container (js/d3.select selector)
         _ (-> container
               (.select "svg")
