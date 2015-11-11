@@ -59,13 +59,15 @@
         sibling-of-active-ancestors? (some #(sibling-section? current %) (:ancestors active))
         sibling-of-active?           (sibling-section? current active)
 
-        visible? (or active?
-                     ancestor-of-active?
-                     child-of-active?
-                     sibling-of-active-ancestors?
-                     sibling-of-active?)]
+        ;; currently unused:
+        show-with-auto-collapse?
+        (or active?
+            ancestor-of-active?
+            child-of-active?
+            sibling-of-active-ancestors?
+            sibling-of-active?)]
 
-    {:visible? visible?
+    {:show? true
      :ancestor-of-active? ancestor-of-active?}))
 
 (defn toc-component
@@ -80,7 +82,7 @@
              (let [attrs (section-attrs current active)
                    classes (cond-> (str "toc-link toc-level-" level)
                              (= current active)           (str " toc-active")
-                             (not (:visible? attrs))      (str " toc-hide")
+                             (not (:show? attrs))      (str " toc-hide")
                              (:ancestor-of-active? attrs) (str " toc-active-ancestor"))]
                [:div {:class classes}
                 [:a {:href (str "#" id)} title]]))])))))

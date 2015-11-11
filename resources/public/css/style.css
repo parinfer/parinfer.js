@@ -32,12 +32,12 @@ a.header-link {
 
 .toc-link a {
   border-bottom: 0;
-  color: #333;
+  color: #111;
 }
 
 .toc-link {
   line-height: 1.6em;
-  opacity: 0.25;
+  opacity: 0.4;
   transition: opacity 0.3s;
   margin-top: 2px;
   margin-right: 2px;
