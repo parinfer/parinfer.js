@@ -1,8 +1,6 @@
 (defproject parinfer "0.1.0-SNAPSHOT"
-  :description "FIXME: write this!"
-  :url "http://example.com/FIXME"
-  :license {:name "Eclipse Public License"
-            :url "http://www.eclipse.org/legal/epl-v10.html"}
+  :description "a simpler way to write Lisp"
+  :url "http://shaunlebron.github.io/parinfer"
 
   :dependencies [[org.clojure/clojure "1.7.0"]
                  [org.clojure/clojurescript "1.7.122"]
@@ -18,16 +16,16 @@
 
   :clean-targets ^{:protect false} ["resources/public/js/compiled" "target"]
 
-  :aliases {"prep" ["run" "-m" "parinfer.format.prep-file"]}
+  :aliases {"prep" ["run" "-m" "parinfer.prep-file"]}
 
   :cljsbuild {
     :test-commands {"test" ["node" "resources/public/js/compiled/parinfer-test.js"]}
     :builds [{:id "dev"
               :source-paths ["src"]
 
-              :figwheel { :on-jsload "parinfer.core/on-js-reload" }
+              :figwheel {:on-jsload "parinfer.site.core/on-js-reload" }
 
-              :compiler {:main parinfer.core
+              :compiler {:main parinfer.site.core
                          :asset-path "js/compiled/out"
                          :output-to "resources/public/js/compiled/parinfer.js"
                          :output-dir "resources/public/js/compiled/out"
@@ -40,7 +38,7 @@
                                    "resources/public/js/lib/gears.d3.externs.js"
                                    "resources/public/js/lib/d3.ext.js"
                                    "resources/public/js/lib/jsdiff.externs.js"]
-                         :main parinfer.core
+                         :main parinfer.site.core
                          :optimizations :advanced
                          :pretty-print false}}
 
@@ -55,9 +53,9 @@
              ]}
 
   :figwheel {
-             ;; :http-server-root "public" ;; default and assumes "resources" 
+             ;; :http-server-root "public" ;; default and assumes "resources"
              ;; :server-port 3449 ;; default
-             ;; :server-ip "127.0.0.1" 
+             ;; :server-ip "127.0.0.1"
 
              :css-dirs ["resources/public/css"] ;; watch and update CSS
 
@@ -83,5 +81,5 @@
              ;; :repl false
 
              ;; to configure a different figwheel logfile path
-             ;; :server-logfile "tmp/logs/figwheel-logfile.log" 
+             ;; :server-logfile "tmp/logs/figwheel-logfile.log"
              })

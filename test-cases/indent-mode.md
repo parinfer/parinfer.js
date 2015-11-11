@@ -1,4 +1,4 @@
-# Parinfer - Infer Tests
+# Infer Mode
 
 ## No Closers
 

@@ -1,4 +1,5 @@
-(ns parinfer.gears
+(ns parinfer.site.gears
+  "Animated gears, using https://github.com/liabru/gears-d3-js"
   (:require-macros
     [cljs.core.async.macros :refer [go go-loop]])
   (:require

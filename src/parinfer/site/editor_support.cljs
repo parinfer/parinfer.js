@@ -1,10 +1,11 @@
-(ns parinfer.editor-support
+(ns parinfer.site.editor-support
+  "Connects parinfer mode functions to CodeMirror"
   (:require
     [clojure.string :as string :refer [join]]
-    [parinfer.format.infer :as infer]
-    [parinfer.format.prep :as prep]
-    [parinfer.state :refer [state]]))
-    
+    [parinfer.indent-mode :as indent-mode]
+    [parinfer.paren-mode :as paren-mode]
+    [parinfer.site.state :refer [state]]))
+
 
 (defprotocol IEditor
   "Custom data/methods for a CodeMirror editor."
@@ -103,34 +104,34 @@
         cursor (.getCursor cm)
         scroller (.getScrollerElement cm)
         scroll-x (.-scrollLeft scroller)
-        scroll-y (.-scrollTop scroller) 
+        scroll-y (.-scrollTop scroller)
 
         options {:cursor-line (.-line cursor)
                  :cursor-x (.-ch cursor)
                  :cursor-dx (compute-cursor-dx cursor change)}
 
         key- (cm-key cm)
-        mode (or (get-in @state [key- :mode]) :infer)
+        mode (or (get-in @state [key- :mode]) :indent-mode)
 
         prev-state (get-prev-state cm)
 
         ;; format the text
         new-text
         (case mode
-          :infer
+          :indent-mode
           (let [result (if (and use-cache? @prev-state)
-                        (infer/format-text-change
+                        (indent-mode/format-text-change
                           current-text
                           @prev-state
                           (compute-cm-change cm change options @prev-state)
                           options)
-                        (infer/format-text current-text options))]
+                        (indent-mode/format-text current-text options))]
             (when (:valid? result)
               (reset! prev-state (:state result)))
             (:text result))
 
-          :prep
-          (let [result (prep/format-text current-text options)]
+          :paren-mode
+          (let [result (paren-mode/format-text current-text options)]
             (:text result))
 
           nil)]

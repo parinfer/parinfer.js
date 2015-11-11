@@ -1,10 +1,10 @@
-(ns parinfer.toc
-  "table of contents generator and highlighting"
+(ns parinfer.site.toc
+  "Table of contents generator and highlighting"
   (:require
     [om.core :as om :include-macros true]
     [sablono.core :refer-macros [html]]
-    [goog.dom :as gdom]
-    ))
+    [goog.dom :as gdom]))
+
 
 (defonce state
   (atom {:sections nil

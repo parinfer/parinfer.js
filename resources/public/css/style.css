@@ -4,6 +4,7 @@
 
 body {
   font-family: "Open Sans", Arial, freesans, sans-serif;
+  color: #555;
   background: #F7F7F7;
 }
 
@@ -138,6 +139,7 @@ h1 em {
 
 .subtitle {
   font-size: 20px;
+  font-weight: bold;
   line-height: 65px;
   margin: 32px 0;
 }
@@ -176,6 +178,19 @@ p, li {
   border-right: 1px solid #DDD;
   background-color: #f1f1f1;
   overflow-y: auto;
+}
+
+.credits {
+  font-size: 0.8em;
+  text-align: center;
+  margin-top: -20px;
+  margin-bottom: 20px;
+}
+
+.credits a {
+  opacity: 0.5;
+  color: #333;
+  border-bottom: 0;
 }
 
 #app {
@@ -290,17 +305,20 @@ code {
   height: 70px;
 }
 
-#cm-code-indent-multi
+#cm-code-indent-multi,
+#cm-code-intro-indent
 {
   height: 130px;
 }
 
-#cm-code-line
+#cm-code-line,
+#cm-code-intro-insert
 {
   height: 150px;
 }
 
-#cm-code-comment
+#cm-code-comment,
+#cm-code-intro-comment
 {
   height: 130px;
 }
@@ -402,7 +420,13 @@ code {
 #cm-code-paren-tune,
 #cm-code-paren-frac,
 #cm-code-paren-comment,
-#cm-code-paren-wrap
+#cm-code-paren-wrap,
+#cm-code-intro-paren
+{
+  height: 100px;
+}
+
+#cm-code-intro-paredit
 {
   height: 100px;
 }
@@ -553,9 +577,35 @@ i.fa {
   border: 1px solid #EEE;
 }
 
-.math {
+.math-page {
   background: #fefefe;
   border: 1px solid #EEE;
   padding: 30px;
   font-family: "Computer Modern Serif";
+  font-size: 18px;
+}
+
+.math-page ul li {
+  list-style-type: none;
+}
+
+.math-page li {
+  margin-bottom: 5px;
+}
+
+.where-x {
+  display: block;
+  margin: 0 auto;
+  width: 250px;
+}
+
+.math-page .MathJax {
+  font-size: 20px;
+}
+
+.math-page .side-note {
+  float: right;
+  font-style: italic;
+  font-size: 0.8em;
+  color: #BBB;
 }

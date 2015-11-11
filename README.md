@@ -1,62 +1,44 @@
 # Parinfer [![Build Status](https://travis-ci.org/shaunlebron/parinfer.svg?branch=master)](https://travis-ci.org/shaunlebron/parinfer)
 
-This is an experiment that tries to demonstrate a possible replacement for
-[paredit] as a simpler and more natural way to write Lisp code.
+ <table>
+<tr>
+<td>__[Home Page](http://shaunlebron.github.io/parinfer/)__</td>
+<td>[Atom editor plugin in progress](https://github.com/oakmac/atom-parinfer)</td>
+</tr>
+</table>
 
-[paredit]:http://danmidwood.com/content/2014/11/21/animated-paredit.html
+<img src="http://zippy.gfycat.com/WeirdOddBluefintuna.gif" width="400">
+<hr>
 
-## Formatter
+Parinfer is an experiment to simplify the way we write Lisp by auto-adjusting
+parens when indentation changes and vice versa.  It is intended to simplify
+the main [Paredit] operations in an intuitive way.
 
-| File  | Description  | Details | Tests |
-|------:|:-------------|---------|-------|
-| [`reader.cljc`] | clojure reader for tracking parens and token states |  |  |
-| [`infer.cljc`] | infers parens based on indentation | [details][infer-details] | [tests][infer-tests] |
-| [`prep.cljc`] | preps file by correcting indentation based on parens | [details][prep-details] | [tests][prep-tests] |
+[Paredit]:http://danmidwood.com/content/2014/11/21/animated-paredit.html
 
-Run tests with:
+Parinfer is currently built with Clojure(Script) and CodeMirror.
 
-```
-$ lein cljsbuild test
-```
-
-### How files are preprocessed
-
-Point this script to some repo with clojure files, then run `git diff` in that repo.
-Run `git diff -w` to see non-indentation related changes, like paren gathering.
-
-```
-./prep-all.sh <directory>
-```
-
-[`reader.cljc`]:src/parinfer/format/reader.cljc
-[`infer.cljc`]:src/parinfer/format/infer.cljc
-[`prep.cljc`]:src/parinfer/format/prep.cljc
-
-[overview]:doc/overview.md
-[prep-details]:doc/prep-details.md
-[prep-tests]:doc/prep-tests.md
-[infer-details]:doc/infer-details.md
-[infer-tests]:doc/infer-tests.md
-
-## Presentation Page (w/ CodeMirror)
-
-| File  | Description  |
-|------:|:-------------|
-| [`core.cljs`] | entry point |
-| [`editor.cljs`] | glues formatter to CodeMirror |
-| [`state.cljs`] | state of each editor |
-| [`vcr.cljs`] | editor recording and playback |
-| [`vcr_data.cljs`] | editor animation data |
-
-[`core.cljs`]:src/parinfer/core.cljs
-[`editor.cljs`]:src/parinfer/editor.cljs
-[`state.cljs`]:src/parinfer/state.cljs
-[`vcr.cljs`]:src/parinfer/vcr.cljs
-[`vcr_data.cljs`]:src/parinfer/vcr_data.cljs
-
-## Running
+## Running the site
 
 ```
 lein figwheel dev
 open http://localhost:3449
+```
+
+## Running the tests
+
+[Test cases] are described in markdown code block pairs for readability.
+
+[Test cases]:test-cases
+
+Test ClojureScript build:
+
+```
+lein cljsbuild test
+```
+
+Test Clojure build:
+
+```
+lein test parinfer.test
 ```

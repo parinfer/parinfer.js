@@ -13,9 +13,15 @@
     <link href="css/style.css" rel="stylesheet" type="text/css">
     <link href="css/theme.css" rel="stylesheet" type="text/css">
   </head>
-  <body>
+
+  <body class="no-mathjax">
+
 <div class="sidebar">
   <h1>Par<em>infer</em></h1>
+  <div class="credits">
+    <a href="http://twitter.com/shaunlebron">@shaunlebron</a> |
+    <a href="https://github.com/shaunlebron/parinfer">GitHub</a>
+  </div>
   <div id="toc">
     <span class="caption">building table of contents...</a>
   </div>
@@ -26,17 +32,78 @@
 <!------------------------------------------------------------------------------------>
 
 <div class="wrapper">
-<section id="overview">
-<h2 style="display:none">Overview</h2>
+<section>
 <p class="subtitle">
-Let's dramatically simplify the way we write Lisp...
+Let's simplify the way we write Lisp...
 </p>
 
+<div class="interact">
+<i class="fa fa-keyboard-o fa-lg"></i>
+<strong>Try it!</strong> Interrupt the animations below to try it for yourself. Click outside to restore it.
+</div>
+
+
 <div>
-<div class="caption"><strong>Preview</strong> of indentation-based editing (close-parens become inferred)</div>
-<textarea id="code-intro">
+<div class="caption"><strong>Parinfer's "Indent Mode"</strong> rearranges parens when you change indentation:</div>
+<textarea id="code-intro-indent">
 </textarea>
 </div>
+
+<div>
+<div class="caption"><strong>Insert or delete a line</strong> without rearranging parens:</div>
+<textarea id="code-intro-insert">
+</textarea>
+</div>
+
+<div>
+<div class="caption"><strong>Comment a line</strong> without rearranging parens:</div>
+<textarea id="code-intro-comment">
+</textarea>
+</div>
+
+<div>
+<div class="caption"><strong>Basic Paredit without hotkeys</strong> thanks to simple paren inference. (wrap, splice, slurp, barf)</div>
+<textarea id="code-intro-paredit">
+</textarea>
+</div>
+
+<div>
+<div class="caption"><strong>Preserve indentation</strong> when editing in "Paren Mode":</div>
+<textarea id="code-intro-paren">
+</textarea>
+</div>
+</section>
+</div>
+
+<!------------------------------------------------------------------------------------>
+
+<div class="wrapper">
+<section>
+
+<p>
+<strong>Parinfer</strong> is a proof-of-concept editor mode for Lisp
+programming languages.
+</p>
+
+<p>
+<i class="fa fa-lg fa-github"></i> <a href="http://github.com/shaunlebron/parinfer">http://github.com/shaunlebron/parinfer</a><br>
+<i class="fa fa-lg fa-twitter"></i> <a href="http://twitter.com/shaunlebron">@shaunlebron</a><br>
+</p>
+
+<div class="interact">
+<i class="fa fa-book fa-lg"></i>
+<strong>Read on</strong> for a full exploration of the motivations, rules, and effects of Parinfer.
+</div>
+
+
+</section>
+</div>
+
+<!------------------------------------------------------------------------------------>
+
+<div class="wrapper">
+<section id="introduction">
+<h2>Introduction</h2>
 
 <p>
 <strong>Lisp is often dismissed</strong> as an undesirable programming syntax
@@ -316,15 +383,95 @@ we will see.</span>
 <!------------------------------------------------------------------------------------>
 
 <div class="wrapper">
-<section id="mathematically-correct">
-<h3>Mathematically Stable</h3>
+<section id="mathematical-foundation">
+<h3>Mathematical Foundation</h3>
 
 <div class="interact">
 <i class="fa fa-rocket fa-lg"></i>
 <strong>Feel free to skip this</strong> if you have no interest in the math that makes Parinfer possible.
 </div>
 
-<div class="math">
+<p>
+The foundation of Parinfer relies on a few somewhat formalized definitions and
+properties:
+</p>
+
+<div class="math-page mathjax">
+<p>
+We wish to define properties that each Parinfer mode should exhibit.
+</p>
+
+<p>
+With the following definitions:
+<ul>
+  <li>$I$ = (Indent Mode) function accepting code text and returning new text.</li>
+  <li>$P$ = (Paren Mode) function accepting code text and returning new text.</li>
+  <li>$R$ = (Reader) function accepting code text and returning its AST data.</li>
+</ul>
+</p>
+
+<p>
+The following should be true:
+<ul>
+  <li>let $y = P(x)$
+        <div class="side-note">
+          $\leftarrow$ run Paren-Mode on $x$ to get $y$
+        </div>
+    <ul>
+      <li>$\Longrightarrow R(x) = R(y)$
+        <div class="side-note">
+          $\leftarrow$ Paren-Mode should never change the AST
+        </div>
+      <li>$\Longrightarrow P(y) = y$
+        <div class="side-note">
+          $\leftarrow$ Paren-Mode should be idempotent
+        </div>
+      <li>$\Longrightarrow I(y) = y$
+        <div class="side-note">
+          $\leftarrow$ Indent-Mode should never change the result of Paren-Mode
+        </div>
+    </ul>
+</ul>
+
+<ul>
+  <li>let $z = I(x)$
+        <div class="side-note">
+          $\leftarrow$ run Indent-Mode on $x$ to get $z$
+        </div>
+    <ul>
+      <li>$\mathrel{\rlap{\hskip .5em/}}\Longrightarrow R(x) = R(z)$
+        <div class="side-note">
+          $\leftarrow$ Indent-Mode may change the AST (by design)
+        </div>
+      <li>$\Longrightarrow I(z) = z$
+        <div class="side-note">
+          $\leftarrow$ Indent-Mode should be idempotent
+        </div>
+    </ul>
+</ul>
+</p>
+
+</div>
+
+<p class="mathjax">
+The actual operations performed by the modes rely on a formal definition
+of what it means for Lisp code to be "correctly formatted".  We establish an
+invariant&mdash; something that must be true for every line of code.  From that,
+Parinfer corrects indentation or parens simply by choosing correct values for
+$i_n$ or $p_n$ (defined later) to satisfy this invariant:
+</p>
+
+<ul class="mathjax">
+  <li><strong>Indent Mode</strong> forces correct values of $p_n$</li>
+  <li><strong>Paren Mode</strong> forces correct values of $i_n$</li>
+</ul>
+
+<p>
+The following is a concise reference (not a guide) to establishing this
+invariant that Parinfer's modes rely on.
+</p>
+
+<div class="math-page mathjax">
 <p>
 We wish to define necessary conditions for determining if a given file of Lisp
 code is "correctly formatted".
@@ -333,39 +480,80 @@ code is "correctly formatted".
 <p>
 We start with a clarification that we only consider non-empty lines (i.e. lines
 that have at least one non-whitespace, non-comment token).  Thus, all following
-references to line number `n` will refer to the `n`th non-empty line.
+references to line number $n$ will refer to the $n$th non-empty line.
 </p>
 
 <p>
-let
+To proceed, we define the following:
 
-t_n = index of non-whitespace, non-comment tokens at line n
-
-i_n = x-position of t_n[0] (indentation)
-
-p_n = number of close-parens at the end of t_n
-
-s_n = index of x-positions of all open-parens that are not closed before t_n[-p_n]
+<ul>
+<li>
+$t_n$ = (tokens) index of non-whitespace, non-comment tokens at line $n$
+</li>
+<li>
+$i_n$ = (indentation) x-position of $t_n[0]$
+</li>
+<li>
+$p_n$ = (parens) number of close-parens at the end of $t_n$
+</li>
+<li>
+$s_n$ = (stack) index of x-positions of all open-parens unclosed before $t_n[-p_n]$
+</li>
+</ul>
 </p>
 
 <p>
-TODO: define `f`
+Next, we define a function which determines if a line's indentation is valid:
+
+<ul>
+  <li>$f(i,p,s) = ( x_\text{min} \lt i \leq x_\text{max} )$
+    <div class="side-note">$\leftarrow$ verifies indentation is within a threshold defined below</div>
+  </li>
+</ul>
 </p>
 
 <p>
-Thus, we formally define that a file of Lisp code is "correctly formatted" if:
+where:
+<ul>
+  <li>$x_\text{min} = \begin{cases} s[-p-1] & \text{if } |s| > p, \\ -1 & \text{otherwise} \end{cases}$
+    <div class="side-note">
+      $\leftarrow$ x-position of open-paren of parent list if it exists
+    </div>
+  </li>
+  <li>$x_\text{max} = \begin{cases} s[-p] & \text{if } p \gt 0, \\ \infty & \text{otherwise} \end{cases}$
+    <div class="side-note">
+      $\leftarrow$ x-position of open-paren of previous sibling if it is a list
+    </div>
+  </li>
+</ul>
+</p>
+
+
+<p>
+Finally, we define that a file of Lisp code is "correctly formatted" if:
 
 <ol>
-  <li>for every line `n > 0`:
+  <li>for every line $n > 0$:
     <ul>
-      <li>t_n[0] != ")"</li>
-      <li>`f(i_n, p_(n-1), s_(n-1))` is true</li>
+      <li>$t_n[0] \ne $ ")", and
+        <div class="side-note">
+          $\leftarrow$ no line must start with an open-paren
+        </div>
+      </li>
+      <li>$f(i_n, p_{n-1}, s_{n-1})$ is true
+        <div class="side-note">
+          $\leftarrow$ indentation threshold that we defined above
+        </div>
+      </li>
     </ul>
   </li>
-  <li>and for the last line `N`
+  <li>and for the last line $N$
     <ul>
-      <li>`|s_N| = p_N`</li>
-      <li>`f(0, p_N, s_N)` is true</li>
+      <li>$|s_N| = p_N$
+        <div class="side-note">
+          $\leftarrow$ all open-parens must be closed at the last line
+        </div>
+      </li>
     </ul>
   </li>
 </ol>
@@ -374,31 +562,20 @@ Thus, we formally define that a file of Lisp code is "correctly formatted" if:
 </div>
 
 <p>
-There rules are necessary and sufficient for determining when indentation is
+These rules are necessary and sufficient for determining when indentation is
 what we consider "unambiguous", but they are not sufficient in determining if
 code is "pretty". For example:
 
 <ul>
 <li>single-line files are okay</li>
-<li>indentation is flexible within defined thresholds (one-space, two-space, etc)</li>
-<li>lines starting with atomic symbols are not required to have the same indentation</li>
+<li>"tab" lengths are flexible (one space, two spaces, etc)</li>
+<li>indentation of sibling lines are not required to be aligned</li>
 </ul>
 </p>
 
 <p>
-But the importance of these rules is that they dramatically simplify what
-Parinfer has to do.  They make clear that for every line, Parinfer only has to
-correct either `i_n` or `p_n` to make our predefined rules true:
-</p>
-
-<ul>
-  <li><strong>Indent Mode</strong> Parinfer corrects all `p_n`</li>
-  <li><strong>Paren Mode</strong> Parinfer corrects all `i_n`</li>
-</ul>
-
-<p>
-Formal descriptions of the operations performed by the modes are pending,
-but informal ones follow in their respective sections below.
+Formal descriptions of the actual operations performed by the modes are
+pending, but informal ones follow in their respective sections below.
 </p>
 
 </section>
@@ -1002,9 +1179,9 @@ others not using <em>Parinfer</em>.
 <h3>Source Code</h3>
 
 <p>
-The text formatting code is implemented in portable Clojure/ClojureScript.  The
-editor demos are created in CodeMirror with hooks to apply our formatters and
-update cursor position.
+The text formatting code is implemented in portable Clojure/ClojureScript. We
+have test suites for both modes. The editor demos are created in CodeMirror
+with hooks to apply our formatters and update cursor position.
 </p>
 
 <p>
@@ -1016,61 +1193,107 @@ update cursor position.
 <!------------------------------------------------------------------------------------>
 
 <div class="wrapper">
-<section id="prior-art">
-<h3>Prior Art</h3>
-
-<p>
-There are many ideas related to this concept.
-</p>
+<section id="acknowledgements">
+<h3>Acknowledgements</h3>
 
 <ul>
-<li>
-<a href="http://danmidwood.com/content/2014/11/21/animated-paredit.html">Paredit</a>
-- structural editing and auto-balancing of Lisp text
-</li>
 
-<li>
-<a href="http://haml.info">Haml</a>,
-<a href="http://slim-lang.com/">Slim</a>,
-and
-<a href="http://jade-lang.com/">Jade</a>
-- indented HTML templating langs (close to indented lisps)
-</li>
+  <li>
+    <a href="http://haml.info">Haml</a>,
+    <a href="http://slim-lang.com/">Slim</a>,
+    <a href="http://jade-lang.com/">Jade</a> &mdash;
+    comparing these indented-templating languages to Clojure's Hiccups is what
+    made me realize Lisp close-parens could be inferred from indentation.
+  </li>
 
-<li>
-<a href="http://learnyouahaskell.com/higher-order-functions#function-application">Haskell's $ operator</a>
-- infers a closing paren after all expressions to the right
-</li>
+  <li>
+    Thanks to
+    <a href="https://github.com/boxed">Anders Hovmöller</a> and
+    <a href="https://github.com/darwin">Antonin Hildebrand</a> for humoring me on an
+    <a href="https://github.com/boxed/indent-clj/issues/1">early crazy idea</a>
+    and connecting me to some ideas about indentation and structural editors.
+  </li>
 
-<li>
-<a href="http://readable.sourceforge.net/">sweet-expressions</a>,
-<a href="http://srfi.schemers.org/srfi-49/srfi-49.html">i-expressions</a>,
-and
-<a href="https://github.com/boxed/indent-clj">indent-clj</a>
-- infers both left and right parens
-</li>
+  <li>
+    <a href="http://readable.sourceforge.net/">sweet-expressions</a>,
+    <a href="http://srfi.schemers.org/srfi-49/srfi-49.html">i-expressions</a>,
+    <a href="https://github.com/boxed/indent-clj">indent-clj</a>, et al
+    explored how parentheses can be inferred (but hidden).
+  </li>
 
-<li>
-<a href="https://github.com/Cirru/sepal.clj">Cirru Sepal in Clojure</a>
-- infers Clojure parens from indentation, <code>$</code>, <code>$ []</code>, <code>$ {}</code> and <code>,</code>.
-</li>
+  <li>
+    <a href="http://learnyouahaskell.com/higher-order-functions#function-application">Haskell's $ operator</a>
+    infers a closing paren after all expressions to the right, even after
+    subsequent indented expressions, which is basically what Indent Mode in
+    Parinfer does.
+  </li>
 
-<li>
-<a href="https://github.com/mkremins/flense">Flense</a>
-and
-<a href="https://github.com/darwin/plastic">Plastic</a>
-- structural editing concepts for Clojure text
-</li>
+  <li>
+    <a href="https://github.com/Cirru/sepal.clj">Cirru Sepal in Clojure</a>
+    has an interesting approach to inferring Clojure parens from indentation
+    and other syntax sugar&mdash; <code>$</code>, <code>$ []</code>, <code>$
+    {}</code> and <code>,</code>.
+  </li>
 
-<li>
-<a href="https://github.com/boxed/clojure-validate-indent">clojure-validate-indent</a>
-- validates indentation of Clojure code
-</li>
+  <li>
+    It's worth mentioning
+    <a href="https://github.com/mkremins/flense">Flense</a>
+    and
+    <a href="https://github.com/darwin/plastic">Plastic</a>
+    as tools with ambitious structural editing concepts for Clojure text.
+  </li>
 
-<li>
-<a href="https://github.com/bbatsov/clojure-style-guide#source-code-layout--organization">The Clojure Style Guide</a>
-- indentation conventions in Clojure
-</li>
+  <li>
+    <a href="http://danmidwood.com/content/2014/11/21/animated-paredit.html">Paredit animations</a>
+    inspired the editor animations here.
+  </li>
+
+  <li>
+    <a href="https://github.com/bbatsov/clojure-style-guide#source-code-layout--organization">The Clojure Style Guide</a>
+    helped me confirm some indentation conventions when formalizing Parinfer.
+  </li>
+
+  <li>
+    <a href="https://twitter.com/escherize">Bryan Mass</a>
+    explained to me how Lisp is like Lego&mdash; everything being the same
+    shape so they can snap together any way you see fit, while other syntaxes
+    have different shaped pieces which only fit together in special ways.
+  </li>
+
+  <li>
+    Thanks to
+    <a href="https://twitter.com/4c4fc7">Chris Oakman</a>
+    for proof-reading this page, pushing me to make an efficient implementation
+    of Indent Mode, and starting the
+    <a href="https://github.com/oakmac/atom-parinfer">atom-parinfer</a>
+    plugin.
+  </li>
+
+  <li>
+    Thanks to my friends at PROS for looking at an early draft of this page.
+  </li>
+
+  <li>
+    Thanks to the Clojure/ClojureScript community for making me fall in love
+    with Lisp.
+  </li>
+
+  <li>
+    When John Carmack adopted Lisp (Racket) for Oculus Rift scripting,
+    it gave me a little more momentum to finish writing this!
+  </li>
+
+  <li>
+    I used the really cool <a href="https://github.com/liabru/gears-d3-js">gears.d3.js</a>
+    library for the animated gears here.
+  </li>
+
+  <li>
+    I built Parinfer as an augmentation to the
+    <a href="https://codemirror.net/">CodeMirror</a>
+    editor, which I really enjoyed working with and studying to learn about
+    editors.
+  </li>
 
 </ul>
 </section>
@@ -1101,6 +1324,17 @@ and
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
     <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/d3/3.3.3/d3.min.js"></script>
     <script src="js/lib/gears.d3.js"></script>
+
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [['$','$']],
+          processClass: "mathjax",
+          ignoreClass: "no-mathjax"
+        }
+      });
+    </script>
 
     <script src="js/lib/jsdiff.min.js"></script>
 

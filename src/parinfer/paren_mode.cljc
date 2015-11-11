@@ -1,20 +1,20 @@
-(ns parinfer.format.prep
+(ns parinfer.paren-mode
   "Corrects indentation based on parens.
-  (used to preprocess existing files)"
+  See http://shaunlebron.github.io/parinfer/#paren-mode"
   (:require
-    [parinfer.format.reader :refer [in-str?
-                                    in-code?
-                                    whitespace?
-                                    valid-closer?
-                                    matching-delim
-                                    closing-delim?]]
-    [parinfer.format.infer :refer [update-delim-trail
-                                   remove-delim-trail
-                                   update-insertion-pt
-                                   update-line
-                                   process-char*]]
-    [parinfer.format.string :refer [insert-string
-                                    get-lines]]
+    [parinfer.reader :refer [in-str?
+                             in-code?
+                             whitespace?
+                             valid-closer?
+                             matching-delim
+                             closing-delim?]]
+    [parinfer.indent-mode :refer [update-delim-trail
+                                  remove-delim-trail
+                                  update-insertion-pt
+                                  update-line
+                                  process-char*]]
+    [parinfer.string :refer [insert-string
+                             get-lines]]
     [clojure.string :refer [join]]))
 
 (def initial-state
@@ -28,7 +28,7 @@
    :backup []                          ;; (unused, but required by the reader because of the infer process)
    :dedent-x nil                       ;; current x-position subsequent lines cannot be nested inside
    :indent-delta 0})                     ;; how much the current line's indentation was changed
-   
+
 
 (defn append-delim-trail
   [{:keys [stack line-no insert] :as state}]
@@ -124,7 +124,7 @@
                   :cursor-in-comment? false
                   :delim-trail {:start nil :end nil}
 
-                  ;; different from process-line in parinfer.format.infer
+                  ;; different from process-line in parinfer.format.indent-mode
                   ;; (even if the stack is empty, we still have to track indentation)
                   :track-indent? (not (in-str? stack))
 

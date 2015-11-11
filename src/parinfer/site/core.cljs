@@ -1,23 +1,23 @@
-(ns ^:figwheel-always parinfer.core
+(ns ^:figwheel-always parinfer.site.core
   (:require
     [om.core :as om :include-macros true]
     [sablono.core :refer-macros [html]]
     [clojure.string :as string]
-    [parinfer.vcr-data :as vcr-data]
-    [parinfer.vcr :refer [vcr
-                          play-recording!
-                          stop-playing!
-                          render-controls!]]
-    [parinfer.editor :refer [create-editor!
-                             create-regular-editor!
-                             start-editor-sync!]]
-    [parinfer.editor-support :refer [get-prev-state]]
-    [parinfer.state :refer [state]]
-    [parinfer.format.infer :as infer]
-    [parinfer.format.prep :as prep]
-    [parinfer.format.string :refer [get-lines]]
-    [parinfer.toc :as toc]
-    [parinfer.gears :refer [create-gears!]]
+    [parinfer.indent-mode :as indent-mode]
+    [parinfer.paren-mode :as paren-mode]
+    [parinfer.string :refer [get-lines]]
+    [parinfer.site.vcr-data :as vcr-data]
+    [parinfer.site.vcr :refer [vcr
+                               play-recording!
+                               stop-playing!
+                               render-controls!]]
+    [parinfer.site.editor :refer [create-editor!
+                                  create-regular-editor!
+                                  start-editor-sync!]]
+    [parinfer.site.editor-support :refer [get-prev-state]]
+    [parinfer.site.state :refer [state]]
+    [parinfer.site.toc :as toc]
+    [parinfer.site.gears :refer [create-gears!]]
     [ajax.core :refer [GET]]))
 
 (enable-console-print!)
@@ -26,7 +26,7 @@
   (let [cm-input (create-regular-editor! "code-indent-input" {:mode "clojure-parinfer"})
         cm-output (create-regular-editor! "code-indent-output" {:readOnly true
                                                                 :mode "clojure-parinfer"})
-        sync! #(.setValue cm-output (:text (infer/format-text (.getValue cm-input))))]
+        sync! #(.setValue cm-output (:text (indent-mode/format-text (.getValue cm-input))))]
     (when cm-input
       (.on cm-input "change" sync!)
       (sync!))))
@@ -74,7 +74,7 @@
                         changes)))))
         sync! (fn []
                 (let [in-text (.getValue cm-input)
-                      out-text (:text (prep/format-text in-text))]
+                      out-text (:text (paren-mode/format-text in-text))]
                   (.setValue cm-output out-text)
                   (diff!)))]
 
@@ -84,7 +84,13 @@
 
 
 (defn create-index-editors! []
-  (create-editor! "code-intro" :intro)
+
+  (create-editor! "code-intro-indent" :intro-indent)
+  (create-editor! "code-intro-insert" :intro-insert)
+  (create-editor! "code-intro-comment" :intro-comment)
+  (create-editor! "code-intro-paredit" :intro-paredit)
+  (create-editor! "code-intro-paren" :intro-paren {:parinfer-mode :paren-mode})
+
   (create-editor! "code-indent" :indent)
   (create-editor! "code-indent-far" :indent-far)
   (create-editor! "code-indent-multi" :indent-multi)
@@ -105,11 +111,11 @@
   (create-editor! "code-displaced" :displaced)
   (create-editor! "code-not-displaced" :not-displaced)
 
-  (let [opts {:parinfer-mode :prep}]
+  (let [opts {:parinfer-mode :paren-mode}]
     (create-editor! "code-paren-tune" :paren-tune opts)
     (create-editor! "code-paren-frac" :paren-frac opts)
     (create-editor! "code-paren-comment" :paren-comment opts)
-    (create-editor! "code-paren-wrap" :paren-wrap opts)) 
+    (create-editor! "code-paren-wrap" :paren-wrap opts))
 
   (start-editor-sync!)
 
@@ -130,7 +136,12 @@
     (.exitViewport #(stop-playing! key-))))
 
 (def index-anims
-  {:intro vcr-data/intro
+  {:intro-indent vcr-data/indent-multi
+   :intro-insert vcr-data/line
+   :intro-comment vcr-data/comment-
+   :intro-paredit vcr-data/intro-paredit
+   :intro-paren vcr-data/intro-paren
+
    :indent vcr-data/indent
    :indent-far vcr-data/indent-far
    :indent-multi vcr-data/indent-multi
@@ -159,7 +170,7 @@
           (update result key- merge state))
         data
         index-anims)))
-  
+
   (doseq [[key- _] index-anims]
     (animate-when-visible! key-))
 
@@ -188,8 +199,8 @@
                          {:gear-attrs {:indent {:power -0.01}}
                           :dt 2000}
                          {:gear-attrs {:indent {:power 0}}
-                          :dt 1000}
-                         ]}}
+                          :dt 1000}]}}
+
 
    "helper-gears"
    {:svg-opts svg-opts
@@ -216,8 +227,8 @@
                          {:gear-attrs {:paredit {:power 0.05}}
                           :dt 1000}
                          {:gear-attrs {:paredit {:power 0}}
-                          :dt 1000}
-                         ]}}
+                          :dt 1000}]}}
+
 
    "parinfer-gears"
    {:svg-opts svg-opts
@@ -227,17 +238,17 @@
                                      :factor 64
                                      :classes ["parinfer-gear"]
                                      :caption {:text "Parinfer" :side :bottom}}})
-           :anim-frames [{:gear-attrs {:indent {:power 0.01}
-                                       }
+           :anim-frames [{:gear-attrs {:indent {:power 0.01}}
+
                           :dt 2000}
                          {:gear-attrs {:indent {:power 0}}
                           :dt 1000}
-                         {:gear-attrs {:paren {:power -0.01}
-                                       }
+                         {:gear-attrs {:paren {:power -0.01}}
+
                           :dt 2000}
                          {:gear-attrs {:paren {:power 0}}
-                          :dt 1000}
-                         ]}}})
+                          :dt 1000}]}}})
+
 
 (defn create-index-gears! []
   (doseq [[id {:keys [data svg-opts]}] index-gears]
@@ -252,7 +263,7 @@
 
 (defn render-dev! []
   (create-editor! "code-indent-mode" :indent-mode)
-  (create-editor! "code-paren-mode" :paren-mode {:parinfer-mode :prep})
+  (create-editor! "code-paren-mode" :paren-mode {:parinfer-mode :paren-mode})
   (start-editor-sync!))
 
 (defn state-viewer

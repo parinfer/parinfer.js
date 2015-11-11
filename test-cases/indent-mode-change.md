@@ -1,4 +1,4 @@
-## Incremental Changes
+# Indent Mode (change-based)
 
 For performance reasons, we can cache the state of the original text to allow
 fast incremental, line-based changes.
