@@ -144,8 +144,8 @@ h1 em {
 .subtitle {
   font-size: 20px;
   font-weight: bold;
-  line-height: 65px;
-  margin: 32px 0;
+  margin-top: -18px;
+  margin-bottom: 32px;
 }
 
 .subtitle em {
@@ -613,3 +613,39 @@ i.fa {
   font-size: 0.8em;
   color: #BBB;
 }
+
+.only-mobile {
+  display: none;
+}
+
+@media only screen and (max-width : 850px) {
+  #app {
+    position: static;
+  }
+
+  .sidebar {
+    display: none;
+  }
+
+  section {
+    width: 782px;
+    padding: 30px;
+  }
+
+  .wrapper {
+    border: 0;
+  }
+
+  h1 {
+    font-size: 80px;
+  }
+
+  .credits {
+    font-size: 1.5em;
+  }
+
+  .only-mobile {
+    display: block;
+  }
+}
+
