@@ -2,7 +2,6 @@
   (:require
     [om.core :as om :include-macros true]
     [sablono.core :refer-macros [html]]
-    [clojure.string :as string]
     [parinfer.indent-mode :as indent-mode]
     [parinfer.paren-mode :as paren-mode]
     [parinfer.string :refer [get-lines]]
@@ -17,8 +16,7 @@
     [parinfer.site.editor-support :refer [get-prev-state]]
     [parinfer.site.state :refer [state]]
     [parinfer.site.toc :as toc]
-    [parinfer.site.gears :refer [create-gears!]]
-    [ajax.core :refer [GET]]))
+    [parinfer.site.gears :refer [create-gears!]]))
 
 (enable-console-print!)
 

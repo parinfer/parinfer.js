@@ -1,7 +1,7 @@
 (ns parinfer.site.editor
   "Glues Parinfer's formatter to a CodeMirror editor"
   (:require
-    [clojure.string :as string :refer [join]]
+    [clojure.string :refer [join]]
     [parinfer.site.state :refer [state
                                  empty-editor-state]]
     [parinfer.site.editor-support :refer [update-cursor!
