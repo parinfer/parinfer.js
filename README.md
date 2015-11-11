@@ -7,6 +7,9 @@
 </tr>
 </table>
 
+<img src="http://zippy.gfycat.com/WeirdOddBluefintuna.gif" width="400">
+<hr>
+
 Parinfer is an experiment to simplify the way we write Lisp by auto-adjusting
 parens when indentation changes and vice versa.  It is intended to simplify
 the main [Paredit] operations in an intuitive way.
