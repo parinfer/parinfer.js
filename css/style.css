@@ -178,6 +178,7 @@ p, li {
   left: 0;
   top: 0;
   padding-left: 20px;
+  padding-bottom: 32px;
   height: 100%;
   border-right: 1px solid #DDD;
   background-color: #f1f1f1;
