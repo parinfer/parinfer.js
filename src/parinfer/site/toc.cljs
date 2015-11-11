@@ -31,7 +31,7 @@
                          keep? #(< (:level %) level)
                          stack (vec (take-while keep? stack))
                          section {:id id
-                                  :parent-ids (set (mapv :id stack))
+                                  :ancestors stack
                                   :level level
                                   :order i
                                   :section-elm section-elm
@@ -46,20 +46,43 @@
                  (range (.-length headers)))]
     (:sections result)))
 
+(defn sibling-section?
+  [current sibling]
+  (= (:ancestors current)
+     (:ancestors sibling)))
+
+(defn section-attrs
+  [current active]
+  (let [active?                      (= active current)
+        ancestor-of-active?          (some #{current} (:ancestors active))
+        child-of-active?             (= active (last (:ancestors current)))
+        sibling-of-active-ancestors? (some #(sibling-section? current %) (:ancestors active))
+        sibling-of-active?           (sibling-section? current active)
+
+        visible? (or active?
+                     ancestor-of-active?
+                     child-of-active?
+                     sibling-of-active-ancestors?
+                     sibling-of-active?)]
+
+    {:visible? visible?
+     :ancestor-of-active? ancestor-of-active?}))
+
 (defn toc-component
-  [{:keys [sections visible?]} owner]
+  [{:keys [sections section-map visible?]} owner]
   (reify
     om/IRender
     (render [_this]
-      (let [top-most-visible (apply min-key :order visible?)]
+      (let [active (apply min-key :order visible?)]  ;; top most visible element is "active"
         (html
           [:div
-           (for [{:keys [id level title]} sections]
-             (let [current? (= id (:id top-most-visible))
-                   parent? (get (:parent-ids top-most-visible) id)]
-               [:div {:class (cond-> (str "toc-link toc-level-" level)
-                               parent? (str " toc-parent")
-                               current? (str " toc-current"))}
+           (for [{:keys [id level title] :as current} sections]
+             (let [attrs (section-attrs current active)
+                   classes (cond-> (str "toc-link toc-level-" level)
+                             (= current active)           (str " toc-active")
+                             (not (:visible? attrs))      (str " toc-hide")
+                             (:ancestor-of-active? attrs) (str " toc-active-ancestor"))]
+               [:div {:class classes}
                 [:a {:href (str "#" id)} title]]))])))))
 
 (defn track-section-visibility!

@@ -43,13 +43,17 @@ a.header-link {
   margin-right: 2px;
 }
 
-.toc-link.toc-current {
+.toc-hide {
+  display: none;
+}
+
+.toc-link.toc-active {
   border-right: 2px solid #333;
   margin-right: 0px;
   opacity: 1;
 }
 
-.toc-link.toc-parent {
+.toc-link.toc-active-ancestor {
   border-right: 2px solid #CCC;
   margin-right: 0;
   opacity: 1;
