@@ -1,20 +1,19 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <title>Parinfer - simpler Lisp editing</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,400italic,700,700italic,300,300italic' rel='stylesheet' type='text/css'>
-    <link href="fonts/Serif/cmun-serif.css" rel="stylesheet"></link>
-    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet">
-
-    <link href="codemirror/lib/codemirror.css" rel="stylesheet" type="text/css">
-    <link href="css/lib/keys.css" rel="stylesheet" type="text/css">
-    <link href="css/style.css" rel="stylesheet" type="text/css">
-    <link href="css/theme.css" rel="stylesheet" type="text/css">
-  </head>
-
-  <body class="no-mathjax">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <title>Parinfer - simpler Lisp editing</title>
+  <meta name="description" content="Parinfer - simpler Lisp editing">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="css/fonts.css">
+  <link rel="stylesheet" href="css/font-awesome-4.4.0.min.css">
+  <link rel="stylesheet" href="codemirror/lib/codemirror.css">
+  <link rel="stylesheet" href="css/lib/keys.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/theme.css">
+</head>
+<body class="no-mathjax">
 
 <div class="sidebar">
   <h1>Par<em>infer</em></h1>
@@ -27,7 +26,7 @@
   </div>
 </div>
 
-      <div id="app">
+<div id="app">
 
 <!------------------------------------------------------------------------------------>
 
@@ -94,7 +93,6 @@ programming languages.
 <i class="fa fa-book fa-lg"></i>
 <strong>Read on</strong> for a full exploration of the motivations, rules, and effects of Parinfer.
 </div>
-
 
 </section>
 </div>
@@ -388,7 +386,7 @@ we will see.</span>
 
 <div class="interact">
 <i class="fa fa-rocket fa-lg"></i>
-<strong>Feel free to skip this</strong> if you have no interest in the math that makes Parinfer possible.
+<strong>Feel free to <a href="#indent-mode">skip this</a></strong> if you have no interest in the math that makes Parinfer possible.
 </div>
 
 <p>
@@ -1307,37 +1305,35 @@ with hooks to apply our formatters and update cursor position.
 
 <!------------------------------------------------------------------------------------>
 
-      </div> <!-- div id="app" -->
+</div><!-- end #app -->
 
-      <div id="controls">
-      </div>
+<div id="controls"></div>
 
-    <script src="codemirror/lib/codemirror.js"></script>
-    <script src="codemirror/addon/selection/active-line.js"></script>
-    <script src="codemirror/addon/edit/matchbrackets.js"></script>
-    <script src="codemirror/mode/javascript/javascript.js"></script>
-    <script src="codemirror/mode/clojure/clojure.js"></script>
-    <script src="codemirror/mode/clojure/clojure-parinfer.js"></script>
+<script src="codemirror/lib/codemirror.js"></script>
+<script src="codemirror/addon/selection/active-line.js"></script>
+<script src="codemirror/addon/edit/matchbrackets.js"></script>
+<script src="codemirror/mode/javascript/javascript.js"></script>
+<script src="codemirror/mode/clojure/clojure.js"></script>
+<script src="codemirror/mode/clojure/clojure-parinfer.js"></script>
 
-    <script src="js/lib/scrollMonitor.js"></script>
+<script src="js/lib/scrollMonitor.js"></script>
 
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
-    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/d3/3.3.3/d3.min.js"></script>
-    <script src="js/lib/gears.d3.js"></script>
+<script src="js/lib/jquery-1.8.3.min.js"></script>
+<script src="js/lib/d3-3.3.3.min.js"></script>
+<script src="js/lib/gears.d3.js"></script>
 
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <script type="text/x-mathjax-config">
-      MathJax.Hub.Config({
-        tex2jax: {
-          inlineMath: [['$','$']],
-          processClass: "mathjax",
-          ignoreClass: "no-mathjax"
-        }
-      });
-    </script>
+<script src="js/lib/jsdiff.min.js"></script>
+<script src="js/compiled/parinfer.js"></script>
 
-    <script src="js/lib/jsdiff.min.js"></script>
-
-    <script src="js/compiled/parinfer.js" type="text/javascript"></script>
-  </body>
+<script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$']],
+      processClass: "mathjax",
+      ignoreClass: "no-mathjax"
+    }
+  });
+</script>
+</body>
 </html>
