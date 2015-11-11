@@ -42,3 +42,7 @@ Test Clojure build:
 ```
 lein test parinfer.test
 ```
+
+## License
+
+MIT
