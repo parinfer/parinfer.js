@@ -17,3 +17,5 @@ pom.xml
 /deploy
 /tweet
 /clojurescript
+
+*.diff
