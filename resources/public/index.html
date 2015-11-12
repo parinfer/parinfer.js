@@ -30,6 +30,24 @@
 
 <!------------------------------------------------------------------------------------>
 
+<div class="wrapper only-mobile">
+<section>
+  <h1>Par<em>infer</em></h1>
+  <div class="credits">
+    <a href="http://twitter.com/shaunlebron">@shaunlebron</a> |
+    <a href="https://github.com/shaunlebron/parinfer">GitHub</a>
+  </div>
+
+<div class="interact">
+<i class="fa fa-desktop fa-lg"></i>
+<strong>Best viewed</strong> on wide desktop browsers.  Sorry for the inconvenience.
+</div>
+
+</section>
+</div>
+
+<!------------------------------------------------------------------------------------>
+
 <div class="wrapper">
 <section>
 <p class="subtitle">
@@ -85,8 +103,9 @@ programming languages.
 </p>
 
 <p>
-<i class="fa fa-lg fa-github"></i> <a href="http://github.com/shaunlebron/parinfer">http://github.com/shaunlebron/parinfer</a><br>
-<i class="fa fa-lg fa-twitter"></i> <a href="http://twitter.com/shaunlebron">@shaunlebron</a><br>
+Source code: <a href="http://github.com/shaunlebron/parinfer">http://github.com/shaunlebron/parinfer</a><br>
+Created by: <a href="http://twitter.com/shaunlebron">@shaunlebron</a><br>
+Download (work in progress): <a href="#editor-plugins">Editor Plugins</a>
 </p>
 
 <div class="interact">
@@ -115,7 +134,7 @@ unique power remains invisible to most under this guise of difficulty.
 <strong>Newcomers aren't satisfied</strong> with the current tools designed for
 editing Lisp.  Expert-level editors (Emacs, Vim) and advanced hotkeys (Paredit)
 are powerful but steepen the learning curve.  And alternative syntaxes (Lisps
-without parens) have faultered since they sacrifice some of Lisp's power that
+without parens) have faltered since they sacrifice some of Lisp's power that
 seasoned users aren't willing to part with.
 </p>
 
@@ -124,7 +143,7 @@ seasoned users aren't willing to part with.
 problem at its source.  We formally define the relationship between Parens and
 Indentation. With it, we create an intuitive editor mode to make paren
 management fun and easy without sacrificing power.  We demonstrate this through
-interactive proof-of-concept demos below, providing capabilities for:
+interactive proof-of-concept demos here, providing capabilities for:
 </p>
 
 <ul class="features">
@@ -157,7 +176,7 @@ use these extra delimiters to help visually separate certain constructs.
 <h3>Uncovering Lisp</h3>
 
 <p>
-Most programming languages have several syntax rules.  Lisp has one&mdash;
+Most programming languages have several syntax rules.  Lisp has one:
 everything is a list.  The first element is a function name, and the rest are
 its arguments.  Thus, the language is simply a collection of compile- and
 run-time functions, trivially extensible.
@@ -276,7 +295,7 @@ specifically how Parinfer can help.
 <!------------------------------------------------------------------------------------>
 
 <div class="wrapper">
-<section id="the-space-of-tooling">
+<section id="tools-for-writing-lisp">
 <h3>Tools for Writing Lisp</h3>
 
 <p>
@@ -333,7 +352,7 @@ actions have been reduced with special modes, which we will explore next.
 <!------------------------------------------------------------------------------------>
 
 <div class="wrapper">
-<section id="why-parinfer-is-different">
+<section id="writing-with-parinfer">
 <h3>Writing with Parinfer</h3>
 
 <p>
@@ -345,27 +364,17 @@ control of the other to <em>Parinfer</em>.
 </p>
 
 <p>
-Thus, Parinfer consists of two user modes:
+Thus, Parinfer consists of two modes:
 </p>
 
 <ol>
 <li>
 <strong>Indent Mode</strong> gives you full control of indentation, while
 Parinfer corrects parens.<br>
-<span class="side-point">
-Quite surprisingly, manually adding/removing Parens in this mode naturally
-results in the main Paredit features without employing hotkeys.  (details
-later)
-</span>
 </li>
-
 <li>
 <strong>Paren Mode</strong> gives you full control of parens, while Parinfer
 corrects indentation.<br>
-<span class="side-point">
-This plays an important role in preparing existing files
-for use in Parinfer, as well as enabling some other useful editing tasks that
-we will see.</span>
 </li>
 </ol>
 
@@ -374,6 +383,14 @@ we will see.</span>
 <strong>To make this easier</strong>, Indent Mode is default. Paren Mode can be an advanced option.
 </div>
 
+<p>
+Some noteworthy unintended use-cases which we will explore later:
+</p>
+
+<ul>
+  <li>Indent Mode allows Paredit-like features without hotkeys.</li>
+  <li>Paren Mode can be used to fix incorrectly indented files before using with Indent Mode.</li>
+</ul>
 
 </section>
 </div>
@@ -535,7 +552,7 @@ Finally, we define that a file of Lisp code is "correctly formatted" if:
     <ul>
       <li>$t_n[0] \ne $ ")", and
         <div class="side-note">
-          $\leftarrow$ no line must start with an open-paren
+          $\leftarrow$ no line may start with a close-paren
         </div>
       </li>
       <li>$f(i_n, p_{n-1}, s_{n-1})$ is true
@@ -623,9 +640,9 @@ roughly equivalent to those listed.
 
 <table class="paredit-table">
 <tr>
-<th>controls</th>
-<th>description</th>
-<th>Paredit equivalent?</th>
+<th>Controls</th>
+<th>Description</th>
+<th>Paredit equivalent</th>
 </tr>
 <tr>
 <td><kbd class="light">Tab</kbd></td>
@@ -714,9 +731,8 @@ We perform the following steps to rearrange close-parens based on indentation.<b
 </div>
 
 <p>
-This is the gist of what's happening.  There are more steps performed that you can
-<a href="https://github.com/shaunlebron/parinfer/blob/master/doc/infer-details.md">read about in detail</a>,
-but we will just explore their effects in the next section.
+This is the gist of what's happening.  There are more steps performed, but we
+will just explore their effects in the next section.
 </p>
 </section>
 </div>
@@ -798,7 +814,7 @@ We illustrate these operations in the following examples.
 
 <div class="wrapper">
 <section id="inserting-parens">
-<h4>Inserting Parens</h4>
+<h3>Inserting Parens</h3>
 
 <div>
 <div class="caption"><strong>Wrap</strong> by inserting an open-paren. It will auto-close as far as it can, due to rule #4.</div>
@@ -827,7 +843,7 @@ Why can't I insert a close-paren in certain places?
 
 <div class="wrapper">
 <section id="deleting-parens">
-<h4>Deleting Parens</h4>
+<h3>Deleting Parens</h3>
 
 <div>
 <div class="caption"><strong>Splice</strong> by removing an open-paren. Its corresponding close-paren is removed, due to rule #1.</div>
@@ -854,20 +870,8 @@ Why can't I delete a close-paren in certain places?
 <!------------------------------------------------------------------------------------>
 
 <div class="wrapper">
-<section id="other-effects">
-<h3>Other Effects</h3>
-
-<p>
-There are other side effects in Indent Mode that you should be aware of.
-</p>
-</section>
-</div>
-
-<!------------------------------------------------------------------------------------>
-
-<div class="wrapper">
 <section id="knowing-when-parens-move">
-<h4>Knowing When Parens Move</h4>
+<h3>Knowing When Parens Move</h3>
 
 <p>
 As a courtesy, <em>Parinfer</em> will not move your parens until you are done typing
@@ -894,7 +898,7 @@ parens from blowing away.
 
 <div class="wrapper">
 <section id="pressing-enter">
-<h4>Pressing Enter</h4>
+<h3>Pressing Enter</h3>
 
 <p>
 Pressing enter will result in your cursor moving to an auto-indented line, as
@@ -916,7 +920,7 @@ actually type something on the new line.
 
 <div class="wrapper">
 <section id="inserting-quotes">
-<h4>Inserting Quotes</h4>
+<h3>Inserting Quotes</h3>
 
 <p>
 <em>Parinfer</em> cannot infer anything about quote positions like it can with parens.
@@ -1056,7 +1060,7 @@ and ready for Indent Mode should you choose to switch.
 <p>
 We must take parens literally when opening an existing file. Incidentally,
 Paren Mode is perfect for this job, so we preprocess existing files with it
-before ever trying to switch to Indent Mode.
+before allowing the switch to Indent Mode.
 </p>
 
 <div class="interact">
@@ -1092,9 +1096,9 @@ before ever trying to switch to Indent Mode.
 </div>
 
 <p>
-Notice that this process is NOT an invasive pretty-printer.  It preserves as
-much as it can of the original code, only moving close-parens and changing
-indentation.
+Notice that this process is NOT an invasive pretty-printer.  Newline characters
+are never added or removed.  It preserves as much as it can of the original
+code, only moving close-parens and changing indentation.
 </p>
 
 <p>
@@ -1107,23 +1111,8 @@ to the reasons stated in the previous section.
 <!------------------------------------------------------------------------------------>
 
 <div class="wrapper">
-<section id="final-thoughts">
-<h2>Final Thoughts</h2>
-
-<p>
-Regardless of how we choose to edit our Lisp code, there seems to always be a
-balancing act between maintaining the simplicity of how we interact with the
-editor and accepting some editor complexity to gain automation over these
-powerful but numerous parens.
-</p>
-
-<p>
-I don't yet know how well <em>Parinfer</em> will play this balancing act since it does
-not currently exist in a form that I can use in my day-to-day work.  But the
-interactive examples have allowed me to explore, explain, and implement these
-concepts in CodeMirror. The <em>real test</em> will come when implemented in a major
-editor.
-</p>
+<section id="conclusions">
+<h2>Conclusions</h2>
 </section>
 </div>
 
@@ -1173,6 +1162,37 @@ others not using <em>Parinfer</em>.
 <!------------------------------------------------------------------------------------>
 
 <div class="wrapper">
+<section id="final-thoughts">
+<h3>Final Thoughts</h3>
+
+<p>
+Regardless of how we choose to edit our Lisp code, there seems to always be a
+balancing act between maintaining the simplicity of how we interact with the
+editor and accepting some editor complexity to gain automation over these
+powerful but numerous parens.
+</p>
+
+<p>
+Building the interactive examples for this page has allowed me to explore how
+well Parinfer can play this balancing act, but only in a demo environment.
+The <em>real test</em> will come once it becomes available to major editors.
+See <a href="#editor-plugins">editor plugins</a> for progress.
+</p>
+
+</section>
+</div>
+
+<!------------------------------------------------------------------------------------>
+
+<div class="wrapper">
+<section id="appendix">
+<h2>Appendix</h2>
+</section>
+</div>
+
+<!------------------------------------------------------------------------------------>
+
+<div class="wrapper">
 <section id="source-code">
 <h3>Source Code</h3>
 
@@ -1185,6 +1205,31 @@ with hooks to apply our formatters and update cursor position.
 <p>
 <i class="fa fa-lg fa-code-fork"></i> <a href="http://github.com/shaunlebron/parinfer">http://github.com/shaunlebron/parinfer</a>
 </p>
+
+</section>
+</div>
+
+<!------------------------------------------------------------------------------------>
+
+<div class="wrapper">
+<section id="editor-plugins">
+<h3>Editor Plugins</h3>
+
+<p>
+Parinfer is currently available for the following editors in some form:
+</p>
+
+<ul>
+  <li><a href="https://github.com/oakmac/atom-parinfer">atom-parinfer</a> (in progress)
+</ul>
+
+<div class="interact">
+<i class="fa fa-commenting-o fa-flip-horizontal fa-lg"></i>
+<a href="https://github.com/shaunlebron/parinfer/issues/new?title=new%20plugin">Let me know</a>
+if you're working on a plugin.  It would be a huge help, thanks!
+</div>
+
+
 </section>
 </div>
 
@@ -1252,7 +1297,7 @@ with hooks to apply our formatters and update cursor position.
   </li>
 
   <li>
-    <a href="https://twitter.com/escherize">Bryan Mass</a>
+    <a href="https://twitter.com/escherize">Bryan Maass</a>
     explained to me how Lisp is like Lego&mdash; everything being the same
     shape so they can snap together any way you see fit, while other syntaxes
     have different shaped pieces which only fit together in special ways.
@@ -1318,7 +1363,6 @@ with hooks to apply our formatters and update cursor position.
 
 <script src="js/lib/scrollMonitor.js"></script>
 
-<script src="js/lib/jquery-1.8.3.min.js"></script>
 <script src="js/lib/d3-3.3.3.min.js"></script>
 <script src="js/lib/gears.d3.js"></script>
 
