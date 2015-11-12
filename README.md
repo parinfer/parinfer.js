@@ -3,7 +3,7 @@
  <table>
 <tr>
 <td>__[Home Page](http://shaunlebron.github.io/parinfer/)__</td>
-<td>[Atom editor plugin in progress](https://github.com/oakmac/atom-parinfer)</td>
+<td>[Editor Plugins](http://shaunlebron.github.io/parinfer/#editor-plugins)</td>
 </tr>
 </table>
 
