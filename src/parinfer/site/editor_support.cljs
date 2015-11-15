@@ -94,7 +94,7 @@
 (defn fix-text!
   "Correctly format the text from the given editor."
   [cm & {:keys [change use-cache?]
-         :or {change nil, use-cache? true}}]
+         :or {change nil, use-cache? false}}]
   (let [;; get the current state of the editor
         ;; (e.g. text, cursor, selections, scroll)
 
