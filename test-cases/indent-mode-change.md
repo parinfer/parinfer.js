@@ -1,14 +1,5 @@
 # Indent Mode (change-based)
 
-> __NOTE__: All test cases have an input and output block.
-
-For performance reasons, we can cache the state of the original text to allow
-fast incremental, line-based changes.
-
-Lines starting with `-` are replaced by those starting with `+`.
-
----
-
 Inserting a new line:
 
 ```in
@@ -38,8 +29,6 @@ Inserting a new line:
    (let [result (/ a b)]
       result))
 ```
-
----
 
 Inserting multiple new lines:
 
@@ -71,8 +60,6 @@ Inserting multiple new lines:
       result))
 ```
 
----
-
 Replacing one line with another:
 
 ```in
@@ -103,8 +90,6 @@ Replacing one line with another:
    (let [result (/ a b)]
       result))
 ```
-
----
 
 Replacing one line with many:
 
@@ -141,8 +126,6 @@ Replacing one line with many:
       result))
 ```
 
----
-
 Replacing many lines with one:
 
 ```in
@@ -173,8 +156,6 @@ Replacing many lines with one:
       result))
 ```
 
----
-
 Deleting many lines:
 
 ```in
@@ -203,8 +184,6 @@ Deleting many lines:
       result))
 ```
 
----
-
 Affecting a previous insert point.
 
 ```in
@@ -226,8 +205,6 @@ Affecting a previous insert point.
 
    foo)
 ```
-
----
 
 Inserting blank lines should affect previous insert point.
 
@@ -254,8 +231,6 @@ Inserting blank lines should affect previous insert point.
  
  
 ```
-
----
 
 Affecting both previous insert point and subsequent stack
 

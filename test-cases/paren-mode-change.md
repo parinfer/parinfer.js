@@ -1,7 +1,7 @@
 # Paren Mode (change-based)
 
-> __NOTE__: All test cases have an input, replace, and output block. The input block does not
-have
+> __NOTE__: These test cases have an extra "replace" block between the input and output
+blocks, and special cursor range syntax.  See [text-change.md](text-change.md) for details.
 
 _Indentation of shifted expressions should be preserved._
 
