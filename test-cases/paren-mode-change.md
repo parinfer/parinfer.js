@@ -1,6 +1,11 @@
 # Paren Mode (change-based)
 
+> __NOTE__: All test cases have an input, replace, and output block. The input block does not
+have
+
 _Indentation of shifted expressions should be preserved._
+
+---
 
 insert text
 

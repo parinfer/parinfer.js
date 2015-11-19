@@ -1,6 +1,8 @@
-# Infer Mode
+# Indent Mode
 
 ## No Closers
+
+Most basic behavior can be described by leaving out close-parens.
 
 ```in
 (defn foo
@@ -14,6 +16,8 @@
   ret)
 ```
 
+indenting line 3:
+
 ```in
 (defn foo
   [arg
@@ -25,6 +29,8 @@
   [arg
    ret])
 ```
+
+dedenting line 2:
 
 ```in
 (defn foo
@@ -38,6 +44,8 @@
    ret]
 ```
 
+dedenting line 2 and 3:
+
 ```in
 (defn foo
 [arg
@@ -50,7 +58,7 @@ ret
 ret
 ```
 
-multiple lines:
+multiple functions:
 
 ```in
 (defn foo
@@ -74,6 +82,8 @@ multiple lines:
 
 ## Bad Closers
 
+close-paren is wrong type:
+
 ```in
 (def foo [a b]]
 ```
@@ -81,6 +91,8 @@ multiple lines:
 ```out
 (def foo [a b])
 ```
+
+insert missing close-paren inside another:
 
 ```in
 (let [x {:foo 1 :bar 2]
@@ -94,7 +106,7 @@ multiple lines:
 
 ## Strings
 
-We allow temporary imbalances when inserting strings.
+No close-parens are inserted when a string is unclosed.
 
 ```in
 (def foo "as
@@ -104,6 +116,8 @@ We allow temporary imbalances when inserting strings.
 (def foo "as
 ```
 
+even if close-parens are quoted out, do not do anything.
+
 ```in
 (defn foo [a "])
 ```
@@ -112,7 +126,7 @@ We allow temporary imbalances when inserting strings.
 (defn foo [a "])
 ```
 
-Multiline strings:
+Multiline strings are supported:
 
 ```in
 (defn foo
@@ -128,7 +142,7 @@ Multiline strings:
   ret)
 ```
 
-Multiline strings do not affect indentation:
+Indentation inside multiline strings does not trigger Parinfer's indentation rules.
 
 ```in
 (let [a "Hello
@@ -144,7 +158,7 @@ World"
   ret)
 ```
 
-String with delimiters:
+Close-parens are ignored when inside strings.
 
 ```in
 (let [a "])"
@@ -156,7 +170,7 @@ String with delimiters:
       b 2])
 ```
 
-Escaped quotes
+Escaped quotes are handled correctly.
 
 ```in
 (def foo "\""
@@ -166,8 +180,12 @@ Escaped quotes
 (def foo "\"")
 ```
 
-Strings that contain code that would be rewritten if it was ever considered
-code.  See [Issue #15](https://github.com/shaunlebron/parinfer/issues/15).
+__NOTE:__ The pipe `|` represents the cursor, and its character is removed from
+input.  We use it here to suggest that the user has just typed the character to
+the left of the cursor.
+
+Typing a quote before another string does not corrupt it (i.e. turn it inside
+out, causing Parinfer to treat its contents as code).
 
 ```in
 "|"]"
@@ -176,6 +194,8 @@ code.  See [Issue #15](https://github.com/shaunlebron/parinfer/issues/15).
 ```out
 ""]"
 ```
+
+Another case:
 
 ```in
 (def foo
@@ -193,6 +213,8 @@ code.  See [Issue #15](https://github.com/shaunlebron/parinfer/issues/15).
 
 ## Character syntax
 
+Correctly handle escaped parens as literal characters.
+
 ```in
 (defn foo [a b
   \[
@@ -205,6 +227,9 @@ code.  See [Issue #15](https://github.com/shaunlebron/parinfer/issues/15).
   ret)
 ```
 
+Correctly handle escaped semicolons as characters instead of comments.
+Otherwise, the inferred close-parens would be inserted before them.
+
 ```in
 (def foo \;
 ```
@@ -213,7 +238,22 @@ code.  See [Issue #15](https://github.com/shaunlebron/parinfer/issues/15).
 (def foo \;)
 ```
 
+Inferred close-parens are inserted after escaped whitespace.
+
+```in
+(def foo \,
+(def bar \ 
+```
+
+```out
+(def foo \,)
+(def bar \ )
+```
+
 ## Comments
+
+When commenting-out an inferred close-paren, a new one should be inserted
+before it.
 
 ```in
 (def foo ;)
@@ -222,6 +262,9 @@ code.  See [Issue #15](https://github.com/shaunlebron/parinfer/issues/15).
 ```out
 (def foo) ;)
 ```
+
+Commenting-out a line containing inferred close-parens should cause new ones to
+be inserted at the previous non-empty line.
 
 ```in
 (let [a 1
@@ -238,6 +281,8 @@ code.  See [Issue #15](https://github.com/shaunlebron/parinfer/issues/15).
          ;; :bar 2}]
   ret)
 ```
+
+Inferred close-parens are inserted before comments.
 
 ```in
 (let [a 1 ;; a comment
@@ -259,22 +304,14 @@ escape character in comment untouched:
 ; hello \n world
 ```
 
-escaped whitespace
-
-```in
-(def foo \,
-(def bar \ 
-```
-
-```out
-(def foo \,)
-(def bar \ )
-```
+---
 
 ## Cursor Cases
 
-`|` represents the cursor.  This allows us to insert spaces between EOL closing
-delimiters while editing.
+__NOTE__: the pipe `|` represents the cursor, but the character is removed from the input.
+
+Inferred close-parens can only be inserted to the right of the cursor (if it is present).
+This allows us to insert a space before typing a new token.
 
 ```in
 (def b |)
@@ -284,7 +321,8 @@ delimiters while editing.
 (def b )
 ```
 
-Once we leave the line, spaces should be removed:
+Once the cursor leaves the line, the inferred close-parens are moved to the end
+of the last token.  The space is NOT removed from the line.
 
 ```in
 (def b )
@@ -294,7 +332,7 @@ Once we leave the line, spaces should be removed:
 (def b) 
 ```
 
-Another example with more delimiters:
+Another example with more close-parens:
 
 ```in
 (def b [[c d] |])
@@ -304,6 +342,8 @@ Another example with more delimiters:
 (def b [[c d] ])
 ```
 
+Just as before, inferred close-parens are moved, but spaces remain.
+
 ```in
 (def b [[c d] ])
 ```
@@ -312,8 +352,8 @@ Another example with more delimiters:
 (def b [[c d]])
 ```
 
-Spaces between trailing delims after the cursor should be removed since we are not in a position
-where we may be editing them:
+This realignment of inferred close-parens also happens when the
+cursor is to the left of the gaps.
 
 ```in
 (def |b [[c d] ])
@@ -323,9 +363,9 @@ where we may be editing them:
 (def b [[c d]])
 ```
 
-Trailing closing delimiters before the cursor are never removed, which may
+Inferred close-parens before the cursor are never removed, which may
 cause indented lines below to be ignored.  This is to allow inserting a token
-after such a delimiter.
+after such a close-paren.
 
 For example, without the cursor on the first line, this is expected:
 
@@ -364,8 +404,8 @@ the previous state:
   ret
 ```
 
-But if the cursor is before such a delimiter, we are not in a position to insert a token after it,
-thus indentation can affect it again:
+But if the cursor is before such a close-paren, we are not in a position to
+insert a token after it, thus indentation can affect it again:
 
 ```in
 (let [a 1]|)
@@ -377,7 +417,7 @@ thus indentation can affect it again:
   ret)
 ```
 
-If the cursor is a comment after such a delimiter, we can safely move it:
+If the cursor is in a comment after such a close-paren, we can safely move it:
 
 ```in
 (let [a 1]) ;|
@@ -389,11 +429,13 @@ If the cursor is a comment after such a delimiter, we can safely move it:
   ret)
 ```
 
-Cannot insert closing delimiters on their own line:
+It is common to press enter when the cursor is the left of a close-paren.
+Since a line cannot start with a close-paren, they are moved back to where
+they were.
 
 ```in
 (let [a 1
-      ])
+      |])
 ```
 
 ```out
