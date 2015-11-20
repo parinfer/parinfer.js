@@ -1,48 +1,42 @@
-# Parinfer [![Build Status](https://travis-ci.org/shaunlebron/parinfer.svg?branch=master)](https://travis-ci.org/shaunlebron/parinfer)
+# Parinfer 
 
  <table>
 <tr>
+<td>[<img src="https://travis-ci.org/shaunlebron/parinfer.svg?branch=master" valign="middle">](https://travis-ci.org/shaunlebron/parinfer)</td>
 <td>__[Home Page](http://shaunlebron.github.io/parinfer/)__</td>
-<td>[Editor Plugins](http://shaunlebron.github.io/parinfer/#editor-plugins)</td>
+<td>[Download Plugins](http://shaunlebron.github.io/parinfer/#editor-plugins)</td>
+<td>[Make a Plugin](https://github.com/shaunlebron/parinfer/wiki/Make-a-Plugin)</td>
 </tr>
 </table>
 
 <img src="http://zippy.gfycat.com/WeirdOddBluefintuna.gif" width="400">
-<hr>
 
-Parinfer is an experiment to simplify the way we write Lisp by auto-adjusting
-parens when indentation changes and vice versa.  It is intended to simplify
-the main [Paredit] operations in an intuitive way.
+---
+
+__Parinfer__ is an experiment to simplify the way we write Lisp by auto-adjusting
+parens when indentation changes and vice versa.  The hope is to make
+basic Lisp-editing easier for newcomers and experts alike, while still allowing
+existing Paredit plugins to supplement advanced operations.
 
 [Paredit]:http://danmidwood.com/content/2014/11/21/animated-paredit.html
 
 Parinfer is currently built with Clojure(Script) and CodeMirror.
 
-## Running the site
+---
 
-```
-lein figwheel dev
-open http://localhost:3449
-```
+__Development setup__
 
-## Running the tests
+- Run `lein figwheel dev`
+- Open <http://localhost:3449> to view the site.
+- Open <http://localhost:3449/dev.html> to view Indent and Paren mode editors.
 
-[Test cases] are described in markdown code block pairs for readability.
+To run the [test cases]:
 
-[Test cases]:test-cases
+- Run `lein cljsbuild test` for ClojureScript
+- Run `lein test parinfer.test` for Clojure.
 
-Test ClojureScript build:
+[test cases]:test-cases
 
-```
-lein cljsbuild test
-```
+---
 
-Test Clojure build:
-
-```
-lein test parinfer.test
-```
-
-## License
-
-[MIT](LICENSE.md)
+[MIT License](LICENSE.md)
