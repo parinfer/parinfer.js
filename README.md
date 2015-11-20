@@ -45,4 +45,4 @@ lein test parinfer.test
 
 ## License
 
-MIT
+[MIT](LICENSE.md)
