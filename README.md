@@ -16,7 +16,7 @@
 __Parinfer__ is an experiment to simplify the way we write Lisp by auto-adjusting
 parens when indentation changes and vice versa.  The hope is to make
 basic Lisp-editing easier for newcomers and experts alike, while still allowing
-existing Paredit plugins to supplement advanced operations.
+existing plugins like Paredit to satisfy the need for more advanced operations.
 
 [Paredit]:http://danmidwood.com/content/2014/11/21/animated-paredit.html
 
