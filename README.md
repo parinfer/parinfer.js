@@ -32,9 +32,7 @@ your leiningen project.clj dependencies:
 ```
 
 Use the library as seen below. Please see the docstrings for the mentioned
-functions under [`parinfer-lib/src`].
-
-[`parinfer-lib/src`]:parinfer-lib/src
+functions [here](parinfer-lib/src/parinfer).
 
 ```clj
 (ns example.core
