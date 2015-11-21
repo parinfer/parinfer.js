@@ -1,5 +1,6 @@
 language: clojure
 lein: lein
 script:
+  - cd parinfer-lib
   - lein cljsbuild test
   - lein test parinfer.test
