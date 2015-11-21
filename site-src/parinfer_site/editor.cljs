@@ -1,10 +1,10 @@
-(ns parinfer.site.editor
+(ns parinfer-site.editor
   "Glues Parinfer's formatter to a CodeMirror editor"
   (:require
     [clojure.string :refer [join]]
-    [parinfer.site.state :refer [state
+    [parinfer-site.state :refer [state
                                  empty-editor-state]]
-    [parinfer.site.editor-support :refer [update-cursor!
+    [parinfer-site.editor-support :refer [update-cursor!
                                           fix-text!
                                           cm-key
                                           IEditor
@@ -12,7 +12,7 @@
                                           frame-updated?
                                           set-frame-updated!
                                           record-change!]]
-    [parinfer.site.vcr :refer [vcr
+    [parinfer-site.vcr :refer [vcr
                                empty-recording
                                parse-change
                                parse-selections

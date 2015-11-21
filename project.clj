@@ -1,5 +1,5 @@
-(defproject parinfer "0.1.0"
-  :description "a simpler way to write Lisp"
+(defproject parinfer-site "0.1.0-SNAPSHOT"
+  :description "site for illustrating the value of Parinfer"
   :url "http://shaunlebron.github.io/parinfer"
 
   :license {:name "MIT License"
@@ -15,7 +15,7 @@
   :plugins [[lein-cljsbuild "1.1.0"]
             [lein-figwheel "0.4.0"]]
 
-  :source-paths ["src"]
+  :source-paths ["parinfer-lib/src"]
 
   :clean-targets ^{:protect false} ["resources/public/js/compiled" "target"]
 
@@ -24,35 +24,25 @@
   :cljsbuild {
     :test-commands {"test" ["node" "resources/public/js/compiled/parinfer-test.js"]}
     :builds [{:id "dev"
-              :source-paths ["src"]
-
-              :figwheel {:on-jsload "parinfer.site.core/on-js-reload" }
-
-              :compiler {:main parinfer.site.core
+              :source-paths ["site-src" "parinfer-lib/src"]
+              :figwheel {:on-jsload "parinfer-site.core/on-js-reload" }
+              :compiler {:main parinfer-site.core
                          :asset-path "js/compiled/out"
                          :output-to "resources/public/js/compiled/parinfer.js"
                          :output-dir "resources/public/js/compiled/out"
                          :source-map-timestamp true }}
              {:id "min"
-              :source-paths ["src"]
+              :source-paths ["site-src" "parinfer-lib/src"]
               :compiler {:output-to "resources/public/js/compiled/parinfer.js"
                          :externs ["resources/public/codemirror/lib/closure-externs.js"
                                    "resources/public/js/lib/scrollMonitor.externs.js"
                                    "resources/public/js/lib/gears.d3.externs.js"
                                    "resources/public/js/lib/d3.ext.js"
                                    "resources/public/js/lib/jsdiff.externs.js"]
-                         :main parinfer.site.core
+                         :main parinfer-site.core
                          :optimizations :advanced
                          :pretty-print false}}
 
-             {:id "test"
-              :source-paths ["src" "test"]
-              :compiler {:output-to "resources/public/js/compiled/parinfer-test.js"
-                         :output-dir "resources/public/js/compiled/out-test"
-                         :main parinfer.runner
-                         :optimizations :none
-                         :target :nodejs
-                         :hashbang false}}
              ]}
 
   :figwheel {

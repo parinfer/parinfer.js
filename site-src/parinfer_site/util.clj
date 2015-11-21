@@ -1,4 +1,4 @@
-(ns parinfer.site.util)
+(ns parinfer-site.util)
 
 ; Case 1: Show the state of a bunch of variables.
 ;

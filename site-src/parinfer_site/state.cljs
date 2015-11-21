@@ -1,4 +1,4 @@
-(ns parinfer.site.state
+(ns parinfer-site.state
   "State of the editors on our page.")
 
 ;; map of editor key -> editor state

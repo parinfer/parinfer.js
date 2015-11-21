@@ -1,22 +1,22 @@
-(ns ^:figwheel-always parinfer.site.core
+(ns ^:figwheel-always parinfer-site.core
   (:require
     [om.core :as om :include-macros true]
     [sablono.core :refer-macros [html]]
     [parinfer.indent-mode :as indent-mode]
     [parinfer.paren-mode :as paren-mode]
     [parinfer.string :refer [get-lines]]
-    [parinfer.site.vcr-data :as vcr-data]
-    [parinfer.site.vcr :refer [vcr
+    [parinfer-site.vcr-data :as vcr-data]
+    [parinfer-site.vcr :refer [vcr
                                play-recording!
                                stop-playing!
                                render-controls!]]
-    [parinfer.site.editor :refer [create-editor!
+    [parinfer-site.editor :refer [create-editor!
                                   create-regular-editor!
                                   start-editor-sync!]]
-    [parinfer.site.editor-support :refer [get-prev-state]]
-    [parinfer.site.state :refer [state]]
-    [parinfer.site.toc :as toc]
-    [parinfer.site.gears :refer [create-gears!]]))
+    [parinfer-site.editor-support :refer [get-prev-state]]
+    [parinfer-site.state :refer [state]]
+    [parinfer-site.toc :as toc]
+    [parinfer-site.gears :refer [create-gears!]]))
 
 (enable-console-print!)
 

@@ -1,4 +1,4 @@
-(ns parinfer.site.toc
+(ns parinfer-site.toc
   "Table of contents generator and highlighting"
   (:require
     [om.core :as om :include-macros true]

@@ -22,15 +22,19 @@ existing plugins like Paredit to satisfy the need for more advanced operations.
 
 ## Using as a library
 
-We publish a implementation which you can use from Clojure or ClojureScript
-by including the following in your project.clj dependencies:
+We publish an _editor-agnostic_ implementation which you can use from Clojure
+or ClojureScript.  It is simply a pure function of your text, returning new
+text with corrected parens or indentation.  To use, include the following in
+your leiningen project.clj dependencies:
 
 ```clj
 [parinfer "0.1.0"]
 ```
 
 Use the library as seen below. Please see the docstrings for the mentioned
-functions.
+functions under [`parinfer-lib/src`].
+
+[`parinfer-lib/src`]:parinfer-lib/src
 
 ```clj
 (ns example.core
@@ -39,45 +43,32 @@ functions.
     [parinfer.paren-mode :as paren-mode]))
 
 ;; fully process a given text
-(indent-mode/format-text ...)
+(indent-mode/format-text ...)  ;; <-- use this to get started!
 (paren-mode/format-text ...)
 
-;; process a partial text change
+;; process a partial text change (for faster performance on large files)
 (indent-mode/format-text-change ...)
 (paren-mode/format-text-change ...)
 ```
 
-> __NOTE__:
-> The `parinfer.site` namespace is non-public.  It is included as a visual component for development
-> testing and for ensuring that our implementation and features demonstrated
-> on the website are in sync.
-
-## Plugging it into an editor
-
-Parinfer's home page shows animated/interactive examples by connecting the
-aforementioned Parinfer library to a browser-based code editor called
-[CodeMirror]. The relevant source code for doing this is in
-[`parinfer.site.editor-support`], which you can use as reference.
+Parinfer's home page shows animated/interactive examples by connecting this
+library to a browser-based code editor called [CodeMirror]. The relevant source
+code for doing this is
+[here](https://github.com/shaunlebron/parinfer/blob/master/site-src/parinfer_site/editor_support.cljs).
 
 Also see [Make a Plugin] wiki page for extra guidance on understanding the implementation
 if you wish to port it, and existing plugins you can use as reference.
 
-[`parinfer.site.editor-support`]:https://github.com/shaunlebron/parinfer/blob/master/src/parinfer/site/editor_support.cljs
 [CodeMirror]:https://codemirror.net/
 [Make a Plugin]:https://github.com/shaunlebron/parinfer/wiki/Make-a-Plugin
 
 ## Development setup
 
-- Run `lein figwheel dev`
+- Run `rlwrap lein figwheel`
 - Open <http://localhost:3449> to view the site.
 - Open <http://localhost:3449/dev.html> to view Indent and Paren mode editors.
 
-To run the [test cases]:
-
-- Run `lein cljsbuild test` for ClojureScript
-- Run `lein test parinfer.test` for Clojure.
-
-[test cases]:test-cases
+See [parinfer-lib/](parinfer-lib) directory for running tests.
 
 ---
 

@@ -1,6 +1,7 @@
 /resources/public/js/compiled/**
 figwheel_server.log
 pom.xml
+pom.xml.asc
 *jar
 /lib/
 /classes/
@@ -8,6 +9,7 @@ pom.xml
 /target/
 .lein-deps-sum
 .lein-repl-history
+.lein-failures
 .lein-plugins/
 .repl
 .nrepl-port
@@ -19,3 +21,4 @@ pom.xml
 /clojurescript
 
 *.diff
+
