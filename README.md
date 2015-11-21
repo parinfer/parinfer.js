@@ -32,23 +32,32 @@ your leiningen project.clj dependencies:
 [parinfer "0.1.0"]
 ```
 
-Use the library as seen below. Please see the docstrings for the mentioned
-functions [here](parinfer-lib/src/parinfer).
+__Quick Start__: Run `lein repl` inside this repo and try the following:
 
 ```clj
-(ns example.core
-  (:require
-    [parinfer.indent-mode :as indent-mode]
-    [parinfer.paren-mode :as paren-mode]))
+(require '[parinfer.indent-mode :as indent-mode])
 
-;; fully process a given text
-(indent-mode/format-text ...)  ;; <-- use this to get started!
-(paren-mode/format-text ...)
+;; this is the input text that you want Parinfer to format
+(def in  "(def foo [a b")
 
-;; process a partial text change (for faster performance on large files)
-(indent-mode/format-text-change ...)
-(paren-mode/format-text-change ...)
+;; format the text with Indent Mode
+(def out (indent-mode/format-text in))
+(:text out)
+;;=> "(def foo [a b])"
 ```
+
+__Public API__:
+
+- [`indent-mode/format-text`] - process full text in Indent Mode
+- [`paren-mode/format-text`] - process full text in Paren Mode
+- [`indent-mode/format-text-change`] - process a partial change in Indent Mode (faster)
+- ~~`paren-mode/format-text-change`~~ (not implemented yet)
+
+[`indent-mode/format-text`]:https://github.com/shaunlebron/parinfer/blob/master/parinfer-lib/src/parinfer/indent_mode.cljc#L424-L446
+[`indent-mode/format-text-change`]:https://github.com/shaunlebron/parinfer/blob/master/parinfer-lib/src/parinfer/indent_mode.cljc#L448-L481
+[`paren-mode/format-text`]:https://github.com/shaunlebron/parinfer/blob/master/parinfer-lib/src/parinfer/paren_mode.cljc#L158-L168
+
+## Connecting to an Editor/REPL
 
 Parinfer's home page shows animated/interactive examples by connecting this
 library to a browser-based code editor called [CodeMirror]. The relevant source
