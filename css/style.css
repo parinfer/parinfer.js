@@ -211,6 +211,20 @@ p, li {
   border-top: 1px solid #dedede;
 }
 
+.wrapper.fold {
+  background: #fefefe;
+}
+
+.wrapper.fold .interact {
+  background: #f7f7f7;
+  border: 1px solid #dedede;
+}
+
+.wrapper.fold .title {
+  font-weight: bold;
+  font-style: italic;
+}
+
 section {
   width: 862px;
   padding: 70px;
