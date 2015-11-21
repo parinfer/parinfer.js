@@ -12,6 +12,8 @@
 
 #?(:cljs (def fs (js/require "fs")))
 
+(def cases-path "test/parinfer/cases")
+
 (defn error-msg
   [file-line-no msg]
   (str "error at test-case line #" file-line-no ": " msg))
@@ -181,7 +183,7 @@
 
 (defn run-test-cases
   [type- format-text format-text-change]
-  (let [filename (str "test-cases/" type- ".md")
+  (let [filename (str cases-path "/" type- ".md")
         text #?(:clj (slurp filename)
                      :cljs (.readFileSync fs filename))
         test-cases (parse-test-cases text)]

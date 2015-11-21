@@ -16,5 +16,5 @@ To run the [test cases]:
 - Run `lein cljsbuild test` for ClojureScript
 - Run `lein test parinfer.test` for Clojure.
 
-[test cases]:test-cases
+[test cases]:test/parinfer/cases
 
