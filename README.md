@@ -48,14 +48,26 @@ __Quick Start__: Run `lein repl` inside this repo and try the following:
 
 __Public API__:
 
-- [`indent-mode/format-text`] - process full text in Indent Mode
-- [`paren-mode/format-text`] - process full text in Paren Mode
-- [`indent-mode/format-text-change`] - process a partial change in Indent Mode (faster)
-- ~~`paren-mode/format-text-change`~~ (not implemented yet)
+| function                           | description                     | effects                               | tests (see [format][test-format])    |
+|------------------------------------|---------------------------------|---------------------------------------|------------------------------|
+| [`indent-mode/format-text`]        | Indent Mode: process full text  | [learn interactively][indent-effects] | [tests][indent-tests]        |
+| [`paren-mode/format-text`]         | Paren Mode: process full text   | [learn interactively][paren-effects]  | [tests][paren-tests]         |
+| [`indent-mode/format-text-change`] | faster processing of changes    |                                       | [tests][indent-change-tests] |
+| `paren-mode/format-text-change`    | (not implemented yet)           |                                       | [tests][paren-change-tests]  |
 
 [`indent-mode/format-text`]:https://github.com/shaunlebron/parinfer/blob/master/parinfer-lib/src/parinfer/indent_mode.cljc#L424-L446
 [`indent-mode/format-text-change`]:https://github.com/shaunlebron/parinfer/blob/master/parinfer-lib/src/parinfer/indent_mode.cljc#L448-L481
 [`paren-mode/format-text`]:https://github.com/shaunlebron/parinfer/blob/master/parinfer-lib/src/parinfer/paren_mode.cljc#L158-L168
+
+[test-format]:https://github.com/shaunlebron/parinfer/tree/master/parinfer-lib/test/parinfer/cases#parinfer-test-cases
+
+[indent-tests]:parinfer-lib/test/parinfer/cases/indent-mode.md
+[paren-tests]:parinfer-lib/test/parinfer/cases/paren-mode.md
+[indent-change-tests]:parinfer-lib/test/parinfer/cases/indent-mode-change.md
+[paren-change-tests]:parinfer-lib/test/parinfer/cases/paren-mode-change.md
+
+[indent-effects]:http://shaunlebron.github.io/parinfer/#indent-how-it-works
+[paren-effects]:http://shaunlebron.github.io/parinfer/#fixing-existing-files
 
 ## Connecting to an Editor/REPL
 
