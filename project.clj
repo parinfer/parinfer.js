@@ -1,4 +1,4 @@
-(defproject parinfer-site "0.1.0-SNAPSHOT"
+(defproject parinfer-site "0.0-SNAPSHOT"
   :description "site for illustrating the value of Parinfer"
   :url "http://shaunlebron.github.io/parinfer"
 
