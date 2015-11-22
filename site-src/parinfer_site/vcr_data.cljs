@@ -3047,3 +3047,8 @@
     :init-value "",
     :last-time 1445552518239,
     :recording? false})
+
+(def displaced-after-balance {})
+(def not-displaced-on-enter {})
+(def displaced-after-cursor-leaves {})
+
