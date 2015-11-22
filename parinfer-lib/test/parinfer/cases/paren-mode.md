@@ -137,3 +137,15 @@ escaped whitespace
 (def foo \,)
 (def bar \ )
 ```
+
+cursor before a close-paren allows it to be at the start of a line.
+
+```in
+(foo [a b
+|])
+```
+
+```out
+(foo [a b
+      ])
+```

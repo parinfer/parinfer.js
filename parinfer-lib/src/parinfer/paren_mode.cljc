@@ -83,17 +83,23 @@
   [{:keys [stack track-indent? lines line-no ch
            x-pos cursor-line cursor-x cursor-dx] :as state}]
   (let [check-indent? (and track-indent?
-                        (in-code? stack)
-                        (not (whitespace? ch))
-                        (not= ";" ch))
-        matching? (and check-indent?
-                       (closing-delim? ch)
-                       (valid-closer? stack ch))
-        skip? (and check-indent? (closing-delim? ch))
+                           (in-code? stack)
+                           (not (whitespace? ch))
+                           (not= ";" ch))
+        at-valid-closer? (and check-indent?
+                              (closing-delim? ch)
+                              (valid-closer? stack ch))
+        cursor-holding? (and (= line-no cursor-line)
+                             (<= cursor-x x-pos))
+        move-closer? (and at-valid-closer?
+                          (not cursor-holding?))
+        skip? (and check-indent?
+                   (closing-delim? ch)
+                   (not cursor-holding?))
         at-indent? (and check-indent? (not skip?))
         state (assoc state :process? (not skip?))]
     (cond-> state
-      matching? append-delim-trail
+      move-closer? append-delim-trail
       true handle-cursor-delta
       at-indent? correct-indent)))
 

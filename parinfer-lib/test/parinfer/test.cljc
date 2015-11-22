@@ -231,9 +231,18 @@
                         "actual------------------------------------"
                         text-actual]))
 
-        (idempotent-check "indent-mode" message text-actual final-options indent-mode/format-text)
+        ;; check idempotence against the same mode.
+        (idempotent-check type- message text-actual final-options format-text)
+
+        ;; The cursor temporarily allows the modes to break cross-mode idempotence.
+        ;; So we only check this if the cursor is not present.
         (when-not final-cursor
-          (idempotent-check "paren-mode" message text-actual final-options paren-mode/format-text))))))
+          (let [[other-type other-format-text]
+                (case type-
+                  ("indent-mode" "indent-mode-change") ["paren-mode" paren-mode/format-text]
+                  ("paren-mode"  "paren-mode-change")  ["indent-mode" indent-mode/format-text]
+                  nil)]
+            (idempotent-check other-type message text-actual final-options other-format-text)))))))
 
 (deftest run-indent-mode-cases
   (run-test-cases
