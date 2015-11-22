@@ -1,5 +1,7 @@
 # Parinfer 
 
+_parentheses inference_
+
  <table>
 <tr>
 <td>[<img src="https://travis-ci.org/shaunlebron/parinfer.svg?branch=master" valign="middle">](https://travis-ci.org/shaunlebron/parinfer)</td>
