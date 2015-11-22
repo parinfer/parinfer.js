@@ -452,6 +452,13 @@ code {
   height: 100px;
 }
 
+#cm-code-displaced-after-balance,
+#cm-code-not-displaced-on-enter,
+#cm-code-displaced-after-cursor-leaves
+{
+  height: 80px;
+}
+
 p.centered
 {
   text-align: center;
