@@ -1,6 +1,6 @@
 # Parinfer 
 
-_parentheses inference_
+_parentheses inference for Lisp_
 
  <table>
 <tr>
