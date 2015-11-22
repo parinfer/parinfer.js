@@ -60,11 +60,19 @@
 ;; Module Export
 ;;-----------------------------------------------------------------------------
 
-(when js/module
-  (set! js/module.exports
-    #js {:indentMode js-indent-mode
-         :indentModeChange js-indent-mode-change
-         :parenMode js-paren-mode}))
+;; from: https://github.com/umdjs/umd/blob/master/templates/returnExports.js
+(defn export! [module]
+  (let [amd?  (and (= (js* "typeof ~{}" js/define) "function") js/define.amd)
+        node? (and (= (js* "typeof ~{}" js/module) "object")  js/module.exports)]
+    (cond
+      amd?  (js/define (fn [] module))
+      node? (set! js/module.exports module)
+      :else (goog/exportSymbol "parinfer" module))))
+
+(export!
+  #js {:indentMode js-indent-mode
+       :indentModeChange js-indent-mode-change
+       :parenMode js-paren-mode})
 
 ;; noop - needed for :nodejs CLJS build
 (set! *main-cli-fn* (fn [] nil))

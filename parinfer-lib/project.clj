@@ -22,6 +22,7 @@
     :builds [{:id "min"
               :source-paths ["src"]
               :compiler {:output-to "compiled/parinfer.js"
+                         :externs ["umd-externs.js"]
                          :optimizations :advanced
                          :pretty-print false}}
 
