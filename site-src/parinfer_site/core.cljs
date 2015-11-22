@@ -102,6 +102,7 @@
   (create-editor! "code-string" :string)
   (create-editor! "code-enter" :enter)
 
+
   (let [opts {:readOnly true}]
     (create-editor! "code-warn-good" :warn-good opts)
     (create-editor! "code-warn-bad" :warn-bad opts))
@@ -113,7 +114,10 @@
     (create-editor! "code-paren-tune" :paren-tune opts)
     (create-editor! "code-paren-frac" :paren-frac opts)
     (create-editor! "code-paren-comment" :paren-comment opts)
-    (create-editor! "code-paren-wrap" :paren-wrap opts))
+    (create-editor! "code-paren-wrap" :paren-wrap opts)
+    (create-editor! "code-displaced-after-balance" :displaced-after-balance opts)
+    (create-editor! "code-not-displaced-on-enter" :not-displaced-on-enter opts)
+    (create-editor! "code-displaced-after-cursor-leaves" :displaced-after-cursor-leaves opts))
 
   (start-editor-sync!)
 
@@ -155,10 +159,14 @@
    :warn-bad vcr-data/warn-bad
    :warn-good vcr-data/warn-good
    :enter vcr-data/enter
+
    :paren-tune vcr-data/paren-tune
    :paren-frac vcr-data/paren-frac
    :paren-comment vcr-data/paren-comment
-   :paren-wrap vcr-data/paren-wrap})
+   :paren-wrap vcr-data/paren-wrap
+   :displaced-after-balance vcr-data/displaced-after-balance
+   :not-displaced-on-enter vcr-data/not-displaced-on-enter
+   :displaced-after-cursor-leaves vcr-data/displaced-after-cursor-leaves})
 
 (defn load-index-anims! []
   (swap! vcr

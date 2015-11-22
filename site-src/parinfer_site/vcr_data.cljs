@@ -3047,3 +3047,133 @@
     :init-value "",
     :last-time 1445552518239,
     :recording? false})
+
+(def displaced-after-balance
+  '{:changes
+    [{:selections ({:anchor {:line 0, :ch 0}, :head {:line 0, :ch 0}}),
+      :dt 0}
+     {:change
+      {:from {:line 0, :ch 0},
+       :to {:line 0, :ch 0},
+       :text ("(foo [a b"),
+       :origin "paste"},
+      :dt 546}
+     {:change
+      {:from {:line 0, :ch 9},
+       :to {:line 0, :ch 9},
+       :text ("" ""),
+       :origin "+input"},
+      :dt 483}
+     {:change
+      {:from {:line 1, :ch 0},
+       :to {:line 1, :ch 0},
+       :text ("      "),
+       :origin "+indenthack"},
+      :dt 3}
+     {:change
+      {:from {:line 1, :ch 6},
+       :to {:line 1, :ch 6},
+       :text ("]"),
+       :origin "+input"},
+      :dt 610}
+     {:change
+      {:from {:line 1, :ch 7},
+       :to {:line 1, :ch 7},
+       :text (")"),
+       :origin "+input"},
+      :dt 913}],
+    :init-value "",
+    :last-time 1448163749775,
+    :recording? false})
+
+(def not-displaced-on-enter
+  '{:changes
+    [{:selections ({:anchor {:line 0, :ch 0}, :head {:line 0, :ch 0}}),
+      :dt 0}
+     {:change
+      {:from {:line 0, :ch 0},
+       :to {:line 0, :ch 0},
+       :text ("(foo [a b])"),
+       :origin "paste"},
+      :dt 446}
+     {:selections ({:anchor {:line 0, :ch 9}, :head {:line 0, :ch 9}}),
+      :dt 664}
+     {:change
+      {:from {:line 0, :ch 9},
+       :to {:line 0, :ch 9},
+       :text ("" ""),
+       :origin "+input"},
+      :dt 807}
+     {:change
+      {:from {:line 1, :ch 0},
+
+       ;; NOTE: I had to hack this recording by replacing:
+       ;;  :to {:line 1, :ch 0}  ---with--->   {:line 1, :ch 6}
+       ;; It was adding double indentation for some reason.
+       :to {:line 1, :ch 6},
+
+       :text ("      "),
+       :origin "+indenthack"},
+      :dt 2}
+     {:change
+      {:from {:line 1, :ch 6},
+       :to {:line 1, :ch 6},
+       :text ("c"),
+       :origin "+input"},
+      :dt 348}
+     {:change
+      {:from {:line 1, :ch 7},
+       :to {:line 1, :ch 7},
+       :text (" "),
+       :origin "+input"},
+      :dt 136}
+     {:change
+      {:from {:line 1, :ch 8},
+       :to {:line 1, :ch 8},
+       :text ("d"),
+       :origin "+input"},
+      :dt 350}
+     {:selections ({:anchor {:line 1, :ch 11}, :head {:line 1, :ch 11}}),
+      :dt 1285}],
+    :init-value "",
+    :last-time 1448164475550,
+    :recording? false})
+
+
+(def displaced-after-cursor-leaves
+  '{:changes
+    [{:selections ({:anchor {:line 0, :ch 0}, :head {:line 0, :ch 0}}),
+      :dt 0}
+     {:change
+      {:from {:line 0, :ch 0},
+       :to {:line 0, :ch 0},
+       :text ("(foo [a b])"),
+       :origin "paste"},
+      :dt 484}
+     {:selections ({:anchor {:line 0, :ch 9}, :head {:line 0, :ch 9}}),
+      :dt 700}
+     {:change
+      {:from {:line 0, :ch 9},
+       :to {:line 0, :ch 9},
+       :text ("" ""),
+       :origin "+input"},
+      :dt 1104}
+
+     {:change
+      {:from {:line 1, :ch 0},
+
+       ;; NOTE: I had to hack this recording by replacing:
+       ;;  :to {:line 1, :ch 0}  ---with--->   {:line 1, :ch 6}
+       ;; It was adding double indentation for some reason.
+       :to {:line 1, :ch 6},
+
+       :text ("      "),
+       :origin "+indenthack"},
+      :dt 2}
+
+     {:selections ({:anchor {:line 0, :ch 6}, :head {:line 0, :ch 6}}),
+      :dt 1684}],
+    :init-value "",
+    :last-time 1448163855310,
+    :recording? false})
+

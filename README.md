@@ -1,5 +1,7 @@
 # Parinfer 
 
+_parentheses inference for Lisp_
+
  <table>
 <tr>
 <td>[<img src="https://travis-ci.org/shaunlebron/parinfer.svg?branch=master" valign="middle">](https://travis-ci.org/shaunlebron/parinfer)</td>
@@ -29,7 +31,7 @@ text with corrected parens or indentation.  To use, include the following in
 your leiningen project.clj dependencies:
 
 ```clj
-[parinfer "0.1.0"]
+[parinfer "0.2.0"]
 ```
 
 __Quick Start__: Run `lein repl` inside this repo and try the following:
