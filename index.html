@@ -873,11 +873,11 @@ Why can't I delete a close-paren in certain places?
 <!------------------------------------------------------------------------------------>
 
 <div class="wrapper">
-<section id="knowing-when-parens-move">
+<section id="knowing-when-parens-move-in-indent-mode">
 <h3>Knowing When Parens Move</h3>
 
 <p>
-As a courtesy, <em>Parinfer</em> will not move your parens until you are done typing
+As a courtesy, <em>Indent Mode</em> will not move your parens until you are done typing
 in front of them.  Just move your cursor away when you're done.  A helpful
 analogy might be to think of your cursor as a <em>paperweight</em> that keeps your
 parens from blowing away.
@@ -1108,6 +1108,40 @@ code, only moving close-parens and changing indentation.
 <em>Parinfer</em> should remain in Paren Mode if the file cannot be processed, due
 to the reasons stated in the previous section.
 </p>
+</section>
+</div>
+
+<!------------------------------------------------------------------------------------>
+
+<div class="wrapper">
+<section id="knowing-when-parens-move-in-paren-mode">
+<h3>Knowing When Parens Move</h3>
+
+<p>
+As a courtesy, <em>Paren Mode</em> will not move your parens while your cursor
+is behind them. Just move your cursor away when you're done.  A helpful
+analogy might be to think of your cursor as a <em>paperweight</em> that keeps
+your parens from blowing away.
+</p>
+
+<div>
+<div class="caption"><strong>Parens displaced</strong> only after they are balanced.</div>
+<textarea id="code-displaced-after-balance">
+</textarea>
+</div>
+
+<div>
+<div class="caption"><strong>Parens not displaced</strong> if the cursor is behind it (allowing you to type).</div>
+<textarea id="code-not-displaced-on-enter">
+</textarea>
+</div>
+
+<div>
+<div class="caption"><strong>Parens displaced</strong> if the cursor is no longer behind them.</div>
+<textarea id="code-displaced-after-cursor-leaves">
+</textarea>
+</div>
+
 </section>
 </div>
 
