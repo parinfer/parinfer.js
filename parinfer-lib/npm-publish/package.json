@@ -1,0 +1,24 @@
+{
+  "name": "parinfer",
+  "version": "0.2.0",
+  "description": "a simpler way to write Lisp",
+  "main": "parinfer.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shaunlebron/parinfer"
+  },
+  "keywords": [
+    "parinfer",
+    "paredit",
+    "lisp"
+  ],
+  "author": "Shaun LeBron",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/shaunlebron/parinfer/issues"
+  },
+  "homepage": "http://shaunlebron.github.io/parinfer"
+}

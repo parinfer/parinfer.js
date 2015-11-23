@@ -13,7 +13,7 @@
          :parenMode 'parinfer.api-js/js-paren-mode})
       (cljs/compile-modules)
       (cljs/closure-optimize :advanced)
-      (umd/flush-module "compiled/parinfer.js"))
+      (umd/flush-module "npm-publish/parinfer.js"))
   :done)
 
 (defn run-all-tests []
