@@ -1,5 +1,7 @@
 language: clojure
 lein: lein
+jdk:
+  - oraclejdk8
 script:
   - cd parinfer-lib
   - lein run -m build/run-all-tests
