@@ -31,7 +31,7 @@
        :isValid valid?
        :state state})
 
-(defn js-indent-mode
+(defn ^:export js-indent-mode
   "JavaScript wrapper around parinfer.indent-mode/format-text"
   [txt js-opts]
   (js-result
@@ -39,7 +39,7 @@
       txt
       (convert-opts js-opts))))
 
-(defn js-indent-mode-change
+(defn ^:export js-indent-mode-change
   "JavaScript wrapper around parinfer.indent-mode/format-text-change"
   [txt prev-state js-change js-opts]
   (js-result
@@ -48,7 +48,7 @@
       (convert-opts js-change)
       (convert-opts js-opts))))
 
-(defn js-paren-mode
+(defn ^:export js-paren-mode
   "JavaScript wrapper around parinfer.paren-mode/format-text"
   [txt js-opts]
   (js-result
