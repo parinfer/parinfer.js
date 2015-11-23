@@ -144,7 +144,7 @@
     (render [_]
       (when show?
         (html
-          [:div
+          [:div#controls
            [:code (if target-key
                     (str target-key)
                     "(click an editor)")]
@@ -159,4 +159,4 @@
   (om/root
     controls-view
     controls-state
-    {:target (js/document.getElementById "controls")}))
+    {:target (js/document.getElementById "controls-container")}))
