@@ -8,12 +8,12 @@ See [usage notes].
 
 To build the standalone JS library:
 
-- Run `lein cljsbuild once min`
+- Run `lein run -m build/release`
 - Compiled file can be found at `compiled/parinfer.js`
 
 To run the [test cases]:
 
-- Run `lein cljsbuild test` for ClojureScript
+- Run `lein run -m build/run-all-tests` for ClojureScript
 - Run `lein test parinfer.test` for Clojure.
 
 [test cases]:test/parinfer/cases
