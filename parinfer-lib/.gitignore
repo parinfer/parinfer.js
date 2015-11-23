@@ -1,2 +1,4 @@
 /compiled/
 /target/
+/.idea
+*.iml

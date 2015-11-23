@@ -31,7 +31,7 @@
        :isValid valid?
        :state state})
 
-(defn- js-indent-mode
+(defn js-indent-mode
   "JavaScript wrapper around parinfer.indent-mode/format-text"
   [txt js-opts]
   (js-result
@@ -39,7 +39,7 @@
       txt
       (convert-opts js-opts))))
 
-(defn- js-indent-mode-change
+(defn js-indent-mode-change
   "JavaScript wrapper around parinfer.indent-mode/format-text-change"
   [txt prev-state js-change js-opts]
   (js-result
@@ -48,31 +48,10 @@
       (convert-opts js-change)
       (convert-opts js-opts))))
 
-(defn- js-paren-mode
+(defn js-paren-mode
   "JavaScript wrapper around parinfer.paren-mode/format-text"
   [txt js-opts]
   (js-result
     (paren-mode/format-text
       txt
       (convert-opts js-opts))))
-
-;;-----------------------------------------------------------------------------
-;; Module Export
-;;-----------------------------------------------------------------------------
-
-;; from: https://github.com/umdjs/umd/blob/master/templates/returnExports.js
-(defn export! [module]
-  (let [amd?  (and (= (js* "typeof ~{}" js/define) "function") js/define.amd)
-        node? (and (= (js* "typeof ~{}" js/module) "object")  js/module.exports)]
-    (cond
-      amd?  (js/define (fn [] module))
-      node? (set! js/module.exports module)
-      :else (goog/exportSymbol "parinfer" module))))
-
-(export!
-  #js {:indentMode js-indent-mode
-       :indentModeChange js-indent-mode-change
-       :parenMode js-paren-mode})
-
-;; noop - needed for :nodejs CLJS build
-(set! *main-cli-fn* (fn [] nil))
