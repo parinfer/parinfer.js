@@ -33,3 +33,18 @@
   (-> (test-setup)
       (node/execute-all-tests!))
   :done)
+
+(defn autotest
+  [& args]
+  (-> (test-setup)
+      (cljs/watch-and-repeat!
+        (fn [state modified]
+          (-> state
+              (cond->
+                ;; first pass, run all tests
+                (empty? modified)
+                (node/execute-all-tests!)
+                ;; only execute tests that might have been affected by the modified files
+                (not (empty? modified))
+                (node/execute-affected-tests! modified))
+              )))))
