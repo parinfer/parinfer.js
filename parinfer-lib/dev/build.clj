@@ -16,11 +16,20 @@
       (umd/flush-module "npm-publish/parinfer.js"))
   :done)
 
-(defn run-all-tests []
+(defn- test-setup []
   (-> (cljs/init-state)
       (cljs/set-build-options
         {:public-dir (io/file "target/cljs-tests")
          :public-path "target/cljs-tests"})
       (cljs/find-resources-in-classpath)
+      ))
+
+(defn test-runner []
+  (-> (test-setup)
+      (node/make-test-runner))
+  :done)
+
+(defn run-all-tests []
+  (-> (test-setup)
       (node/execute-all-tests!))
   :done)

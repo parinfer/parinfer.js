@@ -15,6 +15,6 @@
   :profiles {:dev {:source-paths ["dev" "test"]
                    :dependencies [[org.clojure/clojure "1.7.0"]
                                   [org.clojure/clojurescript "1.7.170"]
-                                  [thheller/shadow-build "1.0.178"]]}}
+                                  [thheller/shadow-build "1.0.180"]]}}
 
   )
