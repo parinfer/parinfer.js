@@ -13,7 +13,10 @@
                  [sablono "0.3.6"]]
 
   :plugins [[lein-cljsbuild "1.1.0"]
-            [lein-figwheel "0.4.0"]]
+            [lein-figwheel "0.4.0"]
+            [lein-sub "0.3.0"]]
+
+  :sub ["parinfer-lib"]
 
   :source-paths ["parinfer-lib/src"]
 
