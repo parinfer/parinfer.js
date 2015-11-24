@@ -12,7 +12,10 @@
 
   :aliases {"prep" ["run" "-m" "parinfer.prep-file"]}
 
+  :set-version {:updates [{:path "../README.md"}]}
+
   :profiles {:dev {:source-paths ["dev" "test"]
+                   :plugins [[lein-set-version "0.4.1"]]
                    :dependencies [[org.clojure/clojure "1.7.0"]
                                   [org.clojure/clojurescript "1.7.170"]
                                   [thheller/shadow-build "1.0.178"]]}}
