@@ -5,7 +5,7 @@
 
 set -ex
 
-cd parinfer-site
+cd site
 
 lein clean
 

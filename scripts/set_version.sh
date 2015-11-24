@@ -6,8 +6,8 @@ set -ex
 
 version=$1
 
-cd parinfer-lib
+cd lib
 lein set-version $version
 
-cd npm-publish
+cd publish
 npm --no-git-tag-version version $version

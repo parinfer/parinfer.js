@@ -50,23 +50,23 @@ __Quick Start__: Run `lein repl` inside this repo and try the following:
 
 __Public API__:
 
-| function                           | description                     | effects                               | tests (see [format][test-format])    |
-|------------------------------------|---------------------------------|---------------------------------------|------------------------------|
-| [`indent-mode/format-text`]        | Indent Mode: process full text  | [learn interactively][indent-effects] | [tests][indent-tests]        |
-| [`paren-mode/format-text`]         | Paren Mode: process full text   | [learn interactively][paren-effects]  | [tests][paren-tests]         |
-| [`indent-mode/format-text-change`] | faster processing of changes    |                                       | [tests][indent-change-tests] |
-| `paren-mode/format-text-change`    | (not implemented yet)           |                                       | [tests][paren-change-tests]  |
+| function                           | description                     | effects                 | tests ([format][test-format]) |
+|-----------------------------------:|---------------------------------|-------------------------|-------------------------------|
+| [`indent-mode/format-text`]        | Indent Mode: process full text  | [learn][indent-effects] | [tests][indent-tests]         |
+| [`paren-mode/format-text`]         | Paren Mode: process full text   | [learn][paren-effects]  | [tests][paren-tests]          |
+| [`indent-mode/format-text-change`] | faster processing of changes    |                         | [tests][indent-change-tests]  |
+| `paren-mode/format-text-change`    | (not implemented yet)           |                         | [tests][paren-change-tests]   |
 
-[`indent-mode/format-text`]:https://github.com/shaunlebron/parinfer/blob/master/parinfer-lib/src/parinfer/indent_mode.cljc#L424-L446
-[`indent-mode/format-text-change`]:https://github.com/shaunlebron/parinfer/blob/master/parinfer-lib/src/parinfer/indent_mode.cljc#L448-L481
-[`paren-mode/format-text`]:https://github.com/shaunlebron/parinfer/blob/master/parinfer-lib/src/parinfer/paren_mode.cljc#L158-L168
+[`indent-mode/format-text`]:https://github.com/shaunlebron/parinfer/blob/master/lib/src/parinfer/indent_mode.cljc#L424-L446
+[`indent-mode/format-text-change`]:https://github.com/shaunlebron/parinfer/blob/master/lib/src/parinfer/indent_mode.cljc#L448-L481
+[`paren-mode/format-text`]:https://github.com/shaunlebron/parinfer/blob/master/lib/src/parinfer/paren_mode.cljc#L158-L168
 
-[test-format]:https://github.com/shaunlebron/parinfer/tree/master/parinfer-lib/test/parinfer/cases#parinfer-test-cases
+[test-format]:https://github.com/shaunlebron/parinfer/tree/master/lib/test/parinfer/cases#parinfer-test-cases
 
-[indent-tests]:parinfer-lib/test/parinfer/cases/indent-mode.md
-[paren-tests]:parinfer-lib/test/parinfer/cases/paren-mode.md
-[indent-change-tests]:parinfer-lib/test/parinfer/cases/indent-mode-change.md
-[paren-change-tests]:parinfer-lib/test/parinfer/cases/paren-mode-change.md
+[indent-tests]:lib/test/parinfer/cases/indent-mode.md
+[paren-tests]:lib/test/parinfer/cases/paren-mode.md
+[indent-change-tests]:lib/test/parinfer/cases/indent-mode-change.md
+[paren-change-tests]:lib/test/parinfer/cases/paren-mode-change.md
 
 [indent-effects]:http://shaunlebron.github.io/parinfer/#indent-how-it-works
 [paren-effects]:http://shaunlebron.github.io/parinfer/#fixing-existing-files
@@ -76,7 +76,7 @@ __Public API__:
 Parinfer's home page shows animated/interactive examples by connecting this
 library to a browser-based code editor called [CodeMirror]. The relevant source
 code for doing this is
-[here](https://github.com/shaunlebron/parinfer/blob/master/site-src/parinfer_site/editor_support.cljs).
+[here](https://github.com/shaunlebron/parinfer/blob/master/site/src/parinfer_site/editor_support.cljs).
 
 Also see [Make a Plugin] wiki page for extra guidance on understanding the implementation
 if you wish to port it, and existing plugins you can use as reference.
@@ -90,7 +90,7 @@ if you wish to port it, and existing plugins you can use as reference.
 - Open <http://localhost:3449> to view the site.
 - Open <http://localhost:3449/dev.html> to view Indent and Paren mode editors.
 
-See [parinfer-lib/](parinfer-lib) directory for running tests.
+See [lib/](lib) directory for running tests.
 
 ---
 

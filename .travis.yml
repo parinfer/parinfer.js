@@ -3,10 +3,10 @@ lein: lein
 jdk:
   - oraclejdk8
 install:
-  - pushd parinfer-site; lein deps; popd
-  - pushd parinfer-lib; lein deps; popd
+  - pushd site; lein deps; popd
+  - pushd lib; lein deps; popd
 script:
-  - push parinfer-lib
+  - push lib
   - lein run -m build/release
   - lein run -m build/test-runner && node target/cljs-tests/test-runner.js
   - lein test parinfer.test
