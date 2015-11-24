@@ -8,12 +8,21 @@ JavaScript API for [Parinfer], a simpler editing mode for Lisp.
 npm install parinfer
 ```
 
+or download [parinfer.js][download] and include directly in html:
+
+```html
+<script src="parinfer.js"></script>
+```
+
+[download]:https://github.com/shaunlebron/parinfer/releases/download/0.2.0/parinfer.js
+
 ## Usage
 
 Parinfer consists of a few pure functions of your text, returning new text with
 corrected parens or indentation.
 
 ```js
+// 'parinfer' is a global object if not used as Node module.
 var parinfer = require('parinfer');
 
 // Run Indent Mode on the given text:
