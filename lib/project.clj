@@ -1,4 +1,4 @@
-(defproject parinfer "0.2.0"
+(defproject parinfer "0.2.1"
   :description "a simpler way to write Lisp"
   :url "http://shaunlebron.github.io/parinfer"
 

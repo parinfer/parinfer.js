@@ -1,3 +1,7 @@
+## 0.2.1
+
+- publish JavaScript API to npm
+
 ## 0.2.0
 
 - add cursor courtesy to Paren Mode (see [new website section](http://shaunlebron.github.io/parinfer/#knowing-when-parens-move-in-paren-mode))
