@@ -7,7 +7,6 @@ _parentheses inference for Lisp_
 <td>[<img src="https://travis-ci.org/shaunlebron/parinfer.svg?branch=master" valign="middle">](https://travis-ci.org/shaunlebron/parinfer)</td>
 <td>__[Home Page](http://shaunlebron.github.io/parinfer/)__</td>
 <td>[Download Plugins](http://shaunlebron.github.io/parinfer/#editor-plugins)</td>
-<td>[Make a Plugin](https://github.com/shaunlebron/parinfer/wiki/Make-a-Plugin)</td>
 </tr>
 </table>
 
@@ -23,8 +22,10 @@ to satisfy the need for more advanced operations.
 
 [Paredit]:http://danmidwood.com/content/2014/11/21/animated-paredit.html
 
-- See [`lib/`](lib) for _editor-agnostic_ library.
-- See [`site/`](site) for the website code.
+This project is split into two parts:
+
+- __[Parinfer Lib](lib)__ - the _editor-agnostic_ library
+- __[Parinfer Site](site)__ - the code for the website
 
 ---
 
