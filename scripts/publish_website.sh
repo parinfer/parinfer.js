@@ -5,9 +5,11 @@
 
 set -ex
 
+cd parinfer-site
+
 lein clean
 
-vcr_file=site-src/parinfer_site/vcr.cljs
+vcr_file=src/parinfer_site/vcr.cljs
 sed -i .bak 's/(def SHOW_CONTROLS .*)/(def SHOW_CONTROLS false)/' $vcr_file
 lein cljsbuild once min
 mv ${vcr_file}.bak $vcr_file

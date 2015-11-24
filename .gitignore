@@ -1,5 +1,3 @@
-/resources/public/js/compiled/**
-figwheel_server.log
 pom.xml
 pom.xml.asc
 *jar
@@ -14,11 +12,7 @@ pom.xml.asc
 .repl
 .nrepl-port
 *.swp
-
-/todo
-/deploy
-/tweet
-/clojurescript
+figwheel_server.log
 
 *.diff
-
+todo
