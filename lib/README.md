@@ -6,9 +6,9 @@ or indentation.
 
 [Parinfer]:http://shaunlebron.github.io/parinfer/
 
-## Usage
+## Installation and Usage
 
-__JavaScript users__, please [see usage on npm](https://www.npmjs.com/package/parinfer)
+__JavaScript users__, please [see the npm package page](https://www.npmjs.com/package/parinfer)
 
 The library is written in portable Clojure. Include the following in your leiningen project.clj dependencies:
 
