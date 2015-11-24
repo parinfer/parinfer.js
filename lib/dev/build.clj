@@ -31,7 +31,7 @@
 
 (defn run-all-tests []
   (-> (test-setup)
-      (node/execute-all-tests!))
+      (node/execute-all-tests-and-exit!))
   :done)
 
 (defn autotest

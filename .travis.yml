@@ -8,6 +8,6 @@ install:
 script:
   - push lib
   - lein run -m build/release
-  - lein run -m build/test-runner && node target/cljs-tests/test-runner.js
+  - lein run -m build/run-all-tests
   - lein test parinfer.test
   - popd
