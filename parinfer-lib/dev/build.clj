@@ -16,11 +16,35 @@
       (umd/flush-module "npm-publish/parinfer.js"))
   :done)
 
-(defn run-all-tests []
+(defn- test-setup []
   (-> (cljs/init-state)
       (cljs/set-build-options
         {:public-dir (io/file "target/cljs-tests")
          :public-path "target/cljs-tests"})
       (cljs/find-resources-in-classpath)
+      ))
+
+(defn test-runner []
+  (-> (test-setup)
+      (node/make-test-runner))
+  :done)
+
+(defn run-all-tests []
+  (-> (test-setup)
       (node/execute-all-tests!))
   :done)
+
+(defn autotest
+  [& args]
+  (-> (test-setup)
+      (cljs/watch-and-repeat!
+        (fn [state modified]
+          (-> state
+              (cond->
+                ;; first pass, run all tests
+                (empty? modified)
+                (node/execute-all-tests!)
+                ;; only execute tests that might have been affected by the modified files
+                (not (empty? modified))
+                (node/execute-affected-tests! modified))
+              )))))
