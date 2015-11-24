@@ -4,9 +4,9 @@
 
 set -ex
 
+cd `dirname $0`
 version=$1
 
-cd lib
 lein set-version $version
 
 cd publish

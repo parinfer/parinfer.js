@@ -2,9 +2,11 @@
 
 # See http://shaunlebron.github.io/parinfer/#fixing-existing-files
 
+cd `dirname $0`
+
 if [ "$#" -ne 1 ]; then
   echo
-  echo "prep-all.sh:  correct indentation of all clojure files in the given directory (recursive)"
+  echo "$0:  correct indentation of all clojure files in the given directory (recursive)"
   echo "  (originals backed up with .bak files)"
   echo
   exit 1

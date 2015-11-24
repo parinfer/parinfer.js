@@ -5,7 +5,7 @@
 
 set -ex
 
-cd site
+cd `dirname $0`
 
 lein clean
 
