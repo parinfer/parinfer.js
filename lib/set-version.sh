@@ -9,5 +9,5 @@ version=$1
 
 lein set-version $version
 
-cd publish
+cd npm-publish
 npm --no-git-tag-version version $version
