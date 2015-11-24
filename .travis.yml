@@ -2,6 +2,9 @@ language: clojure
 lein: lein
 jdk:
   - oraclejdk8
+install:
+  - lein deps
+  - cd parinfer-lib && lein deps
 script:
   - cd parinfer-lib
   - lein run -m build/release
