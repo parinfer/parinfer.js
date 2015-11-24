@@ -6,7 +6,7 @@ install:
   - pushd site; lein deps; popd
   - pushd lib; lein deps; popd
 script:
-  - push lib
+  - pushd lib
   - lein run -m build/release
   - lein run -m build/run-all-tests
   - lein test parinfer.test
