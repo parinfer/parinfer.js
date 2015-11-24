@@ -31,14 +31,6 @@ console.log(result.text);
 //   c])
 ```
 
-## API
-
-##### `indentMode(text[, options])`
-
-##### `parenMode(text[, options])`
-
-##### `indentModeChange`
-
 ## Adding Parinfer to an Editor
 
 > See [Parinfer for Atom][atom-parinfer] to see an example of these steps implemented.
@@ -83,4 +75,46 @@ we can assume a default subset of the features for quick input:
    `parenMode` instead of Indent Mode when pressing enter, and reposition the
    cursor at the first non-space character of its line.
 
+## API
+
+---
+
+##### `indentMode(text[, options])`
+##### `parenMode(text[, options])`
+
+Runs
+[Indent Mode](http://shaunlebron.github.io/parinfer/#indent-mode)
+or
+[Paren Mode](http://shaunlebron.github.io/parinfer/#paren-mode)
+on the given text.
+
+Arguments:
+
+- `text` is the full text input.
+- `options` is an object with the following properties:
+  - `cursorLine` - zero-based line number of the cursor
+  - `cursorX` - zero-based x-position of the cursor
+
+Returns an object with the following properties:
+
+- `text` is the full text output
+- `isValid` is a boolean indicating if the input was valid
+- `state` is an object you can pass to `indentModeChange` for faster change processing
+
+---
+
+##### `indentModeChange(text, prevState, change[, options])`
+
+Runs a faster Indent Mode by only recalculating what has changed.
+
+Arguments:
+
+- `text` is the full text input (including the change).
+- `prevState` is the previous state returned by `indentMode` or `indentModeChange`
+- `change` is an object describing the change, with the following properties:
+  - `lineNo` a number or [min,max] range of lines to replace
+  - `newLine` a line string or array of line strings replacing the range specified by `lineNo`
+- `options` (same options as `indentMode`)
+
+Returns the same result as `indentMode`.
 
