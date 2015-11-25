@@ -422,13 +422,13 @@
 ;;----------------------------------------------------------------------
 
 (defn format-text
-  "Fully process the given text.
+  "Fully process the given text using Indent Mode.
 
   'text' is the full text.
 
   'options' is an optional map with supported keys:
-    :cursor-x     - x position of the cursor
-    :cursor-line  - line number of the cursor
+    :cursor-x     - x position of the cursor (zero-based)
+    :cursor-line  - line number of the cursor (zero-based)
 
   Returns a map:
     :text     - full text output
@@ -446,7 +446,7 @@
       :state state})))
 
 (defn format-text-change
-  "Process changed lines in a previously processed text.
+  "Process changed lines in a previously processed text using Indent Mode.
 
   'text' is the full text (including the change).
 
@@ -461,8 +461,8 @@
     :new-line  |  new line(s) to insert   |  a string or seq if multiple lines
 
   'options' is an optional map with supported keys:
-    :cursor-x     - x position of the cursor
-    :cursor-line  - line number of the cursor
+    :cursor-x     - x position of the cursor (zero-based)
+    :cursor-line  - line number of the cursor (zero-based)
 
   Returns a map:
     :text     - full text output

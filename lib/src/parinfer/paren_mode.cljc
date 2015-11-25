@@ -162,7 +162,19 @@
      state)))
 
 (defn format-text
-  "Format the given text by repositioning any trailing closing delimiters based on indentation."
+  "Fully process the given text using Paren Mode.
+
+  'text' is the full text.
+
+  'options' is an optional map with supported keys:
+    :cursor-x     - x position of the cursor (zero-based)
+    :cursor-line  - line number of the cursor (zero-based)
+
+  Returns a map:
+    :text     - full text output
+    :valid?   - indicates if the input was valid
+    :state    - cached state to be passed to `format-text-change` (once it is implemented)
+  "
   ([text] (format-text text nil))
   ([text options]
    (let [state (process-text text options)
