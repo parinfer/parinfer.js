@@ -65,7 +65,7 @@
 
 (defn update-delim-trail
   "Update the state's delim trail as we scan across a line.
-  We eventually remove the delim trail since we indented
+  We eventually remove the delim trail since the indented
   content below can cause the delims to move.
 
   Example:
@@ -81,8 +81,11 @@
 
         ;; these characters won't block, unless they're escaped
         pass-char? (or (= ";" ch)
-                     (whitespace? ch)
-                     (closing-delim? ch))
+                       (= "," ch)  ;; NOTE: Commas are whitespace in Clojure, but are unquote sugar in Racket.
+                                   ;;       This should still pass for both langs though, since the following
+                                   ;;       character necessarily will block if it is a valid unquoted form in Racket.
+                       (whitespace? ch)
+                       (closing-delim? ch))
 
         ;; must be in code (before push-char)
         reset? (when (in-code? stack)

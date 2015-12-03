@@ -149,3 +149,17 @@ cursor before a close-paren allows it to be at the start of a line.
 (foo [a b
       ])
 ```
+
+Commas are considered whitespace in Clojure, but are unquote sugar in Racket.
+Since commas are never used as indentation whitespace in Clojure, we don't
+treat it as such:
+
+```in
+(def foo
+,bar)
+```
+
+```out
+(def foo
+ ,bar)
+```

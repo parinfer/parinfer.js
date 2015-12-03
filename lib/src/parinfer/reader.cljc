@@ -1,5 +1,5 @@
 (ns parinfer.reader
-  "a basic clojure reader for tracking parens and token states")
+  "a basic lisp reader for tracking parens and token states")
 
 (def matching-delim
   {"{" "}", "}" "{"
@@ -10,7 +10,7 @@
 (def closing-delim?  #{"}" "]" ")"})
 
 (defn whitespace? [ch]
-  (re-find #"[\s,]" ch))
+  (re-find #"\s" ch))
 
 ;;------------------------------------------------------------------------
 ;; Delimiter Stack states
