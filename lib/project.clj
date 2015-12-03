@@ -13,7 +13,8 @@
   :aliases {"prep" ["run" "-m" "parinfer.prep-file"]}
 
   :set-version {:updates [{:path "README.md"}
-                          {:path "npm-publish/README.md"}]}
+                          {:path "npm-publish/README.md"}
+                          {:path "npm-publish/preamble.js"}]}
 
   :profiles {:dev {:source-paths ["dev" "test"]
                    :plugins [[lein-set-version "0.4.1"]]
