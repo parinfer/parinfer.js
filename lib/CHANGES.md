@@ -1,3 +1,7 @@
+## 0.2.3
+
+- fudged the 0.2.2 npm release (this fixes it)
+
 ## 0.2.2
 
 - do not treat commas as indentation whitespace (see [#61](https://github.com/shaunlebron/parinfer/issues/61))
