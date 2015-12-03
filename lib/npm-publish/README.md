@@ -14,7 +14,7 @@ or download [parinfer.js][download] and include directly in html:
 <script src="parinfer.js"></script>
 ```
 
-[download]:https://github.com/shaunlebron/parinfer/releases/download/0.2.1/parinfer.js
+[download]:https://github.com/shaunlebron/parinfer/releases/download/0.2.2/parinfer.js
 
 ## Usage
 

@@ -1,3 +1,7 @@
+## 0.2.2
+
+- do not treat commas as indentation whitespace (see [#61](https://github.com/shaunlebron/parinfer/issues/61))
+
 ## 0.2.1
 
 - publish JavaScript API to npm

@@ -13,7 +13,7 @@ __JavaScript users__, please [see the npm package page](https://www.npmjs.com/pa
 The library is written in portable Clojure. Include the following in your leiningen project.clj dependencies:
 
 ```clj
-[parinfer "0.2.1"]
+[parinfer "0.2.2"]
 ```
 
 __Quick Start__: Run `lein repl` inside this directory and try the following:
