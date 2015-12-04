@@ -320,8 +320,9 @@
      state)))
 
 (defn finalize-state
-  [{:keys [stack] :as state}]
-  (let [valid? (not (in-str? stack)) ;; invalid if unclosed string
+  [{:keys [stack quote-danger?] :as state}]
+  (let [valid? (and (not (in-str? stack))
+                    (not quote-danger?))
         close-delims? (and valid? (seq stack))]
     (cond-> (assoc state :valid? valid?)
       close-delims? close-delims)))
