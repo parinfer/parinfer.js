@@ -23,7 +23,7 @@
    :postindent-states []               ;; state cache after each line's indentation point (nil if none)
    :insert {:line-dy nil :x-pos nil}   ;; the place to insert closing delimiters whenever we hit appropriate indentation.
    :line-no -1                         ;; current line number we are processing.
-   :quote-danger?                      ;; odd number of quotes in comments are dangerous (track here)
+   :quote-danger? false                ;; odd number of quotes in comments are dangerous (track here)
 
    ;; transient line vars
    :track-indent? false                ;; "true" when we are looking for the first char on a line to signify indentation.
