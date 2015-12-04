@@ -23,6 +23,7 @@
    :postindent-states []               ;; state cache after each line's indentation point (nil if none)
    :insert {:line-dy nil :x-pos nil}   ;; the place to insert closing delimiters whenever we hit appropriate indentation.
    :line-no -1                         ;; current line number we are processing.
+   :quote-danger?                      ;; odd number of quotes in comments are dangerous (track here)
 
    ;; transient line vars
    :track-indent? false                ;; "true" when we are looking for the first char on a line to signify indentation.
@@ -240,13 +241,14 @@
                    ;;       considered an indentation trigger.  In fact, we skip
                    ;;       the character completely, removing it from the line.
   "
-  [{:keys [stack track-indent? lines line-no x-pos ch] :as state}]
+  [{:keys [stack quote-danger? track-indent? lines line-no x-pos ch] :as state}]
   (let [check-indent? (and track-indent?
                         (in-code? stack)
                         (not (whitespace? ch))
                         (not= ";" ch))
         skip? (and check-indent? (closing-delim? ch))
         at-indent? (and check-indent? (not skip?))
+        quit? (and at-indent? quote-danger?)
         state (assoc state :process? (not skip?))]
     (if at-indent?
       (-> state

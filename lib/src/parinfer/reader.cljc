@@ -110,11 +110,11 @@
     :else {:stack (conj stack (select-keys state [:x-pos :ch]))}))
 
 (defmethod push-char* "\""
-  [{:keys [stack] :as state}]
+  [{:keys [stack quote-danger?] :as state}]
   (cond
     (escaping? stack) {:stack (pop stack)}
     (in-str? stack) {:stack (pop stack)}
-    (in-comment? stack) nil
+    (in-comment? stack) {:quote-danger? (not quote-danger?)}
     :else {:stack (conj stack (select-keys state [:x-pos :ch]))}))
 
 (defmethod push-char* :default
