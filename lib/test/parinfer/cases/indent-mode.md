@@ -250,6 +250,20 @@ ret)
 ret
 ```
 
+Escaped strings are not counted when determining odd number of quotes in a comment.
+
+```in
+(def foo [a b]
+  ; ""\"
+ret)
+```
+
+```out
+(def foo [a b])
+  ; ""\"
+ret
+```
+
 ## Character syntax
 
 Correctly handle escaped parens as literal characters.
