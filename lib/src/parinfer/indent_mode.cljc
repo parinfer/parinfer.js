@@ -226,6 +226,16 @@
   [state key-]
   (update state key- conj (get-cached-state state)))
 
+(defn process-indent-trigger
+  "Called when we have actually reached an indentation trigger.
+  (i.e. first non-whitespace char of a line)"
+  [{:keys [x-pos] :as state}]
+  (-> state
+      (close-delims x-pos)
+      (commit-cached-state :postindent-states)
+      (assoc :track-indent? false
+             :processed-indent? true)))
+
 (defn process-indent
   "Update the state by handling a possible indentation trigger.
 
@@ -246,17 +256,14 @@
                         (in-code? stack)
                         (not (whitespace? ch))
                         (not= ";" ch))
-        skip? (and check-indent? (closing-delim? ch))
-        at-indent? (and check-indent? (not skip?))
-        quit? (and at-indent? quote-danger?)
-        state (assoc state :process? (not skip?))]
-    (if at-indent?
-      (-> state
-          (close-delims x-pos)
-          (commit-cached-state :postindent-states)
-          (assoc :track-indent? false
-                 :processed-indent? true))
-      state)))
+        skip?       (and check-indent? (closing-delim? ch))
+        at-indent?  (and check-indent? (not skip?))
+        quit?       (and at-indent? quote-danger?)
+        state (assoc state
+                     :quit? quit?
+                     :process? (and (not skip?) (not quit?)))]
+    (cond-> state
+      (and at-indent? (not quit?)) process-indent-trigger)))
 
 (defn update-line
   "Update the state by adding processed character to the line."
@@ -287,14 +294,34 @@
   (let [x-pos (count (get lines line-no))
         state (assoc state :x-pos x-pos :ch (str ch))
         state (process-indent state)]
-    (cond-> state
-      (:process? state) process-char*)))
+    (cond
+      (:quit? state) (reduced state)
+      (:process? state) (process-char* state)
+      :else state)))
+
+(defn- postprocess-line
+  "Called after last character of a line has been processed."
+  [state]
+  (let [state (-> state
+                  block-delim-trail
+                  remove-delim-trail
+                  save-preinsert-line
+                  (commit-cached-state :postline-states))
+
+        ;; if this did not have an indentation trigger point,
+        ;; pad postindent-states with a nil.
+        state (cond-> state
+                (not (:processed-indent? state))
+                (update :postindent-states conj nil))]
+    state))
 
 (defn process-line
   "Update the state by processing the given line of text."
   ([line] (process-line initial-state line))
   ([{:keys [stack lines line-no cursor-line] :as state} line]
    (let [line-no (inc line-no)
+
+         ;; set line-specific state
          state (assoc state
                   :backup []
                   :cursor-in-comment? false
@@ -305,19 +332,11 @@
                   :line-no line-no
                   :removed-delims [])
          state (update-in state [:insert :line-dy] #(when % (dec %)))
-         state (reduce process-char state (str line "\n"))
-         state (-> state
-                   block-delim-trail
-                   remove-delim-trail
-                   save-preinsert-line
-                   (commit-cached-state :postline-states))
 
-         ;; if this did not have an indentation trigger point,
-         ;; pad postindent-states with a nil.
-         state (cond-> state
-                 (not (:processed-indent? state))
-                 (update :postindent-states conj nil))]
-     state)))
+         state (reduce process-char state (str line "\n"))]
+     (if (:quit? state)
+       (reduced state)
+       (postprocess-line state)))))
 
 (defn finalize-state
   [{:keys [stack quote-danger?] :as state}]
