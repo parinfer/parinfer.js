@@ -22,6 +22,7 @@
   {:lines []                           ;; final lines containing the inferenced closing delimiters.
    :line-no -1                         ;; current line number we are processing.
    :track-indent? false                ;; "true" when we are looking for the first char on a line to signify indentation.
+   :quote-danger? false                ;; odd number of quotes in comments are dangerous (track here)
    :delim-trail {:start nil :end nil}  ;; track EOL delims since we replace them wholesale with inferred delims.
    :insert {:line-dy nil :x-pos nil}   ;; the place to insert closing delimiters whenever we hit appropriate indentation.
    :stack []                           ;; the delimiter stack, maps of [:x-pos :ch :indent-delta]
