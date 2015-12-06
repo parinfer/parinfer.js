@@ -213,6 +213,8 @@ Another case:
       c")
 ```
 
+## Unbalanced Quotes in Comments
+
 Unbalanced quotes can be accidentally rebalanced by comments containing an odd number of quotes,
 so we do not want to process if any comments meet this critera.
 
