@@ -398,9 +398,10 @@
         new-cache (last (:postindent-states state))
         more? (< (inc old-i) (count (:lines prev-state)))
         can-skip? (and new-cache (= new-cache cache))]
-    (if (and can-skip? more?)
-      (reduced (fill-rest-with-cache prev-state state old-i))
-      state)))
+    (cond
+      (:quit? state) (reduced state)
+      (and can-skip? more?) (reduced (fill-rest-with-cache prev-state state old-i))
+      :else state)))
 
 (defn process-unchanged-lines
   "process the lines after those that have changed."
