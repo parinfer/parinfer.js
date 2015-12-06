@@ -218,7 +218,7 @@
 
 (defn get-cached-state
   [state]
-  (select-keys state [:stack :insert]))
+  (select-keys state [:stack :insert :quote-danger?]))
 
 (defn commit-cached-state
   "Cache a subset of the state after some event.
