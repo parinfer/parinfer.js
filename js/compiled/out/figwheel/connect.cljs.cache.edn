@@ -1,2 +1,0 @@
-;; Analyzed by ClojureScript 1.7.122
-{:name figwheel.connect, :doc nil, :excludes #{}, :use-macros nil, :require-macros nil, :uses nil, :requires {parinfer-site.core parinfer-site.core, figwheel.client figwheel.client, figwheel.client.utils figwheel.client.utils}, :imports nil, :cljs.analyzer/constants {:seen #{:on-jsload :debug :build-id :websocket-url}, :order [:build-id :on-jsload :websocket-url :debug]}}
