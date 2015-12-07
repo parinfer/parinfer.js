@@ -469,7 +469,7 @@ a.img-link
   border-bottom: 0;
 }
 
-blockquote {
+blockquote.aside {
   border-left: 5px solid #ddd;
   margin: 0;
   margin-top: 60px;
