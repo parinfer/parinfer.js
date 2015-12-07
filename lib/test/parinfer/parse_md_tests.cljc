@@ -3,9 +3,11 @@
   (:require
     [clojure.string :as string :refer [split-lines]]))
 
-(defn error-msg
+(defn error
   [file-line-no msg]
-  (str "error at test-case line #" file-line-no ": " msg))
+  (let [whole-msg (str "error at test-case line #" file-line-no ": " msg)]
+    #?(:clj (Exception. whole-msg)
+       :cljs whole-msg)))
 
 (defmulti parse-test-line
   (fn [state [file-line-no line]]
@@ -18,7 +20,7 @@
 (defmethod parse-test-line :end-block
   [{:keys [block-key test-case test-cases] :as state} [file-line-no line]]
   (if-not block-key
-    (throw (error-msg file-line-no "opening block must have a name: 'in' or 'out'"))
+    (throw (error file-line-no "opening block must have a name: 'in' or 'out'"))
     (let [test-case-done? (:out test-case)]
       (if test-case-done?
 
@@ -34,19 +36,19 @@
 (defmethod parse-test-line :start-block
   [{:keys [block-key test-case test-cases] :as state} [file-line-no line]]
   (if block-key
-    (throw (error-msg file-line-no "must close previous block before starting new one"))
+    (throw (error file-line-no "must close previous block before starting new one"))
     (let [block-name (second (re-find #"^```(.*)$" line))
           block-key (keyword block-name)]
       (cond
 
         (not (#{:in :out} block-key))
-        (throw (error-msg file-line-no (str "block name " (pr-str block-name) "must be either 'in' or 'out'")))
+        (throw (error file-line-no (str "block name " (pr-str block-name) "must be either 'in' or 'out'")))
 
         (and (= :in block-key) (:in test-case))
-        (throw (error-msg file-line-no (str "there is already an 'in' block for this test case.")))
+        (throw (error file-line-no (str "there is already an 'in' block for this test case.")))
 
         (and (= :out block-key) (not (:in test-case)))
-        (throw (error-msg file-line-no (str "must include an 'in' block before an 'out' block.")))
+        (throw (error file-line-no (str "must include an 'in' block before an 'out' block.")))
 
         :else
         (-> state
@@ -71,27 +73,27 @@
         line-without-cursor (string/replace line "|" "")
         multiple-cursors? (< (count line-without-cursor) (dec (count line)))
         line (if multiple-cursors?
-               (throw (error-msg file-line-no "only one cursor allowed on a line"))
+               (throw (error file-line-no "only one cursor allowed on a line"))
                line-without-cursor)
 
         ;; process and remove diff char
         diff-ch (#{"-" "+"} (str (first line)))
         line (if diff-ch
                (if (:closed? diff)
-                 (throw (error-msg file-line-no "diff lines must be contiguous"))
+                 (throw (error file-line-no "diff lines must be contiguous"))
                  (str " " (subs line 1)))
                line)
 
         ;; prevent special chars in 'out' block
         _ (when (= :out block-key)
-            (when cursor-x (throw (error-msg file-line-no "no cursor allowed in 'out' block yet")))
-            (when diff-ch (throw (error-msg file-line-no "no diff chars allowed in 'out' block"))))
+            (when cursor-x (throw (error file-line-no "no cursor allowed in 'out' block yet")))
+            (when diff-ch (throw (error file-line-no "no diff chars allowed in 'out' block"))))
 
         ;; prevent multiple cursors
         _ (when cursor-x
             (if (= diff-ch "+")
-              (when (:cursor diff) (throw (error-msg file-line-no "only one cursor allowed in all '+' diff lines")))
-              (when (:cursor block) (throw (error-msg file-line-no "only one cursor allowed in all normal and '-' diff lines")))))
+              (when (:cursor diff) (throw (error file-line-no "only one cursor allowed in all '+' diff lines")))
+              (when (:cursor block) (throw (error file-line-no "only one cursor allowed in all normal and '-' diff lines")))))
 
         ;; initialize or close diff
         diff (if-not diff
@@ -157,9 +159,9 @@
         state (reduce parse-test-line initial-state numbered-lines)]
 
     (when (:block-key state)
-      (throw (error-msg "EOF" "code block not closed")))
+      (throw (error "EOF" "code block not closed")))
 
     (when (not= {} (:test-case state))
-      (throw (error-msg "EOF" "test case 'out' block not completed")))
+      (throw (error "EOF" "test case 'out' block not completed")))
 
     (:test-cases state)))
