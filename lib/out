@@ -1,0 +1,30 @@
+
+lein test parinfer.test
+
+lein test :only parinfer.test/run-indent-mode-cases
+
+FAIL in (run-indent-mode-cases) (test.cljc:227)
+
+indent-mode test case @ line #239
+expected----------------------------------
+(def foo [a b])
+  ; "my multiline
+  ; docstring."
+ret
+actual------------------------------------
+(def foo [a b]
+  ; "my multiline
+  ; docstring."
+ret)
+expected: (= text-expected text-actual)
+  actual: (not (= "(def foo [a b])\n  ; \"my multiline\n  ; docstring.\"\nret" "(def foo [a b]\n  ; \"my multiline\n  ; docstring.\"\nret)"))
+
+lein test :only parinfer.test/run-indent-mode-cases
+
+FAIL in (run-indent-mode-cases) (test.cljc:182)
+paren-mode idempotence over indent-mode test case @ line #239
+expected: (= text (:text result))
+  actual: (not (= "(def foo [a b]\n  ; \"my multiline\n  ; docstring.\"\nret)" "(def foo [a b]\n  ; \"my multiline\n  ; docstring.\"\n ret)"))
+
+Ran 3 tests containing 175 assertions.
+2 failures, 0 errors.
