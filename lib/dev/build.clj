@@ -2,7 +2,10 @@
   (:require [shadow.cljs.build :as cljs]
             [shadow.cljs.node :as node]
             [shadow.cljs.umd :as umd]
-            [clojure.java.io :as io]))
+            [clojure.java.io :as io]
+            [clojure.data.json :as json]
+            [parinfer.test :refer [cases-path]]
+            [parinfer.parse-md-tests :refer [parse-test-cases]]))
 
 (defn release []
   (-> (cljs/init-state)
@@ -16,13 +19,27 @@
       (umd/flush-module "npm-publish/parinfer.js"))
   :done)
 
+(defn extract-test [name-]
+  (let [in-file (str cases-path "/" name- ".md")
+        out-file (str cases-path "/" name- ".json")
+        in-str (slurp in-file)
+        _ (println (str "Parsing test cases from " in-file "..."))
+        cases (parse-test-cases in-str)
+        out-str (with-out-str (json/pprint cases))]
+    (println (str "Extracting test cases to " out-file "..."))
+    (spit out-file out-str)))
+
+(defn extract-tests []
+  (extract-test "indent-mode")
+  (extract-test "indent-mode-change")
+  (extract-test "paren-mode"))
+
 (defn- test-setup []
   (-> (cljs/init-state)
       (cljs/set-build-options
         {:public-dir (io/file "target/cljs-tests")
          :public-path "target/cljs-tests"})
-      (cljs/find-resources-in-classpath)
-      ))
+      (cljs/find-resources-in-classpath)))
 
 (defn test-runner []
   (-> (test-setup)
@@ -46,5 +63,4 @@
                 (node/execute-all-tests!)
                 ;; only execute tests that might have been affected by the modified files
                 (not (empty? modified))
-                (node/execute-affected-tests! modified))
-              )))))
+                (node/execute-affected-tests! modified)))))))
