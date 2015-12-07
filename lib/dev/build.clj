@@ -7,7 +7,9 @@
             [parinfer.test :refer [cases-path]]
             [parinfer.parse-md-tests :refer [parse-test-cases]]))
 
-(defn release []
+(defn release
+  "Create a Parinfer release for JavaScript users."
+  []
   (-> (cljs/init-state)
       (cljs/find-resources-in-classpath)
       (umd/create-module
@@ -19,7 +21,10 @@
       (umd/flush-module "npm-publish/parinfer.js"))
   :done)
 
-(defn extract-test [name-]
+(defn extract-test
+  "Extracts the test case data from a Markdown doc, and dumps it into JSON.
+  (allows people porting Parinfer to have easy access to test cases)"
+  [name-]
   (let [in-file (str cases-path "/" name- ".md")
         out-file (str cases-path "/" name- ".json")
         in-str (slurp in-file)
@@ -41,12 +46,10 @@
          :public-path "target/cljs-tests"})
       (cljs/find-resources-in-classpath)))
 
-(defn test-runner []
-  (-> (test-setup)
-      (node/make-test-runner))
-  :done)
-
-(defn run-all-tests []
+(defn run-all-tests
+  "Build and run all ClojureScript tests under Node.
+  Ensures that the exit code reflects test results."
+  []
   (-> (test-setup)
       (node/execute-all-tests-and-exit!))
   :done)
