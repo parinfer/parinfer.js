@@ -1253,7 +1253,15 @@ with hooks to apply our formatters and update cursor position.
 <h3>Editor Plugins</h3>
 
 <p>
-Parinfer is currently available for the following editors in some form:
+Though Parinfer is still in early development, several contributors have
+started working on plugins for major editors.  Currently, most of them spin up
+an instance of Node to leverage a single, canonical implementation via RPC.
+This allows core bug fixes to reach all editor plugins until the core is
+stabilized and ready for proper porting.
+</p>
+
+<p>
+<strong>Works in Progress:</strong>
 </p>
 
 <ul>
@@ -1266,24 +1274,39 @@ Parinfer is currently available for the following editors in some form:
     for <a href="https://neovim.io/">neovim</a>
   </li>
   <li>
+    <a href="https://github.com/bhurlow/vim-parinfer">vim-parinfer</a>
+    for <a href="http://www.vim.org/">Vim</a>
+  </li>
+  <li>
     <a href="https://github.com/Microsoft/vscode-parinfer">vscode-parinfer</a>
     for <a href="https://code.visualstudio.com/">Visual Studio Code</a>
   </li>
   <li>
-    inside <a href="https://github.com/mfikes/replete">Replete for iOS</a> (in beta)
-  </li>
-  <li>
     <a href="https://github.com/oakmac/sublime-text-parinfer">sublime-text-parinfer</a>
-    for <a href="http://www.sublimetext.com/">Sublime Text</a> (work in progress)
+    for <a href="http://www.sublimetext.com/">Sublime Text</a>
   </li>
   <li>
     <a href="https://github.com/edpaget/parinfer-mode">parinfer-mode</a>
-    for <a href="https://www.gnu.org/software/emacs/">Emacs</a> (work in progress,
-    <a href="https://github.com/shaunlebron/parinfer/issues/58">discussions</a>)
+    or
+    <a href="https://github.com/dongcarl/parinfer">elisp-parinfer</a>
+    for <a href="https://www.gnu.org/software/emacs/">Emacs</a>
   </li>
   <li>
-    <a href="https://github.com/bhurlow/vim-parinfer">vim-parinfer</a>
-    for <a href="http://www.vim.org/">Vim</a> (work in progress)
+    <a href="https://github.com/hiram-madelaine/codemirror-parinfer">codemirror-parinfer</a>
+    for <a href="https://codemirror.net/">CodeMirror</a>
+  </li>
+</ul>
+
+<p>
+Parinfer will soon be available for some REPL environments as well:
+</p>
+
+<ul>
+  <li>
+    <a href="https://github.com/mfikes/replete">Replete</a> for iOS
+  </li>
+  <li>
+    <a href="https://github.com/binaryage/cljs-devtools">cljs-devtools</a> for Google Chrome
   </li>
 </ul>
 
