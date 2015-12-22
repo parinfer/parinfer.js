@@ -1,4 +1,13 @@
-[{"in":
+[{"out":
+  {"file-line-no":19,
+   "lines":
+   [" (defn sum [a b]", "   (let [result (+ a b)]", "      result))",
+    " ", " (defn prod [a b]", "   (let [result (* a b)]",
+    "      result))", " ", " (defn frac [a b]",
+    "   (let [result (\/ a b)]", "      result))"],
+   "cursor":null,
+   "diff":null},
+  "in":
   {"file-line-no":5,
    "lines":
    [" (defn sum [a b]", "   (let [result (+ a b)]", "      result))",
@@ -7,25 +16,25 @@
     "      result))"],
    "cursor":null,
    "diff":
-   {"start-line-no":5,
+   {"closed?":true,
+    "start-line-no":5,
     "end-line-no":5,
     "lines":
     [" (defn sum [a b]", "   (let [result (+ a b)]", "      result))",
      " ", " (defn prod [a b]", "   (let [result (* a b)]",
      "      result)", " ", " (defn frac [a b]",
      "   (let [result (\/ a b)]", "      result))"],
-    "new-lines":["   (let [result (* a b)]"],
-    "closed?":true}},
-  "out":
-  {"file-line-no":19,
+    "new-lines":["   (let [result (* a b)]"]}}},
+ {"out":
+  {"file-line-no":49,
    "lines":
    [" (defn sum [a b]", "   (let [result (+ a b)]", "      result))",
     " ", " (defn prod [a b]", "   (let [result (* a b)]",
     "      result))", " ", " (defn frac [a b]",
     "   (let [result (\/ a b)]", "      result))"],
    "cursor":null,
-   "diff":null}},
- {"in":
+   "diff":null},
+  "in":
   {"file-line-no":35,
    "lines":
    [" (defn sum [a b]", "   (let [result (+ a b)]", "      result))",
@@ -33,7 +42,8 @@
     "      result))"],
    "cursor":null,
    "diff":
-   {"start-line-no":4,
+   {"closed?":true,
+    "start-line-no":4,
     "end-line-no":4,
     "lines":
     [" (defn sum [a b]", "   (let [result (+ a b)]", "      result))",
@@ -42,18 +52,17 @@
      "   (let [result (\/ a b)]", "      result))"],
     "new-lines":
     [" (defn prod [a b]", "   (let [result (* a b)]",
-     "      result))"],
-    "closed?":true}},
-  "out":
-  {"file-line-no":49,
+     "      result))"]}}},
+ {"out":
+  {"file-line-no":80,
    "lines":
    [" (defn sum [a b]", "   (let [result (+ a b)]", "      result))",
-    " ", " (defn prod [a b]", "   (let [result (* a b)]",
+    " ", " (defn product [a b]", "   (let [result (* a b)]",
     "      result))", " ", " (defn frac [a b]",
     "   (let [result (\/ a b)]", "      result))"],
    "cursor":null,
-   "diff":null}},
- {"in":
+   "diff":null},
+  "in":
   {"file-line-no":65,
    "lines":
    [" (defn sum [a b]", "   (let [result (+ a b)]", "      result))",
@@ -62,45 +71,16 @@
     "   (let [result (\/ a b)]", "      result))"],
    "cursor":null,
    "diff":
-   {"start-line-no":4,
+   {"closed?":true,
+    "start-line-no":4,
     "end-line-no":5,
     "lines":
     [" (defn sum [a b]", "   (let [result (+ a b)]", "      result))",
      " ", " (defn product [a b]", "   (let [result (* a b)]",
      "      result))", " ", " (defn frac [a b]",
      "   (let [result (\/ a b)]", "      result))"],
-    "new-lines":[" (defn product [a b]"],
-    "closed?":true}},
-  "out":
-  {"file-line-no":80,
-   "lines":
-   [" (defn sum [a b]", "   (let [result (+ a b)]", "      result))",
-    " ", " (defn product [a b]", "   (let [result (* a b)]",
-    "      result))", " ", " (defn frac [a b]",
-    "   (let [result (\/ a b)]", "      result))"],
-   "cursor":null,
-   "diff":null}},
- {"in":
-  {"file-line-no":96,
-   "lines":
-   [" (defn sum [a b]", "   (let [result (+ a b)]", "      result))",
-    " ", " (defn prod [a b]", "   (let [result (* a b)]",
-    "      result))", " ", " (defn frac [a b]",
-    "   (let [result (\/ a b)]", "      result))"],
-   "cursor":null,
-   "diff":
-   {"start-line-no":6,
-    "end-line-no":7,
-    "lines":
-    [" (defn sum [a b]", "   (let [result (+ a b)]", "      result))",
-     " ", " (defn prod [a b]", "   (let [result (* a b)]",
-     "      {:prod result", "       :a a", "       :b b}))", " ",
-     " (defn frac [a b]", "   (let [result (\/ a b)]",
-     "      result))"],
-    "new-lines":
-    ["      {:prod result", "       :a a", "       :b b}))"],
-    "closed?":true}},
-  "out":
+    "new-lines":[" (defn product [a b]"]}}},
+ {"out":
   {"file-line-no":113,
    "lines":
    [" (defn sum [a b]", "   (let [result (+ a b)]", "      result))",
@@ -109,8 +89,36 @@
     " (defn frac [a b]", "   (let [result (\/ a b)]",
     "      result))"],
    "cursor":null,
-   "diff":null}},
- {"in":
+   "diff":null},
+  "in":
+  {"file-line-no":96,
+   "lines":
+   [" (defn sum [a b]", "   (let [result (+ a b)]", "      result))",
+    " ", " (defn prod [a b]", "   (let [result (* a b)]",
+    "      result))", " ", " (defn frac [a b]",
+    "   (let [result (\/ a b)]", "      result))"],
+   "cursor":null,
+   "diff":
+   {"closed?":true,
+    "start-line-no":6,
+    "end-line-no":7,
+    "lines":
+    [" (defn sum [a b]", "   (let [result (+ a b)]", "      result))",
+     " ", " (defn prod [a b]", "   (let [result (* a b)]",
+     "      {:prod result", "       :a a", "       :b b}))", " ",
+     " (defn frac [a b]", "   (let [result (\/ a b)]",
+     "      result))"],
+    "new-lines":
+    ["      {:prod result", "       :a a", "       :b b}))"]}}},
+ {"out":
+  {"file-line-no":146,
+   "lines":
+   [" (defn sum [a b]", "   (let [result (+ a b)]", "      result))",
+    " ", " (defn prod [a b]", "   (* a b))", " ", " (defn frac [a b]",
+    "   (let [result (\/ a b)]", "      result))"],
+   "cursor":null,
+   "diff":null},
+  "in":
   {"file-line-no":131,
    "lines":
    [" (defn sum [a b]", "   (let [result (+ a b)]", "      result))",
@@ -119,23 +127,23 @@
     "   (let [result (\/ a b)]", "      result))"],
    "cursor":null,
    "diff":
-   {"start-line-no":5,
+   {"closed?":true,
+    "start-line-no":5,
     "end-line-no":7,
     "lines":
     [" (defn sum [a b]", "   (let [result (+ a b)]", "      result))",
      " ", " (defn prod [a b]", "   (* a b))", " ", " (defn frac [a b]",
      "   (let [result (\/ a b)]", "      result))"],
-    "new-lines":["   (* a b))"],
-    "closed?":true}},
-  "out":
-  {"file-line-no":146,
+    "new-lines":["   (* a b))"]}}},
+ {"out":
+  {"file-line-no":176,
    "lines":
    [" (defn sum [a b]", "   (let [result (+ a b)]", "      result))",
-    " ", " (defn prod [a b]", "   (* a b))", " ", " (defn frac [a b]",
+    " ", " (defn prod [a b]", "   (let [result (* a b)])",
     "   (let [result (\/ a b)]", "      result))"],
    "cursor":null,
-   "diff":null}},
- {"in":
+   "diff":null},
+  "in":
   {"file-line-no":161,
    "lines":
    [" (defn sum [a b]", "   (let [result (+ a b)]", "      result))",
@@ -144,23 +152,22 @@
     "   (let [result (\/ a b)]", "      result))"],
    "cursor":null,
    "diff":
-   {"start-line-no":6,
+   {"closed?":true,
+    "start-line-no":6,
     "end-line-no":10,
     "lines":
     [" (defn sum [a b]", "   (let [result (+ a b)]", "      result))",
      " ", " (defn prod [a b]", "   (let [result (* a b)]",
      "   (let [result (\/ a b)]", "      result))"],
-    "new-lines":[],
-    "closed?":true}},
-  "out":
-  {"file-line-no":176,
+    "new-lines":[]}}},
+ {"out":
+  {"file-line-no":199,
    "lines":
-   [" (defn sum [a b]", "   (let [result (+ a b)]", "      result))",
-    " ", " (defn prod [a b]", "   (let [result (* a b)])",
-    "   (let [result (\/ a b)]", "      result))"],
+   [" (defn sum [a b]", "   (let [result (+ a b)]", "     result)", "",
+    " ; some comment", "", "   foo)"],
    "cursor":null,
-   "diff":null}},
- {"in":
+   "diff":null},
+  "in":
   {"file-line-no":189,
    "lines":
    [" (defn sum [a b]", "   (let [result (+ a b)]", "     result))",
@@ -172,15 +179,15 @@
     "lines":
     [" (defn sum [a b]", "   (let [result (+ a b)]", "     result))",
      "", " ; some comment", "", "   foo"],
-    "new-lines":["   foo"]}},
-  "out":
-  {"file-line-no":199,
+    "new-lines":["   foo"]}}},
+ {"out":
+  {"file-line-no":223,
    "lines":
-   [" (defn sum [a b]", "   (let [result (+ a b)]", "     result)", "",
-    " ; some comment", "", "   foo)"],
+   [" (defn sum [a b]", "   (let [result (+ a b)]", "     result))",
+    "", " ; some comment", "", " ", " ", " "],
    "cursor":null,
-   "diff":null}},
- {"in":
+   "diff":null},
+  "in":
   {"file-line-no":211,
    "lines":
    [" (defn sum [a b]", "   (let [result (+ a b)]", "     result))",
@@ -192,15 +199,15 @@
     "lines":
     [" (defn sum [a b]", "   (let [result (+ a b)]", "     result))",
      "", " ; some comment", "", " ", " ", " "],
-    "new-lines":[" ", " ", " "]}},
-  "out":
-  {"file-line-no":223,
+    "new-lines":[" ", " ", " "]}}},
+ {"out":
+  {"file-line-no":248,
    "lines":
-   [" (defn sum [a b]", "   (let [result (+ a b)]", "     result))",
-    "", " ; some comment", "", " ", " ", " "],
+   [" (defn sum [a b]", "   (let [result (+ a b)]", "     result)", "",
+    "  {:foo", "   (let [result (* a b)]", "     result)})"],
    "cursor":null,
-   "diff":null}},
- {"in":
+   "diff":null},
+  "in":
   {"file-line-no":237,
    "lines":
    [" (defn sum [a b]", "   (let [result (+ a b)]", "     result))",
@@ -208,17 +215,29 @@
     "     result))"],
    "cursor":null,
    "diff":
-   {"start-line-no":4,
+   {"closed?":true,
+    "start-line-no":4,
     "end-line-no":5,
     "lines":
     [" (defn sum [a b]", "   (let [result (+ a b)]", "     result))",
      "", "  {:foo", "   (let [result (* a b)]", "     result))"],
-    "new-lines":["  {:foo"],
-    "closed?":true}},
-  "out":
-  {"file-line-no":248,
+    "new-lines":["  {:foo"]}}},
+ {"out":
+  {"file-line-no":265,
    "lines":
-   [" (defn sum [a b]", "   (let [result (+ a b)]", "     result)", "",
-    "  {:foo", "   (let [result (* a b)]", "     result)})"],
+   [" (defn foo [a b]", "   ; \"my docstring", "   ; is now closed\"",
+    "   bar)"],
    "cursor":null,
-   "diff":null}}]
+   "diff":null},
+  "in":
+  {"file-line-no":258,
+   "lines":[" (defn foo [a b]", "   ; \"my docstring", "   bar"],
+   "cursor":null,
+   "diff":
+   {"closed?":true,
+    "start-line-no":2,
+    "end-line-no":2,
+    "lines":
+    [" (defn foo [a b]", "   ; \"my docstring", "   ; is now closed\"",
+     "   bar"],
+    "new-lines":["   ; is now closed\""]}}}]

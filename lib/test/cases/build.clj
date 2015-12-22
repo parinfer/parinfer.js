@@ -1,5 +1,8 @@
 #!/usr/bin/env lein-exec
 
+;; This script extracts test cases from the .md files
+;; and dumps them into .json files.
+
 (use '[leiningen.exec :only (deps)])
 (deps '[[org.clojure/data.json "0.2.6"]])
 
