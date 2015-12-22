@@ -1,7 +1,6 @@
-(ns parinfer.parse-md-tests
-  "Parses tests described in a markdown file."
-  (:require
-    [clojure.string :as string :refer [split-lines]]))
+(ns build
+  (:require [clojure.java.io :as io]
+            [clojure.data.json :as json]))
 
 (defn error
   [file-line-no msg]
@@ -165,3 +164,21 @@
       (throw (error "EOF" "test case 'out' block not completed")))
 
     (:test-cases state)))
+
+(defn extract-test
+  "Extracts the test case data from a Markdown doc, and dumps it into JSON.
+  (allows people porting Parinfer to have easy access to test cases)"
+  [name-]
+  (let [in-file (str cases-path "/" name- ".md")
+        out-file (str cases-path "/" name- ".json")
+        in-str (slurp in-file)
+        _ (println (str "Parsing test cases from " in-file "..."))
+        cases (parse-test-cases in-str)
+        out-str (with-out-str (json/pprint cases))]
+    (println (str "Extracting test cases to " out-file "..."))
+    (spit out-file out-str)))
+
+(defn extract-tests []
+  (extract-test "indent-mode")
+  (extract-test "indent-mode-change")
+  (extract-test "paren-mode"))
