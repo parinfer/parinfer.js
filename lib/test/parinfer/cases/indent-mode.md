@@ -180,6 +180,8 @@ Escaped quotes are handled correctly.
 (def foo "\"")
 ```
 
+## Unbalanced Quotes
+
 __NOTE:__ The pipe `|` represents the cursor, and its character is removed from
 input.  We use it here to suggest that the user has just typed the character to
 the left of the cursor.
@@ -209,6 +211,59 @@ Another case:
   "
   "(a b)
       c")
+```
+
+## Unbalanced Quotes in Comments
+
+Unbalanced quotes can be accidentally rebalanced by comments containing an odd number of quotes,
+so we do not want to process if any comments meet this critera.
+
+Notice that the following code is correctly balanced, quite accidentally, but
+Parinfer does not process it because the last line contains a comment with an
+odd number of quotes (one):
+
+```in
+(for [col columns]
+  "|
+  [:div.td {:style "max-width: 500px;"}])
+```
+
+```out
+(for [col columns]
+  "
+  [:div.td {:style "max-width: 500px;"}])
+```
+
+But a comment can contain an odd number of quotes if it is in a contiguous group of comments
+which contain an even number of them.  This allows commenting out a multiline string without
+any problems:
+
+```in
+(def foo [a b]
+  ; "my multiline
+  ; docstring."
+ret)
+```
+
+```out
+(def foo [a b])
+  ; "my multiline
+  ; docstring."
+ret
+```
+
+Escaped strings are not counted when determining odd number of quotes in a comment.
+
+```in
+(def foo [a b]
+  ; ""\"
+ret)
+```
+
+```out
+(def foo [a b])
+  ; ""\"
+ret
 ```
 
 ## Character syntax

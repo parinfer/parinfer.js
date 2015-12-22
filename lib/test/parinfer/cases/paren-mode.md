@@ -163,3 +163,33 @@ treat it as such:
 (def foo
  ,bar)
 ```
+
+odd number of quotes not allowed in a comment, so it remains unprocessed:
+
+```in
+(def foo [a b]
+  ; "my string
+ret)
+```
+
+```out
+(def foo [a b]
+  ; "my string
+ret)
+```
+
+balanced quotes allowed across contiguous comments:
+
+```in
+(def foo [a b]
+  ; "my multiline
+  ; docstring."
+ret)
+```
+
+```out
+(def foo [a b]
+  ; "my multiline
+  ; docstring."
+ ret)
+```

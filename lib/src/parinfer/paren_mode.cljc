@@ -22,6 +22,7 @@
   {:lines []                           ;; final lines containing the inferenced closing delimiters.
    :line-no -1                         ;; current line number we are processing.
    :track-indent? false                ;; "true" when we are looking for the first char on a line to signify indentation.
+   :quote-danger? false                ;; odd number of quotes in comments are dangerous (track here)
    :delim-trail {:start nil :end nil}  ;; track EOL delims since we replace them wholesale with inferred delims.
    :insert {:line-dy nil :x-pos nil}   ;; the place to insert closing delimiters whenever we hit appropriate indentation.
    :stack []                           ;; the delimiter stack, maps of [:x-pos :ch :indent-delta]
@@ -80,7 +81,7 @@
 
 (defn process-indent
   "Update the state by handling a possible indentation trigger."
-  [{:keys [stack track-indent? lines line-no ch
+  [{:keys [stack track-indent? quote-danger? lines line-no ch
            x-pos cursor-line cursor-x cursor-dx] :as state}]
   (let [check-indent? (and track-indent?
                            (in-code? stack)
@@ -97,11 +98,16 @@
                    (closing-delim? ch)
                    (not cursor-holding?))
         at-indent? (and check-indent? (not skip?))
-        state (assoc state :process? (not skip?))]
-    (cond-> state
-      move-closer? append-delim-trail
-      true handle-cursor-delta
-      at-indent? correct-indent)))
+        quit? (and at-indent? quote-danger?)
+        state (assoc state
+                     :process? (not skip?)
+                     :quit? quit?)]
+    (if quit?
+      state
+      (cond-> state
+        move-closer? append-delim-trail
+        true handle-cursor-delta
+        at-indent? correct-indent))))
 
 (defn process-char
   "Update the state by processing the given character and its position."
@@ -109,8 +115,10 @@
   (let [x-pos (count (get lines line-no))
         state (assoc state :x-pos x-pos :ch (str ch))
         state (process-indent state)]
-    (cond-> state
-      (:process? state) process-char*)))
+    (cond
+      (:quit? state) (reduced state)
+      (:process? state) (process-char* state)
+      :else state)))
 
 (defn reinsert-delims
   [{:keys [removed-delims] :as state}]
@@ -140,15 +148,16 @@
                   :line-no line-no
                   :removed-delims [])
          state (update-in state [:insert :line-dy] #(when % (dec %)))
-         state (reduce process-char state (str line "\n"))
-         state (-> state
-                   remove-delim-trail
-                   reinsert-delims)]
-     state)))
+         state (reduce process-char state (str line "\n"))]
+     (if (:quit? state)
+       (reduced state)
+       (-> state
+           remove-delim-trail
+           reinsert-delims)))))
 
 (defn finalize-state
-  [{:keys [stack] :as state}]
-  (let [valid? (empty? stack)]
+  [{:keys [stack quote-danger?] :as state}]
+  (let [valid? (and (empty? stack) (not quote-danger?))]
     (assoc state :valid? valid?)))
 
 (defn process-text

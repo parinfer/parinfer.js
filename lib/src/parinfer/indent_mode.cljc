@@ -23,6 +23,7 @@
    :postindent-states []               ;; state cache after each line's indentation point (nil if none)
    :insert {:line-dy nil :x-pos nil}   ;; the place to insert closing delimiters whenever we hit appropriate indentation.
    :line-no -1                         ;; current line number we are processing.
+   :quote-danger? false                ;; odd number of quotes in comments are dangerous (track here)
 
    ;; transient line vars
    :track-indent? false                ;; "true" when we are looking for the first char on a line to signify indentation.
@@ -217,13 +218,23 @@
 
 (defn get-cached-state
   [state]
-  (select-keys state [:stack :insert]))
+  (select-keys state [:stack :insert :quote-danger?]))
 
 (defn commit-cached-state
   "Cache a subset of the state after some event.
   This is used by process-text-change."
   [state key-]
   (update state key- conj (get-cached-state state)))
+
+(defn process-indent-trigger
+  "Called when we have actually reached an indentation trigger.
+  (i.e. first non-whitespace char of a line)"
+  [{:keys [x-pos] :as state}]
+  (-> state
+      (close-delims x-pos)
+      (commit-cached-state :postindent-states)
+      (assoc :track-indent? false
+             :processed-indent? true)))
 
 (defn process-indent
   "Update the state by handling a possible indentation trigger.
@@ -240,21 +251,19 @@
                    ;;       considered an indentation trigger.  In fact, we skip
                    ;;       the character completely, removing it from the line.
   "
-  [{:keys [stack track-indent? lines line-no x-pos ch] :as state}]
+  [{:keys [stack quote-danger? track-indent? lines line-no x-pos ch] :as state}]
   (let [check-indent? (and track-indent?
                         (in-code? stack)
                         (not (whitespace? ch))
                         (not= ";" ch))
-        skip? (and check-indent? (closing-delim? ch))
-        at-indent? (and check-indent? (not skip?))
-        state (assoc state :process? (not skip?))]
-    (if at-indent?
-      (-> state
-          (close-delims x-pos)
-          (commit-cached-state :postindent-states)
-          (assoc :track-indent? false
-                 :processed-indent? true))
-      state)))
+        skip?       (and check-indent? (closing-delim? ch))
+        at-indent?  (and check-indent? (not skip?))
+        quit?       (and at-indent? quote-danger?)
+        state (assoc state
+                     :quit? quit?
+                     :process? (and (not skip?) (not quit?)))]
+    (cond-> state
+      (and at-indent? (not quit?)) process-indent-trigger)))
 
 (defn update-line
   "Update the state by adding processed character to the line."
@@ -285,14 +294,34 @@
   (let [x-pos (count (get lines line-no))
         state (assoc state :x-pos x-pos :ch (str ch))
         state (process-indent state)]
-    (cond-> state
-      (:process? state) process-char*)))
+    (cond
+      (:quit? state) (reduced state)
+      (:process? state) (process-char* state)
+      :else state)))
+
+(defn- postprocess-line
+  "Called after last character of a line has been processed."
+  [state]
+  (let [state (-> state
+                  block-delim-trail
+                  remove-delim-trail
+                  save-preinsert-line
+                  (commit-cached-state :postline-states))
+
+        ;; if this did not have an indentation trigger point,
+        ;; pad postindent-states with a nil.
+        state (cond-> state
+                (not (:processed-indent? state))
+                (update :postindent-states conj nil))]
+    state))
 
 (defn process-line
   "Update the state by processing the given line of text."
   ([line] (process-line initial-state line))
   ([{:keys [stack lines line-no cursor-line] :as state} line]
    (let [line-no (inc line-no)
+
+         ;; set line-specific state
          state (assoc state
                   :backup []
                   :cursor-in-comment? false
@@ -303,23 +332,16 @@
                   :line-no line-no
                   :removed-delims [])
          state (update-in state [:insert :line-dy] #(when % (dec %)))
-         state (reduce process-char state (str line "\n"))
-         state (-> state
-                   block-delim-trail
-                   remove-delim-trail
-                   save-preinsert-line
-                   (commit-cached-state :postline-states))
 
-         ;; if this did not have an indentation trigger point,
-         ;; pad postindent-states with a nil.
-         state (cond-> state
-                 (not (:processed-indent? state))
-                 (update :postindent-states conj nil))]
-     state)))
+         state (reduce process-char state (str line "\n"))]
+     (if (:quit? state)
+       (reduced state)
+       (postprocess-line state)))))
 
 (defn finalize-state
-  [{:keys [stack] :as state}]
-  (let [valid? (not (in-str? stack)) ;; invalid if unclosed string
+  [{:keys [stack quote-danger?] :as state}]
+  (let [valid? (and (not (in-str? stack))
+                    (not quote-danger?))
         close-delims? (and valid? (seq stack))]
     (cond-> (assoc state :valid? valid?)
       close-delims? close-delims)))
@@ -376,9 +398,10 @@
         new-cache (last (:postindent-states state))
         more? (< (inc old-i) (count (:lines prev-state)))
         can-skip? (and new-cache (= new-cache cache))]
-    (if (and can-skip? more?)
-      (reduced (fill-rest-with-cache prev-state state old-i))
-      state)))
+    (cond
+      (:quit? state) (reduced state)
+      (and can-skip? more?) (reduced (fill-rest-with-cache prev-state state old-i))
+      :else state)))
 
 (defn process-unchanged-lines
   "process the lines after those that have changed."

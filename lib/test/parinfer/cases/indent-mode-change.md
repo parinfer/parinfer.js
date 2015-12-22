@@ -254,3 +254,17 @@ Affecting both previous insert point and subsequent stack
    (let [result (* a b)]
      result)})
 ```
+
+```in
+ (defn foo [a b]
+   ; "my docstring
++  ; is now closed"
+   bar
+```
+
+```out
+ (defn foo [a b]
+   ; "my docstring
+   ; is now closed"
+   bar)
+```

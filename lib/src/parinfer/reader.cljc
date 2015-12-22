@@ -35,7 +35,8 @@
 (defn in-comment?
   "Next character is inside a comment."
   [stack]
-  (= ";" (prev-ch stack)))
+  (let [ch (prev-ch (cond-> stack (escaping? stack) pop))]
+    (= ";" ch)))
 
 (defn in-code?
   "Next character is inside actual code."
@@ -106,15 +107,14 @@
   [{:keys [stack] :as state}]
   (cond
     (escaping? stack) {:stack (pop stack)}
-    (in-comment? stack) nil
     :else {:stack (conj stack (select-keys state [:x-pos :ch]))}))
 
 (defmethod push-char* "\""
-  [{:keys [stack] :as state}]
+  [{:keys [stack quote-danger?] :as state}]
   (cond
     (escaping? stack) {:stack (pop stack)}
     (in-str? stack) {:stack (pop stack)}
-    (in-comment? stack) nil
+    (in-comment? stack) {:quote-danger? (not quote-danger?)}
     :else {:stack (conj stack (select-keys state [:x-pos :ch]))}))
 
 (defmethod push-char* :default
@@ -126,4 +126,4 @@
 (defn push-char
   [state]
   (let [new-data (push-char* state)]
-    (merge-with #(or %2 %1) state new-data)))
+    (merge-with #(if (nil? %2) %1 %2) state new-data)))
