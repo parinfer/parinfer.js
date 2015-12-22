@@ -1,0 +1,18 @@
+
+<!doctype html>
+<html>
+<body>
+  <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+  <script src="parinfer.js"></script>
+  <script src="test.js"></script>
+  <script>
+    runAllTests();
+
+    $.get('testfile.clj', function(string) {
+      var count = string.split("\n").length;
+      console.info("testing file with", count, "lines");
+      timeProcess(string);
+    }, 'text');
+  </script>
+</body>
+</html>
