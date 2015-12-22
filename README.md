@@ -15,7 +15,7 @@ newcomers and experts alike, while still allowing existing plugins like Paredit
 to satisfy the need for more advanced operations.
 
 [Paredit]:http://danmidwood.com/content/2014/11/21/animated-paredit.html
-[Parinfer Home Page]:https://github.com/shaunlebron/parinfer/issues/new?title=new%20plugin
+[Parinfer Home Page]:http://shaunlebron.github.io/parinfer/
 
 This project is split into two parts:
 
