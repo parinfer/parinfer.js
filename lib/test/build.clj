@@ -1,12 +1,18 @@
-(ns build
-  (:require [clojure.java.io :as io]
-            [clojure.data.json :as json]))
+#!/usr/bin/env lein-exec
+
+(use '[leiningen.exec :only (deps)])
+(deps '[[org.clojure/data.json "0.2.6"]])
+
+(require '[clojure.java.io :as io]
+         '[clojure.data.json :as json]
+         '[clojure.string :as string :refer [split-lines]])
+
+(def cases-path ".")
 
 (defn error
   [file-line-no msg]
   (let [whole-msg (str "error at test-case line #" file-line-no ": " msg)]
-    #?(:clj (Exception. whole-msg)
-       :cljs whole-msg)))
+    (Exception. whole-msg)))
 
 (defmulti parse-test-line
   (fn [state [file-line-no line]]
@@ -111,7 +117,7 @@
 
         ;; update diff end line
         diff (cond-> diff
-               (= diff-ch "-") (update :end-line-no inc))
+               (= diff-ch "-") (update-in [:end-line-no] inc))
 
         ;; commit diff to block
         block (assoc block :diff diff)
@@ -135,9 +141,9 @@
                 "+" (-> block
                         (update-in [:diff :lines] conj line)
                         (update-in [:diff :new-lines] conj line))
-                "-" (update block :lines conj line)
+                "-" (update-in block [:lines] conj line)
                 (cond-> block
-                  true (update :lines conj line)
+                  true (update-in [:lines] conj line)
                   diff (update-in [:diff :lines] conj line)))
 
         ;; update state
@@ -182,3 +188,5 @@
   (extract-test "indent-mode")
   (extract-test "indent-mode-change")
   (extract-test "paren-mode"))
+
+(extract-tests)
