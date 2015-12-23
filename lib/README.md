@@ -12,17 +12,15 @@ or indentation.
 npm install parinfer
 ```
 
-or download [parinfer.js][download] and include directly in html:
+or download [parinfer.js](parinfer.js) and include directly in html:
 
 ```html
 <script src="parinfer.js"></script>
 ```
 
-[download]:https://github.com/shaunlebron/parinfer/releases/download/0.2.3/parinfer.js
-
 ## Usage
 
-Parinfer consists of a few pure functions of your text, returning new text with
+Parinfer consists of a couple pure functions of your text, returning new text with
 corrected parens or indentation.
 
 ```js
@@ -103,6 +101,8 @@ Arguments:
 - `options` is an object with the following properties:
   - `cursorLine` - zero-based line number of the cursor
   - `cursorX` - zero-based x-position of the cursor
+  - `cursorDx` - amount that the cursor moved horizontally if something was inserted or deleted
+    - only used by Paren Mode for preserving relative indentation of subsequent lines
 
 Returns an object with the following properties:
 
@@ -141,9 +141,9 @@ as I can.
 
 Parinfer is implemented in ECMAScript 5, which is old JavaScript supported
 nearly everywhere.  It was created initially in Clojure ([see
-here][old-clojure]), which useful for exploring the idea in a pure environment,
-but it is now maintained in JS because of speed demands and ease of portability
-to different environments.
+here][old-clojure]), which was useful for exploring the idea in a pure
+environment, but it is now maintained in JS because of speed demands and ease
+of portability to different environments.
 
 To run the [test cases]:
 
