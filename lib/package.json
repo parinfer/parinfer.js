@@ -4,7 +4,7 @@
   "description": "a simpler way to write Lisp",
   "main": "parinfer.js",
   "scripts": {
-    "test": "mocha"
+    "test": "eslint parinfer.js && mocha"
   },
   "repository": {
     "type": "git",
@@ -22,6 +22,7 @@
   },
   "homepage": "http://shaunlebron.github.io/parinfer",
   "devDependencies": {
+    "eslint": "^1.10.3",
     "mocha": "^2.3.4"
   }
 }
