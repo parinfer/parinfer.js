@@ -10,7 +10,13 @@
          '[clojure.data.json :as json]
          '[clojure.string :as string :refer [split-lines]])
 
-(def cases-path ".")
+;; Get the directory of this file.
+;; source: http://stackoverflow.com/a/3986092/142317
+(defn dirname [path] (.getParent (java.io.File. path)))
+(defn expand-path [path] (.getCanonicalPath (java.io.File. path)))
+(def DIRNAME (expand-path (dirname *file*)))
+
+(def cases-path DIRNAME)
 
 (defn error
   [file-line-no msg]
