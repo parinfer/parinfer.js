@@ -4,7 +4,7 @@
   "description": "a simpler way to write Lisp",
   "main": "parinfer.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "cd test && node test.js"
   },
   "repository": {
     "type": "git",

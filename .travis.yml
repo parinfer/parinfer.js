@@ -1,13 +1,5 @@
-language: clojure
-lein: lein
-jdk:
-  - oraclejdk8
+language: node_js
 install:
-  - pushd site; lein deps; popd
-  - pushd lib; lein deps; popd
+  - pushd lib; npm install; popd
 script:
-  - pushd lib
-  - lein run -m build/release
-  - lein run -m build/run-all-tests
-  - lein test parinfer.test
-  - popd
+  - pushd lib; npm test; popd
