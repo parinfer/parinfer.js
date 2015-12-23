@@ -1,3 +1,8 @@
+## 1.0.0
+
+- port to native JS implementation (~20x faster, ~25 lines/ms)
+- remove `indentModeChange`
+
 ## 0.2.3
 
 - fudged the 0.2.2 npm release (this fixes it)
