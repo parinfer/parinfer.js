@@ -15,23 +15,21 @@
   :plugins [[lein-cljsbuild "1.1.0"]
             [lein-figwheel "0.4.0"]]
 
-  :source-paths ["../lib/src"]
-
   :clean-targets ^{:protect false} ["resources/public/js/compiled" "target"]
 
   :cljsbuild {
     :test-commands {"test" ["node" "resources/public/js/compiled/parinfer-test.js"]}
     :builds [{:id "dev"
-              :source-paths ["src" "../lib/src"]
+              :source-paths ["src"]
               :figwheel {:on-jsload "parinfer-site.core/on-js-reload" }
               :compiler {:main parinfer-site.core
                          :asset-path "js/compiled/out"
-                         :output-to "resources/public/js/compiled/parinfer.js"
+                         :output-to "resources/public/js/compiled/parinfer-site.js"
                          :output-dir "resources/public/js/compiled/out"
                          :source-map-timestamp true }}
              {:id "min"
-              :source-paths ["src" "../lib/src"]
-              :compiler {:output-to "resources/public/js/compiled/parinfer.js"
+              :source-paths ["src"]
+              :compiler {:output-to "resources/public/js/compiled/parinfer-site.js"
                          :externs ["resources/public/codemirror/lib/closure-externs.js"
                                    "resources/public/js/lib/scrollMonitor.externs.js"
                                    "resources/public/js/lib/gears.d3.externs.js"

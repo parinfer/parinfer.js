@@ -2,8 +2,8 @@
   "Connects parinfer mode functions to CodeMirror"
   (:require
     [clojure.string :as string :refer [join]]
-    [parinfer.indent-mode :as indent-mode]
-    [parinfer.paren-mode :as paren-mode]
+    [parinfer-site.parinfer :refer [indent-mode
+                                    paren-mode]]
     [parinfer-site.state :refer [state]]))
 
 
@@ -119,19 +119,11 @@
         new-text
         (case mode
           :indent-mode
-          (let [result (if (and use-cache? @prev-state)
-                        (indent-mode/format-text-change
-                          current-text
-                          @prev-state
-                          (compute-cm-change cm change options @prev-state)
-                          options)
-                        (indent-mode/format-text current-text options))]
-            (when (:valid? result)
-              (reset! prev-state (:state result)))
+          (let [result (indent-mode current-text options)]
             (:text result))
 
           :paren-mode
-          (let [result (paren-mode/format-text current-text options)]
+          (let [result (paren-mode current-text options)]
             (:text result))
 
           nil)]

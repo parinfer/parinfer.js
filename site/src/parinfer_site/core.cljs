@@ -1,10 +1,10 @@
 (ns ^:figwheel-always parinfer-site.core
   (:require
+    [clojure.string :as string]
     [om.core :as om :include-macros true]
     [sablono.core :refer-macros [html]]
-    [parinfer.indent-mode :as indent-mode]
-    [parinfer.paren-mode :as paren-mode]
-    [parinfer.string :refer [get-lines]]
+    [parinfer-site.parinfer :refer [indent-mode
+                                    paren-mode]]
     [parinfer-site.vcr-data :as vcr-data]
     [parinfer-site.vcr :refer [vcr
                                play-recording!
@@ -20,11 +20,17 @@
 
 (enable-console-print!)
 
+(defn get-lines
+  "get all lines (even empty ones)
+  source: http://stackoverflow.com/a/29614863/142317"
+  [text]
+  (string/split text #"\n" -1))
+
 (defn create-indent-before-after! []
   (let [cm-input (create-regular-editor! "code-indent-input" {:mode "clojure-parinfer"})
         cm-output (create-regular-editor! "code-indent-output" {:readOnly true
                                                                 :mode "clojure-parinfer"})
-        sync! #(.setValue cm-output (:text (indent-mode/format-text (.getValue cm-input))))]
+        sync! #(.setValue cm-output (:text (indent-mode (.getValue cm-input))))]
     (when cm-input
       (.on cm-input "change" sync!)
       (sync!))))
@@ -72,7 +78,7 @@
                         changes)))))
         sync! (fn []
                 (let [in-text (.getValue cm-input)
-                      out-text (:text (paren-mode/format-text in-text))]
+                      out-text (:text (paren-mode in-text))]
                   (.setValue cm-output out-text)
                   (diff!)))]
 
