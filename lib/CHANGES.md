@@ -1,3 +1,7 @@
+## 1.1.0
+
+- remove `result` key from returned result (internal only)
+
 ## 1.0.0
 
 - port to native JS implementation (~20x faster, ~25 lines/ms)
