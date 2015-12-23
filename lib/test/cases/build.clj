@@ -61,7 +61,7 @@
         :else
         (-> state
             (assoc :block-key block-key)
-            (assoc-in [:test-case block-key] {:file-line-no file-line-no
+            (assoc-in [:test-case block-key] {:fileLineNo file-line-no
                                               :lines []
                                               :cursor nil
                                               :diff nil}))))))
@@ -127,8 +127,8 @@
 
         ;; finish determining cursor
         cursor (when cursor-x
-                 {:cursor-x cursor-x
-                  :cursor-line (if (= diff-ch "+")
+                 {:cursorX cursor-x
+                  :cursorLine (if (= diff-ch "+")
                                  (count (:lines diff))
                                  (count (:lines block)))})
 
