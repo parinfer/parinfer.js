@@ -1,4 +1,4 @@
-# Parinfer Lib
+# Parinfer Lib [<img src="https://travis-ci.org/shaunlebron/parinfer.svg?branch=master" valign="middle">](https://travis-ci.org/shaunlebron/parinfer)
 
 This is the standalone _editor-agnostic_ library for using [Parinfer].  It consists
 of a few pure functions of your text, returning new text with corrected parens

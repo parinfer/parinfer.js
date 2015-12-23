@@ -1,4 +1,4 @@
-# Parinfer [<img src="https://travis-ci.org/shaunlebron/parinfer.svg?branch=master" valign="middle">](https://travis-ci.org/shaunlebron/parinfer)
+# Parinfer
 
 _parentheses inference for Lisp_
 
