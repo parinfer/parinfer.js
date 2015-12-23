@@ -149,5 +149,17 @@ To run the [test cases]:
 npm test
 ```
 
+To test performance:
+
+```
+node test/perf.js
+```
+
+To build the test case JSON files from Markdown ([lein-exec] required for now):
+
+```
+test/cases/build.clj
+```
+
 [old-clojure]:https://github.com/shaunlebron/parinfer/tree/clojure/lib
 [test cases]:test/cases

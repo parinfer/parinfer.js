@@ -15,3 +15,5 @@ figwheel_server.log
 
 *.diff
 todo
+
+node_modules
