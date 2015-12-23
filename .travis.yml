@@ -4,7 +4,4 @@ node_js:
 install:
   - pushd lib; npm install; popd
 script:
-  - pushd lib
-  - npm test
-  - node test/perf.js
-  - popd
+  - pushd lib; npm test; popd
