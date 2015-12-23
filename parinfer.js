@@ -1,5 +1,8 @@
 //
-// Parinfer 1.0.0
+// Parinfer 1.1.0
+//
+// Copyright 2015 © Shaun LeBron
+// MIT License
 //
 // Home Page: http://shaunlebron.github.io/parinfer/
 // GitHub: https://github.com/shaunlebron/parinfer
@@ -18,6 +21,64 @@
     root.parinfer = factory();
   }
 }(this, function() {
+  "use strict";
+
+/**************************** RESULT STRUCTURE *******************************/
+
+  // This represents the running result.  As we scan through each character
+  // of a given text, we mutate this structure to update the state of our
+  // system.
+
+  function getInitialResult() {
+
+    return {
+
+      lines: [],              // [string array] - resulting lines (with corrected parens or indentation)
+
+      lineNo: -1,             // [integer] - line number we are processing
+      ch: "",                 // [string] - character we are processing (can be changed to indicate a replacement)
+      x: 0,                   // [integer] - x position of the current character (ch)
+
+      stack: [],              // We track where we are in the Lisp tree by keeping a stack (array) of
+                              // relevant opening characters (parens, quotes, backslashes, semicolons).
+                              // Stack elements are objects containing keys {ch, x, indentDelta}
+                              // whose values are the same as those described here in this result structure.
+
+      backup: [],             // When the `parenTrail` of each line is removed by Indent Mode,
+                              // this backup stack (array) of open parens allows us to restore
+                              // the `stack` to where it was prior to parsing the `parenTrail`.
+                              // Its type is identical to that of `stack`.
+
+      insert: {               // end-of-line insertion point for close-parens, specifically:
+                              // - in Indent Mode, inferred close-parens are placed here
+                              // - in Paren Mode, close-parens at the start of a subsequent line are moved here
+
+        lineNo: null,         // [integer or null] - line number of insertion point
+        x: null               // [integer or null] - x position of insertion point
+      },
+
+      parenTrail: {           // the range of parens at the end of a line
+        start: null,          // [integer or null] - x position of first paren in this range
+        end: null             // [integer or null] - x position after the last paren in this range
+      },
+
+      cursorX: null,          // [integer or null] - x position of the cursor
+      cursorLine: null,       // [integer or null] - line number of the cursor
+      cursorDx: null,         // [integer or null] - amount that the cursor moved horizontally if something was inserted or deleted
+
+      quoteDanger: false,     // [boolean] - indicates if quotes are imbalanced inside of a comment (dangerous)
+      trackIndent: false,     // [boolean] - are we looking for the indentation point of the current line?
+      cursorInComment: false, // [boolean] - is the cursor inside a comment?
+      quit: false,            // [boolean] - should we stop processing immediately?
+      process: false,         // [boolean] - should we process the current character? (false make us skip)
+      success: false,         // [boolean] - was the input properly formatted enough to create a valid result?
+
+      maxIndent: null,        // [integer or null] - maximum allowed indentation of subsequent lines in Paren Mode
+      indentDelta: 0          // [integer] - how far indentation was shifted by Paren Mode
+                              //  (preserves relative indentation of nested expressions)
+
+    };
+  }
 
 /**************************** STRING OPERATIONS *******************************/
 
@@ -46,7 +107,7 @@
 
 /**************************** READER OPERATIONS *******************************/
 
-  var matchingDelim = {
+  var matchingParen = {
     "{": "}",
     "}": "{",
     "[": "]",
@@ -55,11 +116,11 @@
     ")": "("
   };
 
-  function isOpenDelim(c) {
+  function isOpenParen(c) {
     return c === "{" || c === "(" || c === "[";
   }
 
-  function isCloseDelim(c) {
+  function isCloseParen(c) {
     return c === "}" || c === ")" || c === "]";
   }
 
@@ -68,9 +129,7 @@
   }
 
   //------------------------------------------------------------------------
-  // Delimiter Stack states
-  //
-  //   State is tracked by checking last pushed character.
+  // Lisp states
   //------------------------------------------------------------------------
 
   function peek(stack, i) {
@@ -107,51 +166,47 @@
   }
 
   function isValidCloser(stack, ch) {
-    return getPrevCh(stack) === matchingDelim[ch];
+    return getPrevCh(stack) === matchingParen[ch];
   }
 
   //------------------------------------------------------------------------
-  // Delimiter Stack operations (they MUTATE)
-  //
-  //
-  //   We track delimiters by using a stack of maps containing [:x-pos :ch :indent-delta].
-  //   State is tracked by checking last character.
+  // Lisp stack operations
   //------------------------------------------------------------------------
 
-  function pushChar(obj) {
-    var ch = obj.ch;
-    if (isOpenDelim(ch))       { pushOpen(obj); }
-    else if (isCloseDelim(ch)) { pushClose(obj); }
+  function pushChar(result) {
+    var ch = result.ch;
+    if (isOpenParen(ch))       { pushOpen(result); }
+    else if (isCloseParen(ch)) { pushClose(result); }
     else {
       switch (ch) {
-        case "\t": pushTab(obj); break;
-        case ";":  pushSemicolon(obj); break;
-        case "\n": pushNewline(obj); break;
-        case "\\": pushEscape(obj); break;
-        case "\"": pushQuote(obj); break;
-        default:   pushDefault(obj);
+        case "\t": pushTab(result); break;
+        case ";":  pushSemicolon(result); break;
+        case "\n": pushNewline(result); break;
+        case "\\": pushEscape(result); break;
+        case "\"": pushQuote(result); break;
+        default:   pushDefault(result);
       }
     }
   }
 
-  function pushOpen(obj) {
-    var stack = obj.stack;
+  function pushOpen(result) {
+    var stack = result.stack;
     if (isEscaping(stack)) {
       stack.pop();
     }
     else if (isInCode(stack)) {
       stack.push({
-        x: obj.x,
-        ch: obj.ch,
-        indentDelta: obj.indentDelta
+        x: result.x,
+        ch: result.ch,
+        indentDelta: result.indentDelta
       });
     }
   }
 
-  function pushClose(obj) {
-    var stack = obj.stack;
-    var backup = obj.backup;
-    var ch = obj.ch;
+  function pushClose(result) {
+    var stack = result.stack;
+    var backup = result.backup;
+    var ch = result.ch;
     var opener;
 
     if (isEscaping(stack)) {
@@ -160,61 +215,61 @@
     else if (isInCode(stack)) {
       if (isValidCloser(stack, ch)) {
         opener = stack.pop();
-        obj.dedentX = opener.x;
+        result.maxIndent = opener.x;
         backup.push(opener);
       }
       else {
-        // erase non-matched delimiter
-        obj.ch = "";
+        // erase non-matched paren
+        result.ch = "";
       }
     }
   }
 
-  function pushTab(obj) {
-    if (!isInStr(obj.stack)) {
-      obj.ch = "  ";
+  function pushTab(result) {
+    if (!isInStr(result.stack)) {
+      result.ch = "  ";
     }
   }
 
-  function pushSemicolon(obj) {
-    var stack = obj.stack;
+  function pushSemicolon(result) {
+    var stack = result.stack;
     if (isEscaping(stack)) {
       stack.pop();
     }
     else if (isInCode(stack)) {
       stack.push({
-        x: obj.x,
-        ch: obj.ch
+        x: result.x,
+        ch: result.ch
       });
     }
   }
 
-  function pushNewline(obj) {
-    var stack = obj.stack;
+  function pushNewline(result) {
+    var stack = result.stack;
     if (isEscaping(stack)) {
       stack.pop();
     }
     if (isInComment(stack)) {
       stack.pop();
     }
-    obj.ch = "";
+    result.ch = "";
   }
 
-  function pushEscape(obj) {
-    var stack = obj.stack;
+  function pushEscape(result) {
+    var stack = result.stack;
     if (isEscaping(stack)) {
       stack.pop();
     }
     else {
       stack.push({
-        x: obj.x,
-        ch: obj.ch
+        x: result.x,
+        ch: result.ch
       });
     }
   }
 
-  function pushQuote(obj) {
-    var stack = obj.stack;
+  function pushQuote(result) {
+    var stack = result.stack;
     if (isEscaping(stack)) {
       stack.pop();
     }
@@ -222,18 +277,18 @@
       stack.pop();
     }
     else if (isInComment(stack)) {
-      obj.quoteDanger = !obj.quoteDanger;
+      result.quoteDanger = !result.quoteDanger;
     }
     else {
       stack.push({
-        x: obj.x,
-        ch: obj.ch
+        x: result.x,
+        ch: result.ch
       });
     }
   }
 
-  function pushDefault(obj) {
-    var stack = obj.stack;
+  function pushDefault(result) {
+    var stack = result.stack;
     if (isEscaping(stack)) {
       stack.pop();
     }
@@ -241,64 +296,45 @@
 
 /**************************** INDENT MODE OPERATIONS *******************************/
 
-  function getInitialState(mode) {
-    return {
-      lines: [],
-      insert: {lineDy: null, x: null},
-      lineNo: -1,
-      quoteDanger: false,
-      trackIndent: false,
-      delimTrail: {start: null, end: null},
-      stack: [],
-      backup: [],
-      dedentX: null,
-      indentDelta: 0
-    };
-  }
-
-  function closeDelims(state, indentX) {
+  function closeParens(result, indentX) {
     if (indentX == null) {
       indentX = 0;
     }
 
-    var stack = state.stack;
-    var delims = "";
+    var stack = result.stack;
+    var parens = "";
 
-    while (true) {
-      if (stack.length === 0) {
-        break;
-      }
+    while (stack.length > 0) {
       var opener = peek(stack);
       if (opener.x >= indentX) {
         stack.pop();
-        delims += matchingDelim[opener.ch];
+        parens += matchingParen[opener.ch];
       }
       else {
         break;
       }
     }
 
-    var insertLineNo = state.insert.lineDy + state.lineNo;
     var newString =
       insertString(
-        state.lines[insertLineNo],
-        state.insert.x,
-        delims
+        result.lines[result.insert.lineNo],
+        result.insert.x,
+        parens
       );
 
-    state.lines[insertLineNo] = newString;
+    result.lines[result.insert.lineNo] = newString;
   }
 
-  function updateDelimTrail(state) {
-    var ch = state.ch;
+  function updateParenTrail(result) {
+    var ch = result.ch;
     var shouldPass = (
       ch === ";" ||
       ch === "," ||
       isWhitespace(ch) ||
-      isCloseDelim(ch)
+      isCloseParen(ch)
     );
 
-    var stack = state.stack;
+    var stack = result.stack;
     var shouldReset = (
       isInCode(stack) && (
         isEscaping(stack) ||
@@ -306,10 +342,10 @@
       )
     );
 
-    state.isCursorInComment = (
-      state.isCursorInComment || (
-        state.cursorLine === state.lineNo &&
-        state.x === state.cursorX &&
+    result.isCursorInComment = (
+      result.isCursorInComment || (
+        result.cursorLine === result.lineNo &&
+        result.x === result.cursorX &&
         isInComment(stack)
       )
     );
@@ -317,65 +353,65 @@
     var shouldUpdate = (
       isInCode(stack) &&
       !isEscaping(stack) &&
-      isCloseDelim(ch) &&
+      isCloseParen(ch) &&
       isValidCloser(stack, ch)
     );
 
     if (shouldReset) {
-      state.backup = [];
-      state.delimTrail = {};
-      state.dedentX = null;
+      result.backup = [];
+      result.parenTrail = {};
+      result.maxIndent = null;
     }
     else if (shouldUpdate) {
-      if (state.delimTrail.start == null) {
-        state.delimTrail.start = state.x;
+      if (result.parenTrail.start == null) {
+        result.parenTrail.start = result.x;
       }
-      state.delimTrail.end = state.x+1;
+      result.parenTrail.end = result.x+1;
     }
   }
 
-  function blockDelimTrail(state) {
-    var start = state.delimTrail.start;
-    var end = state.delimTrail.end;
+  function blockParenTrail(result) {
+    var start = result.parenTrail.start;
+    var end = result.parenTrail.end;
     var isCursorBlocking = (
-      state.lineNo === state.cursorLine &&
+      result.lineNo === result.cursorLine &&
       start != null &&
-      state.cursorX > start &&
-      !state.isCursorInComment
+      result.cursorX > start &&
+      !result.isCursorInComment
     );
 
     if (start != null && isCursorBlocking) {
-      start = Math.max(start, state.cursorX);
+      start = Math.max(start, result.cursorX);
     }
 
     if (end != null && isCursorBlocking) {
-      end = Math.max(end, state.cursorX);
+      end = Math.max(end, result.cursorX);
     }
 
     if (start === end) {
       start = end = null;
     }
 
-    state.delimTrail.start = start;
-    state.delimTrail.end = end;
+    result.parenTrail.start = start;
+    result.parenTrail.end = end;
   }
 
-  function removeDelimTrail(state) {
-    var start = state.delimTrail.start;
-    var end = state.delimTrail.end;
+  function removeParenTrail(result) {
+    var start = result.parenTrail.start;
+    var end = result.parenTrail.end;
 
     if (start == null || end == null) {
       return;
     }
 
-    var stack = state.stack;
-    var backup = state.backup;
+    var stack = result.stack;
+    var backup = result.backup;
 
-    var line = state.lines[state.lineNo];
+    var line = result.lines[result.lineNo];
     var removeCount = 0;
     var i;
     for (i=start; i<end; i++) {
-      if (isCloseDelim(line[i])) {
+      if (isCloseParen(line[i])) {
         removeCount++;
       }
     }
@@ -385,155 +421,148 @@
       stack.push(backup.pop());
     }
 
-    state.lines[state.lineNo] = removeStringRange(line, start, end);
+    result.lines[result.lineNo] = removeStringRange(line, start, end);
 
-    if (state.insert.lineDy === 0) {
-      state.insert.x = Math.min(state.insert.x, start);
+    if (result.insert.lineNo === result.lineNo) {
+      result.insert.x = Math.min(result.insert.x, start);
     }
   }
 
-  function updateInsertionPt(state) {
-    var line = state.lines[state.lineNo];
-    var prevCh = line[state.x-1];
-    var ch = state.ch;
+  function updateInsertionPt(result) {
+    var line = result.lines[result.lineNo];
+    var prevCh = line[result.x-1];
+    var ch = result.ch;
 
     var shouldInsert = (
-      isInCode(state.stack) &&
+      isInCode(result.stack) &&
       ch !== "" &&
       (!isWhitespace(ch) || prevCh === "\\") &&
-      (!isCloseDelim(ch) || state.lineNo === state.cursorLine)
+      (!isCloseParen(ch) || result.lineNo === result.cursorLine)
     );
 
     if (shouldInsert) {
-      state.insert = {lineDy:0, x: state.x+1};
+      result.insert = {lineNo: result.lineNo, x: result.x+1};
     }
   }
 
-  function processIndentTrigger(state) {
-    closeDelims(state, state.x);
-    state.trackIndent = false;
+  function processIndentTrigger(result) {
+    closeParens(result, result.x);
+    result.trackIndent = false;
   }
 
-  function processIndent(state) {
-    var stack = state.stack;
-    var ch = state.ch;
+  function processIndent(result) {
+    var stack = result.stack;
+    var ch = result.ch;
 
     var checkIndent = (
-      state.trackIndent &&
+      result.trackIndent &&
       isInCode(stack) &&
       !isWhitespace(ch) &&
       ch !== ";"
     );
-    var skip = checkIndent && isCloseDelim(ch);
+    var skip = checkIndent && isCloseParen(ch);
     var atIndent = checkIndent && !skip;
-    var quit = atIndent && state.quoteDanger;
+    var quit = atIndent && result.quoteDanger;
 
-    state.quit = quit;
-    state.process = !skip && !quit;
+    result.quit = quit;
+    result.process = !skip && !quit;
 
     if (atIndent && !quit) {
-      processIndentTrigger(state);
+      processIndentTrigger(result);
     }
   }
 
-  function updateLine(state, origCh) {
-    var ch = state.ch
-    if (origCh === ch) {
-    }
-    else {
-      var line = state.lines[state.lineNo];
-      state.lines[state.lineNo] = replaceStringRange(line, state.x, state.x+origCh.length, ch);
+  function updateLine(result, origCh) {
+    var ch = result.ch
+    if (origCh !== ch) {
+      var line = result.lines[result.lineNo];
+      result.lines[result.lineNo] = replaceStringRange(line, result.x, result.x+origCh.length, ch);
     }
   }
 
-  function processChar(state, ch) {
+  function processChar(result, ch) {
     var origCh = ch;
-    state.ch = ch;
-    processIndent(state);
+    result.ch = ch;
+    processIndent(result);
 
-    if (state.quit) {
+    if (result.quit) {
       return;
     }
 
-    if (state.process) {
+    if (result.process) {
       // NOTE: the order here is important!
-      updateDelimTrail(state);
-      pushChar(state);
-      updateInsertionPt(state);
+      updateParenTrail(result);
+      pushChar(result);
+      updateInsertionPt(result);
     }
     else {
-      state.ch = "";
+      result.ch = "";
     }
 
-    updateLine(state, origCh);
-    state.x += state.ch.length;
+    updateLine(result, origCh);
+    result.x += result.ch.length;
   }
 
-  function processLine(state, line) {
-    var stack = state.stack;
+  function processLine(result, line) {
+    var stack = result.stack;
 
-    state.lineNo++;
-    state.backup = [];
-    state.cursorInComment = false;
-    state.delimTrail = {start: null, end: null};
-    state.trackIndent = (stack.length > 0 && !isInStr(stack));
-    state.lines.push(line);
-    state.x = 0;
-
-    if (state.insert.lineDy != null) {
-      state.insert.lineDy--;
-    }
+    result.lineNo++;
+    result.backup = [];
+    result.cursorInComment = false;
+    result.parenTrail = {start: null, end: null};
+    result.trackIndent = (stack.length > 0 && !isInStr(stack));
+    result.lines.push(line);
+    result.x = 0;
 
     var i;
     var chars = line + "\n";
     for (i=0; i<chars.length; i++) {
-      processChar(state, chars[i]);
-      if (state.quit) {
+      processChar(result, chars[i]);
+      if (result.quit) {
         break;
       }
     }
 
-    if (!state.quit) {
-      blockDelimTrail(state);
-      removeDelimTrail(state);
+    if (!result.quit) {
+      blockParenTrail(result);
+      removeParenTrail(result);
     }
   }
 
-  function finalizeState(state) {
-    var stack = state.stack;
-    state.isValid = !isInStr(stack) && !state.quoteDanger;
-    if (state.isValid && stack.length > 0) {
-      closeDelims(state);
+  function finalizeResult(result) {
+    var stack = result.stack;
+    result.success = !isInStr(stack) && !result.quoteDanger;
+    if (result.success && stack.length > 0) {
+      closeParens(result);
     }
   }
 
   function processText(text, options) {
-    var state = getInitialState();
+    var result = getInitialResult();
 
     if (options) {
-      state.cursorX = options.cursorX;
-      state.cursorLine = options.cursorLine;
+      result.cursorX = options.cursorX;
+      result.cursorLine = options.cursorLine;
     }
 
     var lines = text.split("\n");
     var i;
     for (i=0; i<lines.length; i++) {
-      processLine(state, lines[i]);
-      if (state.quit) {
+      processLine(result, lines[i]);
+      if (result.quit) {
         break;
       }
     }
-    finalizeState(state);
-    return state;
+    finalizeResult(result);
+    return result;
   }
 
   function formatText(text, options) {
-    var state = processText(text, options);
-    var outText = state.isValid ? state.lines.join("\n") : text;
+    var result = processText(text, options);
+    var outText = result.success ? result.lines.join("\n") : text;
     return {
       text: outText,
-      isValid: state.isValid,
-      state: state
+      success: result.success
     };
   }
 
@@ -542,18 +571,18 @@
 
   // NOTE: Paren Mode reuses some Indent Mode functions
 
-  function appendDelimTrail(state) {
-    var opener = state.stack.pop();
-    var closeCh = matchingDelim[opener.ch];
-    state.dedentX = opener.x;
-    var i = state.lineNo + state.insert.lineDy;
-    var line = state.lines[i];
-    state.lines[i] = insertString(line, state.insert.x, closeCh);
-    state.insert.x++;
+  function appendParenTrail(result) {
+    var opener = result.stack.pop();
+    var closeCh = matchingParen[opener.ch];
+    result.maxIndent = opener.x;
+    var i = result.insert.lineNo;
+    var line = result.lines[i];
+    result.lines[i] = insertString(line, result.insert.x, closeCh);
+    result.insert.x++;
   }
 
-  function minIndent(x, state) {
-    var opener = peek(state.stack);
+  function minIndent(x, result) {
+    var opener = peek(result.stack);
     if (opener != null) {
       var startX = opener.x;
       return Math.max(startX+1, x);
@@ -561,73 +590,73 @@
     return x;
   }
 
-  function minDedent(x, state) {
-    if (state.dedentX != null) {
-      return Math.min(state.dedentX, x);
+  function minDedent(x, result) {
+    if (result.maxIndent != null) {
+      return Math.min(result.maxIndent, x);
     }
     return x;
   }
 
-  function correctIndent(state) {
-    var opener = peek(state.stack);
+  function correctIndent(result) {
+    var opener = peek(result.stack);
     var delta = 0;
     if (opener != null && opener.indentDelta != null) {
       delta = opener.indentDelta;
     }
-    var newX = state.x + delta;
-    newX = minIndent(newX, state);
-    newX = minDedent(newX, state);
+    var newX = result.x + delta;
+    newX = minIndent(newX, result);
+    newX = minDedent(newX, result);
 
-    state.indentDelta += (newX - state.x);
+    result.indentDelta += (newX - result.x);
 
-    if (newX !== state.x) {
+    if (newX !== result.x) {
       var i,indentStr="";
       for (i=0; i<newX; i++) {
         indentStr += " ";
       }
-      var line = state.lines[state.lineNo];
-      var newLine = replaceStringRange(line, 0, state.x, indentStr);
-      state.lines[state.lineNo] = newLine;
-      state.x = newX;
+      var line = result.lines[result.lineNo];
+      var newLine = replaceStringRange(line, 0, result.x, indentStr);
+      result.lines[result.lineNo] = newLine;
+      result.x = newX;
     }
 
-    state.trackIndent = false;
-    state.dedentX = null;
+    result.trackIndent = false;
+    result.maxIndent = null;
   }
 
-  function handleCursorDelta(state) {
+  function handleCursorDelta(result) {
     var hasCursorDelta = (
-      state.cursorLine === state.lineNo &&
-      state.cursorX === state.x &&
-      state.cursorX != null
+      result.cursorLine === result.lineNo &&
+      result.cursorX === result.x &&
+      result.cursorX != null
     );
 
     if (hasCursorDelta) {
-      state.indentDelta += state.cursorDx;
+      result.indentDelta += result.cursorDx;
     }
   }
 
-  function processIndent_paren(state) {
-    var ch = state.ch;
-    var stack = state.stack;
+  function processIndent_paren(result) {
+    var ch = result.ch;
+    var stack = result.stack;
 
     var checkIndent = (
-      state.trackIndent &&
+      result.trackIndent &&
       isInCode(stack) &&
       !isWhitespace(ch) &&
-      state.ch !== ";"
+      result.ch !== ";"
     );
 
     var atValidCloser = (
       checkIndent &&
-      isCloseDelim(ch) &&
+      isCloseParen(ch) &&
       isValidCloser(stack, ch)
     );
 
     var isCursorHolding = (
-      state.lineNo === state.cursorLine &&
-      state.cursorX != null &
-      state.cursorX <= state.x
+      result.lineNo === result.cursorLine &&
+      result.cursorX != null &
+      result.cursorX <= result.x
     );
 
     var shouldMoveCloser = (
@@ -637,68 +666,68 @@
 
     var skip = (
       checkIndent &&
-      isCloseDelim(ch) &&
+      isCloseParen(ch) &&
       !isCursorHolding
     );
 
     var atIndent = checkIndent && !skip;
-    var quit = atIndent && state.quoteDanger;
+    var quit = atIndent && result.quoteDanger;
 
-    state.quit = quit;
-    state.process = !skip;
+    result.quit = quit;
+    result.process = !skip;
 
     if (quit) {
       return;
     }
 
     if (shouldMoveCloser) {
-      appendDelimTrail(state);
+      appendParenTrail(result);
     }
 
-    handleCursorDelta(state);
+    handleCursorDelta(result);
 
     if (atIndent) {
-      correctIndent(state);
+      correctIndent(result);
     }
   }
 
-  function processChar_paren(state, ch) {
+  function processChar_paren(result, ch) {
     var origCh = ch;
-    state.ch = ch;
-    processIndent_paren(state);
+    result.ch = ch;
+    processIndent_paren(result);
 
-    if (state.quit) {
+    if (result.quit) {
       return;
     }
 
-    if (state.process) {
+    if (result.process) {
       // NOTE: the order here is important!
-      updateDelimTrail(state);
-      pushChar(state);
-      updateInsertionPt(state);
+      updateParenTrail(result);
+      pushChar(result);
+      updateInsertionPt(result);
     }
     else {
-      state.ch = "";
+      result.ch = "";
     }
 
-    updateLine(state, origCh);
-    state.x += state.ch.length;
+    updateLine(result, origCh);
+    result.x += result.ch.length;
   }
 
-  function formatDelimTrail(state) {
-    var start = state.delimTrail.start;
-    var end = state.delimTrail.end;
+  function formatParenTrail(result) {
+    var start = result.parenTrail.start;
+    var end = result.parenTrail.end;
 
     if (start == null || end == null) {
       return;
     }
 
-    var line = state.lines[state.lineNo];
+    var line = result.lines[result.lineNo];
     var newTrail = "";
     var spaceCount = 0;
     var i;
     for (i=start; i<end; i++) {
-      if (isCloseDelim(line[i])) {
+      if (isCloseParen(line[i])) {
         newTrail += line[i];
       }
       else {
@@ -707,79 +736,74 @@
     }
 
     if (spaceCount > 0) {
-      state.lines[state.lineNo] = replaceStringRange(line, start, end, newTrail);
+      result.lines[result.lineNo] = replaceStringRange(line, start, end, newTrail);
       end -= spaceCount;
     }
 
-    if (state.insert.lineDy === 0) {
-      state.insert.x = end;
+    if (result.insert.lineNo === result.lineNo) {
+      result.insert.x = end;
     }
   }
 
-  function processLine_paren(state, line) {
-    state.lineNo++;
-    state.backup = [];
-    state.cursorInComment = false;
-    state.delimTrail = {start: null, end: null};
-    state.trackIndent = !isInStr(state.stack);
-    state.lines.push(line);
-    state.x = 0;
+  function processLine_paren(result, line) {
+    result.lineNo++;
+    result.backup = [];
+    result.cursorInComment = false;
+    result.parenTrail = {start: null, end: null};
+    result.trackIndent = !isInStr(result.stack);
+    result.lines.push(line);
+    result.x = 0;
 
-    state.indentDelta = 0;
-
-    if (state.insert.lineDy != null) {
-      state.insert.lineDy--;
-    }
+    result.indentDelta = 0;
 
     var i;
     var chars = line + "\n";
     for (i=0; i<chars.length; i++) {
-      processChar_paren(state, chars[i]);
-      if (state.quit) {
+      processChar_paren(result, chars[i]);
+      if (result.quit) {
         break;
       }
     }
 
-    if (!state.quit) {
-      formatDelimTrail(state);
+    if (!result.quit) {
+      formatParenTrail(result);
     }
   }
 
-  function finalizeState_paren(state) {
-    state.isValid = (
-      state.stack.length === 0 &&
-      !state.quoteDanger
+  function finalizeResult_paren(result) {
+    result.success = (
+      result.stack.length === 0 &&
+      !result.quoteDanger
     );
   }
 
   function processText_paren(text, options) {
-    var state = getInitialState();
+    var result = getInitialResult();
 
     if (options) {
-      state.cursorX = options.cursorX;
-      state.cursorLine = options.cursorLine;
-      state.cursorDx = options.cursorDx;
+      result.cursorX = options.cursorX;
+      result.cursorLine = options.cursorLine;
+      result.cursorDx = options.cursorDx;
     }
 
     var lines = text.split("\n");
     var i;
     for (i=0; i<lines.length; i++) {
-      processLine_paren(state, lines[i]);
-      if (state.quit) {
+      processLine_paren(result, lines[i]);
+      if (result.quit) {
         break;
       }
     }
-    finalizeState_paren(state);
-    return state;
+    finalizeResult_paren(result);
+    return result;
   }
 
   function formatText_paren(text, options) {
-    var state = processText_paren(text, options);
-    var outText = state.isValid ? state.lines.join("\n") : text;
+    var result = processText_paren(text, options);
+    var outText = result.success ? result.lines.join("\n") : text;
     return {
       text: outText,
-      isValid: state.isValid,
-      state: state
+      success: result.success
     };
   }
 
