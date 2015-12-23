@@ -84,8 +84,6 @@ we can assume a default subset of the features for quick input:
 
 ## API
 
----
-
 ##### `indentMode(text[, options])`
 ##### `parenMode(text[, options])`
 
