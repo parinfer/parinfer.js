@@ -100,13 +100,12 @@ Arguments:
   - `cursorLine` - zero-based line number of the cursor
   - `cursorX` - zero-based x-position of the cursor
   - `cursorDx` - amount that the cursor moved horizontally if something was inserted or deleted
-    - only used by Paren Mode for preserving relative indentation of subsequent lines
+    - only used by Paren Mode for preserving relative indentation of child expressions when their parents are shifted
 
 Returns an object with the following properties:
 
-- `text` is the full text output
-- `isValid` is a boolean indicating if the input was valid
-- `state` is the state result of parinfer's internal processor
+- `text` is the full text output (this is just the original text if `success` is false)
+- `success` is a boolean indicating if the input was properly formatted enough to create a valid result
 
 ## Using Parinfer outside JS
 
