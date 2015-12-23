@@ -2,8 +2,7 @@
 
 (defn convert-result [result]
   {:text (aget result "text")
-   :valid? (aget result "isValid")
-   :state (aget result "state")})
+   :success? (aget result "success")})
 
 (defn convert-options [options]
   #js {:cursorX (:cursor-x options)
