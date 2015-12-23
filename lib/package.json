@@ -6,6 +6,17 @@
   "scripts": {
     "test": "eslint parinfer.js && mocha"
   },
+  "eslintConfig": {
+    "extends": [
+      "defaults"
+    ],
+    "env": {
+      "node": true,
+      "commonjs": true,
+      "amd": true,
+      "browser": true
+    }
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/shaunlebron/parinfer"
@@ -23,6 +34,7 @@
   "homepage": "http://shaunlebron.github.io/parinfer",
   "devDependencies": {
     "eslint": "^1.10.3",
+    "eslint-config-defaults": "^7.1.1",
     "mocha": "^2.3.4"
   }
 }
