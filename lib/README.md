@@ -146,6 +146,7 @@ of portability to different environments.
 To run the [test cases]:
 
 ```
+npm install
 npm test
 ```
 
