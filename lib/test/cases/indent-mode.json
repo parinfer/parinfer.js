@@ -1,0 +1,403 @@
+[{"out":
+  {"fileLineNo":13,
+   "lines":["(defn foo", "  [arg]", "  ret)"],
+   "cursor":null,
+   "diff":null},
+  "in":
+  {"fileLineNo":7,
+   "lines":["(defn foo", "  [arg", "  ret"],
+   "cursor":null,
+   "diff":null}},
+ {"out":
+  {"fileLineNo":27,
+   "lines":["(defn foo", "  [arg", "   ret])"],
+   "cursor":null,
+   "diff":null},
+  "in":
+  {"fileLineNo":21,
+   "lines":["(defn foo", "  [arg", "   ret"],
+   "cursor":null,
+   "diff":null}},
+ {"out":
+  {"fileLineNo":41,
+   "lines":["(defn foo)", "[arg", "   ret]"],
+   "cursor":null,
+   "diff":null},
+  "in":
+  {"fileLineNo":35,
+   "lines":["(defn foo", "[arg", "   ret"],
+   "cursor":null,
+   "diff":null}},
+ {"out":
+  {"fileLineNo":55,
+   "lines":["(defn foo)", "[arg]", "ret"],
+   "cursor":null,
+   "diff":null},
+  "in":
+  {"fileLineNo":49,
+   "lines":["(defn foo", "[arg", "ret"],
+   "cursor":null,
+   "diff":null}},
+ {"out":
+  {"fileLineNo":73,
+   "lines":
+   ["(defn foo", "  [arg]", "  ret)", "", "(defn foo", "  [arg]",
+    "  ret)"],
+   "cursor":null,
+   "diff":null},
+  "in":
+  {"fileLineNo":63,
+   "lines":
+   ["(defn foo", "  [arg", "  ret", "", "(defn foo", "  [arg",
+    "  ret"],
+   "cursor":null,
+   "diff":null}},
+ {"out":
+  {"fileLineNo":91,
+   "lines":["(def foo [a b])"],
+   "cursor":null,
+   "diff":null},
+  "in":
+  {"fileLineNo":87,
+   "lines":["(def foo [a b]]"],
+   "cursor":null,
+   "diff":null}},
+ {"out":
+  {"fileLineNo":102,
+   "lines":["(let [x {:foo 1 :bar 2}]", "  x)"],
+   "cursor":null,
+   "diff":null},
+  "in":
+  {"fileLineNo":97,
+   "lines":["(let [x {:foo 1 :bar 2]", "  x)"],
+   "cursor":null,
+   "diff":null}},
+ {"out":
+  {"fileLineNo":115,
+   "lines":["(def foo \"as"],
+   "cursor":null,
+   "diff":null},
+  "in":
+  {"fileLineNo":111,
+   "lines":["(def foo \"as"],
+   "cursor":null,
+   "diff":null}},
+ {"out":
+  {"fileLineNo":125,
+   "lines":["(defn foo [a \"])"],
+   "cursor":null,
+   "diff":null},
+  "in":
+  {"fileLineNo":121,
+   "lines":["(defn foo [a \"])"],
+   "cursor":null,
+   "diff":null}},
+ {"out":
+  {"fileLineNo":138,
+   "lines":
+   ["(defn foo", "  \"This is docstring.", "  Line 2 here.\"",
+    "  ret)"],
+   "cursor":null,
+   "diff":null},
+  "in":
+  {"fileLineNo":131,
+   "lines":
+   ["(defn foo", "  \"This is docstring.", "  Line 2 here.\"",
+    "  ret"],
+   "cursor":null,
+   "diff":null}},
+ {"out":
+  {"fileLineNo":154,
+   "lines":["(let [a \"Hello", "World\"", "      b 2]", "  ret)"],
+   "cursor":null,
+   "diff":null},
+  "in":
+  {"fileLineNo":147,
+   "lines":["(let [a \"Hello", "World\"", "      b 2", "  ret"],
+   "cursor":null,
+   "diff":null}},
+ {"out":
+  {"fileLineNo":168,
+   "lines":["(let [a \"])\"", "      b 2])"],
+   "cursor":null,
+   "diff":null},
+  "in":
+  {"fileLineNo":163,
+   "lines":["(let [a \"])\"", "      b 2"],
+   "cursor":null,
+   "diff":null}},
+ {"out":
+  {"fileLineNo":179,
+   "lines":["(def foo \"\\\"\")"],
+   "cursor":null,
+   "diff":null},
+  "in":
+  {"fileLineNo":175,
+   "lines":["(def foo \"\\\"\""],
+   "cursor":null,
+   "diff":null}},
+ {"out":
+  {"fileLineNo":196, "lines":["\"\"]\""], "cursor":null, "diff":null},
+  "in":
+  {"fileLineNo":192,
+   "lines":["\"\"]\""],
+   "cursor":{"cursorX":1, "cursorLine":0},
+   "diff":null}},
+ {"out":
+  {"fileLineNo":209,
+   "lines":["(def foo", "  \"", "  \"(a b)", "      c\")"],
+   "cursor":null,
+   "diff":null},
+  "in":
+  {"fileLineNo":202,
+   "lines":["(def foo", "  \"", "  \"(a b)", "      c\")"],
+   "cursor":{"cursorX":3, "cursorLine":1},
+   "diff":null}},
+ {"out":
+  {"fileLineNo":231,
+   "lines":
+   ["(for [col columns]", "  \"",
+    "  [:div.td {:style \"max-width: 500px;\"}])"],
+   "cursor":null,
+   "diff":null},
+  "in":
+  {"fileLineNo":225,
+   "lines":
+   ["(for [col columns]", "  \"",
+    "  [:div.td {:style \"max-width: 500px;\"}])"],
+   "cursor":{"cursorX":3, "cursorLine":1},
+   "diff":null}},
+ {"out":
+  {"fileLineNo":248,
+   "lines":
+   ["(def foo [a b])", "  ; \"my multiline", "  ; docstring.\"",
+    "ret"],
+   "cursor":null,
+   "diff":null},
+  "in":
+  {"fileLineNo":241,
+   "lines":
+   ["(def foo [a b]", "  ; \"my multiline", "  ; docstring.\"",
+    "ret)"],
+   "cursor":null,
+   "diff":null}},
+ {"out":
+  {"fileLineNo":263,
+   "lines":["(def foo [a b])", "  ; \"\"\\\"", "ret"],
+   "cursor":null,
+   "diff":null},
+  "in":
+  {"fileLineNo":257,
+   "lines":["(def foo [a b]", "  ; \"\"\\\"", "ret)"],
+   "cursor":null,
+   "diff":null}},
+ {"out":
+  {"fileLineNo":279,
+   "lines":["(defn foo [a b]", "  \\[", "  ret)"],
+   "cursor":null,
+   "diff":null},
+  "in":
+  {"fileLineNo":273,
+   "lines":["(defn foo [a b", "  \\[", "  ret"],
+   "cursor":null,
+   "diff":null}},
+ {"out":
+  {"fileLineNo":292,
+   "lines":["(def foo \\;)"],
+   "cursor":null,
+   "diff":null},
+  "in":
+  {"fileLineNo":288,
+   "lines":["(def foo \\;"],
+   "cursor":null,
+   "diff":null}},
+ {"out":
+  {"fileLineNo":303,
+   "lines":["(def foo \\,)", "(def bar \\ )"],
+   "cursor":null,
+   "diff":null},
+  "in":
+  {"fileLineNo":298,
+   "lines":["(def foo \\,", "(def bar \\ "],
+   "cursor":null,
+   "diff":null}},
+ {"out":
+  {"fileLineNo":317,
+   "lines":["(def foo) ;)"],
+   "cursor":null,
+   "diff":null},
+  "in":
+  {"fileLineNo":313,
+   "lines":["(def foo ;)"],
+   "cursor":null,
+   "diff":null}},
+ {"out":
+  {"fileLineNo":332,
+   "lines":
+   ["(let [a 1", "      b 2", "      c {:foo 1}]",
+    "         ;; :bar 2}]", "  ret)"],
+   "cursor":null,
+   "diff":null},
+  "in":
+  {"fileLineNo":324,
+   "lines":
+   ["(let [a 1", "      b 2", "      c {:foo 1",
+    "         ;; :bar 2}]", "  ret)"],
+   "cursor":null,
+   "diff":null}},
+ {"out":
+  {"fileLineNo":347,
+   "lines":["(let [a 1] ;; a comment", "  ret)"],
+   "cursor":null,
+   "diff":null},
+  "in":
+  {"fileLineNo":342,
+   "lines":["(let [a 1 ;; a comment", "  ret)"],
+   "cursor":null,
+   "diff":null}},
+ {"out":
+  {"fileLineNo":358,
+   "lines":["; hello \\n world"],
+   "cursor":null,
+   "diff":null},
+  "in":
+  {"fileLineNo":354,
+   "lines":["; hello \\n world"],
+   "cursor":null,
+   "diff":null}},
+ {"out":
+  {"fileLineNo":375, "lines":["(def b )"], "cursor":null, "diff":
+                                                          null},
+  "in":
+  {"fileLineNo":371,
+   "lines":["(def b )"],
+   "cursor":{"cursorX":7, "cursorLine":0},
+   "diff":null}},
+ {"out":
+  {"fileLineNo":386, "lines":["(def b) "], "cursor":null, "diff":
+                                                          null},
+  "in":
+  {"fileLineNo":382,
+   "lines":["(def b )"],
+   "cursor":null,
+   "diff":null}},
+ {"out":
+  {"fileLineNo":396,
+   "lines":["(def b [[c d] ])"],
+   "cursor":null,
+   "diff":null},
+  "in":
+  {"fileLineNo":392,
+   "lines":["(def b [[c d] ])"],
+   "cursor":{"cursorX":14, "cursorLine":0},
+   "diff":null}},
+ {"out":
+  {"fileLineNo":406,
+   "lines":["(def b [[c d]])"],
+   "cursor":null,
+   "diff":null},
+  "in":
+  {"fileLineNo":402,
+   "lines":["(def b [[c d] ])"],
+   "cursor":null,
+   "diff":null}},
+ {"out":
+  {"fileLineNo":417,
+   "lines":["(def b [[c d]])"],
+   "cursor":null,
+   "diff":null},
+  "in":
+  {"fileLineNo":413,
+   "lines":["(def b [[c d] ])"],
+   "cursor":{"cursorX":5, "cursorLine":0},
+   "diff":null}},
+ {"out":
+  {"fileLineNo":432,
+   "lines":["(let [a 1]", "  ret)"],
+   "cursor":null,
+   "diff":null},
+  "in":
+  {"fileLineNo":427,
+   "lines":["(let [a 1])", "  ret)"],
+   "cursor":null,
+   "diff":null}},
+ {"out":
+  {"fileLineNo":444,
+   "lines":["(let [a 1])", "  ret"],
+   "cursor":null,
+   "diff":null},
+  "in":
+  {"fileLineNo":439,
+   "lines":["(let [a 1])", "  ret)"],
+   "cursor":{"cursorX":11, "cursorLine":0},
+   "diff":null}},
+ {"out":
+  {"fileLineNo":457,
+   "lines":["(let [a 1]) 2", "  ret"],
+   "cursor":null,
+   "diff":null},
+  "in":
+  {"fileLineNo":452,
+   "lines":["(let [a 1]) 2", "  ret"],
+   "cursor":null,
+   "diff":null}},
+ {"out":
+  {"fileLineNo":470,
+   "lines":["(let [a 1]", "  ret)"],
+   "cursor":null,
+   "diff":null},
+  "in":
+  {"fileLineNo":465,
+   "lines":["(let [a 1])", "  ret)"],
+   "cursor":{"cursorX":10, "cursorLine":0},
+   "diff":null}},
+ {"out":
+  {"fileLineNo":482,
+   "lines":["(let [a 1] ;", "  ret)"],
+   "cursor":null,
+   "diff":null},
+  "in":
+  {"fileLineNo":477,
+   "lines":["(let [a 1]) ;", "  ret"],
+   "cursor":{"cursorX":13, "cursorLine":0},
+   "diff":null}},
+ {"out":
+  {"fileLineNo":496,
+   "lines":["(let [a 1])", "      "],
+   "cursor":null,
+   "diff":null},
+  "in":
+  {"fileLineNo":491,
+   "lines":["(let [a 1", "      ])"],
+   "cursor":{"cursorX":6, "cursorLine":1},
+   "diff":null}},
+ {"out":
+  {"fileLineNo":513,
+   "lines":["(defn foo", "  [a b]", "  ,(+ a b))"],
+   "cursor":null,
+   "diff":null},
+  "in":
+  {"fileLineNo":507,
+   "lines":["(defn foo", "  [a b]", "  ,(+ a b))"],
+   "cursor":null,
+   "diff":null}},
+ {"out":
+  {"fileLineNo":527,
+   "lines":["(defn foo [a b]", "  (+ a b))"],
+   "cursor":null,
+   "diff":null},
+  "in":
+  {"fileLineNo":522,
+   "lines":["(defn foo [a b]", "  (+ a b),)"],
+   "cursor":null,
+   "diff":null}},
+ {"out":
+  {"fileLineNo":541,
+   "lines":["(defn foo [a b]", "  (+ a b) ,1)"],
+   "cursor":null,
+   "diff":null},
+  "in":
+  {"fileLineNo":536,
+   "lines":["(defn foo [a b]", "  (+ a b) ,1)"],
+   "cursor":null,
+   "diff":null}}]
