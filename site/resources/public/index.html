@@ -1234,9 +1234,16 @@ See <a href="#editor-plugins">editor plugins</a> for progress.
 <h3>Source Code</h3>
 
 <p>
-The text formatting code is implemented in portable Clojure/ClojureScript. We
-have test suites for both modes. The editor demos are created in CodeMirror
-with hooks to apply our formatters and update cursor position.
+The text formatting code is intended to be editor-agnostic.  It is implemented
+in straightforward, imperative JavaScript, optimized for speed and designed
+to be easy to port to other languages. There is a test suite which is also
+designed to be easy to port with all test cases represented in JSON files.
+</p>
+
+<p>
+The editor demos on this site are created in CodeMirror with hooks to apply our
+formatters and update cursor position.  Source code for both the library and site
+are available on github:
 </p>
 
 <p>
