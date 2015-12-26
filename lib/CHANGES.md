@@ -1,3 +1,7 @@
+## 1.2.0
+
+- performance improvements (thanks [@oakmac](https://github.com/oakmac))
+
 ## 1.1.0
 
 - remove `result` key from returned result (internal only)
