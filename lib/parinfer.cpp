@@ -137,9 +137,8 @@ bool isInCode(const opener_stack_t& stack) {
 }
 
 bool isValidCloser(const opener_stack_t& stack, const string& ch) {
-  int i = stack.size() - 1;
-  if (i >= 0) {
-    return stack[i].ch == ch;
+  if (stack.size() > 0) {
+    return stack.back().ch == PARENS[ch];
   }
   return false;
 }
