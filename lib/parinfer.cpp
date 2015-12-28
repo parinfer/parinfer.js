@@ -42,8 +42,8 @@ struct range_t {
 };
 
 struct opener_t {
-  string ch;
   int x;
+  string ch;
   int indentDelta;
 };
 
@@ -141,6 +141,133 @@ bool isValidCloser(const opener_stack_t& stack, const string& ch) {
     return stack.back().ch == PARENS[ch];
   }
   return false;
+}
+
+//------------------------------------------------------------------------------
+// Lisp Reader: Stack Operations
+//------------------------------------------------------------------------------
+
+void pushOpen(result_t& result) {
+  auto& stack = result.stack;
+  if (isEscaping(stack)) {
+    stack.pop_back();
+  }
+  else if (isInCode(stack)) {
+    stack.push_back({
+        result.x,
+        result.ch,
+        result.indentDelta
+    });
+  }
+}
+
+void pushClose(result_t& result) {
+  auto& stack = result.stack;
+  auto& backup = result.backup;
+  auto& ch = result.ch;
+
+  if (isEscaping(stack)) {
+    stack.pop_back();
+  }
+  else if (isInCode(stack)) {
+    if (isValidCloser(stack, ch)) {
+      auto& opener = stack.back();
+      stack.pop_back();
+      result.maxIndent.present = true;
+      result.maxIndent.value = opener.x;
+      backup.push_back(opener);
+    }
+  }
+  else {
+    result.ch.clear();
+  }
+}
+
+void pushTab(result_t& result) {
+  if (!isInStr(result.stack)) {
+    result.ch = "  ";
+  }
+}
+
+void pushSemicolon(result_t& result) {
+  auto& stack = result.stack;
+  if (isEscaping(stack)) {
+    stack.pop_back();
+  }
+}
+
+void pushNewline(result_t& result) {
+  auto& stack = result.stack;
+  if (isEscaping(stack)) {
+    stack.pop_back();
+  }
+  if (isInComment(stack)) {
+    stack.pop_back();
+  }
+  result.ch = "  ";
+}
+
+void pushEscape(result_t& result) {
+  auto& stack = result.stack;
+  if (isEscaping(stack)) {
+    stack.pop_back();
+  }
+  else {
+    stack.push_back({
+      result.x,
+      result.ch,
+      0
+    });
+  }
+}
+
+void pushQuote(result_t& result) {
+  auto& stack = result.stack;
+  if (isEscaping(stack)) {
+    stack.pop_back();
+  }
+  else {
+    stack.push_back({
+      result.x,
+      result.ch,
+      0
+    });
+  }
+}
+
+void pushDefault(result_t& result) {
+  auto& stack = result.stack;
+  if (isEscaping(stack)) {
+    stack.pop_back();
+  }
+}
+
+void pushChar(result_t& result) {
+  auto& ch = result.ch;
+  if (isOpenParen(ch)) {
+    pushOpen(result);
+  }
+  else if (isCloseParen(ch)) {
+    pushClose(result);
+  }
+  else if (ch == TAB) {
+    pushTab(result);
+  }
+  else if (ch == SEMICOLON) {
+    pushSemicolon(result);
+  }
+  else if (ch == NEWLINE) {
+    pushNewline(result);
+  }
+  else if (ch == BACKSLASH) {
+    pushEscape(result);
+  }
+  else if (ch == DOUBLE_QUOTE) {
+    pushQuote(result);
+  }
+  else {
+    pushDefault(result);
+  }
 }
 
 //------------------------------------------------------------------------------
