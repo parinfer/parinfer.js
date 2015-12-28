@@ -161,12 +161,6 @@ To build the test case JSON files from Markdown ([lein-exec] required for now):
 test/cases/build.clj
 ```
 
-Experimenting with parinfer.cpp for asm.js:
-
-```
-clang++ -std=c++11 parinfer.cpp && ./a.out
-```
-
 [old-clojure]:https://github.com/shaunlebron/parinfer/tree/clojure/lib
 [test cases]:test/cases
 [lein-exec]:https://github.com/kumarshantanu/lein-exec
