@@ -195,7 +195,6 @@
 
 (defn extract-tests []
   (extract-test "indent-mode")
-  (extract-test "indent-mode-change")
   (extract-test "paren-mode"))
 
 (extract-tests)
