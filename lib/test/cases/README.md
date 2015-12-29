@@ -5,8 +5,6 @@ new text with corrections.  Thus, a test case contains a description, input
 text (with optional cursor), and expected output text. For readability, we
 specify these things in markdown:
 
----
-
 > description of the test...
 > 
 > ```in
@@ -16,8 +14,6 @@ specify these things in markdown:
 > ```out
 > expected output text
 > ```
-
----
 
 To specify the cursor in the input text, use a pipe `|`.  The character
 is removed from the input.
