@@ -155,12 +155,5 @@ To run a performance stress test:
 node test/perf.js
 ```
 
-To build the test case JSON files from Markdown ([lein-exec] required for now):
-
-```
-test/cases/build.clj
-```
-
 [old-clojure]:https://github.com/shaunlebron/parinfer/tree/clojure/lib
 [test cases]:test/cases
-[lein-exec]:https://github.com/kumarshantanu/lein-exec
