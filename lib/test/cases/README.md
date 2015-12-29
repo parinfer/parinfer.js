@@ -20,3 +20,15 @@ is removed from the input.
 
 The input text is passed to the mode's function (`indentMode` or `parenMode`).
 The expected output is compared to the actual result of this function call.
+
+## Building JSON
+
+The purpose of the JSON files is to allow potential ports to consume
+the test cases.
+
+Running `npm test` from the root lib directory will rebuild the JSON tests
+everytime it runs, but you can build it directly here:
+
+```
+node build.js
+```
