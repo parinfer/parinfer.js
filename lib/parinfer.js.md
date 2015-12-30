@@ -1,14 +1,31 @@
-# Parinfer.js
+This is documentation for [`parinfer.js`].
 
-At a high level, `parinfer.js` scans your text twice:
+[`parinfer.js`]:parinfer.js
+
+## Summary
+
+Parinfer.js performs full file text transformation in two passes:
 
 1. First pass (_read_): Verify that the text's structure is okay to work with (very fast).
 1. Second pass (_transform_): Change the text according to Indent Mode or Paren Mode rules.
 
+## Usage
+
+```
+indentMode(text[, options])
+parenMode(text[, options])
+```
+
+Text transformation is performed by either of the two functions above.  Both
+are expected to be debounced on keypress.  Though no API is provided for
+performing incremental changes, a debounced full text transformer will perform
+well enough while preventing complications of a stateful API.
+
 ## The Reader
 
-Parinfer fundamentally needs to know where the parens are, while ignoring
-those found inside any of the following:
+Parinfer fundamentally needs to know where the parens are, but it must ignore
+those found inside strings, character literals, and comments.  Thus, we can
+write a partial Lisp Reader that only scans for parens outside these forms.
 
 ```clj
 "("  ; <-- ignore parens in strings
@@ -17,18 +34,13 @@ those found inside any of the following:
 ; ( <--- ignore parens in comments
 ```
 
-Thus, we can write a small, partial Lisp Reader that ignores everything else.
-This should work for all Lisp dialects since they don't differ on these things.
-
-Our Lisp Reader starts with an empty stack and performs the following
-operations as we scan each character.
+To implement our Lisp Reader, we start with an empty stack and perform the
+following operations as we scan each character.  See the `pushChar` function
+to trace the details.
 
 - _Push_ "opening" characters onto the stack (when appropriate).
 - _Pop_ the stack when "closing" characters are encountered (and appropriate).
 - _Peek_ the stack to determine what we're inside of (for appropriation)
-
-Specifically, follow the `pushChar` function to see how the stack is affected
-by each character.
 
 After processing the whole file, the state of the stack can tell us the
 following things:
@@ -38,33 +50,37 @@ following things:
 
 ## The Transfomers
 
-We consider _Indent Mode_ and _Paren Mode_ to be transformers here, since they
-both transform a given text according to special rules.
+_Indent Mode_ and _Paren Mode_ transform text according to special rules.
 
-The transformers use the aformentioned Reader, but they identify extra
-parts of significance too.  We illustrate these parts in the examples below
-with carets `^`.
+### Definitions
 
-- __Paren trail__ - section of a line that ends in close-parens, if any. (disregarding _comments_)
+Before transforming, we must use information from the Reader in order to
+identify extra parts of significance:
+
+- __Paren trail__ - the trail of close-parens at the end of a line, if any.
+  Notice that we disregard trailing whitespace and comments, and we
+  allow whitespace between parens.
 
     ```clj
     (foo (+ 2 3) [(bar)] )    ;; comment
                       ^^^^
     ```
 
-- __Insertion point__ - the first point on a line where an inserted close-paren would be considered part of the _Paren Trail_
+- __Insertion point__ - the point after which a _Paren Trail_ could be
+  inserted. If a Paren Trail already exists, the insertion point is simply the
+  point before it.
 
     ```clj
     (defn foo [a b] ret)
                       ^
     (def bar [a b])
                 ^
-    foo
-      ^
+    (foo [bar] a
+               ^
     ```
 
-- __Indentation point__ - the first non-whitespace character of a line.  The line
-  must not start inside a string, and must contain more than whitespace or
+- __Indentation point__ - the first non-whitespace character of a line.  The
+  line must not start inside a string, and must contain more than whitespace or
   comments.
 
     ```clj
@@ -73,5 +89,9 @@ with carets `^`.
        bar)
        ^
     ```
+
+### Transforming
+
+Transformation happens one line at a time.
 
 
