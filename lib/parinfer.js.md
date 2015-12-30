@@ -47,14 +47,14 @@ with carets `^`.
 
 - __Paren trail__ - section of a line that ends in close-parens, if any. (disregarding _comments_)
 
-    ```
+    ```clj
     (foo (+ 2 3) [(bar)] )    ;; comment
                       ^^^^
     ```
 
 - __Insertion point__ - the first point on a line where an inserted close-paren would be considered part of the _Paren Trail_
 
-    ```
+    ```clj
     (defn foo [a b] ret)
                       ^
     (def bar [a b])
@@ -67,7 +67,7 @@ with carets `^`.
   must not start inside a string, and must contain more than whitespace or
   comments.
 
-    ```
+    ```clj
     (def foo
     ^
        bar)
