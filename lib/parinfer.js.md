@@ -7,7 +7,7 @@ This is documentation for [`parinfer.js`].
 Parinfer.js performs full file text transformation in two passes:
 
 1. First pass (_read_): Verify that the text's structure is okay to work with (very fast).
-1. Second pass (_transform_): Change the text according to Indent Mode or Paren Mode rules.
+1. Second pass (_read/transform_): Change the text according to Indent Mode or Paren Mode rules.
 
 ## Usage
 
@@ -48,16 +48,13 @@ following things:
 - _Unclosed quote error_ - if we are still inside a string
 - _Unclosed paren error_ - if we are still inside a list
 
-## The Transfomers
+## Definitions
 
-_Indent Mode_ and _Paren Mode_ transform text according to special rules.
+As we scan each character with the Reader, we identify and save sections
+important to the transformation.
 
-### Definitions
-
-Before transforming, we must use information from the Reader in order to
-identify extra parts of significance:
-
-- __Paren trail__ - the trail of close-parens at the end of a line, if any.
+- __Paren Trail__ - the trail of close-parens at the end of a line, if any.
+  In _Indent Mode_, these close-parens are inferred from indentation alone.
   Notice that we disregard trailing whitespace and comments, and we
   allow whitespace between parens.
 
@@ -66,20 +63,21 @@ identify extra parts of significance:
                       ^^^^
     ```
 
-- __Insertion point__ - the point after which a _Paren Trail_ could be
-  inserted. If a Paren Trail already exists, the insertion point is simply the
-  point before it.
+- __Insertion Point__ - the last non-whitespace character before a Paren Trail.
+  If no Paren Trail exists, it is the first point after which one could be
+  inserted.  In _Indent Mode_, this is where inferred close-parens are inserted
+  after the original _Paren Trail_ is removed.
 
     ```clj
     (defn foo [a b] ret)
                       ^
-    (def bar [a b])
+    (def bar [a b ])
                 ^
     (foo [bar] a
                ^
     ```
 
-- __Indentation point__ - the first non-whitespace character of a line.  The
+- __Indentation Point__ - the first non-whitespace character of a line.  The
   line must not start inside a string, and must contain more than whitespace or
   comments.
 
@@ -90,7 +88,7 @@ identify extra parts of significance:
        ^
     ```
 
-### Transforming
+## Transforming
 
 Transformation happens one line at a time.
 
