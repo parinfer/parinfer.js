@@ -1,3 +1,7 @@
+## 1.3.0
+
+- add compatibility for CRLF line endings
+
 ## 1.2.0
 
 - performance improvements (thanks [@oakmac](https://github.com/oakmac))
