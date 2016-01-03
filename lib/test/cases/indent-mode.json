@@ -518,7 +518,7 @@
     "out": {
       "fileLineNo": 385,
       "lines": [
-        "(def b) "
+        "(def b)"
       ],
       "cursor": null
     }
@@ -693,62 +693,6 @@
       "lines": [
         "(let [a 1])",
         "      "
-      ],
-      "cursor": null
-    }
-  },
-  {
-    "in": {
-      "fileLineNo": 506,
-      "lines": [
-        "(defn foo",
-        "  [a b]",
-        "  ,(+ a b))"
-      ],
-      "cursor": null
-    },
-    "out": {
-      "fileLineNo": 512,
-      "lines": [
-        "(defn foo",
-        "  [a b]",
-        "  ,(+ a b))"
-      ],
-      "cursor": null
-    }
-  },
-  {
-    "in": {
-      "fileLineNo": 521,
-      "lines": [
-        "(defn foo [a b]",
-        "  (+ a b),)"
-      ],
-      "cursor": null
-    },
-    "out": {
-      "fileLineNo": 526,
-      "lines": [
-        "(defn foo [a b]",
-        "  (+ a b))"
-      ],
-      "cursor": null
-    }
-  },
-  {
-    "in": {
-      "fileLineNo": 535,
-      "lines": [
-        "(defn foo [a b]",
-        "  (+ a b) ,1)"
-      ],
-      "cursor": null
-    },
-    "out": {
-      "fileLineNo": 540,
-      "lines": [
-        "(defn foo [a b]",
-        "  (+ a b) ,1)"
       ],
       "cursor": null
     }

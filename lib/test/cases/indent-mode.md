@@ -384,7 +384,7 @@ of the last token.  The space is NOT removed from the line.
 ```
 
 ```out
-(def b) 
+(def b)
 ```
 
 Another example with more close-parens:
@@ -496,50 +496,5 @@ they were.
 ```out
 (let [a 1])
       
-```
-
-## Commas
-
-Commas are considered whitespace in Clojure, but are unquote sugar in Racket.
-Since commas are never used as indentation whitespace in Clojure, we don't
-treat it as such:
-
-```in
-(defn foo
-  [a b]
-  ,(+ a b))
-```
-
-```out
-(defn foo
-  [a b]
-  ,(+ a b))
-```
-
-If standalone commas find their way between close-parens at the end of a line,
-they will be removed.  These types of commas are not valid in Racket.
-
-```in
-(defn foo [a b]
-  (+ a b),)
-```
-
-```out
-(defn foo [a b]
-  (+ a b))
-```
-
-Note that the comma below is protected since this is valid code in both Clojure
-and Racket.  The `1` blocks the two close-parens at the end of the line from
-being contiguous tokens, whereas the standalone comma would not have.
-
-```in
-(defn foo [a b]
-  (+ a b) ,1)
-```
-
-```out
-(defn foo [a b]
-  (+ a b) ,1)
 ```
 
