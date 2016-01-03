@@ -4,10 +4,7 @@ This is documentation for [`parinfer.js`].
 
 ## Summary
 
-Parinfer.js performs full file text transformation in two passes:
-
-1. First pass (_read_): Verify that the text's structure is okay to work with (very fast).
-1. Second pass (_read/transform_): Change the text according to Indent Mode or Paren Mode rules.
+Parinfer.js performs full file text transformation in one pass.
 
 ## Usage
 
@@ -21,7 +18,7 @@ are expected to be debounced on keypress.  Though no API is provided for
 performing incremental changes, a debounced full text transformer will perform
 well enough while preventing complications of a stateful API.
 
-## The Reader
+## Finding Parens
 
 Parinfer fundamentally needs to know where the parens are, but it must ignore
 those found inside strings, character literals, and comments.  Thus, we can
@@ -34,58 +31,50 @@ write a partial Lisp Reader that only scans for parens outside these forms.
 ; ( <--- ignore parens in comments
 ```
 
-To implement our Lisp Reader, we start with an empty stack and perform the
-following operations as we scan each character.  See the `pushChar` function
-to trace the details.
+At any point in our file, our Lisp Reader should be able to know the locations
+of its parent parentheses and whether or not it is inside a string, comment or
+character.  This is accomplished by maintaining a stack of parentheses:
 
-- _Push_ "opening" characters onto the stack (when appropriate).
-- _Pop_ the stack when "closing" characters are encountered (and appropriate).
-- _Peek_ the stack to determine what we're inside of (for appropriation)
+- _Push_ open-parens onto the stack when encountered
+- _Pop_ the stack when close-parens are encountered
 
-After processing the whole file, the state of the stack can tell us the
-following things:
+Boolean flags are also used to track token types. See `pushChar` function to
+trace the details.
 
-- _Unclosed quote error_ - if we are still inside a string
-- _Unclosed paren error_ - if we are still inside a list
+## Special Regions
 
-## Definitions
+There are two regions of a line that we must identify, labeled in the
+following examples with carets `^`.
 
-As we scan each character with the Reader, we identify and save sections
-important to the transformation.
+- __Indentation__ - the starting whitespace of a line, if any.  Indentation is
+  ignored for lines starting inside a string, and any empty lines containing
+  only whitespace or a comment.
+
+    ```clj
+    (defn foo [x]
+      (+ x 1))
+    ^^
+
+    (defn foo [x]
+      "my multiline
+       docstring."
+
+             ;; indented comments don't count
+
+      (+ x 1))
+    ^^
+    ```
 
 - __Paren Trail__ - the trail of close-parens at the end of a line, if any.
-  In _Indent Mode_, these close-parens are inferred from indentation alone.
-  Notice that we disregard trailing whitespace and comments, and we
-  allow whitespace between parens.
+  Notice that comments are allowed after these parens.  Also notice that any
+  whitespace before a close-paren is considered part of the Paren Trail
 
     ```clj
     (foo (+ 2 3) [(bar)] )    ;; comment
                       ^^^^
-    ```
 
-- __Insertion Point__ - the last non-whitespace character before a Paren Trail.
-  If no Paren Trail exists, it is the first point after which one could be
-  inserted.  In _Indent Mode_, this is where inferred close-parens are inserted
-  after the original _Paren Trail_ is removed.
-
-    ```clj
-    (defn foo [a b] ret)
-                      ^
-    (def bar [a b ])
-                ^
-    (foo [bar] a
-               ^
-    ```
-
-- __Indentation Point__ - the first non-whitespace character of a line.  The
-  line must not start inside a string, and must contain more than whitespace or
-  comments.
-
-    ```clj
-    (def foo
-    ^
-       bar)
-       ^
+    (foo   )))
+        ^^^^^^
     ```
 
 ## Transforming
