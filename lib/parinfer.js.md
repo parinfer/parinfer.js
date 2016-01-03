@@ -70,6 +70,9 @@ following examples with carets `^`.
   whitespace before a close-paren is considered part of the Paren Trail
 
     ```clj
+    (foo)
+        ^
+
     (foo (+ 2 3) [(bar)] )    ;; comment
                       ^^^^
 
