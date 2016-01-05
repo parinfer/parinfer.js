@@ -193,3 +193,16 @@ ret)
   ; docstring."
  ret)
 ```
+
+
+Hanging backslash at end of line is invalid and causes processing to be abandoned.
+
+```in
+(foo [a b]\
+c)
+```
+
+```out
+(foo [a b]\
+c)
+```

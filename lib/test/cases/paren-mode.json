@@ -275,5 +275,23 @@
       ],
       "cursor": null
     }
+  },
+  {
+    "in": {
+      "fileLineNo": 199,
+      "lines": [
+        "(foo [a b]\\",
+        "c)"
+      ],
+      "cursor": null
+    },
+    "out": {
+      "fileLineNo": 204,
+      "lines": [
+        "(foo [a b]\\",
+        "c)"
+      ],
+      "cursor": null
+    }
   }
 ]

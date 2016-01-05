@@ -305,6 +305,18 @@ Inferred close-parens are inserted after escaped whitespace.
 (def bar \ )
 ```
 
+Hanging backslash at end of line is invalid and causes processing to be abandoned.
+
+```in
+(foo [a b\
+  c)
+```
+
+```out
+(foo [a b\
+  c)
+```
+
 ## Comments
 
 When commenting-out an inferred close-paren, a new one should be inserted
