@@ -17,34 +17,12 @@ Text transformation is performed by either of the two functions above.  Both
 are expected to be debounced on keypress. Options are currently only used
 for specifying cursor position and movement.
 
-## Finding Parens
-
-Parinfer fundamentally needs to know where the parens are, but it must ignore
-those found inside strings, character literals, and comments.  Thus, we can
-write a partial Lisp Reader that only scans for parens outside these forms.
-
-```clj
-"("  ; <-- ignore parens in strings
-\(   ; <-- ignore parens inside characters (escaped literals)
-
-; ( <--- ignore parens in comments
-```
-
-At any point in our file, our Lisp Reader should be able to know the locations
-of its parent parentheses and whether or not it is inside a string, comment or
-character.  This is accomplished by maintaining a stack of parentheses:
-
-- _Push_ open-parens onto the stack when encountered
-- _Pop_ the stack when close-parens are encountered
-
-Boolean flags are also used to track token types. See `onChar` function to
-trace the details.
-
 ## Defining "Normalized"
 
-Parinfer always produces code adhering to a normalized form, whose definition
-depends on _close-parens_ and _tabs_.  Thus, Parinfer will normalize whatever
-code it is given.
+To start understanding Parinfer's process, it's important to know that it
+always produces code adhering to a normalized form, whose definition depends on
+_close-parens_ and _tabs_.  Thus, Parinfer will normalize whatever code it is
+given.
 
 These normalization rules are not based on personal preference-- rather, they
 only serve to prevent ambiguity to make Parinfer's process of inference
@@ -102,6 +80,30 @@ Tab characters do not have a defined length, thus making indentation length
 ambiguous.
 
 The normalized form replaces tab characters inside indentation with two spaces.
+
+## Finding Parens
+
+Before Parinfer can do anything, it fundamentally needs to locate the parens
+while ignoring those found inside strings, character literals, and comments.
+Thus, we can write a partial Lisp Reader that only scans for parens outside
+these forms.
+
+```clj
+"("  ; <-- ignore parens in strings
+\(   ; <-- ignore parens inside characters (escaped literals)
+
+; ( <--- ignore parens in comments
+```
+
+At any point in our file, our Lisp Reader should be able to know the locations
+of its parent parentheses and whether or not it is inside a string, comment or
+character.  This is accomplished by maintaining a stack of parentheses:
+
+- _Push_ open-parens onto the stack when encountered
+- _Pop_ the stack when close-parens are encountered
+
+Boolean flags are also used to track token types. See `onChar` function to
+trace the details.
 
 ## Analyzing a Line
 
