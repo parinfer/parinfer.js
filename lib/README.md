@@ -104,8 +104,21 @@ Arguments:
 
 Returns an object with the following properties:
 
-- `text` is the full text output (this is just the original text if `success` is false)
 - `success` is a boolean indicating if the input was properly formatted enough to create a valid result
+- `text` is the full text output (this is just the original text if `success` is false)
+- `changedLines` is an array of objects representing only the lines which Parinfer changed:
+  - `lineNo` is the zero-based line number
+  - `line` is the full text of the line
+- `error` is an object populated if `success` is false:
+  - `name` is the name of the error, which will be any of the following:
+    - `"quote-danger"`
+    - `"eol-backslash"`
+    - `"unclosed-quote"`
+    - `"unclosed-paren"`
+    - `"unhandled"`
+  - `message` is a message describing the error
+  - `lineNo` is a zero-based line number where the error occurred
+  - `x` is a zero-based column where the error occurred
 
 ## Using Parinfer outside JS
 
