@@ -1,4 +1,4 @@
-## dev
+## 1.4.0
 
 - modes return new key `changedLines`
 - modes return new key `error`
