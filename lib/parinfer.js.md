@@ -17,6 +17,8 @@ Text transformation is performed by either of the two functions above.  Both
 are expected to be debounced on keypress. Options are currently only used
 for specifying cursor position and movement.
 
+See [API](README.md#api) for full details.
+
 ## Defining "Normalized"
 
 To start understanding Parinfer's process, it's important to know that it
