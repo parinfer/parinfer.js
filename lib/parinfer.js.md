@@ -4,7 +4,10 @@ This is WIP documentation for [`parinfer.js`].
 
 ## Summary
 
-Parinfer.js performs full file text transformation in one pass.
+Parinfer.js performs a _well-defined_, full file text transformation in one pass,
+correcting either indentation or close-parens.  You should be aware that
+Parinfer is not a pretty-printer-- that is, it never adds or removes lines from
+your file.
 
 ## Usage
 
@@ -22,14 +25,10 @@ See [API](README.md#api) for full details.
 ## Defining "Normalized"
 
 To start understanding Parinfer's process, it's important to know that it
-always produces code adhering to a normalized form, whose definition depends on
-_close-parens_ and _tabs_.  Thus, Parinfer will normalize whatever code it is
-given.
-
-These normalization rules are not based on personal preference-- rather, they
-only serve to prevent ambiguity to make Parinfer's process of inference
-possible.  Fortunately, these rules are inline with standard Lisp styling
-conventions.
+always produces code adhering to a normalized form.  These normalization rules
+are not based on personal preference-- rather, they only serve to prevent
+ambiguity to make Parinfer's process of inference possible.  Fortunately, these
+rules are inline with standard Lisp styling conventions.
 
 #### Close Paren Position
 
@@ -77,11 +76,9 @@ The normalized form removes the unmatched close-parens:
 
 #### Tab Characters
 
-If a line is indented with a tab character, we consider this non-normalized.
-Tab characters do not have a defined length, thus making indentation length
-ambiguous.
-
-The normalized form replaces tab characters inside indentation with two spaces.
+If a line is indented with a tab character, we consider this non-normalized
+since they create an ambiguous indentation length.  Thus, the normalized form
+replaces such tab characters with a standard length of two spaces.
 
 ## Finding Parens
 
@@ -109,14 +106,14 @@ trace the details.
 
 ## Analyzing a Line
 
-Before we look at how transformation is performed, we must establish a
-vocabulary for the important regions of a line.
+Before we look at how transformation is performed, we must define the two key
+regions of a line:
 
-- __Indentation__ is the number of whitespace of a line, shown with underscores
-  below.  Indentation is ignored for lines starting inside a string, and any
-  empty lines containing only whitespace or a comment. Notice that we indent
-  every line with one space to allow us to show zero-length indentation with
-  a single underscore.
+- __Indentation__ is the number of space characters at the start of a line,
+  shown with underscores below.  Indentation is ignored for lines starting
+  inside a string and any empty lines (i.e. truly empty or only
+  whitespace+comment).  Notice that we indent every line with one space below
+  just to show _zero-length_ indentation with a single underscore.
 
     ```clj
     _(defn foo [x]
@@ -200,7 +197,7 @@ _________________:nose nose}}))
                           ^^^^
 ```
 
-To clarify:
+To reiterate:
 
 - _underscores_ at the beginning of a line represent Indentation
 - _underscores_ at the end of a line represent where a Paren Trail could be inserted
