@@ -12,7 +12,9 @@ or indentation.
 npm install parinfer
 ```
 
-or download [parinfer.js](parinfer.js) and include directly in html:
+or download `parinfer.js` from [latest release] and include directly in html:
+
+[latest release]:https://github.com/shaunlebron/parinfer/releases/latest
 
 ```html
 <script src="parinfer.js"></script>
