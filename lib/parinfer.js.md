@@ -9,15 +9,13 @@ pass, correcting either indentation or close-parens.  Close-parens may move
 between lines and some whitespace may be added or removed, but the number of
 lines will always remain unchanged.
 
-```
-indentMode(text[, options])
-parenMode(text[, options])
-```
+- [`indentMode`]`(text[, options])`
+- [`parenMode`]`(text[, options])`
 
 Text transformation is performed by either of the two functions above.  Both
-are expected to be debounced on keypress. Options are currently only used for
-specifying cursor position and movement.  See [API](README.md#api) for full
-details.
+are expected to be debounced on keypress for performance. Options are currently
+only used for specifying cursor position and movement.  See
+[API](README.md#api) for full details.
 
 ## Processing the Text
 
@@ -34,7 +32,7 @@ functions in this file.  That way, it should be obvious whenever some part of
 the result is being read or updated anywhere in the file.
 
 The processing functions above behave differently depending on the mode set
-at `result.mode`.
+at [`result.mode`].
 
 ## Finding Parens
 
@@ -56,7 +54,7 @@ crossing the boundaries of these token types:
 - [`result.isEscaping`]
 - [`result.isInCode`]
 
-Once we have this, we can keep a stack of parentheses (in [`result.parenStack`])
+Once we have this, we can keep a stack of parentheses, [`result.parenStack`],
 as we scan a file:
 
 - _Push_ open-parens onto the stack when encountered
@@ -65,110 +63,123 @@ as we scan a file:
 
 The [`onChar`] function determines what to do for each character that is
 encountered.  That is, it dispatches to operations which modify our boolean
-flags and paren stack.
-
-`onChar` is also a convenient place to do some of the transformations we will
-discuss next.
+flags and paren stack.  It is also a convenient place to do some of the
+transformations we will discuss next.
 
 ## Housekeeping
 
 Parinfer performs some housekeeping on the code as a necessary step toward the
 main transformations.
 
-- __Tab Characters__: A line indented with a tab character results in an
-  ambiguous indentation length.  Thus, we replace such tab characters with a
-  standard count of two spaces.  This mapping happens at [`onTab`], and is
-  committed by [`commitChar`].
+#### Tab Characters
 
-- __Leading Close Parens__: Lines sometimes start with a close-paren (possibly
-  preceded by whitespace).  For example, this is a common occurrence in real
-  world code:
+A line indented with a tab character results in an ambiguous indentation
+length.  Thus, we replace such tab characters with a standard count of two
+spaces.
 
-  ```clj
-  (ns example.core
-    (:require
-      [foo.core :as foo]
-      [bar.core :as bar]
-      )) ;; <-- leading close-paren
-  ```
+_This operation happens at [`onTab`], committed by [`commitChar`]._
 
-  To be consistent about close-paren positioning, we move leading close-parens
-  to the end of the previous non-empty line.  This happens at
-  [`onLeadingCloseParen`].
+#### Leading Close Parens
 
-  ```clj
-  (ns example.core
-    (:require
-      [foo.core :as foo]
-      [bar.core :as bar])) ;; <-- trailing close-paren
-  ```
+Lines sometimes start with a close-paren (possibly preceded by whitespace).
+For example, this is a common occurrence in real world code:
 
-- __Unmatched Close Paren__: Any unmatched close-parens are removed.  This
-  makes the next transformations simpler, and has the added benefit of making a
-  paredit-like "barf" operation without hotkeys (more on this later).  But
-  since newcomers may become confused about why they can't type close-parens
-  sometimes, we are exploring how to make this a configurable option in [issue
-  79].
+```clj
+(ns example.core
+  (:require
+    [foo.core :as foo]
+    [bar.core :as bar]
+    )) ;; <-- leading close-paren
+```
 
-  ```clj
-  (foo} 1 2 3)  ;; <-- the "}" is unmatched
-  (bar) 4 5 6)  ;; <-- the last ")" is unmatched
-  ```
+To be consistent about close-paren positioning, we move leading close-parens
+to the end of the previous non-empty line.
 
-  The removal happens at [`onUnmatchedCloseParen`].
+```clj
+(ns example.core
+  (:require
+    [foo.core :as foo]
+    [bar.core :as bar])) ;; <-- trailing close-paren
+```
 
-  ```clj
-  (foo 1 2 3)  ;; <-- the "}" was removed
-  (bar) 1 2 3  ;; <-- the last ")" was removed
-  ```
+_This operation happens at [`onLeadingCloseParen`]._
+
+#### Unmatched Close Paren
+
+Any unmatched close-parens are removed.  This makes the next transformations
+simpler, and has the added benefit of making a paredit-like "barf" operation
+without hotkeys (more on this later).  But since newcomers may become confused
+about why they can't type close-parens sometimes, we are exploring how to make
+this a configurable option in [issue 79].
+
+```clj
+(foo} 1 2 3)  ;; <-- before: the "}" is unmatched
+(foo 1 2 3)   ;; <-- after:  the "}" is removed
+```
+
+```clj
+(bar) 4 5 6)  ;; <-- before: the last ")" is unmatched
+(bar) 4 5 6   ;; <-- after:  the last ")" is removed
+```
+
+_The operation happens at [`onUnmatchedCloseParen`], committed by [`commitChar`]._
 
 ## Analyzing a Line
 
 Parinfer needs to analyze each line in order to locate two main areas of interest:
 
-- __Indentation__ is the number of space characters at the start of a line,
-  shown with underscores below.  Indentation is ignored for lines starting
-  inside a string and any empty lines (i.e. truly empty or only
-  whitespace+comment).  Notice that we indent every line with one space below
-  just to show _zero-length_ indentation with a single underscore.
+#### Indentation
 
-    ```clj
-    _(defn foo [x]
-    ___(+ x 1))
+Indentation is the number of space characters at the start of a line, shown
+with underscores below.  Indentation is ignored for lines starting inside a
+string and any empty lines (i.e. truly empty or only whitespace+comment).
+Notice that we indent every line with one space below just to show
+_zero-length_ indentation with a single underscore.
 
-    _(let [x 1
-                       ;; Whitespace before a comment doesn't count.
-    _______y 2
-    _______z "hello
-              there"]  ;; Whitespace inside a string doesn't count.
-    ___(+ x y))
-    ```
+```clj
+_(defn foo [x]
+___(+ x 1))
 
-- __Paren Trail__ - the trail of close-parens at the end of a line, shown with
-  carets below.  Notice that comments are allowed after these parens.  Also
-  notice that any whitespace before a close-paren is considered part of the
-  Paren Trail.
+_(let [x 1
+                   ;; Whitespace before a comment doesn't count.
+_______y 2
+_______z "hello
+          there"]  ;; Whitespace inside a string doesn't count.
+___(+ x y))
+```
 
-    ```clj
-    (foo)
-        ^
+_Indentation length is the value at [`result.x`] when [`onIndent`] is called._
 
-    (foo (+ 2 3) [(bar)] )    ;; comment
-                      ^^^^
+#### Paren Trail
 
-    (foo   )))
-        ^^^^^^
-    ```
+The Paren Trail is the trail of close-parens at the end of a line, shown with
+carets below.  Notice that comments are allowed after these parens.  Also
+notice that any whitespace before a close-paren is considered part of the Paren
+Trail.
 
-  If a line does not have a Paren Trail, but _can_ have one inserted, we
-  represent this location with an empty Paren Trail.  We show this with an
-  underscore below, similar to the way we show zero-length indentation.
+```clj
+(foo)
+    ^
 
-    ```clj
-    (foo_
+(foo (+ 2 3) [(bar)] )    ;; comment
+                  ^^^^
 
-    (foo (+ 2 3) [(bar_       ;; comment
-    ```
+(foo   )))
+    ^^^^^^
+```
+
+If a line does not have a Paren Trail, but _can_ have one inserted, we
+represent this location with an empty Paren Trail.  We show this with an
+underscore below, similar to the way we show zero-length indentation.
+
+```clj
+(foo_
+
+(foo (+ 2 3) [(bar_       ;; comment
+```
+
+_The Paren Trail is stored in [`result.parenTrail`], updated by
+[`updateParenTrailBounds`] and [`onMatchedCloseParen`]._
 
 ## Mode Summary
 
