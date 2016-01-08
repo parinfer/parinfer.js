@@ -23,7 +23,7 @@ docfile=parinfer.js.md
 fn_links=$(perl -n -e'/^function (\w+)/ && print "[`$1`]:parinfer.js#L$.\n"' $srcfile)
 
 # ref links for each top-level result key
-result_links=$(perl -n -e'/^    (\w+):.*\/\// && print "[`result.$1`]:parinfer.js#L$.\n"' $srcfile)
+result_links=$(perl -n -e'm{^    (\w+):.*//} && print "[`result.$1`]:parinfer.js#L$.\n"' $srcfile)
 
 # where to insert the ref links
 lineno=$(perl -n -e'/<!-- END OF DOC/ && print $.' $docfile)
