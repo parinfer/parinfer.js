@@ -9,27 +9,32 @@ correcting either indentation or close-parens.  You should be aware that
 Parinfer is not a pretty-printer-- that is, it never adds or removes lines from
 your file.
 
-## Usage
-
 ```
 indentMode(text[, options])
 parenMode(text[, options])
 ```
 
 Text transformation is performed by either of the two functions above.  Both
-are expected to be debounced on keypress. Options are currently only used
-for specifying cursor position and movement.
+are expected to be debounced on keypress. Options are currently only used for
+specifying cursor position and movement.  See [API](README.md#api) for full
+details.
 
-See [API](README.md#api) for full details.
+## Processing the Text
 
-## Scanning the Text
+You can trace the transformation through the following processing functions,
+each iteratively calling the one below it:
 
 - `processText`
 - `processLine`
 - `processChar`
-- `onChar`
 
-...
+We explicitly track the state of our system in a `result` object, initialized
+by `getInitialResult`.  This object is passed to and mutated by most functions
+in this file.  That way, it should be obvious whenever some part of the result
+is being read or updated anywhere in the file.
+
+The processing functions above behave differently depending on the mode set
+at `result.mode`.
 
 ## Finding Parens
 
@@ -46,13 +51,13 @@ inside certain forms:
 To make sure we ignore these parens, we toggle certain boolean flags when
 crossing the boundaries of these token types:
 
-- `isInComment`
-- `isInStr`
-- `isEscaping`
-- `isInCode` 
+- `result.isInComment`
+- `result.isInStr`
+- `result.isEscaping`
+- `result.isInCode` 
 
-Once we have this, we can keep a stack of parentheses (called `parenStack`) as
-we scan a file:
+Once we have this, we can keep a stack of parentheses (in `result.parenStack`)
+as we scan a file:
 
 - _Push_ open-parens onto the stack when encountered
 - _Peek_ the stack to verify that the parent open-paren matches the next close-paren
@@ -65,11 +70,11 @@ flags and paren stack.
 `onChar` is also a convenient place to do some of the transformations we will
 discuss next.
 
-## Transformation #1: Housekeeping
+## Housekeeping
 
 To understand Parinfer's inference process, it's important to first know that
-it performs some housekeeping on the code.  This helps prevent ambiguity that
-would otherwise make Parinfer's process difficult.
+it performs some housekeeping on the code as a necessary step toward the main
+transformations.
 
 - __Tab Characters__: A line indented with a tab character results in an
   ambiguous indentation length.  Thus, we replace such tab characters with a
@@ -101,9 +106,9 @@ would otherwise make Parinfer's process difficult.
 
 - __Unmatched Close Paren__: Any unmatched close-parens are removed.  This
   makes the next transformations simpler, and has the added benefit of making a
-  paredit-like "barf" operation without hotkeys (more on this later).  Since
-  newcomers may become confused about why they can't type close-parens
-  sometimes, we are exploring how to make this configurable option in [issue
+  paredit-like "barf" operation without hotkeys (more on this later).  But
+  since newcomers may become confused about why they can't type close-parens
+  sometimes, we are exploring how to make this a configurable option in [issue
   79].
 
   ```clj
@@ -120,8 +125,7 @@ would otherwise make Parinfer's process difficult.
 
 ## Analyzing a Line
 
-Before we look at how the next transformation is performed, we must define the
-two key regions of a line:
+We need to analyze each line to locate special areas of interest:
 
 - __Indentation__ is the number of space characters at the start of a line,
   shown with underscores below.  Indentation is ignored for lines starting
@@ -167,70 +171,20 @@ two key regions of a line:
     (foo (+ 2 3) [(bar_       ;; comment
     ```
 
-With this analysis information, we can learn how Parinfer transforms code.
+## Mode Summary
 
-## Transformation #2: Inference
+We can sum up each mode by using definitions from the previous section:
 
-- __Indent Mode__:
-  - _after processing a line_, erase all characters inside the Paren Trail
-  - _after processing indentation_, insert appropriate close-parens inside the previous Paren Trail
-- __Paren Mode__:
-  - _after processing a line_, erase space characters inside the Paren Trail
-  - _after processing indentation_, replace indentation with the appropriate number of spaces
+- __Indent Mode__ - when we finish identifying a line's _Indentation_, we use
+  it to correct the last _Paren Trail_.
+- __Paren Mode__ - when we finish identifying a line's _Indentation_, we correct
+  it using the last _Paren Trail_.
+
+## Indent Mode
 
 ...
 
---
+## Paren Mode
 
-## Appendix
+...
 
-### Example Analysis
-
-Given the following example code:
-
-```clj
-(defmethod actor-target :inky
-  ;;; Try to flank pacman from side opposite to blinky.
-  [state name-]
-  (let [blinky (-> state :actors :blinky)
-        pacman (-> state :actors :pacman)
-        nose (add-pos (:pos pacman) (:dir pacman))
-        [nx ny] nose
-        target (reflect-pos nose (:pos blinky))]
-    {:pos target
-     :viz-data {:pacman-pos (:pos pacman)
-                :blinky-pos (:pos blinky)
-                :nose nose}}))
-```
-
-Here it is annotated with underscores and carets indicating how we analyze each line.
-
-- _underscores_ at the beginning of a line represent Indentation
-- _underscores_ at the end of a line represent where a Paren Trail could be inserted
-- _carets_ indicate existing Paren Trails
-
-
-```clj
-_(defmethod actor-target :inky_
-   ;;; Try to flank pacman from side opposite to blinky.
-___[state name-]
-               ^
-___(let [blinky (-> state :actors :blinky)
-                                         ^
-_________pacman (-> state :actors :pacman)
-                                         ^
-_________nose (add-pos (:pos pacman) (:dir pacman))
-                                                 ^^
-_________[nx ny] nose_
-_________target (reflect-pos nose (:pos blinky))]
-                                              ^^^
-_____{:pos target_
-______:viz-data {:pacman-pos (:pos pacman)
-                                         ^
-_________________:blinky-pos (:pos blinky)
-                                         ^
-_________________:nose nose}}))
-                           ^^^^
-```
-
-[issue 79]:https://github.com/shaunlebron/parinfer/issues/79
