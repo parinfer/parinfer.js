@@ -4,10 +4,10 @@ This is WIP documentation for [`parinfer.js`].
 
 ## Summary
 
-Parinfer.js performs a _well-defined_, full file text transformation in one pass,
-correcting either indentation or close-parens.  You should be aware that
-Parinfer is not a pretty-printer-- that is, it never adds or removes lines from
-your file.
+Parinfer.js performs a _well-defined_, full file text transformation in one
+pass, correcting either indentation or close-parens.  Close-parens may move
+between lines and some whitespace may be added or removed, but the number of
+lines will always remain unchanged.
 
 ```
 indentMode(text[, options])
@@ -21,17 +21,17 @@ details.
 
 ## Processing the Text
 
-You can trace the transformation through the following processing functions,
-each iteratively calling the one below it:
+Parinfer starts its processing with the following functions, each iteratively
+calling the one below it:
 
-- `processText`
-- `processLine`
-- `processChar`
+- [`processText`]
+- [`processLine`]
+- [`processChar`]
 
 We explicitly track the state of our system in a `result` object, initialized
-by `getInitialResult`.  This object is passed to and mutated by most functions
-in this file.  That way, it should be obvious whenever some part of the result
-is being read or updated anywhere in the file.
+by [`getInitialResult`].  This object is passed as the first argument to most
+functions in this file.  That way, it should be obvious whenever some part of
+the result is being read or updated anywhere in the file.
 
 The processing functions above behave differently depending on the mode set
 at `result.mode`.
@@ -51,12 +51,12 @@ inside certain forms:
 To make sure we ignore these parens, we toggle certain boolean flags when
 crossing the boundaries of these token types:
 
-- `result.isInComment`
-- `result.isInStr`
-- `result.isEscaping`
-- `result.isInCode` 
+- [`result.isInComment`]
+- [`result.isInStr`]
+- [`result.isEscaping`]
+- [`result.isInCode`]
 
-Once we have this, we can keep a stack of parentheses (in `result.parenStack`)
+Once we have this, we can keep a stack of parentheses (in [`result.parenStack`])
 as we scan a file:
 
 - _Push_ open-parens onto the stack when encountered
@@ -72,9 +72,8 @@ discuss next.
 
 ## Housekeeping
 
-To understand Parinfer's inference process, it's important to first know that
-it performs some housekeeping on the code as a necessary step toward the main
-transformations.
+Parinfer performs some housekeeping on the code as a necessary step toward the
+main transformations.
 
 - __Tab Characters__: A line indented with a tab character results in an
   ambiguous indentation length.  Thus, we replace such tab characters with a
@@ -125,7 +124,7 @@ transformations.
 
 ## Analyzing a Line
 
-We need to analyze each line to locate special areas of interest:
+Parinfer needs to analyze each line in order to locate two main areas of interest:
 
 - __Indentation__ is the number of space characters at the start of a line,
   shown with underscores below.  Indentation is ignored for lines starting
@@ -173,7 +172,7 @@ We need to analyze each line to locate special areas of interest:
 
 ## Mode Summary
 
-We can sum up each mode by using definitions from the previous section:
+Parinfer's modes can be summed up using definitions from the previous section:
 
 - __Indent Mode__ - when we finish identifying a line's _Indentation_, we use
   it to correct the last _Paren Trail_.
