@@ -116,7 +116,7 @@ transformations.
   (bar) 4 5 6)  ;; <-- the last ")" is unmatched
   ```
 
-  The removal happens at [`onCloseParen`].
+  The removal happens at [`onUnmatchedCloseParen`].
 
   ```clj
   (foo 1 2 3)  ;; <-- the "}" was removed
