@@ -181,7 +181,7 @@ underscore below, similar to the way we show zero-length indentation.
 _The Paren Trail is stored in [`result.parenTrail`], updated by
 [`updateParenTrailBounds`] and [`onMatchedCloseParen`]._
 
-## Mode Summary
+## The Modes
 
 Parinfer's modes can be summed up using definitions from the previous section:
 
@@ -235,27 +235,112 @@ The main idea here is that we are only looking at two things a time: the
 indentation that we just processed, and the previous paren trail.  The rest of
 the file is corrected by continuing this process line-by-line.
 
-Now let's look at the details of each mode.
+Now let's look at exactly how these corrections are performed.
 
-## Indent Mode
+### Correcting Paren Trails
 
-...
+In Indent Mode, we correct the Paren Trail by first deleting it.  Then, to
+construct a new Paren Trail, we _close all unclosed open-parens to the right of
+the indentation point_.  For example, given the following code:
 
-- [`removeParenTrail`]
-- [`inferParenTrail`]
+```clj
+(foo [a b]
+  (+ a b)])
+```
+
+We identify the paren trail on line 1:
+
+```clj
+(foo [a b]
+         ^
+  (+ a b)])
+```
+
+Then we remove it, with [`removeParenTrail`].
+
+```clj
+(foo [a b_
+  (+ a b)])
+```
+
+Next, we process the indentation on line 2:
+
+```clj
+(foo [a b_
+__(+ a b)])
+```
+
+We find all unclosed open-parens to the right of the indentation point:
+
+```clj
+(foo [a b_
+     ^
+__(+ a b)])
+```
+
+Then we close the open-parens by inserting matching close-parens in the Paren Trail.
+This happens at [`correctParenTrail`]:
+
+```clj
+(foo [a b]
+         ^
+__(+ a b)])
+```
+
+The process is repeated for the next line.  We always use a final indentation
+point of zero to correct the last Paren Trail.
+
+### Correcting Indentation
+
+In Paren Mode, we correct the indentation by clamping it to a valid range.  The
+leftmost point is to the right of the most recent _unclosed_ open-paren, and the
+rightmost point is at the most recently _closed_ open-paren.
+
+For example, given the following code:
+
+```clj
+(foo [a b
+  (+ a b)])
+```
+
+We identify the indentation on line 2:
+
+```clj
+(foo [a b
+__(+ a b)])
+```
+
+Then, we identify the most recent _unclosed_ open-paren:
+
+```clj
+(foo [a b
+     ^
+__(+ a b)])
+```
+
+There is no most recently _closed_ open-paren, so we ignore that bound.  Clamping
+to the leftmost boundary gives us a new indentation length:
+
+```clj
+(foo [a b
+     ^
+______(+ a b)])
+```
+
+This correction happens at [`correctIndent`].
+
+## Respecting the Cursor
+
+In Indent Mode, ...
+
 - [`truncateParenTrailBounds`]
 
-## Paren Mode
+## Respecting Relative Indentation
 
-...
+In Paren Mode, ...
 
-- [`cleanParenTrail`]
-- [`appendParenTrail`]
-- [`correctIndent`]
+- [`result.indentDelta`]
 
-also discuss Indent Delta
-
-...
 
 <!-- END OF DOC: All content below is overwritten by `update-doc-reflinks.sh` -->
 [`isOpenParen`]:parinfer.js#L54
@@ -264,51 +349,54 @@ also discuss Indent Delta
 [`mergeOption`]:parinfer.js#L138
 [`cacheErrorPos`]:parinfer.js#L161
 [`error`]:parinfer.js#L165
-[`insertString`]:parinfer.js#L180
-[`replaceStringRange`]:parinfer.js#L188
-[`removeStringRange`]:parinfer.js#L196
+[`insertWithinString`]:parinfer.js#L180
+[`replaceWithinString`]:parinfer.js#L188
+[`removeWithinString`]:parinfer.js#L196
 [`multiplyString`]:parinfer.js#L203
 [`getLineEnding`]:parinfer.js#L212
-[`clamp`]:parinfer.js#L226
-[`peek`]:parinfer.js#L236
-[`isValidCloseParen`]:parinfer.js#L247
-[`onOpenParen`]:parinfer.js#L254
-[`onMatchedCloseParen`]:parinfer.js#L265
-[`onUnmatchedCloseParen`]:parinfer.js#L273
-[`onCloseParen`]:parinfer.js#L277
-[`onTab`]:parinfer.js#L288
-[`onSemicolon`]:parinfer.js#L294
-[`onNewline`]:parinfer.js#L301
-[`onQuote`]:parinfer.js#L306
-[`onBackslash`]:parinfer.js#L322
-[`afterBackslash`]:parinfer.js#L326
-[`onChar`]:parinfer.js#L337
-[`isCursorOnLeft`]:parinfer.js#L355
-[`isCursorOnRight`]:parinfer.js#L363
-[`isCursorInComment`]:parinfer.js#L372
-[`handleCursorDelta`]:parinfer.js#L376
-[`updateParenTrailBounds`]:parinfer.js#L394
-[`truncateParenTrailBounds`]:parinfer.js#L417
-[`removeParenTrail`]:parinfer.js#L446
-[`inferParenTrail`]:parinfer.js#L464
-[`cleanParenTrail`]:parinfer.js#L484
-[`appendParenTrail`]:parinfer.js#L513
-[`finishNewParenTrail`]:parinfer.js#L524
-[`correctIndent`]:parinfer.js#L538
-[`onProperIndent`]:parinfer.js#L563
-[`onLeadingCloseParen`]:parinfer.js#L578
-[`onIndent`]:parinfer.js#L595
-[`initLine`]:parinfer.js#L612
-[`commitChar`]:parinfer.js#L623
-[`processChar`]:parinfer.js#L636
-[`processLine`]:parinfer.js#L661
-[`finalizeResult`]:parinfer.js#L685
-[`processError`]:parinfer.js#L701
-[`processText`]:parinfer.js#L713
-[`getChangedLines`]:parinfer.js#L734
-[`publicResult`]:parinfer.js#L748
-[`indentMode`]:parinfer.js#L765
-[`parenMode`]:parinfer.js#L770
+[`insertWithinLine`]:parinfer.js#L226
+[`replaceWithinLine`]:parinfer.js#L231
+[`removeWithinLine`]:parinfer.js#L236
+[`initLine`]:parinfer.js#L241
+[`commitChar`]:parinfer.js#L252
+[`clamp`]:parinfer.js#L264
+[`peek`]:parinfer.js#L274
+[`isValidCloseParen`]:parinfer.js#L285
+[`onOpenParen`]:parinfer.js#L292
+[`onMatchedCloseParen`]:parinfer.js#L303
+[`onUnmatchedCloseParen`]:parinfer.js#L311
+[`onCloseParen`]:parinfer.js#L315
+[`onTab`]:parinfer.js#L326
+[`onSemicolon`]:parinfer.js#L332
+[`onNewline`]:parinfer.js#L339
+[`onQuote`]:parinfer.js#L344
+[`onBackslash`]:parinfer.js#L360
+[`afterBackslash`]:parinfer.js#L364
+[`onChar`]:parinfer.js#L375
+[`isCursorOnLeft`]:parinfer.js#L393
+[`isCursorOnRight`]:parinfer.js#L401
+[`isCursorInComment`]:parinfer.js#L410
+[`handleCursorDelta`]:parinfer.js#L414
+[`updateParenTrailBounds`]:parinfer.js#L432
+[`truncateParenTrailBounds`]:parinfer.js#L455
+[`removeParenTrail`]:parinfer.js#L484
+[`correctParenTrail`]:parinfer.js#L501
+[`cleanParenTrail`]:parinfer.js#L519
+[`appendParenTrail`]:parinfer.js#L548
+[`finishNewParenTrail`]:parinfer.js#L557
+[`correctIndent`]:parinfer.js#L571
+[`onProperIndent`]:parinfer.js#L593
+[`onLeadingCloseParen`]:parinfer.js#L608
+[`onIndent`]:parinfer.js#L625
+[`processChar`]:parinfer.js#L642
+[`processLine`]:parinfer.js#L667
+[`finalizeResult`]:parinfer.js#L691
+[`processError`]:parinfer.js#L707
+[`processText`]:parinfer.js#L719
+[`getChangedLines`]:parinfer.js#L740
+[`publicResult`]:parinfer.js#L754
+[`indentMode`]:parinfer.js#L771
+[`parenMode`]:parinfer.js#L776
 [`result.mode`]:parinfer.js#L74
 [`result.origText`]:parinfer.js#L76
 [`result.origLines`]:parinfer.js#L77
