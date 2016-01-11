@@ -183,12 +183,18 @@ _The Paren Trail is stored in [`result.parenTrail`], updated by
 
 ## The Modes
 
-Parinfer's modes can be summed up using definitions from the previous section:
+Parinfer's modes can now be described using definitions from the previous
+sections:
 
-- __Indent Mode__ - when we finish identifying a line's _Indentation_, we use
-  it to correct the last _Paren Trail_.
-- __Paren Mode__ - when we finish identifying a line's _Indentation_, we correct
-  it using the last _Paren Trail_.
+- __Indent Mode__
+  - When we identify a _Paren Trail_, we remove it.  See [`removeParenTrail`]
+  - When we identify a line's _Indentation_, we identify all open-parens on the
+    _Paren Stack_ to the right of the indentation.  Then we correct the last
+    _Paren Trail_ such that it closes the aforementioned open-parens.  See [`correctParenTrail`].
+- __Paren Mode__
+  - When we identify a line's _Indentation_, we clamp the indentation to the following boundaries.  See [`correctIndent`].
+    - leftmost: inside the open-paren at the top of the _Paren Stack_
+    - rightmost: the open-paren matching the last close-paren in the last _Paren Trail_
 
 For example, let's assume we are processing the following code:
 
