@@ -190,11 +190,70 @@ Parinfer's modes can be summed up using definitions from the previous section:
 - __Paren Mode__ - when we finish identifying a line's _Indentation_, we correct
   it using the last _Paren Trail_.
 
+For example, let's assume we are processing the following code:
+
+```clj
+(foo [a b
+  (+ a b)])
+```
+
+Let's use our underscore and caret annotations to see the Indentation and Paren
+Trail regions:
+
+```clj
+_(foo [a b_
+___(+ a b)])
+         ^^^
+```
+
+After encountering the indentation on line 1, we don't do anything because
+there is no previous Paren Trail to base a correction on.  But after the
+indentation on line 2, we do have the Paren Trail from line 1 to deal with.
+Let's emphasize this by only annotating these two regions:
+
+```clj
+ (foo [a b_
+___(+ a b)])
+```
+
+In Indent Mode, we correct the Paren Trail to be the following:
+
+```clj
+ (foo [a b]
+          ^
+___(+ a b)])
+```
+
+In Paren Mode, we instead correct the Indentation to the following:
+
+```clj
+ (foo [a b_
+_______(+ a b)])
+```
+
+The main idea here is that we are only looking at two things a time: the
+indentation that we just processed, and the previous paren trail.  The rest of
+the file is corrected by continuing this process line-by-line.
+
+Now let's look at the details of each mode.
+
 ## Indent Mode
 
 ...
 
+- [`removeParenTrail`]
+- [`inferParenTrail`]
+- [`truncateParenTrailBounds`]
+
 ## Paren Mode
+
+...
+
+- [`cleanParenTrail`]
+- [`appendParenTrail`]
+- [`correctIndent`]
+
+also discuss Indent Delta
 
 ...
 
