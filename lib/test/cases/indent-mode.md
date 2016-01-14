@@ -388,8 +388,7 @@ This allows us to insert a space before typing a new token.
 (def b )
 ```
 
-Once the cursor leaves the line, the inferred close-parens are moved to the end
-of the last token.
+Once the cursor leaves the line, the space is removed.
 
 ```in
 (def b )
@@ -409,7 +408,7 @@ Another example with more close-parens:
 (def b [[c d] ])
 ```
 
-Just as before, inferred close-parens are moved, but spaces remain.
+Once the cursor leaves the line, the space is removed.
 
 ```in
 (def b [[c d] ])
