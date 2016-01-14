@@ -363,6 +363,12 @@ operation.  It can only detect deltas created by its own clamping operations.
 Thus, we use a [`result.cursorDx`] parameter to indicate how far the cursor has
 moved due to an insertion or removal.
 
+### Quote Danger
+
+In both modes, ...
+
+- [`result.quoteDanger`]
+
 <!-- END OF DOC: All content below is overwritten by `update-doc-reflinks.sh` -->
 [`isOpenParen`]:parinfer.js#L54
 [`isCloseParen`]:parinfer.js#L58
