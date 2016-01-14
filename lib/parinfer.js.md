@@ -341,6 +341,10 @@ In Indent Mode, ...
 
 - [`truncateParenTrailBounds`]
 
+In Paren Mode, ...
+
+- [`onLeadingCloseParen`]
+
 ## Respecting Relative Indentation
 
 In Paren Mode, ...
