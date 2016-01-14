@@ -335,16 +335,105 @@ ______(+ a b)])
 
 This correction happens at [`correctIndent`].
 
-## Rules for better Interaction
+## Adding rules for better interaction
 
-Parinfer apply additional rules to allow better human interaction with its
+Parinfer must apply additional rules to allow better human interaction with its
 process as an editing mode.
 
-### Respecting the Cursor
+### Respecting the Cursor in Indent Mode
 
-In Indent Mode, the Paren Trail boundaries are clamped to the space ahead of
-the cursor.  This prevents the displacement of any close-parens to the left of
-the cursor when typing.  See [`truncateParenTrailBounds`].
+Sometimes, Indent Mode has to relax its rules in order to let you finish typing
+something. For example, suppose you just typed a space character below.  The
+`|` is your cursor:
+
+```clj
+(def foo |)
+```
+
+Indent Mode would delete the space, preventing you from adding anything after
+`foo`.
+
+```clj
+(def foo|)
+```
+
+A similar example also applies to typing a `]` below:
+
+```clj
+(foo [1 2 3]|
+      4 5 6
+      7 8 9])
+```
+
+It would also get deleted immediately:
+
+```clj
+(foo [1 2 3|
+      4 5 6
+      7 8 9])
+```
+
+To prevent both of these problems, we add a rule to clamp the Paren Trail to
+the range extending past the cursor.  To clarify, here's the original Paren
+Trail:
+
+```clj
+(def foo )
+        ^^
+```
+
+We removed the `|` cursor representation since the cursor does not take up
+character space.  Let's add a representation of the "range extending past the
+cursor" using `>>>`:
+
+```clj
+(def foo )
+        ^^
+         >>>>>>>>>>>>>>> (to the end of the line)
+```
+
+After clamping the Paren Trail boundaries to the cursor range, we are
+left with a new Paren Trail:
+
+```clj
+(def foo )
+         ^
+```
+
+Thus, the space is not removed since it is not included in the Paren Trail,
+which is susceptible to being replaced by Indent Mode's inferencing.
+
+Applying this to the second example:
+
+```clj
+(foo [1 2 3]
+           ^
+            >>>>>>>>>>>> (to the end of the line)
+      4 5 6
+      7 8 9])
+```
+
+After clamping the Paren Trail boundaries to the cursor range,
+The new Paren Trail is a zero-length range:
+
+```clj
+(foo [1 2 3]_
+      4 5 6
+      7 8 9])
+```
+
+After processing in Indent Mode, the `]` must be removed from the last line
+instead of the first line:
+
+```clj
+(foo [1 2 3]_
+      4 5 6
+      7 8 9)
+```
+
+See [`truncateParenTrailBounds`] for the implementation.
+
+### Respecting the Cursor in Paren Mode
 
 In Paren Mode, close-parens are allowed at the start of a line if there is a
 cursor before it.  This allows you to append a newline + expression to the end
