@@ -351,17 +351,100 @@ cursor before it.  This allows you to append a newline + expression to the end
 of a list without having to type the expression first.  See
 [`onLeadingCloseParen`].
 
-### Respecting Relative Indentation
+### Respecting Relative Indentation during Indentation Correction
 
-In Paren Mode, just clamping indentation to the valid range can result in loss
-of your custom indentation that was already valid.  Thus, we track the
-indentation delta of all open-parens, and then shift all of its child lines by
-the same delta before clamping.  See [`result.indentDelta`].
+As we have seen, Paren Mode will correct the indentation of lines one-by-one.
+This can result in the loss of relative indentation.  For example, this
+is an example with incorrect indentation:
 
-But Parinfer cannot deduce indentation delta caused by an insertion or removal
-operation.  It can only detect deltas created by its own clamping operations.
+```clj
+     [a
+      b
+ (foo
+   bar)]
+```
+
+We first correct the line containing `foo`:
+
+```clj
+     [a
+      b
+      (foo
+   bar)]
+```
+
+Then we correct the line containing `bar`:
+
+```clj
+     [a
+      b
+      (foo
+       bar)]
+```
+
+But notice that `bar` is no longer indented two spaces inside the `foo`
+expression.  This is what we want instead:
+
+```clj
+     [a
+      b
+      (foo
+        bar)]
+```
+
+Thus, we wish to preserve the relative indentation of all lines inside an
+expression after its first line has shifted.
+
+We accomplish this inside the [`correctIndent`] function by storing how much
+the current line's indentation has changed at [`result.indentDelta`].  This var
+is copied to the stack for every open-paren on this line by [`onOpenParen`].
+Notice how the most recent unclosed open-paren's indent delta is added to a
+line's initial indentation before correcting it. This achieves our goal of
+preserving relative indentation whenever possible.
+
+### Respecting Relative Indentation during Text Insertion/Removal
+
+Unfortunately, the previous method for preserving relative indentation
+does not work when it is the user's insertion or deletion operations
+which causes an open-paren to shift. For example:
+
+```clj
+(foo
+  bar)
+```
+
+If the user inserts a space before `(foo`, we get:
+
+```clj
+ (foo
+  bar)
+```
+
+Parinfer receives this text without any information about what it was before.
+So, it cannot deduce any indentation delta.  This is what we want instead.
+
+```clj
+ (foo
+   bar)
+```
+
+To accomplish this, we must realize that such an edit only affects open-parens
+_in front_ of the current cursor.  Here are the different edit events as they
+happen relative to the cursor:
+
+- _deletion_: some text behind or in front of the cursor has been deleted
+- _insertion_: some text behind the cursor has been inserted
+- _replacement_: some text behind the cursor has been replaced by some text
+
 Thus, we use a [`result.cursorDx`] parameter to indicate how far the cursor has
-moved due to an insertion or removal.
+moved due to an edit, which must be provided by the editor through the
+`cursorDx` option.  This can calculated simply by subtracting the previous cursor X position
+from the current cursor X position when an edit takes place.  Notice that this
+works for multi-line edits as well.
+
+Specifically, the [`handleCursorDelta`] function simply adds [`result.cursorDx`]
+to [`result.indentDelta`] after the cursor to preserve relative indentation
+across user edits, whenever possible.
 
 ### Quote Danger
 
