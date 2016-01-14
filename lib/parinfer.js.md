@@ -438,13 +438,17 @@ happen relative to the cursor:
 
 Thus, we use a [`result.cursorDx`] parameter to indicate how far the cursor has
 moved due to an edit, which must be provided by the editor through the
-`cursorDx` option.  This can calculated simply by subtracting the previous cursor X position
-from the current cursor X position when an edit takes place.  Notice that this
-works for multi-line edits as well.
+`cursorDx` option.  This can calculated simply by subtracting the previous
+cursor X position from the current cursor X position when an edit takes place.
+Notice that this works for multi-line edits as well.
 
 Specifically, the [`handleCursorDelta`] function simply adds [`result.cursorDx`]
 to [`result.indentDelta`] after the cursor to preserve relative indentation
 across user edits, whenever possible.
+
+## When to abandon processing
+
+- [`finalizeResult`]
 
 ### Quote Danger
 
