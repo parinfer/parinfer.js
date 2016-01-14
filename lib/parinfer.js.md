@@ -335,22 +335,33 @@ ______(+ a b)])
 
 This correction happens at [`correctIndent`].
 
-## Respecting the Cursor
+## Rules for better Interaction
 
-In Indent Mode, ...
+Parinfer apply additional rules to allow better human interaction with its
+process as an editing mode.
 
-- [`truncateParenTrailBounds`]
+### Respecting the Cursor
 
-In Paren Mode, ...
+In Indent Mode, the Paren Trail boundaries are clamped to the space ahead of
+the cursor.  This prevents the displacement of any close-parens to the left of
+the cursor when typing.  See [`truncateParenTrailBounds`].
 
-- [`onLeadingCloseParen`]
+In Paren Mode, close-parens are allowed at the start of a line if there is a
+cursor before it.  This allows you to append a newline + expression to the end
+of a list without having to type the expression first.  See
+[`onLeadingCloseParen`].
 
-## Respecting Relative Indentation
+### Respecting Relative Indentation
 
-In Paren Mode, ...
+In Paren Mode, just clamping indentation to the valid range can result in loss
+of your custom indentation that was already valid.  Thus, we track the
+indentation delta of all open-parens, and then shift all of its child lines by
+the same delta before clamping.  See [`result.indentDelta`].
 
-- [`result.indentDelta`]
-
+But Parinfer cannot deduce indentation delta caused by an insertion or removal
+operation.  It can only detect deltas created by its own clamping operations.
+Thus, we use a [`result.cursorDx`] parameter to indicate how far the cursor has
+moved due to an insertion or removal.
 
 <!-- END OF DOC: All content below is overwritten by `update-doc-reflinks.sh` -->
 [`isOpenParen`]:parinfer.js#L54
