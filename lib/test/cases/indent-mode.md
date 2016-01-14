@@ -389,7 +389,7 @@ This allows us to insert a space before typing a new token.
 ```
 
 Once the cursor leaves the line, the inferred close-parens are moved to the end
-of the last token.  The space is NOT removed from the line.
+of the last token.
 
 ```in
 (def b )
