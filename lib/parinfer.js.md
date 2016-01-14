@@ -79,31 +79,6 @@ spaces.
 
 _This operation happens at [`onTab`], committed by [`commitChar`]._
 
-#### Leading Close Parens
-
-Lines sometimes start with a close-paren (possibly preceded by whitespace).
-For example, this is a common occurrence in real world code:
-
-```clj
-(ns example.core
-  (:require
-    [foo.core :as foo]
-    [bar.core :as bar]
-    )) ;; <-- leading close-paren
-```
-
-To be consistent about close-paren positioning, we move leading close-parens
-to the end of the previous non-empty line.
-
-```clj
-(ns example.core
-  (:require
-    [foo.core :as foo]
-    [bar.core :as bar])) ;; <-- trailing close-paren
-```
-
-_This operation happens at [`onLeadingCloseParen`]._
-
 #### Unmatched Close Paren
 
 Any unmatched close-parens are removed.  This makes the next transformations
@@ -335,6 +310,33 @@ ______(+ a b)])
 
 This correction happens at [`correctIndent`].
 
+## Leading Close Parens
+
+_TODO: show how this affects the Paren Trail in Paren Mode._
+
+Lines sometimes start with a close-paren (possibly preceded by whitespace).
+For example, this is a common occurrence in real world code:
+
+```clj
+(ns example.core
+  (:require
+    [foo.core :as foo]
+    [bar.core :as bar]
+    )) ;; <-- leading close-paren
+```
+
+To be consistent about close-paren positioning, we move leading close-parens
+to the end of the previous non-empty line.
+
+```clj
+(ns example.core
+  (:require
+    [foo.core :as foo]
+    [bar.core :as bar])) ;; <-- trailing close-paren
+```
+
+_This operation happens at [`onLeadingCloseParen`]._
+
 ## Adding rules for better interaction
 
 Parinfer must apply additional rules to allow better human interaction with its
@@ -434,6 +436,8 @@ instead of the first line:
 See [`truncateParenTrailBounds`] for the implementation.
 
 ### Respecting the Cursor in Paren Mode
+
+_TODO: show examples_
 
 In Paren Mode, close-parens are allowed at the start of a line if there is a
 cursor before it.  This allows you to append a newline + expression to the end
@@ -535,11 +539,15 @@ Specifically, the [`handleCursorDelta`] function simply adds [`result.cursorDx`]
 to [`result.indentDelta`] after the cursor to preserve relative indentation
 across user edits, whenever possible.
 
-## When to abandon processing
+## When to cancel processing
+
+_TODO: show simple cases when cancel processing_ 
 
 - [`finalizeResult`]
 
 ### Quote Danger
+
+_TODO: show examples of string corruption caused by comments_ 
 
 In both modes, ...
 
