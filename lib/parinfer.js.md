@@ -312,30 +312,54 @@ This correction happens at [`correctIndent`].
 
 ## Leading Close Parens
 
-_TODO: show how this affects the Paren Trail in Paren Mode._
-
-Lines sometimes start with a close-paren (possibly preceded by whitespace).
-For example, this is a common occurrence in real world code:
+Parinfer considers it non-normal for a line to start with a close-paren
+(preceded by zero or more whitespace).  We call this a "leading close-paren":
 
 ```clj
-(ns example.core
-  (:require
-    [foo.core :as foo]
-    [bar.core :as bar]
-    )) ;; <-- leading close-paren
+(foo
+  bar
+  )   ;; <-- leading close-paren
 ```
 
-To be consistent about close-paren positioning, we move leading close-parens
-to the end of the previous non-empty line.
+For consistency, we always want to move these to the end of the previous
+non-empty line, that is, the currently existing Paren Trail:
 
 ```clj
-(ns example.core
-  (:require
-    [foo.core :as foo]
-    [bar.core :as bar])) ;; <-- trailing close-paren
+(foo
+  bar) ;; <-- moved here
 ```
 
-_This operation happens at [`onLeadingCloseParen`]._
+_Indent Mode_ accomplishes this simply by removing these leading close-parens,
+since moving it to the Paren Trail would result in it being removed anyway.
+
+_Paren Mode_ will move any leading close-parens to the end of the current Paren
+Trail.  For example, if we have several leading close-parens on separate lines,
+they are all moved to the most recent Paren Trail:
+
+```clj
+(foo
+  (bar_
+  )
+)
+```
+
+```clj
+(foo
+  (bar)
+      ^
+  
+)
+```
+
+```clj
+(foo
+  (bar))
+      ^^
+  
+ 
+```
+
+_See the [`onLeadingCloseParen`] function for details._
 
 ## Adding rules for better interaction
 
