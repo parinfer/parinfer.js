@@ -218,7 +218,7 @@ the file is corrected by continuing this process line-by-line.
 
 Now let's look at exactly how these corrections are performed.
 
-### Correcting Paren Trails
+### Indent Mode
 
 In Indent Mode, we correct the Paren Trail by first deleting it.  Then, to
 construct a new Paren Trail, we _close all unclosed open-parens to the right of
@@ -271,7 +271,7 @@ __(+ a b)])
 The process is repeated for the next line.  We always use a final indentation
 point of zero to correct the last Paren Trail.
 
-### Correcting Indentation
+### Paren Mode
 
 In Paren Mode, we correct the indentation by clamping it to a valid range.  The
 leftmost point is to the right of the most recent _unclosed_ open-paren, and the
@@ -310,7 +310,13 @@ ______(+ a b)])
 
 This correction happens at [`correctIndent`].
 
-## Leading Close Parens
+### When to cancel processing
+
+_TODO: show simple cases when cancel processing_ 
+
+- [`finalizeResult`]
+
+### Leading Close Parens
 
 Parinfer considers it non-normal for a line to start with a close-paren
 (preceded by zero or more whitespace).  We call this a "leading close-paren":
@@ -361,12 +367,65 @@ they are all moved to the most recent Paren Trail:
 
 _See the [`onLeadingCloseParen`] function for details._
 
-## Adding rules for better interaction
+### Preserving Relative Indentation during Indentation Correction
 
-Parinfer must apply additional rules to allow better human interaction with its
-process as an editing mode.
+As we have seen, Paren Mode will correct the indentation of lines one-by-one.
+This can result in the loss of relative indentation.  For example, this
+is an example with incorrect indentation:
 
-### Respecting the Cursor in Indent Mode
+```clj
+     [a
+      b
+ (foo
+   bar)]
+```
+
+We first correct the line containing `foo`:
+
+```clj
+     [a
+      b
+      (foo
+   bar)]
+```
+
+Then we correct the line containing `bar`:
+
+```clj
+     [a
+      b
+      (foo
+       bar)]
+```
+
+But notice that `bar` is no longer indented two spaces inside the `foo`
+expression.  This is what we want instead:
+
+```clj
+     [a
+      b
+      (foo
+        bar)]
+```
+
+Thus, we wish to preserve the relative indentation of all lines inside an
+expression after its first line has shifted.
+
+We accomplish this inside the [`correctIndent`] function by storing how much
+the current line's indentation has changed at [`result.indentDelta`].  This var
+is copied to the stack for every open-paren on this line by [`onOpenParen`].
+Notice how the most recent unclosed open-paren's indent delta is added to a
+line's initial indentation before correcting it. This achieves our goal of
+preserving relative indentation whenever possible.
+
+
+## For use in an editor
+
+The description of Parinfer thus far would completely satisfy the requirements
+for a standalone file processor outside of an editor.  But it requires some
+additional features if it is to auto-process your code while typing.
+
+### Relaxing rules around the Cursor in Indent Mode
 
 Sometimes, Indent Mode has to relax its rules in order to let you finish typing
 something. For example, suppose you just typed a space character below.  The
@@ -459,7 +518,7 @@ instead of the first line:
 
 See [`truncateParenTrailBounds`] for the implementation.
 
-### Respecting the Cursor in Paren Mode
+### Relaxing rules around the Cursor in Indent Mode
 
 _TODO: show examples_
 
@@ -468,58 +527,7 @@ cursor before it.  This allows you to append a newline + expression to the end
 of a list without having to type the expression first.  See
 [`onLeadingCloseParen`].
 
-### Respecting Relative Indentation during Indentation Correction
-
-As we have seen, Paren Mode will correct the indentation of lines one-by-one.
-This can result in the loss of relative indentation.  For example, this
-is an example with incorrect indentation:
-
-```clj
-     [a
-      b
- (foo
-   bar)]
-```
-
-We first correct the line containing `foo`:
-
-```clj
-     [a
-      b
-      (foo
-   bar)]
-```
-
-Then we correct the line containing `bar`:
-
-```clj
-     [a
-      b
-      (foo
-       bar)]
-```
-
-But notice that `bar` is no longer indented two spaces inside the `foo`
-expression.  This is what we want instead:
-
-```clj
-     [a
-      b
-      (foo
-        bar)]
-```
-
-Thus, we wish to preserve the relative indentation of all lines inside an
-expression after its first line has shifted.
-
-We accomplish this inside the [`correctIndent`] function by storing how much
-the current line's indentation has changed at [`result.indentDelta`].  This var
-is copied to the stack for every open-paren on this line by [`onOpenParen`].
-Notice how the most recent unclosed open-paren's indent delta is added to a
-line's initial indentation before correcting it. This achieves our goal of
-preserving relative indentation whenever possible.
-
-### Respecting Relative Indentation during Text Insertion/Removal
+### Preserving Relative Indentation during Text Insertion/Removal
 
 Unfortunately, the previous method for preserving relative indentation
 does not work when it is the user's insertion or deletion operations
@@ -562,12 +570,6 @@ Notice that this works for multi-line edits as well.
 Specifically, the [`handleCursorDelta`] function simply adds [`result.cursorDx`]
 to [`result.indentDelta`] after the cursor to preserve relative indentation
 across user edits, whenever possible.
-
-## When to cancel processing
-
-_TODO: show simple cases when cancel processing_ 
-
-- [`finalizeResult`]
 
 ### Quote Danger
 
