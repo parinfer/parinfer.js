@@ -271,6 +271,8 @@ __(+ a b)])
 The process is repeated for the next line.  We always use a final indentation
 point of zero to correct the last Paren Trail.
 
+Processing is canceled if there is an unclosed quote.  See [`finalizeResult`].
+
 ### Paren Mode
 
 In Paren Mode, we correct the indentation by clamping it to a valid range.  The
@@ -310,11 +312,7 @@ ______(+ a b)])
 
 This correction happens at [`correctIndent`].
 
-### When to cancel processing
-
-_TODO: show simple cases when cancel processing_ 
-
-- [`finalizeResult`]
+Processing is canceled if there is an unclosed quote or open-paren.  See [`finalizeResult`].
 
 ### Leading Close Parens
 
@@ -518,7 +516,7 @@ instead of the first line:
 
 See [`truncateParenTrailBounds`] for the implementation.
 
-### Relaxing rules around the Cursor in Indent Mode
+### Relaxing rules around the Cursor in Paren Mode
 
 _TODO: show examples_
 
