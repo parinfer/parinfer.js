@@ -518,12 +518,100 @@ See [`truncateParenTrailBounds`] for the implementation.
 
 ### Relaxing rules around the Cursor in Paren Mode
 
-_TODO: show examples_
+Paren Mode must be relaxed to allow the user to press enter in the following
+situation.
 
-In Paren Mode, close-parens are allowed at the start of a line if there is a
-cursor before it.  This allows you to append a newline + expression to the end
-of a list without having to type the expression first.  See
-[`onLeadingCloseParen`].
+Suppose you have this:
+
+```clj
+(foo
+  bar)
+```
+
+and you want to insert `baz` so that your code looks like this:
+
+```clj
+(foo
+  bar
+  baz)
+```
+
+Intuitively, one might place their cursor `|` before the close-paren:
+
+```clj
+(foo
+  bar|)
+```
+
+After pressing enter, assuming your editor has auto-indent, a new line will be
+inserted with some indentation:
+
+```clj
+(foo
+  bar
+ |)
+```
+
+In either Mode, Parinfer will move the close-paren back to the previous line:
+
+```clj
+(foo
+  bar)
+ |
+```
+
+Suppose that we type `baz`.
+
+```clj
+(foo
+  bar)
+  baz|
+```
+
+In Indent Mode, the close-paren will be moved and we will be done:
+
+```clj
+;; Indent Mode
+(foo
+  bar
+  baz|)
+```
+
+But in Paren Mode, `baz` will be dedented:
+
+```clj
+;; Paren Mode
+(foo
+  bar)
+baz|
+```
+
+A workaround for getting the desired result in Paren Mode would be to first
+insert `baz` after `bar`:
+
+```clj
+(foo
+  bar |baz)
+```
+
+and then press enter:
+
+```clj
+(foo
+  bar
+ |baz)
+```
+
+To avoid having to do this, we create a new rule to allow this to happen:
+
+```clj
+(foo
+  bar
+ |)
+```
+
+This new rule is the following.  In Paren Mode, close-parens are allowed at the
+start of a line if there is a cursor before it.  See [`onLeadingCloseParen`].
 
 ### Preserving Relative Indentation during Text Insertion/Removal
 
