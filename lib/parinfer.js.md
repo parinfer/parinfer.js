@@ -657,13 +657,104 @@ Specifically, the [`handleCursorDelta`] function simply adds [`result.cursorDx`]
 to [`result.indentDelta`] after the cursor to preserve relative indentation
 across user edits, whenever possible.
 
-### Quote Danger
+### "Quote Danger"
 
-_TODO: show examples of string corruption caused by comments_ 
+Inserting a quote can cause a hard-to-track problem, caused by syntax comments
+interfering with the detection of unbalanced strings.
 
-In both modes, ...
+Suppose we have the following:
 
-- [`result.quoteDanger`]
+```clj
+(foo
+  "bar;")
+```
+
+Now suppose I want to insert the string `"baz"` after `foo`, like so:
+
+```clj
+(foo "baz"
+  "bar;")
+```
+
+Let's follow what happens after I type the first quote:
+
+```clj
+(foo "
+  "bar;")
+```
+
+Assume that we are working in an editor that does not auto-insert a matching
+quote.  Or assume that we deleted the auto-matched quote thereafter.  Either
+way, the syntax contains no unclosed quotes, because the semicolon has been
+converted to a comment after its string was turned inside out.
+
+Indent Mode will result in the following:
+
+```clj
+(foo "
+  "bar);")
+```
+
+And after you finish typing `"baz"`, you end up with:
+
+```clj
+(foo "baz"
+  "bar);")
+```
+
+Thus, this seemingly innocuous string insertion, we have corrupted the string
+`"bar;"` to be `"bar);"`
+
+The same problem can be seen from a different perspective in the following
+example.  Suppose we have a comment that lists some special characters:
+
+```clj
+(foo
+  ; " and ( and [
+  bar)
+```
+
+This time, inserting a quote before the comment results in the contents of the _comment_
+to be corrupted like so:
+
+```clj
+(foo "
+  ; " and ( and [])
+  bar)
+```
+
+The comment has been treated as code, and thus parens have been added/altered.
+This is a process that will not be reversed after closing our initial string:
+
+```clj
+(foo "baz"
+  ; " and ( and [])
+  bar)
+```
+
+Both of these cases have been traced to the problem of unbalanced quotes inside comments.
+They prevent Parinfer from detecting unclosed quotes.  Thus, we look for these kinds
+of dangerous quotes inside comments, and we cancel processing if they are found.
+
+This solution prevents problems of the first case, but can only warn of
+impending problems of the second case. Fully preventing problems of the second
+case may prove unwiedly since it would require a "trapdoor" shutoff.  That is,
+it may involve displaying a warning to the user, turning off Parinfer
+altogether, and forcing them to manually re-enable after they have determined
+the problem to be fixed, since Parinfer cannot deduce that itself.
+
+It should be noted that contiguous comments are considered part of the same comment
+when deducing unbalanced strings.  This allows multiline strings
+to be commented without triggering a "quote danger" warning:
+
+```clj
+(defn foo
+  ; "multiline
+  ; string"
+  bar)
+```
+
+See [`result.quoteDanger`], which is updated by [`onQuote`].
 
 <!-- END OF DOC: All content below is overwritten by `update-doc-reflinks.sh` -->
 [`isOpenParen`]:parinfer.js#L54
