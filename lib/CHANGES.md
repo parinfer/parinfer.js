@@ -1,3 +1,7 @@
+## dev
+
+- allow insertion of spaces in the cursor line's paren trail in Paren Mode
+
 ## 1.4.0
 
 - modes return new key `changedLines`

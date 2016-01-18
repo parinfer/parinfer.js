@@ -206,3 +206,40 @@ c)
 (foo [a b]\
 c)
 ```
+
+Preserve spaces in paren trail for the cursor line.  This allows the user
+to insert things between close-parens more easily.
+
+```in
+(foo |)
+```
+
+```out
+(foo )
+```
+
+```in
+(foo [1 2 3 |] )
+```
+
+```out
+(foo [1 2 3 ] )
+```
+
+But get rid of spaces in paren trail if no cursor is present on the line:
+
+```in
+(foo )
+```
+
+```out
+(foo)
+```
+
+```in
+(foo [1 2 3 ] )
+```
+
+```out
+(foo [1 2 3])
+```

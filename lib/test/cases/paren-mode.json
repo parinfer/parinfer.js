@@ -293,5 +293,75 @@
       ],
       "cursor": null
     }
+  },
+  {
+    "in": {
+      "fileLineNo": 212,
+      "lines": [
+        "(foo )"
+      ],
+      "cursor": {
+        "cursorX": 5,
+        "cursorLine": 0
+      }
+    },
+    "out": {
+      "fileLineNo": 216,
+      "lines": [
+        "(foo )"
+      ],
+      "cursor": null
+    }
+  },
+  {
+    "in": {
+      "fileLineNo": 220,
+      "lines": [
+        "(foo [1 2 3 ] )"
+      ],
+      "cursor": {
+        "cursorX": 12,
+        "cursorLine": 0
+      }
+    },
+    "out": {
+      "fileLineNo": 224,
+      "lines": [
+        "(foo [1 2 3 ] )"
+      ],
+      "cursor": null
+    }
+  },
+  {
+    "in": {
+      "fileLineNo": 230,
+      "lines": [
+        "(foo )"
+      ],
+      "cursor": null
+    },
+    "out": {
+      "fileLineNo": 234,
+      "lines": [
+        "(foo)"
+      ],
+      "cursor": null
+    }
+  },
+  {
+    "in": {
+      "fileLineNo": 238,
+      "lines": [
+        "(foo [1 2 3 ] )"
+      ],
+      "cursor": null
+    },
+    "out": {
+      "fileLineNo": 242,
+      "lines": [
+        "(foo [1 2 3])"
+      ],
+      "cursor": null
+    }
   }
 ]
