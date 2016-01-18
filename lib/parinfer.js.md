@@ -83,9 +83,7 @@ _This operation happens at [`onTab`], committed by [`commitChar`]._
 
 Any unmatched close-parens are removed.  This makes the next transformations
 simpler, and has the added benefit of making a paredit-like "barf" operation
-without hotkeys (more on this later).  But since newcomers may become confused
-about why they can't type close-parens sometimes, we are exploring how to make
-this a configurable option in [issue 79].
+without hotkeys (more on this later).
 
 ```clj
 (foo} 1 2 3)  ;; <-- before: the "}" is unmatched
