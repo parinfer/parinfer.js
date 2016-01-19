@@ -10,8 +10,6 @@ use JavaScript.  It has also been designed to be simple to port.
 
 To learn about its __design and implementation__, please see [`parinfer.js.md`].
 
-[`parinfer.js.md`]:parinfer.js.md
-
 
 | implemented in | link |
 |----------|------|
@@ -162,7 +160,6 @@ __Testing__: To verify your port works, you'll want to run some tests.  Parinfer
 test cases are compiled to JSON.  Look at [`test/cases.js`] to see how the files are
 loaded and tested against Parinfer's functions.
 
-[`test/cases.js`]:test/cases.js
 [nvim-parinfer.js]:https://github.com/snoe/nvim-parinfer.js
 
 ## Questions?
@@ -183,7 +180,7 @@ of portability to different environments.
 
 __Documentation__: Design and implementation is documented in [`parinfer.js.md`].
 
-__Testing__: See [`test/`] directory for testing details.  Or just run the following:
+__Testing__: See [`test/cases/`] directory for testing details.  Or just run the following:
 
 ```
 npm install
@@ -197,4 +194,9 @@ node test/perf.js
 ```
 
 [old-clojure]:https://github.com/shaunlebron/parinfer/tree/clojure/lib/src/parinfer
-[`test/`]:test
+
+<!-- file links need to be full path to make them work for the NPM readme -->
+
+[`test/cases.js`]:https://github.com/shaunlebron/parinfer/blob/master/lib/test/cases.js
+[`parinfer.js.md`]:https://github.com/shaunlebron/parinfer/blob/master/lib/parinfer.js.md
+[`test/cases/`]:https://github.com/shaunlebron/parinfer/tree/master/lib/test/cases
