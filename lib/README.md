@@ -1,4 +1,7 @@
-# Parinfer Lib [<img src="https://travis-ci.org/shaunlebron/parinfer.svg?branch=master" valign="middle">](https://travis-ci.org/shaunlebron/parinfer)
+# Parinfer Lib
+
+[![Gitter](https://badges.gitter.im/shaunlebron/parinfer.svg)](https://gitter.im/shaunlebron/parinfer?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+[![Travis](https://travis-ci.org/shaunlebron/parinfer.svg?branch=master)](https://travis-ci.org/shaunlebron/parinfer)
 
 This is the canonical implementation of [Parinfer], written in JavaScript.  It
 has a dead simple API and can be used directly by any editor or REPL that can
@@ -157,13 +160,11 @@ loaded and tested against Parinfer's functions.
 
 ## Questions?
 
-Thanks for asking!  You're helping make Parinfer better.  You can [email me], or join the
-[clojurians slack] community and post a question in the `#parinfer` channel.
-Feel free to tag me there `@shaunlebron`.  I'll answer questions as soon
-as I can.
+Thanks for asking!  You're helping make Parinfer better.  You can [email me]
+or use our [gitter chatroom].  I'll answer questions as soon as I can.
 
 [email me]:shaunewilliams@gmail.com
-[clojurians slack]:http://clojurians.net/
+[gitter chatroom]:https://gitter.im/shaunlebron/parinfer
 
 ## Development
 
