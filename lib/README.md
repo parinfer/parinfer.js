@@ -8,6 +8,11 @@ This is the canonical implementation of [Parinfer], written in JavaScript.  It
 has a dead simple API and can be used directly by any editor or REPL that can
 use JavaScript.  It has also been designed to be simple to port.
 
+To learn about its __design and implementation__, please see [`parinfer.js.md`].
+
+[`parinfer.js.md`]:parinfer.js.md
+
+
 | implemented in | link |
 |----------|------|
 | JavaScript\* | _you are here_ |
@@ -15,6 +20,7 @@ use JavaScript.  It has also been designed to be simple to port.
 | ClojureScript | [parinfer-cljs] |
 
 _\* canonical implementation_
+
 
 [Parinfer]:http://shaunlebron.github.io/parinfer/
 [parinfer.py]:https://github.com/oakmac/parinfer.py
@@ -169,24 +175,26 @@ or use our [gitter chatroom].  I'll answer questions as soon as I can.
 
 ## Development
 
-Parinfer is implemented in ECMAScript 5, which is old JavaScript supported
-nearly everywhere.  It was created initially in Clojure ([see
-here][old-clojure]), which was useful for exploring the idea in a pure
+__Language choice__: Parinfer is implemented in ECMAScript 5, which is old JavaScript
+supported nearly everywhere.  It was created initially in Clojure ([see
+here][old-clojure]), which was useful for exploring the idea in an immutable
 environment, but it is now maintained in JS because of speed demands and ease
 of portability to different environments.
 
-To run the [test cases]:
+__Documentation__: Design and implementation is documented in [`parinfer.js.md`].
+
+__Testing__: See [`test/`] directory for testing details.  Or just run the following:
 
 ```
 npm install
 npm test
 ```
 
-To run a performance stress test:
+__Performance__: To run a performance stress test:
 
 ```
 node test/perf.js
 ```
 
-[old-clojure]:https://github.com/shaunlebron/parinfer/tree/clojure/lib
-[test cases]:test/cases
+[old-clojure]:https://github.com/shaunlebron/parinfer/tree/clojure/lib/src/parinfer
+[`test/`]:test
