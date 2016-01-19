@@ -149,9 +149,10 @@ implementation to port it.  `parinfer.js` is implemented such that it can be
 translated in a straightforward way to most scripting languages.
 
 __Testing__: To verify your port works, you'll want to run some tests.  Parinfer's
-test cases are compiled to JSON.  Look at `test/test.js` to see how the files are
+test cases are compiled to JSON.  Look at [`test/cases.js`] to see how the files are
 loaded and tested against Parinfer's functions.
 
+[`test/cases.js`]:test/cases.js
 [nvim-parinfer.js]:https://github.com/snoe/nvim-parinfer.js
 
 ## Questions?
