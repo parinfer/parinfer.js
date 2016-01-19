@@ -305,6 +305,18 @@ Inferred close-parens are inserted after escaped whitespace.
 (def bar \ )
 ```
 
+Hanging backslash at end of line is invalid and causes processing to be abandoned.
+
+```in
+(foo [a b\
+  c)
+```
+
+```out
+(foo [a b\
+  c)
+```
+
 ## Comments
 
 When commenting-out an inferred close-paren, a new one should be inserted
@@ -376,15 +388,14 @@ This allows us to insert a space before typing a new token.
 (def b )
 ```
 
-Once the cursor leaves the line, the inferred close-parens are moved to the end
-of the last token.  The space is NOT removed from the line.
+Once the cursor leaves the line, the space is removed.
 
 ```in
 (def b )
 ```
 
 ```out
-(def b) 
+(def b)
 ```
 
 Another example with more close-parens:
@@ -397,7 +408,7 @@ Another example with more close-parens:
 (def b [[c d] ])
 ```
 
-Just as before, inferred close-parens are moved, but spaces remain.
+Once the cursor leaves the line, the space is removed.
 
 ```in
 (def b [[c d] ])
@@ -496,50 +507,5 @@ they were.
 ```out
 (let [a 1])
       
-```
-
-## Commas
-
-Commas are considered whitespace in Clojure, but are unquote sugar in Racket.
-Since commas are never used as indentation whitespace in Clojure, we don't
-treat it as such:
-
-```in
-(defn foo
-  [a b]
-  ,(+ a b))
-```
-
-```out
-(defn foo
-  [a b]
-  ,(+ a b))
-```
-
-If standalone commas find their way between close-parens at the end of a line,
-they will be removed.  These types of commas are not valid in Racket.
-
-```in
-(defn foo [a b]
-  (+ a b),)
-```
-
-```out
-(defn foo [a b]
-  (+ a b))
-```
-
-Note that the comma below is protected since this is valid code in both Clojure
-and Racket.  The `1` blocks the two close-parens at the end of the line from
-being contiguous tokens, whereas the standalone comma would not have.
-
-```in
-(defn foo [a b]
-  (+ a b) ,1)
-```
-
-```out
-(defn foo [a b]
-  (+ a b) ,1)
 ```
 

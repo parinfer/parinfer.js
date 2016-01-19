@@ -1,6 +1,6 @@
 {
   "name": "parinfer",
-  "version": "1.1.0",
+  "version": "1.4.0+dev",
   "description": "a simpler way to write Lisp",
   "main": "parinfer.js",
   "scripts": {
@@ -15,6 +15,9 @@
       "commonjs": true,
       "amd": true,
       "browser": true
+    },
+    "rules": {
+      "no-console": 0
     }
   },
   "repository": {

@@ -1,3 +1,21 @@
+## dev
+
+- allow insertion of spaces in the cursor line's paren trail in Paren Mode
+
+## 1.4.0
+
+- modes return new key `changedLines`
+- modes return new key `error`
+- performance improvements
+
+## 1.3.0
+
+- add compatibility for CRLF line endings
+
+## 1.2.0
+
+- performance improvements (thanks [@oakmac](https://github.com/oakmac))
+
 ## 1.1.0
 
 - remove `result` key from returned result (internal only)

@@ -1,10 +1,28 @@
-# Parinfer Lib [<img src="https://travis-ci.org/shaunlebron/parinfer.svg?branch=master" valign="middle">](https://travis-ci.org/shaunlebron/parinfer)
+# Parinfer Lib
 
-This is the standalone _editor-agnostic_ library for using [Parinfer].  It consists
-of a few pure functions of your text, returning new text with corrected parens
-or indentation.
+[![Gitter](https://badges.gitter.im/shaunlebron/parinfer.svg)](https://gitter.im/shaunlebron/parinfer?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+[![Travis](https://travis-ci.org/shaunlebron/parinfer.svg?branch=master)](https://travis-ci.org/shaunlebron/parinfer)
+[![npm version](https://badge.fury.io/js/parinfer.svg)](https://badge.fury.io/js/parinfer)
+
+This is the canonical implementation of [Parinfer], written in JavaScript.  It
+has a dead simple API and can be used directly by any editor or REPL that can
+use JavaScript.  It has also been designed to be simple to port.
+
+To learn about its __design and implementation__, please see [`parinfer.js.md`].
+
+
+| implemented in | link |
+|----------|------|
+| JavaScript\* | _you are here_ |
+| Python | [parinfer.py] |
+| ClojureScript | [parinfer-cljs] |
+
+_\* canonical implementation_
+
 
 [Parinfer]:http://shaunlebron.github.io/parinfer/
+[parinfer.py]:https://github.com/oakmac/parinfer.py
+[parinfer-cljs]:https://github.com/shaunlebron/parinfer-cljs
 
 ## Installation
 
@@ -12,7 +30,9 @@ or indentation.
 npm install parinfer
 ```
 
-or download [parinfer.js](parinfer.js) and include directly in html:
+or download `parinfer.js` from [latest release] and include directly in html:
+
+[latest release]:https://github.com/shaunlebron/parinfer/releases/latest
 
 ```html
 <script src="parinfer.js"></script>
@@ -62,6 +82,11 @@ something that you can try:
 1. __Allow mode toggling__ by using some hotkeys.  For example:
   - <kbd>Ctrl</kbd>+<kbd>(</kbd> to toggle between Indent Mode and Paren Mode
   - <kbd>Ctrl</kbd>+<kbd>)</kbd> to turn Parinfer off
+1. __For better performance__ on larger files, you can limit the call frequency
+  of `indentMode` and `parenMode` by waiting for the user to stop typing after
+  some interval, or by [debouncing] the function.
+
+[debouncing]:https://davidwalsh.name/javascript-debounce-function
 
 ## Add Parinfer to a REPL
 
@@ -104,8 +129,21 @@ Arguments:
 
 Returns an object with the following properties:
 
-- `text` is the full text output (this is just the original text if `success` is false)
 - `success` is a boolean indicating if the input was properly formatted enough to create a valid result
+- `text` is the full text output (this is just the original text if `success` is false)
+- `changedLines` is an array of objects representing only the lines which Parinfer changed:
+  - `lineNo` is the zero-based line number
+  - `line` is the full text of the line
+- `error` is an object populated if `success` is false:
+  - `name` is the name of the error, which will be any of the following:
+    - `"quote-danger"`
+    - `"eol-backslash"`
+    - `"unclosed-quote"`
+    - `"unclosed-paren"`
+    - `"unhandled"`
+  - `message` is a message describing the error
+  - `lineNo` is a zero-based line number where the error occurred
+  - `x` is a zero-based column where the error occurred
 
 ## Using Parinfer outside JS
 
@@ -119,48 +157,46 @@ implementation to port it.  `parinfer.js` is implemented such that it can be
 translated in a straightforward way to most scripting languages.
 
 __Testing__: To verify your port works, you'll want to run some tests.  Parinfer's
-test cases are compiled to JSON.  Look at `test/test.js` to see how the files are
+test cases are compiled to JSON.  Look at [`test/cases.js`] to see how the files are
 loaded and tested against Parinfer's functions.
 
 [nvim-parinfer.js]:https://github.com/snoe/nvim-parinfer.js
 
 ## Questions?
 
-Thanks for asking!  You're helping make Parinfer better.  You can [email me], or join the
-[clojurians slack] community and post a question in the `#parinfer` channel.
-Feel free to tag me there `@shaunlebron`.  I'll answer questions as soon
-as I can.
+Thanks for asking!  You're helping make Parinfer better.  You can [email me]
+or use our [gitter chatroom].  I'll answer questions as soon as I can.
 
 [email me]:shaunewilliams@gmail.com
-[clojurians slack]:http://clojurians.net/
+[gitter chatroom]:https://gitter.im/shaunlebron/parinfer
 
 ## Development
 
-Parinfer is implemented in ECMAScript 5, which is old JavaScript supported
-nearly everywhere.  It was created initially in Clojure ([see
-here][old-clojure]), which was useful for exploring the idea in a pure
+__Language choice__: Parinfer is implemented in ECMAScript 5, which is old JavaScript
+supported nearly everywhere.  It was created initially in Clojure ([see
+here][old-clojure]), which was useful for exploring the idea in an immutable
 environment, but it is now maintained in JS because of speed demands and ease
 of portability to different environments.
 
-To run the [test cases]:
+__Documentation__: Design and implementation is documented in [`parinfer.js.md`].
+
+__Testing__: See [`test/cases/`] directory for testing details.  Or just run the following:
 
 ```
 npm install
 npm test
 ```
 
-To run a performance stress test:
+__Performance__: To run a performance stress test:
 
 ```
 node test/perf.js
 ```
 
-To build the test case JSON files from Markdown ([lein-exec] required for now):
+[old-clojure]:https://github.com/shaunlebron/parinfer/tree/clojure/lib/src/parinfer
 
-```
-test/cases/build.clj
-```
+<!-- file links need to be full path to make them work for the NPM readme -->
 
-[old-clojure]:https://github.com/shaunlebron/parinfer/tree/clojure/lib
-[test cases]:test/cases
-[lein-exec]:https://github.com/kumarshantanu/lein-exec
+[`test/cases.js`]:https://github.com/shaunlebron/parinfer/blob/master/lib/test/cases.js
+[`parinfer.js.md`]:https://github.com/shaunlebron/parinfer/blob/master/lib/parinfer.js.md
+[`test/cases/`]:https://github.com/shaunlebron/parinfer/tree/master/lib/test/cases
