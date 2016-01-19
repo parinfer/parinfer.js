@@ -3,8 +3,8 @@
     [clojure.string :as string]
     [om.core :as om :include-macros true]
     [sablono.core :refer-macros [html]]
-    [parinfer.core :refer [indent-mode
-                           paren-mode]]
+    [parinfer-cljs.core :refer [indent-mode
+                                paren-mode]]
     [parinfer-site.vcr-data :as vcr-data]
     [parinfer-site.vcr :refer [vcr
                                play-recording!

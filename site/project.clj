@@ -11,7 +11,7 @@
                  [org.clojure/core.async "0.1.346.0-17112a-alpha"]
                  [org.omcljs/om "0.9.0"]
                  [sablono "0.3.6"]
-                 [parinfer "1.4.0-0"]]
+                 [parinfer-cljs "1.4.0-1"]]
 
   :plugins [[lein-cljsbuild "1.1.2"]
             [lein-figwheel "0.4.0"]]
