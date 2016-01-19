@@ -66,24 +66,22 @@ encountered.  That is, it dispatches to operations which modify our boolean
 flags and paren stack.  It is also a convenient place to do some of the
 transformations we will discuss next.
 
-## Housekeeping
+## Cleaning
 
-Parinfer performs some housekeeping on the code as a necessary step toward the
+Parinfer will remove or replace some characters as a necessary step toward the
 main transformations.
 
 #### Tab Characters
 
-A line indented with a tab character results in an ambiguous indentation
-length.  Thus, we replace such tab characters with a standard count of two
-spaces.
+We replace tabs outside strings with two spaces, removing the possibility of
+ambiguous character alignment.
 
 _This operation happens at [`onTab`], committed by [`commitChar`]._
 
 #### Unmatched Close Paren
 
-Any unmatched close-parens are removed.  This makes the next transformations
-simpler, and has the added benefit of making a paredit-like "barf" operation
-without hotkeys (more on this later).
+Any unmatched close-parens are removed. This makes the next transformations
+simpler and more predictable.
 
 ```clj
 (foo} 1 2 3)  ;; <-- before: the "}" is unmatched
@@ -151,6 +149,25 @@ underscore below, similar to the way we show zero-length indentation.
 (foo (+ 2 3) [(bar_       ;; comment
 ```
 
+If a line starts with a close-paren, it does NOT constitute a Paren Trail.
+Rather, these "leading close-parens" are absorbed into their previous Paren
+Trail.  We will cover this in a later section.
+
+```clj
+;; BEFORE
+(foo
+  (bar_
+  )      ;; <--- leading close-paren is not a paren-trail
+  ^
+)        ;; <--- leading close-paren is not a paren-trail
+^
+
+;; AFTER
+(foo
+  (bar)) ;; <--- absorbed the leading close-parens
+      ^^
+```
+
 _The Paren Trail is stored in [`result.parenTrail`], updated by
 [`updateParenTrailBounds`] and [`onMatchedCloseParen`]._
 
@@ -185,10 +202,11 @@ ___(+ a b)])
          ^^^
 ```
 
-After encountering the indentation on line 1, we don't do anything because
-there is no previous Paren Trail to base a correction on.  But after the
-indentation on line 2, we do have the Paren Trail from line 1 to deal with.
-Let's emphasize this by only annotating these two regions:
+__The main idea__ here is that we are only looking at _two_ things a time: the
+indentation that we just processed, and the previous paren trail.
+
+Thus, in our example, we skip the first indentation since there is no previous
+paren trail.  Let's highlight the next pair then:
 
 ```clj
  (foo [a b_
@@ -210,9 +228,9 @@ In Paren Mode, we instead correct the Indentation to the following:
 _______(+ a b)])
 ```
 
-The main idea here is that we are only looking at two things a time: the
-indentation that we just processed, and the previous paren trail.  The rest of
-the file is corrected by continuing this process line-by-line.
+The processing continues by making corrections for each subsequent pair of
+indentation and paren trail regions.  The final paren trail is processed by
+pairing it with a virtual indentation length of zero.
 
 Now let's look at exactly how these corrections are performed.
 
@@ -275,7 +293,7 @@ Processing is canceled if there is an unclosed quote.  See [`finalizeResult`].
 
 In Paren Mode, we correct the indentation by clamping it to a valid range.  The
 leftmost point is to the right of the most recent _unclosed_ open-paren, and the
-rightmost point is at the most recently _closed_ open-paren.
+rightmost point is to the left of the most recently _closed_ open-paren.
 
 For example, given the following code:
 
@@ -312,62 +330,52 @@ This correction happens at [`correctIndent`].
 
 Processing is canceled if there is an unclosed quote or open-paren.  See [`finalizeResult`].
 
-### Leading Close Parens
+## Absorbing Paren Trails
 
-Parinfer considers it non-normal for a line to start with a close-paren
-(preceded by zero or more whitespace).  We call this a "leading close-paren":
-
-```clj
-(foo
-  bar
-  )   ;; <-- leading close-paren
-```
-
-For consistency, we always want to move these to the end of the previous
-non-empty line, that is, the currently existing Paren Trail:
+As stated earlier, if a line starts with a close-paren, it is simply absorbed
+into the previous Paren Trail.  Some examples:
 
 ```clj
+;; BEFORE
 (foo
-  bar) ;; <-- moved here
-```
-
-_Indent Mode_ accomplishes this simply by removing these leading close-parens,
-since moving it to the Paren Trail would result in it being removed anyway.
-
-_Paren Mode_ will move any leading close-parens to the end of the current Paren
-Trail.  For example, if we have several leading close-parens on separate lines,
-they are all moved to the most recent Paren Trail:
-
-```clj
-(foo
-  (bar_
+  (bar)
   )
-)
+  ^
+
+;; AFTER
+(foo
+  (bar))
+       ^
 ```
 
 ```clj
+;; BEFORE
+(foo
+  (bar
+  ) baz)
+  ^
+
+;; AFTER
 (foo
   (bar)
       ^
-  
-)
+   baz)
 ```
 
-```clj
-(foo
-  (bar))
-      ^^
-  
- 
-```
+_Indent Mode_ accomplishes this simply by removing these leading close-parens,
+since moving it to the end of the previous line would result in it being
+removed anyway by [`removeParenTrail`].
+
+_Paren Mode_ will move any leading close-parens to the end of the previous Paren
+Trail. 
 
 _See the [`onLeadingCloseParen`] function for details._
 
-### Preserving Relative Indentation during Indentation Correction
+## Preserving Relative Indentation
 
 As we have seen, Paren Mode will correct the indentation of lines one-by-one.
-This can result in the loss of relative indentation.  For example, this
-is an example with incorrect indentation:
+This can result in the loss of relative indentation.  Let's walk through an
+example:
 
 ```clj
      [a
@@ -376,52 +384,67 @@ is an example with incorrect indentation:
    bar)]
 ```
 
-We first correct the line containing `foo`:
+Paren Mode first corrects the line containing `foo`:
 
 ```clj
      [a
       b
-      (foo
+______(foo
    bar)]
 ```
 
-Then we correct the line containing `bar`:
+Then it continues by correcting the line containing `bar`:
 
 ```clj
      [a
       b
       (foo
-       bar)]
+_______bar)]
 ```
 
-But notice that `bar` is no longer indented two spaces inside the `foo`
-expression.  This is what we want instead:
+Even though this is "correct" according to our previous rules, we wish to
+preserve `bar`'s original two space indentation inside `foo`. Thus, we add an
+extra space:
 
 ```clj
      [a
       b
       (foo
-        bar)]
+       _bar)]
 ```
 
-Thus, we wish to preserve the relative indentation of all lines inside an
-expression after its first line has shifted.
+Paren Mode acts further to preserve your custom indentation whenever possible.
+It does this by trying to respect relative indentations of nested expressions.
+In other words, when shifting a line containing an open-paren, we equally shift
+all lines until the matching close-paren is met.
 
-We accomplish this inside the [`correctIndent`] function by storing how much
-the current line's indentation has changed at [`result.indentDelta`].  This var
-is copied to the stack for every open-paren on this line by [`onOpenParen`].
-Notice how the most recent unclosed open-paren's indent delta is added to a
-line's initial indentation before correcting it. This achieves our goal of
-preserving relative indentation whenever possible.
+We accomplish this by tracking how much a line's indentation has changed and
+store the value at [`result.indentDelta`].  Any subsequent line captured by an
+open-paren on this line simply adds this value to its indentation length before
+correction.  To allow for this to work for deeper expressions,
+[`result.indentDelta`] is accumulated and copied to the [`result.parenStack`].
+That way, a line must only check the `indentDelta` on top of the paren stack.
 
+_These operations happen at [`correctIndent`] and [`onOpenParen`]._
 
-## For use in an editor
+---
+
+## Using in an Editor
 
 The description of Parinfer thus far would completely satisfy the requirements
-for a standalone file processor outside of an editor.  But it requires some
-additional features if it is to auto-process your code while typing.
+for a standalone file processor outside of an editor.  But in order for it work
+as an interactive and user-friendly editor mode (i.e. auto-processing your code
+while you type), we must add additional features.
 
-### Relaxing rules around the Cursor in Indent Mode
+Thus, these final sections describe when and how Parinfer sometimes lets you
+break some of its aforementioned rules so they don't get in your way.  The next
+section describes an extra indentation convenience feature.  And the last
+section describes how Parinfer attempts to bail you out of trouble during a
+conundrum for which a pure solution has yet to be found.
+
+---
+
+## The Cursor in Indent Mode
 
 Sometimes, Indent Mode has to relax its rules in order to let you finish typing
 something. For example, suppose you just typed a space character below.  The
@@ -514,7 +537,7 @@ instead of the first line:
 
 See [`truncateParenTrailBounds`] for the implementation.
 
-### Relaxing rules around the Cursor in Paren Mode
+## The Cursor in Paren Mode
 
 Paren Mode must be relaxed to allow the user to press enter in the following
 situation.
@@ -611,7 +634,7 @@ To avoid having to do this, we create a new rule to allow this to happen:
 This new rule is the following.  In Paren Mode, close-parens are allowed at the
 start of a line if there is a cursor before it.  See [`onLeadingCloseParen`].
 
-### Preserving Relative Indentation during Text Insertion/Removal
+## Preserving Relative Indentation while typing
 
 Unfortunately, the previous method for preserving relative indentation
 does not work when it is the user's insertion or deletion operations
@@ -655,7 +678,7 @@ Specifically, the [`handleCursorDelta`] function simply adds [`result.cursorDx`]
 to [`result.indentDelta`] after the cursor to preserve relative indentation
 across user edits, whenever possible.
 
-### "Quote Danger"
+## "Quote Danger": A conundrum
 
 Inserting a quote can cause a hard-to-track problem, caused by syntax comments
 interfering with the detection of unbalanced strings.
