@@ -1,6 +1,35 @@
-This is WIP documentation for [`parinfer.js`].
+# Parinfer Design & Implementation
 
+Since [Parinfer's home page] necessarily glosses over a lot of implementation
+details for the sake of presentation, this document is written as supplemental
+context for developers who want to explore the code.  While discussing design
+here, we include frequent references to the relevant code inside
+[`parinfer.js`] so that you may jump back and forth between implementation and
+narrative.
+
+[Parinfer's home page]:http://shaunlebron.github.io/parinfer/
 [`parinfer.js`]:parinfer.js
+
+- [Summary](#summary)
+- [Processing the Text](#processing-the-text)
+- [Finding Parens](#finding-parens)
+- [Cleaning](#cleaning)
+  - [Tab Characters](#tab-characters)
+  - [Unmatched Close Parens](#unmatched-close-parens)
+- [Analyzing a Line](#analyzing-a-line)
+  - [Indentation](#indentation)
+  - [Paren Trail](#paren-trail)
+- [The Modes](#the-modes)
+  - [Indent Mode](#indent-mode)
+  - [Paren Mode](#paren-mode)
+- [Absorbing Paren Trails](#absorbing-paren-trails)
+- [Preserving Relative Indentation](#preserving-relative-indentation)
+- [Using in an Editor](#using-in-an-editor)
+  - [The Cursor in Indent Mode](#the-cursor-in-indent-mode)
+  - [The Cursor in Paren Mode](#the-cursor-in-paren-mode)
+  - [Preserving Relative Indentation while typing](#preserving-relative-indentation-while-typing)
+  - ["Quote Danger": A Conundrum](#quote-danger-a-conundrum)
+- [Questions?](#questions)
 
 ## Summary
 
@@ -78,7 +107,7 @@ ambiguous character alignment.
 
 _This operation happens at [`onTab`], committed by [`commitChar`]._
 
-#### Unmatched Close Paren
+#### Unmatched Close Parens
 
 Any unmatched close-parens are removed. This makes the next transformations
 simpler and more predictable.
@@ -442,9 +471,7 @@ section describes an extra indentation convenience feature.  And the last
 section describes how Parinfer attempts to bail you out of trouble during a
 conundrum for which a pure solution has yet to be found.
 
----
-
-## The Cursor in Indent Mode
+### The Cursor in Indent Mode
 
 Sometimes, Indent Mode has to relax its rules in order to let you finish typing
 something. For example, suppose you just typed a space character below.  The
@@ -537,7 +564,7 @@ instead of the first line:
 
 See [`truncateParenTrailBounds`] for the implementation.
 
-## The Cursor in Paren Mode
+### The Cursor in Paren Mode
 
 Paren Mode must be relaxed to allow the user to press enter in the following
 situation.
@@ -634,7 +661,7 @@ To avoid having to do this, we create a new rule to allow this to happen:
 This new rule is the following.  In Paren Mode, close-parens are allowed at the
 start of a line if there is a cursor before it.  See [`onLeadingCloseParen`].
 
-## Preserving Relative Indentation while typing
+### Preserving Relative Indentation while typing
 
 Unfortunately, the previous method for preserving relative indentation
 does not work when it is the user's insertion or deletion operations
@@ -678,7 +705,7 @@ Specifically, the [`handleCursorDelta`] function simply adds [`result.cursorDx`]
 to [`result.indentDelta`] after the cursor to preserve relative indentation
 across user edits, whenever possible.
 
-## "Quote Danger": A conundrum
+### "Quote Danger": A conundrum
 
 Inserting a quote can cause a hard-to-track problem, caused by syntax comments
 interfering with the detection of unbalanced strings.
@@ -776,6 +803,15 @@ to be commented without triggering a "quote danger" warning:
 ```
 
 See [`result.quoteDanger`], which is updated by [`onQuote`].
+
+## Questions?
+
+I appreciate feedback! If I left something out, got something wrong, or you
+just have questions or feedback, you can [email me] or use our [gitter
+chatroom].  I'll answer questions as soon as I can.
+
+[email me]:shaunewilliams@gmail.com
+[gitter chatroom]:https://gitter.im/shaunlebron/parinfer
 
 <!-- END OF DOC: All content below is overwritten by `update-doc-reflinks.sh` -->
 [`isOpenParen`]:parinfer.js#L54
