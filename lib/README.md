@@ -1,10 +1,20 @@
 # Parinfer Lib [<img src="https://travis-ci.org/shaunlebron/parinfer.svg?branch=master" valign="middle">](https://travis-ci.org/shaunlebron/parinfer)
 
-This is the standalone _editor-agnostic_ library for using [Parinfer].  It consists
-of two pure functions of your text, returning new text with corrected parens
-or indentation.
+This is the canonical implementation of [Parinfer], written in JavaScript.  It
+has a dead simple API and can be used directly by any editor or REPL that can
+use JavaScript.  It has also been designed to be simple to port.
+
+| implemented in | link |
+|----------|------|
+| JavaScript\* | _you are here_ |
+| Python | [parinfer.py] |
+| ClojureScript | [parinfer-cljs] |
+
+_\* canonical implementation_
 
 [Parinfer]:http://shaunlebron.github.io/parinfer/
+[parinfer.py]:https://github.com/oakmac/parinfer.py
+[parinfer-cljs]:https://github.com/shaunlebron/parinfer-cljs
 
 ## Installation
 
