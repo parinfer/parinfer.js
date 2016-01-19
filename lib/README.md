@@ -74,6 +74,11 @@ something that you can try:
 1. __Allow mode toggling__ by using some hotkeys.  For example:
   - <kbd>Ctrl</kbd>+<kbd>(</kbd> to toggle between Indent Mode and Paren Mode
   - <kbd>Ctrl</kbd>+<kbd>)</kbd> to turn Parinfer off
+1. __For better performance__ on larger files, you can limit the call frequency
+  of `indentMode` and `parenMode` by waiting for the user to stop typing after
+  some interval, or by [debouncing] the function.
+
+[debouncing]:https://davidwalsh.name/javascript-debounce-function
 
 ## Add Parinfer to a REPL
 
