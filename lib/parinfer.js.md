@@ -715,10 +715,10 @@ Suppose we have the following:
   "bar;")
 ```
 
-Now suppose I want to insert the string `"baz"` after `foo`, like so:
+Now suppose I want to insert the string `"pez"` after `foo`, like so:
 
 ```clj
-(foo "baz"
+(foo "pez"
   "bar;")
 ```
 
@@ -741,10 +741,10 @@ Indent Mode will result in the following:
   "bar);")
 ```
 
-And after you finish typing `"baz"`, you end up with:
+And after you finish typing `"pez"`, you end up with:
 
 ```clj
-(foo "baz"
+(foo "pez"
   "bar);")
 ```
 
@@ -773,7 +773,7 @@ The comment has been treated as code, and thus parens have been added/altered.
 This is a process that will not be reversed after closing our initial string:
 
 ```clj
-(foo "baz"
+(foo "pez"
   ; " and ( and [])
   bar)
 ```
