@@ -346,8 +346,8 @@ Then, we identify the most recent _unclosed_ open-paren:
 __(+ a b)])
 ```
 
-There is no most recently _closed_ open-paren, so we ignore that bound.  Clamping
-to the leftmost boundary gives us a new indentation length:
+There is no most recently _closed_ open-paren, so we ignore that bound.
+Clamping to the leftmost boundary gives us a new indentation length:
 
 ```clj
 (foo [a b
@@ -355,9 +355,20 @@ to the leftmost boundary gives us a new indentation length:
 ______(+ a b)])
 ```
 
-This correction happens at [`correctIndent`].
+This indentation correction process happens at [`correctIndent`].
 
-Processing is canceled if there is an unclosed quote or open-paren.  See [`finalizeResult`].
+Also, in order to have consistent formatting of Paren Trails between modes, we
+remove any spaces inside a Paren Trail with [`cleanParenTrail`]:
+
+```clj
+(foo (bar [1 2 3 ] ) )  ;; BEFORE
+                ^^^^^^
+(foo (bar [1 2 3]))     ;; AFTER
+                ^^^
+```
+
+And finally, processing is canceled if there is an unclosed quote or
+open-paren.  See [`finalizeResult`].
 
 ## Absorbing Paren Trails
 
@@ -473,8 +484,10 @@ conundrum for which a pure solution has yet to be found.
 
 ### The Cursor in Indent Mode
 
-Sometimes, Indent Mode has to relax its rules in order to let you finish typing
-something. For example, suppose you just typed a space character below.  The
+Sometimes, Indent Mode has to relax its rules at the cursor so that it doesn't
+get in the way of typing.
+
+For example, suppose you just typed a space character below.  The
 `|` is your cursor:
 
 ```clj
@@ -572,33 +585,28 @@ _This operation happens at [`clampParenTrailToCursor`]._
 
 ### The Cursor in Paren Mode
 
-Paren Mode must be relaxed to allow the user to press enter in the following
-situation.
+Paren Mode must also relax its rules so that it doesn't get in the way of
+typing.
 
-Suppose you have this:
-
-```clj
-(foo
-  bar)
-```
-
-and you want to insert `baz` so that your code looks like this:
+For some of the same reasons mentioned in the previous section, Paren Mode
+allows you to insert spaces inside the Paren Trail if the cursor is on that
+line:
 
 ```clj
-(foo
-  bar
-  baz)
+(foo (bar [1 2 3]) |)
 ```
 
-Intuitively, one might place their cursor `|` before the close-paren:
+Paren Mode does this by not calling [`cleanParenTrail`] on the cursor's line.
+
+Also, suppose you press enter when your cursor is at `|` below:
 
 ```clj
 (foo
   bar|)
 ```
 
-After pressing enter, assuming your editor has auto-indent, a new line will be
-inserted with some indentation:
+After pressing enter, a new line will be inserted (with some indentation if
+your editor has auto-indent).
 
 ```clj
 (foo
@@ -606,7 +614,8 @@ inserted with some indentation:
  |)
 ```
 
-In either Mode, Parinfer will move the close-paren back to the previous line:
+But according to Paren Mode's rules, the close-paren will be moved back to the
+previous line:
 
 ```clj
 (foo
@@ -614,49 +623,10 @@ In either Mode, Parinfer will move the close-paren back to the previous line:
  |
 ```
 
-Suppose that we type `baz`.
-
-```clj
-(foo
-  bar)
-  baz|
-```
-
-In Indent Mode, the close-paren will be moved and we will be done:
-
-```clj
-;; Indent Mode
-(foo
-  bar
-  baz|)
-```
-
-But in Paren Mode, `baz` will be dedented:
-
-```clj
-;; Paren Mode
-(foo
-  bar)
-baz|
-```
-
-A workaround for getting the desired result in Paren Mode would be to first
-insert `baz` after `bar`:
-
-```clj
-(foo
-  bar |baz)
-```
-
-and then press enter:
-
-```clj
-(foo
-  bar
- |baz)
-```
-
-To avoid having to do this, we create a new rule to allow this to happen:
+This does not matter in Indent Mode because the close-paren will be moved to
+the current line after we type something, but in Paren Mode, we must add a new
+rule to allow close-parens at the start of a line if there is a cursor before
+it.
 
 ```clj
 (foo
@@ -664,8 +634,12 @@ To avoid having to do this, we create a new rule to allow this to happen:
  |)
 ```
 
-This new rule is the following.  In Paren Mode, close-parens are allowed at the
-start of a line if there is a cursor before it.  See [`onLeadingCloseParen`].
+This allows us to type something into this new line without the close-paren
+being immediately displaced.  See [`onLeadingCloseParen`] for details.
+
+And again, it's important to note that simply moving the cursor to another line
+will reformat the line that was "suspended" by this cursor rule, restoring the
+full rules of Paren Mode.
 
 ### Preserving Relative Indentation while typing
 
