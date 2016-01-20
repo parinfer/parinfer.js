@@ -461,9 +461,9 @@ _These operations happen at [`correctIndent`] and [`onOpenParen`]._
 ## Using in an Editor
 
 The description of Parinfer thus far would completely satisfy the requirements
-for a standalone file processor outside of an editor.  But in order for it work
-as an interactive and user-friendly editor mode (i.e. auto-processing your code
-while you type), we must add additional features.
+for a standalone file processor outside of an editor.  But in order for it to
+work as an interactive and user-friendly editor mode (i.e. auto-processing your
+code while you type), we must add additional features.
 
 Thus, these final sections describe when and how Parinfer sometimes lets you
 break some of its aforementioned rules so they don't get in your way.  The next
@@ -481,8 +481,8 @@ something. For example, suppose you just typed a space character below.  The
 (def foo |)
 ```
 
-Indent Mode would delete the space, preventing you from adding anything after
-`foo`.
+Indent Mode would immediately delete the space, preventing you from adding some
+space-separated element after `foo`:
 
 ```clj
 (def foo|)
@@ -496,7 +496,8 @@ A similar example also applies to typing a `]` below:
       7 8 9])
 ```
 
-It would also get deleted immediately:
+It would also get deleted immediately, preventing you from adding some element
+after it:
 
 ```clj
 (foo [1 2 3|
@@ -504,48 +505,49 @@ It would also get deleted immediately:
       7 8 9])
 ```
 
-To prevent both of these problems, we add a rule to clamp the Paren Trail to
-the range extending past the cursor.  To clarify, here's the original Paren
-Trail:
+To prevent both of these problems, we add a rule to clamp the Paren Trail's
+left boundary to the cursor.  Let's revisit the first example to illustrate:
+
+```clj
+(def foo |)
+```
+
+Let's remove the cursor character and show the Paren Trail:
 
 ```clj
 (def foo )
         ^^
 ```
 
-We removed the `|` cursor representation since the cursor does not take up
-character space.  Let's add a representation of the "range extending past the
-cursor" using `>>>`:
-
-```clj
-(def foo )
-        ^^
-         >>>>>>>>>>>>>>> (to the end of the line)
-```
-
-After clamping the Paren Trail boundaries to the cursor range, we are
-left with a new Paren Trail:
+When we clamp this Paren Trail's left boundary to the cursor, we have:
 
 ```clj
 (def foo )
          ^
 ```
 
-Thus, the space is not removed since it is not included in the Paren Trail,
-which is susceptible to being replaced by Indent Mode's inferencing.
+Thus, the space is not removed since it is no longer included in the Paren
+Trail for removal.
 
-Applying this to the second example:
+Let's show the same thing for the second example:
+
+```clj
+(foo [1 2 3]|
+      4 5 6
+      7 8 9])
+```
+
+Again, we remove the cursor character and show the Paren Trail:
 
 ```clj
 (foo [1 2 3]
            ^
-            >>>>>>>>>>>> (to the end of the line)
       4 5 6
       7 8 9])
 ```
 
-After clamping the Paren Trail boundaries to the cursor range,
-The new Paren Trail is a zero-length range:
+When we clamp this Paren Trail's left boundary to the cursor, we are left with
+a zero-length Paren Trail:
 
 ```clj
 (foo [1 2 3]_
@@ -553,16 +555,20 @@ The new Paren Trail is a zero-length range:
       7 8 9])
 ```
 
-After processing in Indent Mode, the `]` must be removed from the last line
-instead of the first line:
+Thus, the `]` is not removed since it is no longer included in the Paren
+Trail for removal.  After processing the rest, we are left with:
 
 ```clj
-(foo [1 2 3]_
+(foo [1 2 3]
       4 5 6
       7 8 9)
 ```
 
-See [`truncateParenTrailBounds`] for the implementation.
+It's important to note that simply moving the cursor to another line will
+reformat the line that was "suspended" by this cursor rule, restoring the full
+rules of Indent Mode.
+
+_This operation happens at [`clampParenTrailToCursor`]._
 
 ### The Cursor in Paren Mode
 
