@@ -1,14 +1,18 @@
 # Parinfer Design & Implementation
 
-Since [Parinfer's home page] necessarily glosses over a lot of implementation
-details for the sake of presentation, this document is written as supplemental
-context for developers who want to explore the code.  While discussing design
-here, we include frequent references to the relevant code inside
-[`parinfer.js`] so that you may jump back and forth between implementation and
-narrative.
+Since [Parinfer's home page] must gloss over details for the sake of
+presentation, this document is written to provide supplemental context for
+developers who want to explore and understand its implementation.  While
+discussing design here, we include frequent references to the relevant code
+inside [`parinfer.js`] so that you may jump back and forth between
+implementation and narrative.
 
 [Parinfer's home page]:http://shaunlebron.github.io/parinfer/
 [`parinfer.js`]:parinfer.js
+
+--
+
+_<strong>Part 1</strong> - The Pure Parts_
 
 - [Summary](#summary)
 - [Processing the Text](#processing-the-text)
@@ -24,12 +28,20 @@ narrative.
   - [Paren Mode](#paren-mode)
 - [Absorbing Paren Trails](#absorbing-paren-trails)
 - [Preserving Relative Indentation](#preserving-relative-indentation)
-- [Using in an Editor](#using-in-an-editor)
-  - [The Cursor in Indent Mode](#the-cursor-in-indent-mode)
-  - [The Cursor in Paren Mode](#the-cursor-in-paren-mode)
-  - [Preserving Relative Indentation while typing](#preserving-relative-indentation-while-typing)
-  - ["Quote Danger": A Conundrum](#quote-danger-a-conundrum)
-- [Questions?](#questions)
+
+--
+
+_<strong>Part 2</strong> - The Extra Parts for UX_
+
+- [The Cursor in Indent Mode](#the-cursor-in-indent-mode)
+- [The Cursor in Paren Mode](#the-cursor-in-paren-mode)
+- [Preserving Relative Indentation while typing](#preserving-relative-indentation-while-typing)
+- [Dangerous Quotes](#dangerous-quotes)
+  - [String Corruption](#string-corruption)
+  - [Comment Corruption](#comment-corruption)
+  - [Risk Management](#risk-management)
+
+--
 
 ## Summary
 
@@ -702,7 +714,7 @@ To make use of this information, the [`handleCursorDelta`] function adds
 [`result.cursorDx`] to [`result.indentDelta`] when it reaches the cursor, thereby
 preserving relative indentation of subsequent lines as expected.
 
-### "Quote Danger": A conundrum
+### Dangerous Quotes
 
 Inserting a quote can cause a problem that is hard to track down. This is
 caused by syntax comments interfering with the detection of unbalanced strings.
