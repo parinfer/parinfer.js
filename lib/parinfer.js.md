@@ -716,9 +716,9 @@ preserving relative indentation of subsequent lines as expected.
 
 ### Dangerous Quotes
 
-Inserting a quote can cause a problem that is hard to track down. This is
-caused by syntax comments interfering with the detection of unbalanced strings.
-We have dubbed this the _"Quote Danger"_ problem.
+Inserting a quote can sometimes cause a problem that is hard to track down.
+This is caused by syntax comments interfering with the detection of unbalanced
+strings.
 
 #### String Corruption
 
@@ -800,26 +800,6 @@ string insertion, we have corrupted a comment:
 
 --
 
-##### Auto-Matching Quotes
-
-The astute observer will recognize that an editor can
-auto-insert a matching-quote to prevent this problem. This helps, but the
-problem inevitably resurfaces when the user deletes a single quote while
-editing.
-
-```clj
-(foo "|"     ;; <-- closing-quote auto-inserted after typing the first
-  "bar;")
-```
-
-```diff
-- (foo "pez"|
-+ (foo "pez|   ;; <-- deleting a single quote results in same problem
-    "bar;")
-```
-
---
-
 ##### The Root Cause
 
 The astute observer may have also realized that the problems occurred either
@@ -841,40 +821,52 @@ of dangerous quotes inside comments.
   bar)
 ```
 
-Interestingly, none of this would be a problem if programmers used directional
-quotes `“` `”` in their code.  Instead, the non-directional quote `"` must
-infer its direction from the number of quotes behind it.  Imagine the
-difficulty of working with non-directional parens.
-
-Thus, the root cause of this problem is enabled by a perfect storm of
-unbalanced, non-directional quotes and their ability to be temporarily balanced
-by unintended, spontaneous comment syntax.
+> Interestingly, none of this would be a problem if programmers used
+> directional quotes `“` `”` in their code.  Instead, the non-directional quote
+> `"` must infer its direction from the number of quotes behind it. (Imagine
+> the difficulty of working with non-directional parens!)  Thus, the root cause
+> of this problem is enabled by a perfect storm of unbalanced, non-directional
+> quotes and their ability to be temporarily balanced when accidentally thrust
+> into or out of comments.
 
 --
 
-__Partial Solution__: Since we have identified the root cause of _unbalanced
-quotes inside comments_, we cancel processing if they are found.
-This seems to prevent String Corruption, but it can only warn of
-impending Comment Corruption.
+##### Prevention
 
-__Full Solution?__: Fully preventing Comment Corruption may prove unwiedly
-since it would require a "trapdoor" shutoff.  That is, it may involve
-displaying a warning to the user, turning off Parinfer altogether, and forcing
-them to manually re-enable after they have determined the problem to be fixed,
-since Parinfer cannot deduce that itself.
+It turns out that canceling the processing when "dangerous quotes" are detected
+either prevents the problems or can provide a warning to the user early enough
+to fix it.
+
+As long as no dangerous quotes were detected beforehand, it seems that no
+corruption can happen while typing out a comment or a string.  Rather,
+corruption seems to only happen when starting a new string before a comment
+housing a dangerous quote, so it stands to reason that we can provide a warning
+before the catalyst quote is inserted.
+
+The warning will not prevent the catalyst quote from being inserted and causing
+a problem.  It will simply suspend processing until the code contains no
+dangerous quotes.  Parinfer cannot deduce what the user intends or doesn't
+intend to constitute balanced quotes.  Thus, the user must react to these
+emitted warnings with care.
 
 It should be noted that contiguous comments are considered part of the same comment
 when deducing unbalanced strings.  This allows multiline strings
-to be commented without triggering a "quote danger" warning:
+to be commented without triggering a warning:
 
 ```clj
 (defn foo
-  ; "multiline
-  ; string"
+  ; "multiline   ;; <-- dangerous unbalanced quote!
+  ; string"      ;; <-- but this contiguous comment rebalances it.
   bar)
 ```
 
-See [`result.quoteDanger`], which is updated by [`onQuote`].
+Detection of dangerous quotes inside comments is done simply by toggling
+[`result.quoteDanger`] everytime an unescaped quote is encountered inside a
+comment.  This happens in [`onQuote`], and we check if an error should be
+reported at [`onProperIndent`] since that moment signifies that no contiguous
+comments follow.
+
+--
 
 ## Questions?
 
