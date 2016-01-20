@@ -392,14 +392,13 @@ into the previous Paren Trail.  Some examples:
 ;; BEFORE
 (foo
   (bar
-  ) pez)
+  ) z)
   ^
 
 ;; AFTER
 (foo
   (bar)
-      ^
-   pez)
+   z) ^
 ```
 
 _Indent Mode_ accomplishes this simply by removing these leading close-parens,
