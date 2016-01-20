@@ -705,8 +705,11 @@ preserving relative indentation of subsequent lines as expected.
 
 ### "Quote Danger": A conundrum
 
-Inserting a quote can cause a hard-to-track problem, caused by syntax comments
-interfering with the detection of unbalanced strings.
+Inserting a quote can cause a problem that is hard to track down. This is
+caused by syntax comments interfering with the detection of unbalanced strings.
+We have dubbed this the _"Quote Danger"_ problem.
+
+#### String Corruption
 
 Suppose we have the following:
 
@@ -722,34 +725,36 @@ Now suppose I want to insert the string `"pez"` after `foo`, like so:
   "bar;")
 ```
 
-Let's follow what happens after I type the first quote:
+The problem happens as soon as I type the first quote, before I can finish
+the rest of the string:
 
 ```clj
-(foo "
+(foo "|
   "bar;")
 ```
 
-Assume that we are working in an editor that does not auto-insert a matching
-quote.  Or assume that we deleted the auto-matched quote thereafter.  Either
-way, the syntax contains no unclosed quotes, because the semicolon has been
-converted to a comment after its string was turned inside out.
+Take a moment to look at the expression again.  Even though we haven't closed
+our current string yet, there are no unclosed quotes.  This is because the
+semicolon is now commenting out the last quote, which we did not intend
+to create a temporarily
 
-Indent Mode will result in the following:
+Thus, Indent Mode will result in the following:
 
 ```clj
 (foo "
   "bar);")
 ```
 
-And after you finish typing `"pez"`, you end up with:
+Thus, through this seemingly innocuous string insertion, we have managed to
+corrupt the string `"bar;"` to `"bar);"`:
 
-```clj
-(foo "pez"
-  "bar);")
+```diff
+ (foo "pez"
+-  "bar;")
++  "bar);")
 ```
 
-Thus, this seemingly innocuous string insertion, we have corrupted the string
-`"bar;"` to be `"bar);"`
+#### Comment Corruption
 
 The same problem can be seen from a different perspective in the following
 example.  Suppose we have a comment that lists some special characters:
@@ -764,30 +769,88 @@ This time, inserting a quote before the comment results in the contents of the _
 to be corrupted like so:
 
 ```clj
-(foo "
+(foo "|
   ; " and ( and [])
   bar)
 ```
 
-The comment has been treated as code, and thus parens have been added/altered.
-This is a process that will not be reversed after closing our initial string:
+What was previously a comment is now being treated as code, and thus parens
+have been added/altered.  Thus, after completing another seemingly innocuous
+string insertion, we have corrupted a comment:
+
+```diff
+ (foo "pez"
+-  ; " and ( and [
++  ; " and ( and [])
+   bar)
+```
+
+#### Risk Management
+
+--
+
+##### Auto-Matching Quotes
+
+The astute observer will recognize that an editor can
+auto-insert a matching-quote to prevent this problem. This helps, but the
+problem inevitably resurfaces when the user deletes a single quote while
+editing.
 
 ```clj
-(foo "pez"
-  ; " and ( and [])
+(foo "|"     ;; <-- closing-quote auto-inserted after typing the first
+  "bar;")
+```
+
+```diff
+- (foo "pez"|
++ (foo "pez|   ;; <-- deleting a single quote results in same problem
+    "bar;")
+```
+
+--
+
+##### The Root Cause
+
+The astute observer may have also realized that the problems occurred either
+before or after _an unbalanced quote was found inside a comment_.  This is in
+fact what interferes with how Parinfer detects unclosed quotes, and thus
+prevents Parinfer from canceling its processing.  Thus, we look for these kinds
+of dangerous quotes inside comments.
+
+```clj
+(foo "|
+  "bar);")          ;; <-- dangerous quote from String Corruption example
+        ^
+```
+
+```clj
+(foo
+  ; " and ( and [   ;; <-- dangerous quote from Comment Corruption example
+    ^
   bar)
 ```
 
-Both of these cases have been traced to the problem of unbalanced quotes inside comments.
-They prevent Parinfer from detecting unclosed quotes.  Thus, we look for these kinds
-of dangerous quotes inside comments, and we cancel processing if they are found.
+Interestingly, none of this would be a problem if programmers used directional
+quotes `“` `”` in their code.  Instead, the non-directional quote `"` must
+infer its direction from the number of quotes behind it.  Imagine the
+difficulty of working with non-directional parens.
 
-This solution prevents problems of the first case, but can only warn of
-impending problems of the second case. Fully preventing problems of the second
-case may prove unwiedly since it would require a "trapdoor" shutoff.  That is,
-it may involve displaying a warning to the user, turning off Parinfer
-altogether, and forcing them to manually re-enable after they have determined
-the problem to be fixed, since Parinfer cannot deduce that itself.
+Thus, the root cause of this problem is enabled by a perfect storm of
+unbalanced, non-directional quotes and their ability to be temporarily balanced
+by unintended, spontaneous comment syntax.
+
+--
+
+__Partial Solution__: Since we have identified the root cause of _unbalanced
+quotes inside comments_, we cancel processing if they are found.
+This seems to prevent String Corruption, but it can only warn of
+impending Comment Corruption.
+
+__Full Solution?__: Fully preventing Comment Corruption may prove unwiedly
+since it would require a "trapdoor" shutoff.  That is, it may involve
+displaying a warning to the user, turning off Parinfer altogether, and forcing
+them to manually re-enable after they have determined the problem to be fixed,
+since Parinfer cannot deduce that itself.
 
 It should be noted that contiguous comments are considered part of the same comment
 when deducing unbalanced strings.  This allows multiline strings
