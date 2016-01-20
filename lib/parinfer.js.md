@@ -392,14 +392,14 @@ into the previous Paren Trail.  Some examples:
 ;; BEFORE
 (foo
   (bar
-  ) baz)
+  ) pez)
   ^
 
 ;; AFTER
 (foo
   (bar)
       ^
-   baz)
+   pez)
 ```
 
 _Indent Mode_ accomplishes this simply by removing these leading close-parens,
@@ -643,47 +643,65 @@ full rules of Paren Mode.
 
 ### Preserving Relative Indentation while typing
 
-Unfortunately, the previous method for preserving relative indentation
-does not work when it is the user's insertion or deletion operations
-which causes an open-paren to shift. For example:
+Unfortunately, Paren Mode needs extra help to preserve relative indentation
+when the user inserts or deletes text behind an open-paren.  For example:
 
 ```clj
-(foo
-  bar)
+|(foo
+   bar)
 ```
 
 If the user inserts a space before `(foo`, we get:
 
-```clj
- (foo
-  bar)
 ```
-
-Parinfer receives this text without any information about what it was before.
-So, it cannot deduce any indentation delta.  This is what we want instead.
-
-```clj
- (foo
+_|(foo
    bar)
 ```
 
-To accomplish this, we must realize that such an edit only affects open-parens
-_in front_ of the current cursor.  Here are the different edit events as they
-happen relative to the cursor:
 
-- _deletion_: some text behind or in front of the cursor has been deleted
-- _insertion_: some text behind the cursor has been inserted
-- _replacement_: some text behind the cursor has been replaced by some text
+We expect the following line to be indented to preserve the relative indentation:
 
-Thus, we use a [`result.cursorDx`] parameter to indicate how far the cursor has
-moved due to an edit, which must be provided by the editor through the
-`cursorDx` option.  This can calculated simply by subtracting the previous
-cursor X position from the current cursor X position when an edit takes place.
-Notice that this works for multi-line edits as well.
+```
+ |(foo
+   _bar)
+```
 
-Specifically, the [`handleCursorDelta`] function simply adds [`result.cursorDx`]
-to [`result.indentDelta`] after the cursor to preserve relative indentation
-across user edits, whenever possible.
+But as discussed previously, Paren Mode uses [`result.indentDelta`] to preserve
+relative indentation.  So unless we influence this value at the cursor
+whenever the user inserts or removes text, the relative indentation will not be
+preserved.
+
+Thus, we require the user's editor to send a `cursorDx` option as API input.
+This is simply calculated by subtracting the previous cursor X position from
+the current cursor X position, _but only when an edit takes place_.  Some
+examples:
+
+_Inserting_ a character results in a `cursorDx` of 1:
+
+```diff
+- |(foo
++  |(foo
+```
+
+_Pasting_ multiple lines of text below results in a `cursorDx` of 5:
+
+```diff
+- |(foo
++  pasted
++  text|(foo
+```
+
+_Pressing enter_ below results in a `cursorDx` of -4:
+
+```diff
+- (bar |(foo
++ (bar
++  |(foo
+```
+
+To make use of this information, the [`handleCursorDelta`] function adds
+[`result.cursorDx`] to [`result.indentDelta`] when it reaches the cursor, thereby
+preserving relative indentation of subsequent lines as expected.
 
 ### "Quote Danger": A conundrum
 
