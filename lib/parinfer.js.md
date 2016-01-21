@@ -7,14 +7,23 @@ discussing design here, we include frequent references to the relevant code
 inside [`parinfer.js`] so that you may jump back and forth between
 implementation and narrative.
 
+We split the documentation into two parts:
+
+- First, we describe the _pure parts_, that is, the parts that allow Parinfer to
+  run outside an editor as a simple file-processing script, with no concerns
+  for intermediate user interaction.
+
+- Last, we describe the _extra UX parts_, that is, the parts that attempt to
+  balance Parinfer's rules with user expectations while editing in a live
+  transformation environment.
+
 [Parinfer's home page]:http://shaunlebron.github.io/parinfer/
 [`parinfer.js`]:parinfer.js
 
 --
 
-_<strong>Part 1</strong> - The Pure Parts_
+_[<strong>Part 1</strong> - Parinfer as a Static File Processor](#part-1---parinfer-as-a-static-file-processor)_
 
-- [Summary](#summary)
 - [Processing the Text](#processing-the-text)
 - [Finding Parens](#finding-parens)
 - [Cleaning](#cleaning)
@@ -23,15 +32,17 @@ _<strong>Part 1</strong> - The Pure Parts_
 - [Analyzing a Line](#analyzing-a-line)
   - [Indentation](#indentation)
   - [Paren Trail](#paren-trail)
-- [The Modes](#the-modes)
+- [Transformations](#transformations)
   - [Indent Mode](#indent-mode)
   - [Paren Mode](#paren-mode)
-- [Absorbing Paren Trails](#absorbing-paren-trails)
-- [Preserving Relative Indentation](#preserving-relative-indentation)
+- [Subtleties](#subtleties)
+  - [Absorbing Paren Trails](#absorbing-paren-trails)
+  - [Preserving Relative Indentation](#preserving-relative-indentation)
+- [Final Result](#final-result)
 
 --
 
-_<strong>Part 2</strong> - The Extra Parts for UX_
+_[<strong>Part 2</strong> - Parinfer as a Live Transformation Environment](#part-2---parinfer-as-a-live-transformation-environment)_
 
 - [The Cursor in Indent Mode](#the-cursor-in-indent-mode)
 - [The Cursor in Paren Mode](#the-cursor-in-paren-mode)
@@ -43,20 +54,15 @@ _<strong>Part 2</strong> - The Extra Parts for UX_
 
 --
 
-## Summary
+# Part 1 - Parinfer as a Static File Processor
 
-Parinfer.js performs a _well-defined_, full file text transformation in one
-pass, correcting either indentation or close-parens.  Close-parens may move
-between lines and some whitespace may be added or removed, but the number of
-lines will always remain unchanged.
+Parinfer.js performs a well-defined, full file text transformation in one pass.
+Depending on the transformation mode, Parinfer will correct either indentation
+or close-parens, depending on standard Lisp formatting conventions.  The following
+functions are available.  See [API](README.md#api) for full details.
 
-- [`indentMode`]`(text[, options])`
-- [`parenMode`]`(text[, options])`
-
-Text transformation is performed by either of the two functions above.  Both
-are expected to be debounced on keypress for performance. Options are currently
-only used for specifying cursor position and movement.  See
-[API](README.md#api) for full details.
+- [`indentMode`]`(text)` - uses indentation to correct parens
+- [`parenMode`]`(text)` - uses parens to correct indentation
 
 ## Processing the Text
 
@@ -212,13 +218,13 @@ Trail.  We will cover this in a later section.
 _The Paren Trail is stored in [`result.parenTrail`], updated by
 [`updateParenTrailBounds`] and [`onMatchedCloseParen`]._
 
-## The Modes
+## Transformations
 
-Parinfer's modes can now be described using definitions from the previous
-sections:
+The type of transformation performed is determined by the Mode.  These modes
+can be described using definitions from the previous sections:
 
 - __Indent Mode__
-  - When we identify a _Paren Trail_, we remove it.  See [`removeParenTrail`]
+  - When we identify a _Paren Trail_, we remove it.  See [`removeParenTrail`].
   - When we identify a line's _Indentation_, we identify all open-parens on the
     _Paren Stack_ to the right of the indentation.  Then we correct the last
     _Paren Trail_ such that it closes the aforementioned open-parens.  See [`correctParenTrail`].
@@ -382,7 +388,12 @@ remove any spaces inside a Paren Trail with [`cleanParenTrail`]:
 And finally, processing is canceled if there is an unclosed quote or
 open-paren.  See [`finalizeResult`].
 
-## Absorbing Paren Trails
+## Subtleties
+
+Here we explore extra subtle transformations that are added to the modes that
+we require.
+
+### Absorbing Paren Trails
 
 As stated earlier, if a line starts with a close-paren, it is simply absorbed
 into the previous Paren Trail.  Some examples:
@@ -422,7 +433,7 @@ Trail.
 
 _See the [`onLeadingCloseParen`] function for details._
 
-## Preserving Relative Indentation
+### Preserving Relative Indentation
 
 As we have seen, Paren Mode will correct the indentation of lines one-by-one.
 This can result in the loss of relative indentation.  Let's walk through an
@@ -478,20 +489,22 @@ That way, a line must only check the `indentDelta` on top of the paren stack.
 
 _These operations happen at [`correctIndent`] and [`onOpenParen`]._
 
+## Final Result
+
+TODO
+
 ---
 
-## Using in an Editor
+## Part 2 - Parinfer as a Live Transformation Environment
 
-The description of Parinfer thus far would completely satisfy the requirements
-for a standalone file processor outside of an editor.  But in order for it to
-work as an interactive and user-friendly editor mode (i.e. auto-processing your
-code while you type), we must add additional features.
+When using Parinfer as a live transformation environment (inside an editor or
+REPL), Parinfer's behavior can sometimes be in conflict with a user's
+expectations for normal editing behavior.  Thus, we add additional rules to try
+to bridge the two worlds together.
 
-Thus, these final sections describe when and how Parinfer sometimes lets you
-break some of its aforementioned rules so they don't get in your way.  The next
-section describes an extra indentation convenience feature.  And the last
-section describes how Parinfer attempts to bail you out of trouble during a
-conundrum for which a pure solution has yet to be found.
+When used this way, the mode functions are expected to be debounced on keypress
+for performance.  The `options` parameter is used for specifying cursor
+position and movement.
 
 ### The Cursor in Indent Mode
 
