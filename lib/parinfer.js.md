@@ -58,8 +58,8 @@ _[<strong>Part 2</strong> - Parinfer as a Live Transformation Environment](#part
 
 Parinfer.js performs a well-defined, full file text transformation in one pass.
 Depending on the transformation mode, Parinfer will correct either indentation
-or close-parens, depending on standard Lisp formatting conventions.  The following
-functions are available.  See [API](README.md#api) for full details.
+or close-parens, according to standard Lisp formatting conventions.  The
+following functions are available.  See [API](README.md#api) for full details.
 
 - [`indentMode`]`(text)` - uses indentation to correct parens
 - [`parenMode`]`(text)` - uses parens to correct indentation
