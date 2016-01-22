@@ -45,7 +45,8 @@ __Works in Progress__:
 Parinfer will soon be available for some REPL environments as well:
 
 - [Replete] for iOS
-- [cljs-devtools] for Google Chrome
+- [Dirac DevTools] for Google Chrome
+- [Reepl] for the browser
 
 <em>__[Let me know]__ if you're working on a plugin, or check the [lib readme] for extra guidance.  Thanks!</em>
 
@@ -69,7 +70,8 @@ Parinfer will soon be available for some REPL environments as well:
 [CodeMirror]:https://codemirror.net/
 
 [Replete]:https://github.com/mfikes/replete
-[cljs-devtools]:https://github.com/binaryage/cljs-devtools
+[Dirac Devtools]:https://github.com/binaryage/dirac
+[Reepl]:http://jaredforsyth.com/reepl/
 
 ---
 
