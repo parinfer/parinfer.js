@@ -70,7 +70,7 @@ Parinfer will soon be available for some REPL environments as well:
 [CodeMirror]:https://codemirror.net/
 
 [Replete]:https://github.com/mfikes/replete
-[Dirac Devtools]:https://github.com/binaryage/dirac
+[Dirac DevTools]:https://github.com/binaryage/dirac
 [Reepl]:http://jaredforsyth.com/reepl/
 
 ---
