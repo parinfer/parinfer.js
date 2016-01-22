@@ -2,27 +2,26 @@
 
 Since [Parinfer's home page] must gloss over details for the sake of
 presentation, this document is written to provide supplemental context for
-developers who want to explore and understand its implementation.  While
-discussing design here, we include frequent references to the relevant code
-inside [`parinfer.js`] so that you may jump back and forth between
-implementation and narrative.
+developers who want to explore and understand its implementation.
 
-We split the documentation into two parts:
+In its simplest form, Parinfer is a file formatter.  In this way, it can format
+a file under the assumption that the file has been saved and is ready for
+processing. It is just a thing that takes a document, and returns a new
+document.
 
-- First, we describe the _pure parts_, that is, the parts that allow Parinfer to
-  run outside an editor as a simple file-processing script, with no concerns
-  for intermediate user interaction.
+But of course, Parinfer was first and foremost designed to work in a
+Live-Editing environment.  That is, Parinfer is meant to auto-process while you
+type.  This requires some extra rules, so it helps to cover the rules of its
+simpler form first.
 
-- Last, we describe the _extra UX parts_, that is, the parts that attempt to
-  balance Parinfer's rules with user expectations while editing in a live
-  transformation environment.
+Thus, we cover the design and implementation of Parinfer in two parts:
 
 [Parinfer's home page]:http://shaunlebron.github.io/parinfer/
 [`parinfer.js`]:parinfer.js
 
 --
 
-_[<strong>Part 1</strong> - Parinfer as a Static File Processor](#part-1---parinfer-as-a-static-file-processor)_
+[<strong>Part 1</strong>](#part-1---parinfer-for-a-static-file) - _Parinfer for a Static File_
 
 - [Processing the Text](#processing-the-text)
 - [Finding Parens](#finding-parens)
@@ -38,11 +37,10 @@ _[<strong>Part 1</strong> - Parinfer as a Static File Processor](#part-1---parin
 - [Subtleties](#subtleties)
   - [Absorbing Paren Trails](#absorbing-paren-trails)
   - [Preserving Relative Indentation](#preserving-relative-indentation)
-- [Final Result](#final-result)
 
 --
 
-_[<strong>Part 2</strong> - Parinfer as a Live Transformation Environment](#part-2---parinfer-as-a-live-transformation-environment)_
+[<strong>Part 2</strong>](#part-2---parinfer-for-live-editing) - _Parinfer for Live-Editing_
 
 - [The Cursor in Indent Mode](#the-cursor-in-indent-mode)
 - [The Cursor in Paren Mode](#the-cursor-in-paren-mode)
@@ -54,15 +52,36 @@ _[<strong>Part 2</strong> - Parinfer as a Live Transformation Environment](#part
 
 --
 
-# Part 1 - Parinfer as a Static File Processor
+ <table>
+<tr>
+<td>
+NOTE
+</td>
+<td>
+While discussing design here, we include frequent references to the relevant
+code inside [`parinfer.js`] so that you may jump back and forth between
+implementation and narrative.
+</td>
+</tr>
+</table>
 
-Parinfer.js performs a well-defined, full file text transformation in one pass.
+
+--
+
+# Part 1 - Parinfer for a Static File
+
+As we said earlier, Parinfer was built for Live-Editing, but it helps to first
+remove the parameters required by human interaction and intent.  Thus, we say
+"Static File" to mean some Lisp file that has been committed, shared, and ready
+for processing.
+
+Parinfer performs a well-defined, full file text transformation in one pass.
 Depending on the transformation mode, Parinfer will correct either indentation
 or close-parens, according to standard Lisp formatting conventions.  The
-following functions are available.  See [API](README.md#api) for full details.
+following functions are available.  (See [API](README.md#api) for full details.)
 
-- [`indentMode`]`(text)` - uses indentation to correct parens
-- [`parenMode`]`(text)` - uses parens to correct indentation
+- [`indentMode`] - uses indentation to correct parens
+- [`parenMode`] - uses parens to correct indentation
 
 ## Processing the Text
 
@@ -74,9 +93,9 @@ calling the one below it:
 - [`processChar`]
 
 We explicitly track the state of our system in a `result` object, initialized
-by [`getInitialResult`].  This object is passed as the first argument to most
-functions in this file.  That way, it should be obvious whenever some part of
-the result is being read or updated anywhere in the file.
+by [`getInitialResult`].  Though it can be considered a global variable, we just
+pass it as the first argument to any function that will read or update it.
+That way, it is clear which functions are doing so from their signature.
 
 The processing functions above behave differently depending on the mode set
 at [`result.mode`].
@@ -489,22 +508,19 @@ That way, a line must only check the `indentDelta` on top of the paren stack.
 
 _These operations happen at [`correctIndent`] and [`onOpenParen`]._
 
-## Final Result
-
-TODO
-
 ---
 
-## Part 2 - Parinfer as a Live Transformation Environment
+## Part 2 - Parinfer for Live-Editing
 
-When using Parinfer as a live transformation environment (inside an editor or
-REPL), Parinfer's behavior can sometimes be in conflict with a user's
+For the most part, using the rules we've described for a Static File will work
+for Live-Editing (i.e. auto-processing the content of an editor window or
+REPL).  But Parinfer's behavior can sometimes be in conflict with a user's
 expectations for normal editing behavior.  Thus, we add additional rules to try
 to bridge the two worlds together.
 
-When used this way, the mode functions are expected to be debounced on keypress
-for performance.  The `options` parameter is used for specifying cursor
-position and movement.
+When used for Live-Editing, the mode functions are expected to be debounced on
+keypress for performance.  The `options` parameter is used for specifying
+cursor position and movement.
 
 ### The Cursor in Indent Mode
 
