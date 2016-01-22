@@ -49,6 +49,7 @@ Thus, we cover the design and implementation of Parinfer in two parts:
   - [String Corruption](#string-corruption)
   - [Comment Corruption](#comment-corruption)
   - [Risk Management](#risk-management)
+- [Incremental Processing](#incremental-processing)
 
 --
 
@@ -896,6 +897,17 @@ reported at [`onProperIndent`] since that moment signifies that no contiguous
 comments follow.
 
 --
+
+### Incremental Processing
+
+You may be wondering why we have to process the whole file again after only a
+small portion of the file has changed.  The short answer is that I haven't
+figured it out yet.  My opinion is that it seems fast enough for full-file
+processing every time.  Also, keeping the code stateless (across runs) benefits
+the simplicity of the system for study.
+
+In reality, I think someone will figure this out eventually.  So I will
+talk about some of the current ideas that have been explored. (TODO)
 
 ## Questions?
 
