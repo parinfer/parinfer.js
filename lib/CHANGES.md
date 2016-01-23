@@ -1,4 +1,4 @@
-## dev
+## 1.5.0
 
 - allow insertion of spaces in the cursor line's paren trail in Paren Mode
 
