@@ -14,7 +14,6 @@ To learn about its __design and implementation__, please see [`parinfer.js.md`].
 |----------|------|
 | JavaScript\* | _you are here_ |
 | Python | [parinfer.py] |
-| ClojureScript | [parinfer-cljs] |
 
 _\* canonical implementation_
 
