@@ -1,13 +1,26 @@
 (ns parinfer-site.parinfer)
 
-(defn convert-result [result]
-  {:text (aget result "text")
-   :success? (aget result "success")})
+(defn- convert-changed-line [e]
+  {:line-no (aget e "lineNo")
+   :line (aget e "line")})
 
-(defn convert-options [options]
-  #js {:cursorX (:cursor-x options)
-       :cursorLine (:cursor-line options)
-       :cursorDx (:cursor-dx options)})
+(defn- convert-error [e]
+  (when e
+    {:name (aget e "name")
+     :message (aget e "message")
+     :line-no (aget e "lineNo")
+     :x (aget e "x")}))
+
+(defn- convert-result [result]
+  {:text (aget result "text")
+   :success? (aget result "success")
+   :changed-lines (mapv convert-changed-line (aget result "changedLines"))
+   :error (convert-error (aget result "error"))})
+
+(defn- convert-options [option]
+  #js {:cursorX (:cursor-x option)
+       :cursorLine (:cursor-line option)
+       :cursorDx (:cursor-dx option)})
 
 (def indent-mode* (aget js/window "parinfer" "indentMode"))
 (def paren-mode* (aget js/window "parinfer" "parenMode"))

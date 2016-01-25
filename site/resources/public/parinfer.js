@@ -1,5 +1,5 @@
 //
-// Parinfer 1.4.0
+// Parinfer 1.5.1
 //
 // Copyright 2015-2016 © Shaun LeBron
 // MIT License
@@ -28,13 +28,15 @@
 "use strict";
 
 //------------------------------------------------------------------------------
-// Constants
+// Constants / Predicates
 //------------------------------------------------------------------------------
 
 var INDENT_MODE = "INDENT_MODE",
     PAREN_MODE = "PAREN_MODE";
 
 var BACKSLASH = '\\',
+    BLANK_SPACE = ' ',
+    DOUBLE_SPACE = '  ',
     DOUBLE_QUOTE = '"',
     NEWLINE = '\n',
     SEMICOLON = ';',
@@ -50,6 +52,12 @@ var PARENS = {
   "(": ")",
   ")": "("
 };
+
+function isInteger(x) {
+  return typeof x === 'number' &&
+         isFinite(x) &&
+         Math.floor(x) === x;
+}
 
 function isOpenParen(c) {
   return c === "{" || c === "(" || c === "[";
@@ -67,14 +75,15 @@ function isCloseParen(c) {
 // of a given text, we mutate this structure to update the state of our
 // system.
 
-function getInitialResult() {
+function getInitialResult(text, options, mode) {
 
   var result = {
 
-    mode: null,             // [enum] - current processing mode (INDENT_MODE or PAREN_MODE)
+    mode: mode,             // [enum] - current processing mode (INDENT_MODE or PAREN_MODE)
 
-    origLines: [],          // [string array] - original lines
-    origText: null,         // [string] - original text
+    origText: text,         // [string] - original text
+    origLines:              // [string array] - original lines
+      text.split(LINE_ENDING),
 
     lines: [],              // [string array] - resulting lines (with corrected parens or indentation)
     lineNo: -1,             // [integer] - line number we are processing
@@ -125,6 +134,13 @@ function getInitialResult() {
   Object.preventExtensions(result);
   Object.preventExtensions(result.parenTrail);
 
+  // merge options if they are valid
+  if (options) {
+    if (isInteger(options.cursorX))    { result.cursorX = options.cursorX; }
+    if (isInteger(options.cursorLine)) { result.cursorLine = options.cursorLine; }
+    if (isInteger(options.cursorDx))   { result.cursorDx = options.cursorDx; }
+  }
+
   return result;
 }
 
@@ -145,18 +161,24 @@ errorMessages[ERROR_EOL_BACKSLASH] = "Line cannot end in a hanging backslash.";
 errorMessages[ERROR_UNCLOSED_QUOTE] = "String is missing a closing quote.";
 errorMessages[ERROR_UNCLOSED_PAREN] = "Unmatched open-paren.";
 
-function cacheErrorPos(result, name, lineNo, x) {
-  result.errorPosCache[name] = { lineNo: lineNo, x: x };
+function cacheErrorPos(result, errorName, lineNo, x) {
+  result.errorPosCache[errorName] = { lineNo: lineNo, x: x };
 }
 
-function error(result, name, lineNo, x) {
-  var cache = result.errorPosCache[name];
+function error(result, errorName, lineNo, x) {
+  if (lineNo === null) {
+    lineNo = result.errorPosCache[errorName].lineNo;
+  }
+  if (x === null) {
+    x = result.errorPosCache[errorName].x;
+  }
+
   return {
     parinferError: true,
-    name: name,
-    message: errorMessages[name],
-    lineNo: (lineNo === undefined ? cache.lineNo : lineNo),
-    x: (x === undefined ? cache.x : x)
+    name: errorName,
+    message: errorMessages[errorName],
+    lineNo: lineNo,
+    x: x
   };
 }
 
@@ -164,7 +186,7 @@ function error(result, name, lineNo, x) {
 // String Operations
 //------------------------------------------------------------------------------
 
-function insertString(orig, idx, insert) {
+function insertWithinString(orig, idx, insert) {
   return (
     orig.substring(0, idx) +
     insert +
@@ -172,7 +194,7 @@ function insertString(orig, idx, insert) {
   );
 }
 
-function replaceStringRange(orig, start, end, replace) {
+function replaceWithinString(orig, start, end, replace) {
   return (
     orig.substring(0, start) +
     replace +
@@ -180,17 +202,17 @@ function replaceStringRange(orig, start, end, replace) {
   );
 }
 
-function removeStringRange(orig, start, end) {
+function removeWithinString(orig, start, end) {
   return (
     orig.substring(0, start) +
     orig.substring(end)
   );
 }
 
-function multiplyString(text, n) {
+function repeatString(text, n) {
   var i;
   var result = "";
-  for (i=0; i<n; i++) {
+  for (i = 0; i < n; i++) {
     result += text;
   }
   return result;
@@ -207,15 +229,53 @@ function getLineEnding(text) {
 }
 
 //------------------------------------------------------------------------------
+// Line operations
+//------------------------------------------------------------------------------
+
+function insertWithinLine(result, lineNo, idx, insert) {
+  var line = result.lines[lineNo];
+  result.lines[lineNo] = insertWithinString(line, idx, insert);
+}
+
+function replaceWithinLine(result, lineNo, start, end, replace) {
+  var line = result.lines[lineNo];
+  result.lines[lineNo] = replaceWithinString(line, start, end, replace);
+}
+
+function removeWithinLine(result, lineNo, start, end) {
+  var line = result.lines[lineNo];
+  result.lines[lineNo] = removeWithinString(line, start, end);
+}
+
+function initLine(result, line) {
+  result.x = 0;
+  result.lineNo++;
+  result.lines.push(line);
+
+  // reset line-specific state
+  result.commentX = null;
+  result.indentDelta = 0;
+}
+
+// if the current character has changed, commit its change to the current line.
+function commitChar(result, origCh) {
+  var ch = result.ch
+  if (origCh !== ch) {
+    replaceWithinLine(result, result.lineNo, result.x, result.x + origCh.length, ch);
+  }
+  result.x += ch.length;
+}
+
+//------------------------------------------------------------------------------
 // Misc Utils
 //------------------------------------------------------------------------------
 
-function clamp(val, min, max) {
-  if (min !== null) {
-    val = Math.max(min, val);
+function clamp(val, minN, maxN) {
+  if (minN !== null) {
+    val = Math.max(minN, val);
   }
-  if (max !== null) {
-    val = Math.min(max, val);
+  if (maxN !== null) {
+    val = Math.min(maxN, val);
   }
   return val;
 }
@@ -224,7 +284,7 @@ function peek(array) {
   if (array.length === 0) {
     return null;
   }
-  return array[array.length-1];
+  return array[array.length - 1];
 }
 
 //------------------------------------------------------------------------------
@@ -249,29 +309,32 @@ function onOpenParen(result) {
   }
 }
 
-function onRealCloseParen(result, opener) {
-  // we have encountered a real close-paren (i.e. not in a string, comment, or char)
-  result.parenTrail.endX = result.x+1;
+function onMatchedCloseParen(result) {
+  var opener = peek(result.parenStack);
+  result.parenTrail.endX = result.x + 1;
   result.parenTrail.openers.push(opener);
   result.maxIndent = opener.x;
+  result.parenStack.pop();
+}
+
+function onUnmatchedCloseParen(result) {
+  result.ch = "";
 }
 
 function onCloseParen(result) {
   if (result.isInCode) {
     if (isValidCloseParen(result.parenStack, result.ch)) {
-      var opener = result.parenStack.pop();
-      onRealCloseParen(result, opener);
+      onMatchedCloseParen(result);
     }
     else {
-      // erase non-matched paren
-      result.ch = "";
+      onUnmatchedCloseParen(result);
     }
   }
 }
 
 function onTab(result) {
   if (result.isInCode) {
-    result.ch = "  ";
+    result.ch = DOUBLE_SPACE;
   }
 }
 
@@ -312,7 +375,7 @@ function afterBackslash(result) {
 
   if (result.ch === NEWLINE) {
     if (result.isInCode) {
-      throw error(result, ERROR_EOL_BACKSLASH, result.lineNo, result.x-1);
+      throw error(result, ERROR_EOL_BACKSLASH, result.lineNo, result.x - 1);
     }
     onNewline(result);
   }
@@ -374,47 +437,48 @@ function handleCursorDelta(result) {
 //------------------------------------------------------------------------------
 
 // update the head of the paren trail as we scan each character.
-// NOTE: `onRealCloseParen` modifies the endX
+// NOTE: `onMatchedCloseParen` modifies the endX
 function updateParenTrailBounds(result) {
   var line = result.lines[result.lineNo];
-  var prevCh = (result.x > 0) ? line[result.x-1] : null;
+  var prevCh = null;
+  if (result.x > 0) { prevCh = line[result.x - 1]; }
   var ch = result.ch;
 
   var shouldReset = (
     result.isInCode &&
     !isCloseParen(ch) &&
-    ch !== "" &&                            // erased character
-    (ch !== " " || prevCh === BACKSLASH) && // non-escaped space
-    ch != "  "                              // double-space (converted tab)
+    ch !== "" &&                                    // erased character
+    (ch !== BLANK_SPACE || prevCh === BACKSLASH) && // non-escaped space
+    ch != DOUBLE_SPACE                              // double-space (converted tab)
   );
 
   if (shouldReset) {
     result.parenTrail.lineNo = result.lineNo;
-    result.parenTrail.startX = result.x+1;
-    result.parenTrail.endX = result.x+1;
+    result.parenTrail.startX = result.x + 1;
+    result.parenTrail.endX = result.x + 1;
     result.parenTrail.openers = [];
     result.maxIndent = null;
   }
 }
 
-// INDENT MODE: allow the cursor to block off the paren trail
-function truncateParenTrailBounds(result) {
+// INDENT MODE: allow the cursor to clamp the paren trail
+function clampParenTrailToCursor(result) {
   var startX = result.parenTrail.startX;
   var endX = result.parenTrail.endX;
 
-  var isCursorBlocking = (
+  var isCursorClamping = (
     isCursorOnRight(result, startX) &&
     !isCursorInComment(result)
   );
 
-  if (isCursorBlocking) {
+  if (isCursorClamping) {
     var newStartX = Math.max(startX, result.cursorX);
     var newEndX = Math.max(endX, result.cursorX);
 
     var line = result.lines[result.lineNo];
     var removeCount = 0;
     var i;
-    for (i=startX; i<newStartX; i++) {
+    for (i = startX; i < newStartX; i++) {
       if (isCloseParen(line[i])) {
         removeCount++;
       }
@@ -440,17 +504,16 @@ function removeParenTrail(result) {
     result.parenStack.push(openers.pop());
   }
 
-  var line = result.lines[result.lineNo];
-  result.lines[result.lineNo] = removeStringRange(line, startX, endX);
+  removeWithinLine(result, result.lineNo, startX, endX);
 }
 
-// INDENT MODE: infer paren trail from indentation
-function inferParenTrail(result, indentX) {
+// INDENT MODE: correct paren trail from indentation
+function correctParenTrail(result, indentX) {
   var parens = "";
 
   while (result.parenStack.length > 0) {
     var opener = peek(result.parenStack);
-    if (opener !== null && opener.x >= indentX) {
+    if (opener.x >= indentX) {
       result.parenStack.pop();
       parens += PARENS[opener.ch];
     }
@@ -459,9 +522,7 @@ function inferParenTrail(result, indentX) {
     }
   }
 
-  var line = result.lines[result.parenTrail.lineNo];
-  var newString = insertString(line, result.parenTrail.startX, parens);
-  result.lines[result.parenTrail.lineNo] = newString;
+  insertWithinLine(result, result.parenTrail.lineNo, result.parenTrail.startX, parens);
 }
 
 // PAREN MODE: remove spaces from the paren trail
@@ -478,7 +539,7 @@ function cleanParenTrail(result) {
   var newTrail = "";
   var spaceCount = 0;
   var i;
-  for (i=startX; i<endX; i++) {
+  for (i = startX; i < endX; i++) {
     if (isCloseParen(line[i])) {
       newTrail += line[i];
     }
@@ -488,7 +549,7 @@ function cleanParenTrail(result) {
   }
 
   if (spaceCount > 0) {
-    result.lines[result.lineNo] = replaceStringRange(line, startX, endX, newTrail);
+    replaceWithinLine(result, result.lineNo, startX, endX, newTrail);
     result.parenTrail.endX -= spaceCount;
   }
 }
@@ -497,21 +558,21 @@ function cleanParenTrail(result) {
 function appendParenTrail(result) {
   var opener = result.parenStack.pop();
   var closeCh = PARENS[opener.ch];
-  var lineNo =  result.parenTrail.lineNo;
-  var line = result.lines[lineNo];
 
   result.maxIndent = opener.x;
-  result.lines[lineNo] = insertString(line, result.parenTrail.endX, closeCh);
+  insertWithinLine(result, result.parenTrail.lineNo, result.parenTrail.endX, closeCh);
   result.parenTrail.endX++;
 }
 
 function finishNewParenTrail(result) {
   if (result.mode === INDENT_MODE) {
-    truncateParenTrailBounds(result);
+    clampParenTrailToCursor(result);
     removeParenTrail(result);
   }
   else if (result.mode === PAREN_MODE) {
-    cleanParenTrail(result);
+    if (result.lineNo !== result.cursorLine) {
+      cleanParenTrail(result);
+    }
   }
 }
 
@@ -527,32 +588,29 @@ function correctIndent(result) {
 
   var opener = peek(result.parenStack);
   if (opener !== null) {
-    minIndent = opener.x+1;
+    minIndent = opener.x + 1;
     newIndent += opener.indentDelta;
   }
 
   newIndent = clamp(newIndent, minIndent, maxIndent);
 
   if (newIndent !== origIndent) {
-    var indentStr = multiplyString(" ", newIndent);
-    var line = result.lines[result.lineNo];
-    var newLine = replaceStringRange(line, 0, origIndent, indentStr);
-
+    var indentStr = repeatString(BLANK_SPACE, newIndent);
+    replaceWithinLine(result, result.lineNo, 0, origIndent, indentStr);
     result.x = newIndent;
-    result.lines[result.lineNo] = newLine;
     result.indentDelta += (newIndent - origIndent);
   }
 }
 
-function onIndentationPoint(result) {
+function onProperIndent(result) {
   result.trackingIndent = false;
 
   if (result.quoteDanger) {
-    throw error(result, ERROR_QUOTE_DANGER);
+    throw error(result, ERROR_QUOTE_DANGER, null, null);
   }
 
   if (result.mode === INDENT_MODE) {
-    inferParenTrail(result, result.x);
+    correctParenTrail(result, result.x);
   }
   else if (result.mode === PAREN_MODE) {
     correctIndent(result);
@@ -567,7 +625,7 @@ function onLeadingCloseParen(result) {
     if (isValidCloseParen(result.parenStack, result.ch)) {
       if (isCursorOnLeft(result)) {
         result.skipChar = false;
-        onIndentationPoint(result);
+        onProperIndent(result);
       }
       else {
         appendParenTrail(result);
@@ -576,35 +634,7 @@ function onLeadingCloseParen(result) {
   }
 }
 
-//------------------------------------------------------------------------------
-// Line functions
-//------------------------------------------------------------------------------
-
-function initLine(result, line) {
-  result.x = 0;
-  result.lineNo++;
-  result.lines.push(line);
-
-  // reset line-specific state
-  result.commentX = null;
-  result.indentDelta = 0;
-}
-
-// if the current character has changed, commit its change to the current line.
-function commitChar(result, origCh) {
-  var ch = result.ch
-  if (origCh !== ch) {
-    var line = result.lines[result.lineNo];
-    result.lines[result.lineNo] = replaceStringRange(line, result.x, result.x+origCh.length, ch);
-  }
-  result.x += ch.length;
-}
-
-//------------------------------------------------------------------------------
-// High-level processing functions
-//------------------------------------------------------------------------------
-
-function processIndent(result) {
+function onIndent(result) {
   if (isCloseParen(result.ch)) {
     onLeadingCloseParen(result);
   }
@@ -613,9 +643,13 @@ function processIndent(result) {
     result.trackingIndent = false;
   }
   else if (result.ch !== NEWLINE) {
-    onIndentationPoint(result);
+    onProperIndent(result);
   }
 }
+
+//------------------------------------------------------------------------------
+// High-level processing functions
+//------------------------------------------------------------------------------
 
 function processChar(result, ch) {
   var origCh = ch;
@@ -627,8 +661,8 @@ function processChar(result, ch) {
     handleCursorDelta(result);
   }
 
-  if (result.trackingIndent && ch !== " " && ch !== TAB) {
-    processIndent(result);
+  if (result.trackingIndent && ch !== BLANK_SPACE && ch !== TAB) {
+    onIndent(result);
   }
 
   if (result.skipChar) {
@@ -657,7 +691,7 @@ function processLine(result, line) {
 
   var i;
   var chars = line + NEWLINE;
-  for (i=0; i<chars.length; i++) {
+  for (i = 0; i < chars.length; i++) {
     processChar(result, chars[i]);
   }
 
@@ -667,19 +701,16 @@ function processLine(result, line) {
 }
 
 function finalizeResult(result) {
-  if (result.quoteDanger) {
-    throw error(result, ERROR_QUOTE_DANGER);
-  }
-  if (result.isInStr) {
-    throw error(result, ERROR_UNCLOSED_QUOTE);
-  }
+  if (result.quoteDanger) { throw error(result, ERROR_QUOTE_DANGER, null, null); }
+  if (result.isInStr)     { throw error(result, ERROR_UNCLOSED_QUOTE, null, null); }
+
   if (result.parenStack.length !== 0) {
-    if (result.mode === INDENT_MODE) {
-      inferParenTrail(result, 0);
-    }
-    else if (result.mode === PAREN_MODE) {
+    if (result.mode === PAREN_MODE) {
       var opener = peek(result.parenStack);
       throw error(result, ERROR_UNCLOSED_PAREN, opener.lineNo, opener.x);
+    }
+    else if (result.mode === INDENT_MODE) {
+      correctParenTrail(result, 0);
     }
   }
   result.success = true;
@@ -697,28 +728,12 @@ function processError(result, e) {
   }
 }
 
-function mergeOption(result, options, key) {
-  if (options.hasOwnProperty(key)) {
-    result[key] = options[key];
-  }
-}
-
 function processText(text, options, mode) {
-  var result = getInitialResult();
-
-  result.mode = mode;
-  result.origText = text;
-  result.origLines = text.split(LINE_ENDING);
-
-  if (options) {
-    mergeOption(result, options, "cursorX");
-    mergeOption(result, options, "cursorLine");
-    mergeOption(result, options, "cursorDx");
-  }
+  var result = getInitialResult(text, options, mode);
 
   try {
     var i;
-    for (i=0; i<result.origLines.length; i++) {
+    for (i = 0; i < result.origLines.length; i++) {
       processLine(result, result.origLines[i]);
     }
     finalizeResult(result);
@@ -737,7 +752,7 @@ function processText(text, options, mode) {
 function getChangedLines(result) {
   var changedLines = [];
   var i;
-  for (i=0; i<result.lines.length; i++) {
+  for (i = 0; i < result.lines.length; i++) {
     if (result.lines[i] !== result.origLines[i]) {
       changedLines.push({
         lineNo: i,
