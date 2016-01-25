@@ -777,7 +777,7 @@ the rest of the string:
 Take a moment to look at the expression again.  Even though we haven't closed
 our current string yet, there are no unclosed quotes.  This is because the
 semicolon is now commenting out the last quote, which we did not intend
-to create a temporarily
+to create a temporarily balanced set of quotes.
 
 Thus, Indent Mode will result in the following:
 
