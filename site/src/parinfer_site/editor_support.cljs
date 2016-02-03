@@ -2,8 +2,8 @@
   "Connects parinfer mode functions to CodeMirror"
   (:require
     [clojure.string :as string :refer [join]]
-    [parinfer-cljs.core :refer [indent-mode
-                                paren-mode]]
+    [parinfer-site.parinfer :refer [indent-mode
+                                    paren-mode]]
     [parinfer-site.state :refer [state]]))
 
 

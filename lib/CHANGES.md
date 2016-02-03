@@ -1,4 +1,8 @@
-## dev
+## 1.5.1
+
+- fudged the 1.5.0 npm release (this fixes it)
+
+## 1.5.0
 
 - allow insertion of spaces in the cursor line's paren trail in Paren Mode
 

@@ -2,7 +2,6 @@
 
 [![Gitter](https://badges.gitter.im/shaunlebron/parinfer.svg)](https://gitter.im/shaunlebron/parinfer?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 [![Travis](https://travis-ci.org/shaunlebron/parinfer.svg?branch=master)](https://travis-ci.org/shaunlebron/parinfer)
-[![npm version](https://badge.fury.io/js/parinfer.svg)](https://badge.fury.io/js/parinfer)
 
 This is the canonical implementation of [Parinfer], written in JavaScript.  It
 has a dead simple API and can be used directly by any editor or REPL that can
@@ -15,7 +14,6 @@ To learn about its __design and implementation__, please see [`parinfer.js.md`].
 |----------|------|
 | JavaScript\* | _you are here_ |
 | Python | [parinfer.py] |
-| ClojureScript | [parinfer-cljs] |
 
 _\* canonical implementation_
 

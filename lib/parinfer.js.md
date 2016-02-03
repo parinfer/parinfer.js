@@ -1,21 +1,88 @@
-This is WIP documentation for [`parinfer.js`].
+# Parinfer Design & Implementation
 
+Since [Parinfer's home page] must gloss over details for the sake of
+presentation, this document is written to provide supplemental context for
+developers who want to explore and understand its implementation.
+
+In its simplest form, Parinfer is a file formatter.  In this way, it can format
+a file under the assumption that the file has been saved and is ready for
+processing. It is just a thing that takes a document, and returns a new
+document.
+
+But of course, Parinfer was first and foremost designed to work in a
+Live-Editing environment.  That is, Parinfer is meant to auto-process while you
+type.  This requires some extra rules, so it helps to cover the rules of its
+simpler form first.
+
+Thus, we cover the design and implementation of Parinfer in two parts:
+
+[Parinfer's home page]:http://shaunlebron.github.io/parinfer/
 [`parinfer.js`]:parinfer.js
 
-## Summary
+--
 
-Parinfer.js performs a _well-defined_, full file text transformation in one
-pass, correcting either indentation or close-parens.  Close-parens may move
-between lines and some whitespace may be added or removed, but the number of
-lines will always remain unchanged.
+[<strong>Part 1</strong>](#part-1---parinfer-for-a-static-file) - _Parinfer for a Static File_
 
-- [`indentMode`]`(text[, options])`
-- [`parenMode`]`(text[, options])`
+- [Processing the Text](#processing-the-text)
+- [Finding Parens](#finding-parens)
+- [Cleaning](#cleaning)
+  - [Tab Characters](#tab-characters)
+  - [Unmatched Close Parens](#unmatched-close-parens)
+- [Analyzing a Line](#analyzing-a-line)
+  - [Indentation](#indentation)
+  - [Paren Trail](#paren-trail)
+- [Transformations](#transformations)
+  - [Indent Mode](#indent-mode)
+  - [Paren Mode](#paren-mode)
+- [Subtleties](#subtleties)
+  - [Absorbing Paren Trails](#absorbing-paren-trails)
+  - [Preserving Relative Indentation](#preserving-relative-indentation)
 
-Text transformation is performed by either of the two functions above.  Both
-are expected to be debounced on keypress for performance. Options are currently
-only used for specifying cursor position and movement.  See
-[API](README.md#api) for full details.
+--
+
+[<strong>Part 2</strong>](#part-2---parinfer-for-live-editing) - _Parinfer for Live-Editing_
+
+- [The Cursor in Indent Mode](#the-cursor-in-indent-mode)
+- [The Cursor in Paren Mode](#the-cursor-in-paren-mode)
+- [Preserving Relative Indentation while typing](#preserving-relative-indentation-while-typing)
+- [Dangerous Quotes](#dangerous-quotes)
+  - [String Corruption](#string-corruption)
+  - [Comment Corruption](#comment-corruption)
+  - [Risk Management](#risk-management)
+- [Incremental Processing](#incremental-processing)
+
+--
+
+ <table>
+<tr>
+<td>
+NOTE
+</td>
+<td>
+While discussing design here, we include frequent references to the relevant
+code inside [`parinfer.js`] so that you may jump back and forth between
+implementation and narrative.
+</td>
+</tr>
+</table>
+
+
+--
+
+# Part 1 - Parinfer for a Static File
+
+As we said earlier, Parinfer was built for Live-Editing, but it helps to first
+remove the parameters required by human interaction and intent.  Thus, we say
+"Static File" to mean some Lisp file that has been committed, shared, and ready
+for processing.
+
+Parinfer performs a well-defined, full file text transformation in one pass.
+Depending on the transformation mode, Parinfer will correct either indentation
+or close-parens, according to standard Lisp formatting conventions.  The
+following functions are available.  (See [API](README.md#api) for full details.)
+
+- [`indentMode`] - uses indentation to correct parens
+- [`parenMode`] - uses parens to correct indentation
 
 ## Processing the Text
 
@@ -27,9 +94,9 @@ calling the one below it:
 - [`processChar`]
 
 We explicitly track the state of our system in a `result` object, initialized
-by [`getInitialResult`].  This object is passed as the first argument to most
-functions in this file.  That way, it should be obvious whenever some part of
-the result is being read or updated anywhere in the file.
+by [`getInitialResult`].  Though it can be considered a global variable, we just
+pass it as the first argument to any function that will read or update it.
+That way, it is clear which functions are doing so from their signature.
 
 The processing functions above behave differently depending on the mode set
 at [`result.mode`].
@@ -78,7 +145,7 @@ ambiguous character alignment.
 
 _This operation happens at [`onTab`], committed by [`commitChar`]._
 
-#### Unmatched Close Paren
+#### Unmatched Close Parens
 
 Any unmatched close-parens are removed. This makes the next transformations
 simpler and more predictable.
@@ -171,13 +238,13 @@ Trail.  We will cover this in a later section.
 _The Paren Trail is stored in [`result.parenTrail`], updated by
 [`updateParenTrailBounds`] and [`onMatchedCloseParen`]._
 
-## The Modes
+## Transformations
 
-Parinfer's modes can now be described using definitions from the previous
-sections:
+The type of transformation performed is determined by the Mode.  These modes
+can be described using definitions from the previous sections:
 
 - __Indent Mode__
-  - When we identify a _Paren Trail_, we remove it.  See [`removeParenTrail`]
+  - When we identify a _Paren Trail_, we remove it.  See [`removeParenTrail`].
   - When we identify a line's _Indentation_, we identify all open-parens on the
     _Paren Stack_ to the right of the indentation.  Then we correct the last
     _Paren Trail_ such that it closes the aforementioned open-parens.  See [`correctParenTrail`].
@@ -317,8 +384,8 @@ Then, we identify the most recent _unclosed_ open-paren:
 __(+ a b)])
 ```
 
-There is no most recently _closed_ open-paren, so we ignore that bound.  Clamping
-to the leftmost boundary gives us a new indentation length:
+There is no most recently _closed_ open-paren, so we ignore that bound.
+Clamping to the leftmost boundary gives us a new indentation length:
 
 ```clj
 (foo [a b
@@ -326,11 +393,27 @@ to the leftmost boundary gives us a new indentation length:
 ______(+ a b)])
 ```
 
-This correction happens at [`correctIndent`].
+This indentation correction process happens at [`correctIndent`].
 
-Processing is canceled if there is an unclosed quote or open-paren.  See [`finalizeResult`].
+Also, in order to have consistent formatting of Paren Trails between modes, we
+remove any spaces inside a Paren Trail with [`cleanParenTrail`]:
 
-## Absorbing Paren Trails
+```clj
+(foo (bar [1 2 3 ] ) )  ;; BEFORE
+                ^^^^^^
+(foo (bar [1 2 3]))     ;; AFTER
+                ^^^
+```
+
+And finally, processing is canceled if there is an unclosed quote or
+open-paren.  See [`finalizeResult`].
+
+## Subtleties
+
+Here we explore extra subtle transformations that are added to the modes that
+we require.
+
+### Absorbing Paren Trails
 
 As stated earlier, if a line starts with a close-paren, it is simply absorbed
 into the previous Paren Trail.  Some examples:
@@ -352,14 +435,13 @@ into the previous Paren Trail.  Some examples:
 ;; BEFORE
 (foo
   (bar
-  ) baz)
+  ) z)
   ^
 
 ;; AFTER
 (foo
   (bar)
-      ^
-   baz)
+   z) ^
 ```
 
 _Indent Mode_ accomplishes this simply by removing these leading close-parens,
@@ -371,7 +453,7 @@ Trail.
 
 _See the [`onLeadingCloseParen`] function for details._
 
-## Preserving Relative Indentation
+### Preserving Relative Indentation
 
 As we have seen, Paren Mode will correct the indentation of lines one-by-one.
 This can result in the loss of relative indentation.  Let's walk through an
@@ -429,33 +511,32 @@ _These operations happen at [`correctIndent`] and [`onOpenParen`]._
 
 ---
 
-## Using in an Editor
+## Part 2 - Parinfer for Live-Editing
 
-The description of Parinfer thus far would completely satisfy the requirements
-for a standalone file processor outside of an editor.  But in order for it work
-as an interactive and user-friendly editor mode (i.e. auto-processing your code
-while you type), we must add additional features.
+For the most part, using the rules we've described for a Static File will work
+for Live-Editing (i.e. auto-processing the content of an editor window or
+REPL).  But Parinfer's behavior can sometimes be in conflict with a user's
+expectations for normal editing behavior.  Thus, we add additional rules to try
+to bridge the two worlds together.
 
-Thus, these final sections describe when and how Parinfer sometimes lets you
-break some of its aforementioned rules so they don't get in your way.  The next
-section describes an extra indentation convenience feature.  And the last
-section describes how Parinfer attempts to bail you out of trouble during a
-conundrum for which a pure solution has yet to be found.
+When used for Live-Editing, the mode functions are expected to be debounced on
+keypress for performance.  The `options` parameter is used for specifying
+cursor position and movement.
 
----
+### The Cursor in Indent Mode
 
-## The Cursor in Indent Mode
+Sometimes, Indent Mode has to relax its rules at the cursor so that it doesn't
+get in the way of typing.
 
-Sometimes, Indent Mode has to relax its rules in order to let you finish typing
-something. For example, suppose you just typed a space character below.  The
+For example, suppose you just typed a space character below.  The
 `|` is your cursor:
 
 ```clj
 (def foo |)
 ```
 
-Indent Mode would delete the space, preventing you from adding anything after
-`foo`.
+Indent Mode would immediately delete the space, preventing you from adding some
+space-separated element after `foo`:
 
 ```clj
 (def foo|)
@@ -469,7 +550,8 @@ A similar example also applies to typing a `]` below:
       7 8 9])
 ```
 
-It would also get deleted immediately:
+It would also get deleted immediately, preventing you from adding some element
+after it:
 
 ```clj
 (foo [1 2 3|
@@ -477,48 +559,49 @@ It would also get deleted immediately:
       7 8 9])
 ```
 
-To prevent both of these problems, we add a rule to clamp the Paren Trail to
-the range extending past the cursor.  To clarify, here's the original Paren
-Trail:
+To prevent both of these problems, we add a rule to clamp the Paren Trail's
+left boundary to the cursor.  Let's revisit the first example to illustrate:
+
+```clj
+(def foo |)
+```
+
+Let's remove the cursor character and show the Paren Trail:
 
 ```clj
 (def foo )
         ^^
 ```
 
-We removed the `|` cursor representation since the cursor does not take up
-character space.  Let's add a representation of the "range extending past the
-cursor" using `>>>`:
-
-```clj
-(def foo )
-        ^^
-         >>>>>>>>>>>>>>> (to the end of the line)
-```
-
-After clamping the Paren Trail boundaries to the cursor range, we are
-left with a new Paren Trail:
+When we clamp this Paren Trail's left boundary to the cursor, we have:
 
 ```clj
 (def foo )
          ^
 ```
 
-Thus, the space is not removed since it is not included in the Paren Trail,
-which is susceptible to being replaced by Indent Mode's inferencing.
+Thus, the space is not removed since it is no longer included in the Paren
+Trail for removal.
 
-Applying this to the second example:
+Let's show the same thing for the second example:
+
+```clj
+(foo [1 2 3]|
+      4 5 6
+      7 8 9])
+```
+
+Again, we remove the cursor character and show the Paren Trail:
 
 ```clj
 (foo [1 2 3]
            ^
-            >>>>>>>>>>>> (to the end of the line)
       4 5 6
       7 8 9])
 ```
 
-After clamping the Paren Trail boundaries to the cursor range,
-The new Paren Trail is a zero-length range:
+When we clamp this Paren Trail's left boundary to the cursor, we are left with
+a zero-length Paren Trail:
 
 ```clj
 (foo [1 2 3]_
@@ -526,46 +609,45 @@ The new Paren Trail is a zero-length range:
       7 8 9])
 ```
 
-After processing in Indent Mode, the `]` must be removed from the last line
-instead of the first line:
+Thus, the `]` is not removed since it is no longer included in the Paren
+Trail for removal.  After processing the rest, we are left with:
 
 ```clj
-(foo [1 2 3]_
+(foo [1 2 3]
       4 5 6
       7 8 9)
 ```
 
-See [`truncateParenTrailBounds`] for the implementation.
+It's important to note that simply moving the cursor to another line will
+reformat the line that was "suspended" by this cursor rule, restoring the full
+rules of Indent Mode.
 
-## The Cursor in Paren Mode
+_This operation happens at [`clampParenTrailToCursor`]._
 
-Paren Mode must be relaxed to allow the user to press enter in the following
-situation.
+### The Cursor in Paren Mode
 
-Suppose you have this:
+Paren Mode must also relax its rules so that it doesn't get in the way of
+typing.
+
+For some of the same reasons mentioned in the previous section, Paren Mode
+allows you to insert spaces inside the Paren Trail if the cursor is on that
+line:
 
 ```clj
-(foo
-  bar)
+(foo (bar [1 2 3]) |)
 ```
 
-and you want to insert `baz` so that your code looks like this:
+Paren Mode does this by not calling [`cleanParenTrail`] on the cursor's line.
 
-```clj
-(foo
-  bar
-  baz)
-```
-
-Intuitively, one might place their cursor `|` before the close-paren:
+Also, suppose you press enter when your cursor is at `|` below:
 
 ```clj
 (foo
   bar|)
 ```
 
-After pressing enter, assuming your editor has auto-indent, a new line will be
-inserted with some indentation:
+After pressing enter, a new line will be inserted (with some indentation if
+your editor has auto-indent).
 
 ```clj
 (foo
@@ -573,7 +655,8 @@ inserted with some indentation:
  |)
 ```
 
-In either Mode, Parinfer will move the close-paren back to the previous line:
+But according to Paren Mode's rules, the close-paren will be moved back to the
+previous line:
 
 ```clj
 (foo
@@ -581,49 +664,10 @@ In either Mode, Parinfer will move the close-paren back to the previous line:
  |
 ```
 
-Suppose that we type `baz`.
-
-```clj
-(foo
-  bar)
-  baz|
-```
-
-In Indent Mode, the close-paren will be moved and we will be done:
-
-```clj
-;; Indent Mode
-(foo
-  bar
-  baz|)
-```
-
-But in Paren Mode, `baz` will be dedented:
-
-```clj
-;; Paren Mode
-(foo
-  bar)
-baz|
-```
-
-A workaround for getting the desired result in Paren Mode would be to first
-insert `baz` after `bar`:
-
-```clj
-(foo
-  bar |baz)
-```
-
-and then press enter:
-
-```clj
-(foo
-  bar
- |baz)
-```
-
-To avoid having to do this, we create a new rule to allow this to happen:
+This does not matter in Indent Mode because the close-paren will be moved to
+the current line after we type something, but in Paren Mode, we must add a new
+rule to allow close-parens at the start of a line if there is a cursor before
+it.
 
 ```clj
 (foo
@@ -631,57 +675,82 @@ To avoid having to do this, we create a new rule to allow this to happen:
  |)
 ```
 
-This new rule is the following.  In Paren Mode, close-parens are allowed at the
-start of a line if there is a cursor before it.  See [`onLeadingCloseParen`].
+This allows us to type something into this new line without the close-paren
+being immediately displaced.  See [`onLeadingCloseParen`] for details.
 
-## Preserving Relative Indentation while typing
+And again, it's important to note that simply moving the cursor to another line
+will reformat the line that was "suspended" by this cursor rule, restoring the
+full rules of Paren Mode.
 
-Unfortunately, the previous method for preserving relative indentation
-does not work when it is the user's insertion or deletion operations
-which causes an open-paren to shift. For example:
+### Preserving Relative Indentation while typing
+
+Unfortunately, Paren Mode needs extra help to preserve relative indentation
+when the user inserts or deletes text behind an open-paren.  For example:
 
 ```clj
-(foo
-  bar)
+|(foo
+   bar)
 ```
 
 If the user inserts a space before `(foo`, we get:
 
-```clj
- (foo
-  bar)
 ```
-
-Parinfer receives this text without any information about what it was before.
-So, it cannot deduce any indentation delta.  This is what we want instead.
-
-```clj
- (foo
+_|(foo
    bar)
 ```
 
-To accomplish this, we must realize that such an edit only affects open-parens
-_in front_ of the current cursor.  Here are the different edit events as they
-happen relative to the cursor:
 
-- _deletion_: some text behind or in front of the cursor has been deleted
-- _insertion_: some text behind the cursor has been inserted
-- _replacement_: some text behind the cursor has been replaced by some text
+We expect the following line to be indented to preserve the relative indentation:
 
-Thus, we use a [`result.cursorDx`] parameter to indicate how far the cursor has
-moved due to an edit, which must be provided by the editor through the
-`cursorDx` option.  This can calculated simply by subtracting the previous
-cursor X position from the current cursor X position when an edit takes place.
-Notice that this works for multi-line edits as well.
+```
+ |(foo
+   _bar)
+```
 
-Specifically, the [`handleCursorDelta`] function simply adds [`result.cursorDx`]
-to [`result.indentDelta`] after the cursor to preserve relative indentation
-across user edits, whenever possible.
+But as discussed previously, Paren Mode uses [`result.indentDelta`] to preserve
+relative indentation.  So unless we influence this value at the cursor
+whenever the user inserts or removes text, the relative indentation will not be
+preserved.
 
-## "Quote Danger": A conundrum
+Thus, we require the user's editor to send a `cursorDx` option as API input.
+This is simply calculated by subtracting the previous cursor X position from
+the current cursor X position, _but only when an edit takes place_.  Some
+examples:
 
-Inserting a quote can cause a hard-to-track problem, caused by syntax comments
-interfering with the detection of unbalanced strings.
+_Inserting_ a character results in a `cursorDx` of 1:
+
+```diff
+- |(foo
++  |(foo
+```
+
+_Pasting_ multiple lines of text below results in a `cursorDx` of 5:
+
+```diff
+- |(foo
++  pasted
++  text|(foo
+```
+
+_Pressing enter_ below results in a `cursorDx` of -4:
+
+```diff
+- (bar |(foo
++ (bar
++  |(foo
+```
+
+To make use of this information, the [`handleCursorDelta`] function adds
+[`result.cursorDx`] to [`result.indentDelta`] when it reaches the cursor, thereby
+preserving relative indentation of subsequent lines as expected.
+
+### Dangerous Quotes
+
+Inserting a quote can sometimes cause a problem that is hard to track down.
+This is caused by syntax comments interfering with the detection of unbalanced
+strings.
+
+#### String Corruption
 
 Suppose we have the following:
 
@@ -690,41 +759,43 @@ Suppose we have the following:
   "bar;")
 ```
 
-Now suppose I want to insert the string `"baz"` after `foo`, like so:
+Now suppose I want to insert the string `"pez"` after `foo`, like so:
 
 ```clj
-(foo "baz"
+(foo "pez"
   "bar;")
 ```
 
-Let's follow what happens after I type the first quote:
+The problem happens as soon as I type the first quote, before I can finish
+the rest of the string:
 
 ```clj
-(foo "
+(foo "|
   "bar;")
 ```
 
-Assume that we are working in an editor that does not auto-insert a matching
-quote.  Or assume that we deleted the auto-matched quote thereafter.  Either
-way, the syntax contains no unclosed quotes, because the semicolon has been
-converted to a comment after its string was turned inside out.
+Take a moment to look at the expression again.  Even though we haven't closed
+our current string yet, there are no unclosed quotes.  This is because the
+semicolon is now commenting out the last quote, which we did not intend
+to create a temporarily balanced set of quotes.
 
-Indent Mode will result in the following:
+Thus, Indent Mode will result in the following:
 
 ```clj
 (foo "
   "bar);")
 ```
 
-And after you finish typing `"baz"`, you end up with:
+Thus, through this seemingly innocuous string insertion, we have managed to
+corrupt the string `"bar;"` to `"bar);"`:
 
-```clj
-(foo "baz"
-  "bar);")
+```diff
+ (foo "pez"
+-  "bar;")
++  "bar);")
 ```
 
-Thus, this seemingly innocuous string insertion, we have corrupted the string
-`"bar;"` to be `"bar);"`
+#### Comment Corruption
 
 The same problem can be seen from a different perspective in the following
 example.  Suppose we have a comment that lists some special characters:
@@ -739,121 +810,191 @@ This time, inserting a quote before the comment results in the contents of the _
 to be corrupted like so:
 
 ```clj
-(foo "
+(foo "|
   ; " and ( and [])
   bar)
 ```
 
-The comment has been treated as code, and thus parens have been added/altered.
-This is a process that will not be reversed after closing our initial string:
+What was previously a comment is now being treated as code, and thus parens
+have been added/altered.  Thus, after completing another seemingly innocuous
+string insertion, we have corrupted a comment:
+
+```diff
+ (foo "pez"
+-  ; " and ( and [
++  ; " and ( and [])
+   bar)
+```
+
+#### Risk Management
+
+--
+
+##### The Root Cause
+
+The astute observer may have also realized that the problems occurred either
+before or after _an unbalanced quote was found inside a comment_.  This is in
+fact what interferes with how Parinfer detects unclosed quotes, and thus
+prevents Parinfer from canceling its processing.  Thus, we look for these kinds
+of dangerous quotes inside comments.
 
 ```clj
-(foo "baz"
-  ; " and ( and [])
+(foo "|
+  "bar);")          ;; <-- dangerous quote from String Corruption example
+        ^
+```
+
+```clj
+(foo
+  ; " and ( and [   ;; <-- dangerous quote from Comment Corruption example
+    ^
   bar)
 ```
 
-Both of these cases have been traced to the problem of unbalanced quotes inside comments.
-They prevent Parinfer from detecting unclosed quotes.  Thus, we look for these kinds
-of dangerous quotes inside comments, and we cancel processing if they are found.
+> Interestingly, none of this would be a problem if programmers used
+> directional quotes `“` `”` in their code.  Instead, the non-directional quote
+> `"` must infer its direction from the number of quotes behind it. (Imagine
+> the difficulty of working with non-directional parens!)  Thus, the root cause
+> of this problem is enabled by a perfect storm of unbalanced, non-directional
+> quotes and their ability to be temporarily balanced when accidentally thrust
+> into or out of comments.
 
-This solution prevents problems of the first case, but can only warn of
-impending problems of the second case. Fully preventing problems of the second
-case may prove unwiedly since it would require a "trapdoor" shutoff.  That is,
-it may involve displaying a warning to the user, turning off Parinfer
-altogether, and forcing them to manually re-enable after they have determined
-the problem to be fixed, since Parinfer cannot deduce that itself.
+--
+
+##### Prevention
+
+It turns out that canceling the processing when "dangerous quotes" are detected
+either prevents the problems or can provide a warning to the user early enough
+to fix it.
+
+As long as no dangerous quotes were detected beforehand, it seems that no
+corruption can happen while typing out a comment or a string.  Rather,
+corruption seems to only happen when starting a new string before a comment
+housing a dangerous quote, so it stands to reason that we can provide a warning
+before the catalyst quote is inserted.
+
+The warning will not prevent the catalyst quote from being inserted and causing
+a problem.  It will simply suspend processing until the code contains no
+dangerous quotes.  Parinfer cannot deduce what the user intends or doesn't
+intend to constitute balanced quotes.  Thus, the user must react to these
+emitted warnings with care.
 
 It should be noted that contiguous comments are considered part of the same comment
 when deducing unbalanced strings.  This allows multiline strings
-to be commented without triggering a "quote danger" warning:
+to be commented without triggering a warning:
 
 ```clj
 (defn foo
-  ; "multiline
-  ; string"
+  ; "multiline   ;; <-- dangerous unbalanced quote!
+  ; string"      ;; <-- but this contiguous comment rebalances it.
   bar)
 ```
 
-See [`result.quoteDanger`], which is updated by [`onQuote`].
+Detection of dangerous quotes inside comments is done simply by toggling
+[`result.quoteDanger`] everytime an unescaped quote is encountered inside a
+comment.  This happens in [`onQuote`], and we check if an error should be
+reported at [`onProperIndent`] since that moment signifies that no contiguous
+comments follow.
+
+--
+
+### Incremental Processing
+
+You may be wondering why we have to process the whole file again after only a
+small portion of the file has changed.  The short answer is that I haven't
+figured it out yet.  My opinion is that it seems fast enough for full-file
+processing every time.  Also, keeping the code stateless (across runs) benefits
+the simplicity of the system for study.
+
+In reality, I think someone will figure this out eventually.  So I will
+talk about some of the current ideas that have been explored. (TODO)
+
+## Questions?
+
+I appreciate feedback! If I left something out, got something wrong, or you
+just have questions or feedback, you can [email me] or use our [gitter
+chatroom].  I'll answer questions as soon as I can.
+
+[email me]:shaunewilliams@gmail.com
+[gitter chatroom]:https://gitter.im/shaunlebron/parinfer
 
 <!-- END OF DOC: All content below is overwritten by `update-doc-reflinks.sh` -->
-[`isOpenParen`]:parinfer.js#L54
-[`isCloseParen`]:parinfer.js#L58
-[`getInitialResult`]:parinfer.js#L70
-[`mergeOption`]:parinfer.js#L138
-[`cacheErrorPos`]:parinfer.js#L161
-[`error`]:parinfer.js#L165
-[`insertWithinString`]:parinfer.js#L180
-[`replaceWithinString`]:parinfer.js#L188
-[`removeWithinString`]:parinfer.js#L196
-[`multiplyString`]:parinfer.js#L203
-[`getLineEnding`]:parinfer.js#L212
-[`insertWithinLine`]:parinfer.js#L226
-[`replaceWithinLine`]:parinfer.js#L231
-[`removeWithinLine`]:parinfer.js#L236
-[`initLine`]:parinfer.js#L241
-[`commitChar`]:parinfer.js#L252
-[`clamp`]:parinfer.js#L264
-[`peek`]:parinfer.js#L274
-[`isValidCloseParen`]:parinfer.js#L285
-[`onOpenParen`]:parinfer.js#L292
-[`onMatchedCloseParen`]:parinfer.js#L303
-[`onUnmatchedCloseParen`]:parinfer.js#L311
-[`onCloseParen`]:parinfer.js#L315
-[`onTab`]:parinfer.js#L326
-[`onSemicolon`]:parinfer.js#L332
-[`onNewline`]:parinfer.js#L339
-[`onQuote`]:parinfer.js#L344
-[`onBackslash`]:parinfer.js#L360
-[`afterBackslash`]:parinfer.js#L364
-[`onChar`]:parinfer.js#L375
-[`isCursorOnLeft`]:parinfer.js#L393
-[`isCursorOnRight`]:parinfer.js#L401
-[`isCursorInComment`]:parinfer.js#L410
-[`handleCursorDelta`]:parinfer.js#L414
-[`updateParenTrailBounds`]:parinfer.js#L432
-[`truncateParenTrailBounds`]:parinfer.js#L455
-[`removeParenTrail`]:parinfer.js#L484
-[`correctParenTrail`]:parinfer.js#L501
-[`cleanParenTrail`]:parinfer.js#L519
-[`appendParenTrail`]:parinfer.js#L548
-[`finishNewParenTrail`]:parinfer.js#L557
-[`correctIndent`]:parinfer.js#L571
-[`onProperIndent`]:parinfer.js#L593
-[`onLeadingCloseParen`]:parinfer.js#L608
-[`onIndent`]:parinfer.js#L625
-[`processChar`]:parinfer.js#L642
-[`processLine`]:parinfer.js#L667
-[`finalizeResult`]:parinfer.js#L691
-[`processError`]:parinfer.js#L707
-[`processText`]:parinfer.js#L719
-[`getChangedLines`]:parinfer.js#L740
-[`publicResult`]:parinfer.js#L754
-[`indentMode`]:parinfer.js#L771
-[`parenMode`]:parinfer.js#L776
-[`result.mode`]:parinfer.js#L74
-[`result.origText`]:parinfer.js#L76
-[`result.origLines`]:parinfer.js#L77
-[`result.lines`]:parinfer.js#L80
-[`result.lineNo`]:parinfer.js#L81
-[`result.ch`]:parinfer.js#L82
-[`result.x`]:parinfer.js#L83
-[`result.parenStack`]:parinfer.js#L85
-[`result.parenTrail`]:parinfer.js#L89
-[`result.cursorX`]:parinfer.js#L96
-[`result.cursorLine`]:parinfer.js#L97
-[`result.cursorDx`]:parinfer.js#L98
-[`result.isInCode`]:parinfer.js#L100
-[`result.isEscaping`]:parinfer.js#L101
-[`result.isInStr`]:parinfer.js#L102
-[`result.isInComment`]:parinfer.js#L103
-[`result.commentX`]:parinfer.js#L104
-[`result.quoteDanger`]:parinfer.js#L106
-[`result.trackingIndent`]:parinfer.js#L107
-[`result.skipChar`]:parinfer.js#L108
-[`result.success`]:parinfer.js#L109
-[`result.maxIndent`]:parinfer.js#L111
-[`result.indentDelta`]:parinfer.js#L112
-[`result.error`]:parinfer.js#L115
-[`result.errorPosCache`]:parinfer.js#L121
+[`isInteger`]:parinfer.js#L56
+[`isOpenParen`]:parinfer.js#L62
+[`isCloseParen`]:parinfer.js#L66
+[`getInitialResult`]:parinfer.js#L78
+[`cacheErrorPos`]:parinfer.js#L164
+[`error`]:parinfer.js#L168
+[`insertWithinString`]:parinfer.js#L189
+[`replaceWithinString`]:parinfer.js#L197
+[`removeWithinString`]:parinfer.js#L205
+[`repeatString`]:parinfer.js#L212
+[`getLineEnding`]:parinfer.js#L221
+[`insertWithinLine`]:parinfer.js#L235
+[`replaceWithinLine`]:parinfer.js#L240
+[`removeWithinLine`]:parinfer.js#L245
+[`initLine`]:parinfer.js#L250
+[`commitChar`]:parinfer.js#L261
+[`clamp`]:parinfer.js#L273
+[`peek`]:parinfer.js#L283
+[`isValidCloseParen`]:parinfer.js#L294
+[`onOpenParen`]:parinfer.js#L301
+[`onMatchedCloseParen`]:parinfer.js#L312
+[`onUnmatchedCloseParen`]:parinfer.js#L320
+[`onCloseParen`]:parinfer.js#L324
+[`onTab`]:parinfer.js#L335
+[`onSemicolon`]:parinfer.js#L341
+[`onNewline`]:parinfer.js#L348
+[`onQuote`]:parinfer.js#L353
+[`onBackslash`]:parinfer.js#L369
+[`afterBackslash`]:parinfer.js#L373
+[`onChar`]:parinfer.js#L384
+[`isCursorOnLeft`]:parinfer.js#L402
+[`isCursorOnRight`]:parinfer.js#L410
+[`isCursorInComment`]:parinfer.js#L419
+[`handleCursorDelta`]:parinfer.js#L423
+[`updateParenTrailBounds`]:parinfer.js#L441
+[`clampParenTrailToCursor`]:parinfer.js#L465
+[`removeParenTrail`]:parinfer.js#L494
+[`correctParenTrail`]:parinfer.js#L511
+[`cleanParenTrail`]:parinfer.js#L529
+[`appendParenTrail`]:parinfer.js#L558
+[`finishNewParenTrail`]:parinfer.js#L567
+[`correctIndent`]:parinfer.js#L583
+[`onProperIndent`]:parinfer.js#L605
+[`onLeadingCloseParen`]:parinfer.js#L620
+[`onIndent`]:parinfer.js#L637
+[`processChar`]:parinfer.js#L654
+[`processLine`]:parinfer.js#L679
+[`finalizeResult`]:parinfer.js#L703
+[`processError`]:parinfer.js#L719
+[`processText`]:parinfer.js#L731
+[`getChangedLines`]:parinfer.js#L752
+[`publicResult`]:parinfer.js#L766
+[`indentMode`]:parinfer.js#L783
+[`parenMode`]:parinfer.js#L788
+[`result.mode`]:parinfer.js#L82
+[`result.origText`]:parinfer.js#L84
+[`result.origLines`]:parinfer.js#L85
+[`result.lines`]:parinfer.js#L88
+[`result.lineNo`]:parinfer.js#L89
+[`result.ch`]:parinfer.js#L90
+[`result.x`]:parinfer.js#L91
+[`result.parenStack`]:parinfer.js#L93
+[`result.parenTrail`]:parinfer.js#L97
+[`result.cursorX`]:parinfer.js#L104
+[`result.cursorLine`]:parinfer.js#L105
+[`result.cursorDx`]:parinfer.js#L106
+[`result.isInCode`]:parinfer.js#L108
+[`result.isEscaping`]:parinfer.js#L109
+[`result.isInStr`]:parinfer.js#L110
+[`result.isInComment`]:parinfer.js#L111
+[`result.commentX`]:parinfer.js#L112
+[`result.quoteDanger`]:parinfer.js#L114
+[`result.trackingIndent`]:parinfer.js#L115
+[`result.skipChar`]:parinfer.js#L116
+[`result.success`]:parinfer.js#L117
+[`result.maxIndent`]:parinfer.js#L119
+[`result.indentDelta`]:parinfer.js#L120
+[`result.error`]:parinfer.js#L123
+[`result.errorPosCache`]:parinfer.js#L129

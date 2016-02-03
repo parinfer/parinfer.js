@@ -1,5 +1,5 @@
 //
-// Parinfer 1.5.1+dev
+// Parinfer 1.5.1
 //
 // Copyright 2015-2016 © Shaun LeBron
 // MIT License
