@@ -50,6 +50,8 @@ Thus, we cover the design and implementation of Parinfer in two parts:
   - [Comment Corruption](#comment-corruption)
   - [Risk Management](#risk-management)
 - [Incremental Processing](#incremental-processing)
+  - [Speed](#speed)
+  - [Slower Languages](#slower-languages)
 
 --
 
@@ -902,12 +904,24 @@ comments follow.
 
 You may be wondering why we have to process the whole file again after only a
 small portion of the file has changed.  The short answer is that I haven't
-figured it out yet.  My opinion is that it seems fast enough for full-file
-processing every time.  Also, keeping the code stateless (across runs) benefits
-the simplicity of the system for study.
+figured out the best way to do this yet.  But the implementation seems fast
+enough for full-file processing every time.
 
-In reality, I think someone will figure this out eventually.  So I will
-talk about some of the current ideas that have been explored. (TODO)
+#### Speed
+
+The current JS and JVM implementations can process a ~2800 line file at 60-100
+times a second, which is close to the smallest visual delay we can perceive.
+
+Fast typists can type around 8 characters per second (~120wpm), so Parinfer can
+process a file 8-10 times in between these fast keystrokes.
+
+#### Slower Languages
+
+If Parinfer must be ported to a slower language, we may not be able to process
+the full file everytime.  Rather, we can just process the top-level expressions
+affected by the edit.
+
+There is a pending feature here: [#91](https://github.com/shaunlebron/parinfer/issues/91)
 
 ## Questions?
 
