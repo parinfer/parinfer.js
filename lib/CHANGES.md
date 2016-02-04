@@ -1,3 +1,7 @@
+## 1.5.2
+
+- performance improvements (thanks @oakmac)
+
 ## 1.5.1
 
 - fudged the 1.5.0 npm release (this fixes it)
