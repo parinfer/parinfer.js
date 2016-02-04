@@ -1,3 +1,7 @@
+## 1.5.3
+
+- performance improvements (thanks @oakmac)
+
 ## 1.5.2
 
 - performance improvements (thanks @oakmac)
