@@ -3,24 +3,41 @@
 [![Gitter](https://badges.gitter.im/shaunlebron/parinfer.svg)](https://gitter.im/shaunlebron/parinfer?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 [![Travis](https://travis-ci.org/shaunlebron/parinfer.svg?branch=master)](https://travis-ci.org/shaunlebron/parinfer)
 
-This is the canonical implementation of [Parinfer], written in JavaScript.  It
-has a dead simple API and can be used directly by any editor or REPL that can
-use JavaScript.  It has also been designed to be simple to port.
+This is the canonical implementation of [Parinfer]'s core transformation
+functions. Though it is written in JavaScript, it is ported and synchronized to
+other languages to reach all the major editors.
 
-To learn about its __design and implementation__, please see [`parinfer.js.md`].
-
-
-| implemented in | link |
-|----------|------|
-| JavaScript\* | _you are here_ |
-| Python | [parinfer.py] |
-
-_\* canonical implementation_
-
+See [Parinfer Design and Implementation](parinfer.js.md) for deep knowledge on inner workings.
 
 [Parinfer]:http://shaunlebron.github.io/parinfer/
+
+## A stable core for editor plugins
+
+The behavior and implementation of this Parinfer "library" is stable and
+canonicalized.  To allow different editors to make use of this, [@oakmac] has
+graciously ported this implementation to the languages required by the plugin
+APIs of all the major code editors.  All port tests are synchronized through a
+common set of JSON test cases to help ensure canonical core behavior across
+ports.
+
+| implemented in | link             | relevant editor          |
+|----------------|------------------|--------------------------|
+| JavaScript     | parinfer.js (here)   | Atom, VSCode, LightTable |
+| Python         | [parinfer.py]    | Sublime Text             |
+| Kotlin (JVM)   | [parinfer-jvm]   | Cursive IDE              |
+| Emacs Lisp     | [parinfer-elisp] | Emacs                    |
+| Vim Script     | [parinfer-viml]  | Vim                      |
+
+_<strong>[Open an issue]</strong> if you would like Parinfer ported to another language for
+use in an editor not listed above._
+
+[@oakmac]:https://github.com/oakmac
 [parinfer.py]:https://github.com/oakmac/parinfer.py
+[parinfer-jvm]:https://github.com/oakmac/parinfer-jvm
+[parinfer-elisp]:https://github.com/oakmac/parinfer-elisp
+[parinfer-viml]:https://github.com/oakmac/parinfer-viml
 [parinfer-cljs]:https://github.com/shaunlebron/parinfer-cljs
+[Open an issue]:https://github.com/shaunlebron/parinfer/issues/new?title=port%20request
 
 ## Installation
 
@@ -142,23 +159,6 @@ Returns an object with the following properties:
   - `message` is a message describing the error
   - `lineNo` is a zero-based line number where the error occurred
   - `x` is a zero-based column where the error occurred
-
-## Using Parinfer outside JS
-
-__Node RPC__: If your editor doesn't support using this library directly, you
-have the option of connecting your editor to a running Node instance for RPC,
-like [nvim-parinfer.js] has done.
-
-__Porting__: You may also want to make a native port of Parinfer to a language
-that your editor supports. Rest assured that you don't have to understand the
-implementation to port it.  `parinfer.js` is implemented such that it can be
-translated in a straightforward way to most scripting languages.
-
-__Testing__: To verify your port works, you'll want to run some tests.  Parinfer's
-test cases are compiled to JSON.  Look at [`test/cases.js`] to see how the files are
-loaded and tested against Parinfer's functions.
-
-[nvim-parinfer.js]:https://github.com/snoe/nvim-parinfer.js
 
 ## Questions?
 
