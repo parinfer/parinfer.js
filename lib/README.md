@@ -5,7 +5,7 @@
 
 This is the canonical implementation of [Parinfer]'s core transformation
 functions. Though it is written in JavaScript, it is ported and synchronized to
-other languages to reach all the major editors.
+other languages to reach most major text editors.
 
 See [Parinfer Design and Implementation](parinfer.js.md) for deep knowledge on inner workings.
 
@@ -16,9 +16,8 @@ See [Parinfer Design and Implementation](parinfer.js.md) for deep knowledge on i
 The behavior and implementation of this Parinfer library is stable and
 canonicalized.  To allow different editors to make use of this, [@oakmac] has
 graciously ported this implementation to the languages required by the plugin
-APIs of all the major code editors.  All port tests are synchronized through a
-common set of JSON test cases to help ensure canonical core behavior across
-ports.
+APIs of most major text editors.  All language ports pass the same
+comprehensive test suite to help ensure consistent behavior.
 
 | implemented in | link             | relevant editor          |
 |----------------|------------------|--------------------------|
