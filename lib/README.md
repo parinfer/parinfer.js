@@ -13,7 +13,7 @@ See [Parinfer Design and Implementation](parinfer.js.md) for deep knowledge on i
 
 ## A stable core for editor plugins
 
-The behavior and implementation of this Parinfer "library" is stable and
+The behavior and implementation of this Parinfer library is stable and
 canonicalized.  To allow different editors to make use of this, [@oakmac] has
 graciously ported this implementation to the languages required by the plugin
 APIs of all the major code editors.  All port tests are synchronized through a
