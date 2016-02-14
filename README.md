@@ -41,6 +41,7 @@ __Works in Progress__:
 - [sublime-text-parinfer] for [Sublime Text]
 - [parinfer-mode] or [elisp-parinfer] for [Emacs]
 - [codemirror-parinfer] for [CodeMirror]
+- [lt_parinfer] for [Light Table]
 
 Parinfer will soon be available for some REPL environments as well:
 
@@ -68,6 +69,8 @@ Parinfer will soon be available for some REPL environments as well:
 [elisp-parinfer]:https://github.com/dongcarl/parinfer
 [codemirror-parinfer]:https://github.com/hiram-madelaine/codemirror-parinfer
 [CodeMirror]:https://codemirror.net/
+[lt_parinfer]:https://github.com/mauricioszabo/lt_parinfer
+[Light Table]:http://lighttable.com/
 
 [Replete]:https://github.com/mfikes/replete
 [Dirac DevTools]:https://github.com/binaryage/dirac
