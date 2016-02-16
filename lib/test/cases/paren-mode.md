@@ -1,6 +1,8 @@
 # Paren Mode
 
-minimal indent.
+## Indentation Threshold Clamping
+
+clamp left
 
 ```in
 (let [foo 1]
@@ -12,7 +14,7 @@ foo)
  foo)
 ```
 
-minimal dedent.
+clamp right
 
 ```in
 (let [foo 1]
@@ -24,8 +26,6 @@ minimal dedent.
      foo)
 ```
 
-minimal dedent across multiple.
-
 ```in
 (let [foo {:a 1}]
            foo)
@@ -35,6 +35,26 @@ minimal dedent across multiple.
 (let [foo {:a 1}]
      foo)
 ```
+
+sanity check to apply rules to multiple expressions
+
+```in
+(let [foo 1]
+      foo)
+
+(let [foo 1]
+foo)
+```
+
+```out
+(let [foo 1]
+     foo)
+
+(let [foo 1]
+ foo)
+```
+
+## Relative Indentation
 
 keep relative indentation of child expressions:
 
@@ -50,15 +70,29 @@ keep relative indentation of child expressions:
          (map inc)))
 ```
 
-close-parens at SOL are moved to EOL.
-empty lines not deleted.
-spaces kept before and after SOL close-parens stay.
+## Leading Close-Paren
+
+
+Close-parens at start of line are moved to end of previous line.  Note that the
+spaces before the close-paren are not removed.
+
+```in
+(let [foo 1
+      ]
+  foo)
+```
+
+```out
+(let [foo 1]
+      
+  foo)
+```
 
 ```in
 (let [foo 1
       bar 2
 
-      ] (+ foo bar
+     ] (+ foo bar
   )
 )
 ```
@@ -71,6 +105,8 @@ spaces kept before and after SOL close-parens stay.
   
 
 ```
+
+## Inside the Indentation Treshold
 
 extra indent is fine (won't cause parinfer to restructure it)
 
@@ -98,23 +134,7 @@ doesn't try to align siblings.
      :bar 2)
 ```
 
-multiple expressions
-
-```in
-(let [foo 1]
-      foo)
-
-(let [foo 1]
-foo)
-```
-
-```out
-(let [foo 1]
-     foo)
-
-(let [foo 1]
- foo)
-```
+## Backslash cases
 
 escape character in comment untouched:
 
@@ -138,31 +158,19 @@ escaped whitespace
 (def bar \ )
 ```
 
-cursor before a close-paren allows it to be at the start of a line.
+Hanging backslash at end of line is invalid and causes processing to be abandoned.
 
 ```in
-(foo [a b
-|])
+(foo [a b]\
+c)
 ```
 
 ```out
-(foo [a b
-      ])
+(foo [a b]\
+c)
 ```
 
-Commas are considered whitespace in Clojure, but are unquote sugar in Racket.
-Since commas are never used as indentation whitespace in Clojure, we don't
-treat it as such:
-
-```in
-(def foo
-,bar)
-```
-
-```out
-(def foo
- ,bar)
-```
+## Dangerous Quotes
 
 odd number of quotes not allowed in a comment, so it remains unprocessed:
 
@@ -194,18 +202,7 @@ ret)
  ret)
 ```
 
-
-Hanging backslash at end of line is invalid and causes processing to be abandoned.
-
-```in
-(foo [a b]\
-c)
-```
-
-```out
-(foo [a b]\
-c)
-```
+## Spaces in Paren Trail
 
 Preserve spaces in paren trail for the cursor line.  This allows the user
 to insert things between close-parens more easily.
@@ -243,3 +240,18 @@ But get rid of spaces in paren trail if no cursor is present on the line:
 ```out
 (foo [1 2 3])
 ```
+
+## Cursor Behavior
+
+cursor before a close-paren allows it to be at the start of a line.
+
+```in
+(foo [a b
+|])
+```
+
+```out
+(foo [a b
+      ])
+```
+
