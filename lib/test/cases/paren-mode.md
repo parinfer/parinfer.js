@@ -212,7 +212,7 @@ to insert things between close-parens more easily.
 ```
 
 ```out
-(foo )
+(foo |)
 ```
 
 ```in
@@ -220,7 +220,7 @@ to insert things between close-parens more easily.
 ```
 
 ```out
-(foo [1 2 3 ] )
+(foo [1 2 3 |] )
 ```
 
 But get rid of spaces in paren trail if no cursor is present on the line:
@@ -243,7 +243,7 @@ But get rid of spaces in paren trail if no cursor is present on the line:
 
 ## Cursor Behavior
 
-cursor before a close-paren allows it to be at the start of a line.
+Pressing enter before a close-paren.
 
 ```in
 (foo [a b
@@ -252,6 +252,29 @@ cursor before a close-paren allows it to be at the start of a line.
 
 ```out
 (foo [a b
-      ])
+      |])
 ```
 
+Cursor pushed forward when a form is balanced and indented.
+
+```in
+(foo [1 2 3
+ 4 5 6
+ 7 8 9])|
+```
+
+```out
+(foo [1 2 3
+      4 5 6
+      7 8 9])|
+```
+
+Move cursor back after typing invalid characters
+
+```in
+(foo ]]| bar)
+```
+
+```out
+(foo | bar)
+```

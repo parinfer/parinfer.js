@@ -291,7 +291,10 @@
       "lines": [
         "(foo )"
       ],
-      "cursor": null
+      "cursor": {
+        "cursorX": 5,
+        "cursorLine": 0
+      }
     }
   },
   {
@@ -310,7 +313,10 @@
       "lines": [
         "(foo [1 2 3 ] )"
       ],
-      "cursor": null
+      "cursor": {
+        "cursorX": 12,
+        "cursorLine": 0
+      }
     }
   },
   {
@@ -363,7 +369,58 @@
         "(foo [a b",
         "      ])"
       ],
-      "cursor": null
+      "cursor": {
+        "cursorX": 6,
+        "cursorLine": 1
+      }
+    }
+  },
+  {
+    "in": {
+      "fileLineNo": 259,
+      "lines": [
+        "(foo [1 2 3",
+        " 4 5 6",
+        " 7 8 9])"
+      ],
+      "cursor": {
+        "cursorX": 8,
+        "cursorLine": 2
+      }
+    },
+    "out": {
+      "fileLineNo": 265,
+      "lines": [
+        "(foo [1 2 3",
+        "      4 5 6",
+        "      7 8 9])"
+      ],
+      "cursor": {
+        "cursorX": 13,
+        "cursorLine": 2
+      }
+    }
+  },
+  {
+    "in": {
+      "fileLineNo": 273,
+      "lines": [
+        "(foo ]] bar)"
+      ],
+      "cursor": {
+        "cursorX": 7,
+        "cursorLine": 0
+      }
+    },
+    "out": {
+      "fileLineNo": 277,
+      "lines": [
+        "(foo  bar)"
+      ],
+      "cursor": {
+        "cursorX": 5,
+        "cursorLine": 0
+      }
     }
   }
 ]
