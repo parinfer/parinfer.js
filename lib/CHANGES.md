@@ -1,3 +1,7 @@
+## 1.6.0
+
+- return cursor position (see [#96](https://github.com/shaunlebron/parinfer/pull/96))
+
 ## 1.5.3
 
 - performance improvements (thanks @oakmac)
