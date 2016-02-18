@@ -194,7 +194,7 @@ out, causing Parinfer to treat its contents as code).
 ```
 
 ```out
-""]"
+"|"]"
 ```
 
 Another case:
@@ -208,7 +208,7 @@ Another case:
 
 ```out
 (def foo
-  "
+  "|
   "(a b)
       c")
 ```
@@ -230,7 +230,7 @@ odd number of quotes (one):
 
 ```out
 (for [col columns]
-  "
+  "|
   [:div.td {:style "max-width: 500px;"}])
 ```
 
@@ -385,7 +385,7 @@ This allows us to insert a space before typing a new token.
 ```
 
 ```out
-(def b )
+(def b |)
 ```
 
 Once the cursor leaves the line, the space is removed.
@@ -405,7 +405,7 @@ Another example with more close-parens:
 ```
 
 ```out
-(def b [[c d] ])
+(def b [[c d] |])
 ```
 
 Once the cursor leaves the line, the space is removed.
@@ -426,7 +426,7 @@ cursor is to the left of the gaps.
 ```
 
 ```out
-(def b [[c d]])
+(def |b [[c d]])
 ```
 
 Inferred close-parens before the cursor are never removed, which may
@@ -453,7 +453,7 @@ With the cursor at the end of the first line, the indented line below does not a
 ```
 
 ```out
-(let [a 1])
+(let [a 1])|
   ret
 ```
 
@@ -479,7 +479,7 @@ insert a token after it, thus indentation can affect it again:
 ```
 
 ```out
-(let [a 1]
+(let [a 1]|
   ret)
 ```
 
@@ -491,7 +491,7 @@ If the cursor is in a comment after such a close-paren, we can safely move it:
 ```
 
 ```out
-(let [a 1] ;
+(let [a 1] ;|
   ret)
 ```
 
@@ -506,6 +506,37 @@ they were.
 
 ```out
 (let [a 1])
-      
+      |
 ```
 
+Removing invalid close-parens should pull back the cursor
+
+```in
+(foo ]]| bar)
+```
+
+```out
+(foo | bar)
+```
+
+Commenting an inferred close-paren
+
+```in
+(foo bar ;|)
+```
+
+```out
+(foo bar) ;|)
+```
+
+Commenting multiple inferred close-parens
+
+```in
+(let [x 1
+      y 2;|])
+```
+
+```out
+(let [x 1
+      y 2]);|])
+```

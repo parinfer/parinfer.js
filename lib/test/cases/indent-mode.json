@@ -267,7 +267,10 @@
       "lines": [
         "\"\"]\""
       ],
-      "cursor": null
+      "cursor": {
+        "cursorX": 1,
+        "cursorLine": 0
+      }
     }
   },
   {
@@ -292,7 +295,10 @@
         "  \"(a b)",
         "      c\")"
       ],
-      "cursor": null
+      "cursor": {
+        "cursorX": 3,
+        "cursorLine": 1
+      }
     }
   },
   {
@@ -315,7 +321,10 @@
         "  \"",
         "  [:div.td {:style \"max-width: 500px;\"}])"
       ],
-      "cursor": null
+      "cursor": {
+        "cursorX": 3,
+        "cursorLine": 1
+      }
     }
   },
   {
@@ -522,7 +531,10 @@
       "lines": [
         "(def b )"
       ],
-      "cursor": null
+      "cursor": {
+        "cursorX": 7,
+        "cursorLine": 0
+      }
     }
   },
   {
@@ -557,7 +569,10 @@
       "lines": [
         "(def b [[c d] ])"
       ],
-      "cursor": null
+      "cursor": {
+        "cursorX": 14,
+        "cursorLine": 0
+      }
     }
   },
   {
@@ -592,7 +607,10 @@
       "lines": [
         "(def b [[c d]])"
       ],
-      "cursor": null
+      "cursor": {
+        "cursorX": 5,
+        "cursorLine": 0
+      }
     }
   },
   {
@@ -631,7 +649,10 @@
         "(let [a 1])",
         "  ret"
       ],
-      "cursor": null
+      "cursor": {
+        "cursorX": 11,
+        "cursorLine": 0
+      }
     }
   },
   {
@@ -670,7 +691,10 @@
         "(let [a 1]",
         "  ret)"
       ],
-      "cursor": null
+      "cursor": {
+        "cursorX": 10,
+        "cursorLine": 0
+      }
     }
   },
   {
@@ -691,7 +715,10 @@
         "(let [a 1] ;",
         "  ret)"
       ],
-      "cursor": null
+      "cursor": {
+        "cursorX": 12,
+        "cursorLine": 0
+      }
     }
   },
   {
@@ -712,7 +739,78 @@
         "(let [a 1])",
         "      "
       ],
-      "cursor": null
+      "cursor": {
+        "cursorX": 6,
+        "cursorLine": 1
+      }
+    }
+  },
+  {
+    "in": {
+      "fileLineNo": 513,
+      "lines": [
+        "(foo ]] bar)"
+      ],
+      "cursor": {
+        "cursorX": 7,
+        "cursorLine": 0
+      }
+    },
+    "out": {
+      "fileLineNo": 517,
+      "lines": [
+        "(foo  bar)"
+      ],
+      "cursor": {
+        "cursorX": 5,
+        "cursorLine": 0
+      }
+    }
+  },
+  {
+    "in": {
+      "fileLineNo": 523,
+      "lines": [
+        "(foo bar ;)"
+      ],
+      "cursor": {
+        "cursorX": 10,
+        "cursorLine": 0
+      }
+    },
+    "out": {
+      "fileLineNo": 527,
+      "lines": [
+        "(foo bar) ;)"
+      ],
+      "cursor": {
+        "cursorX": 11,
+        "cursorLine": 0
+      }
+    }
+  },
+  {
+    "in": {
+      "fileLineNo": 533,
+      "lines": [
+        "(let [x 1",
+        "      y 2;])"
+      ],
+      "cursor": {
+        "cursorX": 10,
+        "cursorLine": 1
+      }
+    },
+    "out": {
+      "fileLineNo": 538,
+      "lines": [
+        "(let [x 1",
+        "      y 2]);])"
+      ],
+      "cursor": {
+        "cursorX": 12,
+        "cursorLine": 1
+      }
     }
   }
 ]
