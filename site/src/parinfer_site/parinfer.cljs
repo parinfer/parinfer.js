@@ -13,6 +13,7 @@
 
 (defn- convert-result [result]
   {:text (aget result "text")
+   :cursor-x (aget result "cursorX")
    :success? (aget result "success")
    :changed-lines (mapv convert-changed-line (aget result "changedLines"))
    :error (convert-error (aget result "error"))})

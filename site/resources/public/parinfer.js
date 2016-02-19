@@ -1,5 +1,5 @@
 //
-// Parinfer 1.5.1
+// Parinfer 1.6.1
 //
 // Copyright 2015-2016 © Shaun LeBron
 // MIT License
@@ -31,6 +31,13 @@
 // Constants / Predicates
 //------------------------------------------------------------------------------
 
+// NOTE: this is a performance hack
+// The main result object uses a lot of "Integer or null" values.
+// Using a sentinel integer is faster than actual null because it cuts down on
+// type coercion overhead.
+// https://en.wikipedia.org/wiki/Sentinel_value
+var SENTINEL_NULL = -999;
+
 var INDENT_MODE = "INDENT_MODE",
     PAREN_MODE = "PAREN_MODE";
 
@@ -42,7 +49,7 @@ var BACKSLASH = '\\',
     SEMICOLON = ';',
     TAB = '\t';
 
-var LINE_ENDING = /\r?\n/;
+var LINE_ENDING_REGEX = /\r?\n/;
 
 var PARENS = {
   "{": "}",
@@ -71,7 +78,7 @@ function isCloseParen(c) {
 // Result Structure
 //------------------------------------------------------------------------------
 
-// This represents the running result.  As we scan through each character
+// This represents the running result. As we scan through each character
 // of a given text, we mutate this structure to update the state of our
 // system.
 
@@ -79,64 +86,65 @@ function getInitialResult(text, options, mode) {
 
   var result = {
 
-    mode: mode,             // [enum] - current processing mode (INDENT_MODE or PAREN_MODE)
+    mode: mode,                // [enum] - current processing mode (INDENT_MODE or PAREN_MODE)
 
-    origText: text,         // [string] - original text
-    origLines:              // [string array] - original lines
-      text.split(LINE_ENDING),
+    origText: text,            // [string] - original text
+    origCursorX: SENTINEL_NULL,
+    origLines:                 // [string array] - original lines
+      text.split(LINE_ENDING_REGEX),
 
-    lines: [],              // [string array] - resulting lines (with corrected parens or indentation)
-    lineNo: -1,             // [integer] - line number we are processing
-    ch: "",                 // [string] - character we are processing (can be changed to indicate a replacement)
-    x: 0,                   // [integer] - x position of the current character (ch)
+    lines: [],                 // [string array] - resulting lines (with corrected parens or indentation)
+    lineNo: -1,                // [integer] - line number we are processing
+    ch: "",                    // [string] - character we are processing (can be changed to indicate a replacement)
+    x: 0,                      // [integer] - x position of the current character (ch)
 
-    parenStack: [],         // We track where we are in the Lisp tree by keeping a stack (array) of open-parens.
-                            // Stack elements are objects containing keys {ch, x, indentDelta}
-                            // whose values are the same as those described here in this result structure.
+    parenStack: [],            // We track where we are in the Lisp tree by keeping a stack (array) of open-parens.
+                               // Stack elements are objects containing keys {ch, x, indentDelta}
+                               // whose values are the same as those described here in this result structure.
 
-    parenTrail: {           // the range of parens at the end of a line
-      lineNo: null,         // [integer] - line number of the last parsed paren trail
-      startX: null,         // [integer or null] - x position of first paren in this range
-      endX: null,           // [integer or null] - x position after the last paren in this range
-      openers: []           // [array of stack elements] - corresponding open-paren for each close-paren in this range
+    parenTrail: {              // the range of parens at the end of a line
+      lineNo: SENTINEL_NULL,   // [integer] - line number of the last parsed paren trail
+      startX: SENTINEL_NULL,   // [integer] - x position of first paren in this range
+      endX: SENTINEL_NULL,     // [integer] - x position after the last paren in this range
+      openers: []              // [array of stack elements] - corresponding open-paren for each close-paren in this range
     },
 
-    cursorX: null,          // [integer or null] - x position of the cursor
-    cursorLine: null,       // [integer or null] - line number of the cursor
-    cursorDx: null,         // [integer or null] - amount that the cursor moved horizontally if something was inserted or deleted
+    cursorX: SENTINEL_NULL,    // [integer] - x position of the cursor
+    cursorLine: SENTINEL_NULL, // [integer] - line number of the cursor
+    cursorDx: SENTINEL_NULL,   // [integer] - amount that the cursor moved horizontally if something was inserted or deleted
 
-    isInCode: true,         // [boolean] - indicates if we are currently in "code space" (not string or comment)
-    isEscaping: false,      // [boolean] - indicates if the next character will be escaped (e.g. `\c`).  This may be inside string, comment, or code.
-    isInStr: false,         // [boolean] - indicates if we are currently inside a string
-    isInComment: false,     // [boolean] - indicates if we are currently inside a comment
-    commentX: null,         // [integer or null] - x position of the start of comment on current line (if any)
+    isInCode: true,            // [boolean] - indicates if we are currently in "code space" (not string or comment)
+    isEscaping: false,         // [boolean] - indicates if the next character will be escaped (e.g. `\c`).  This may be inside string, comment, or code.
+    isInStr: false,            // [boolean] - indicates if we are currently inside a string
+    isInComment: false,        // [boolean] - indicates if we are currently inside a comment
+    commentX: SENTINEL_NULL,   // [integer] - x position of the start of comment on current line (if any)
 
-    quoteDanger: false,     // [boolean] - indicates if quotes are imbalanced inside of a comment (dangerous)
-    trackingIndent: false,  // [boolean] - are we looking for the indentation point of the current line?
-    skipChar: false,        // [boolean] - should we skip the processing of the current character?
-    success: false,         // [boolean] - was the input properly formatted enough to create a valid result?
+    quoteDanger: false,        // [boolean] - indicates if quotes are imbalanced inside of a comment (dangerous)
+    trackingIndent: false,     // [boolean] - are we looking for the indentation point of the current line?
+    skipChar: false,           // [boolean] - should we skip the processing of the current character?
+    success: false,            // [boolean] - was the input properly formatted enough to create a valid result?
 
-    maxIndent: null,        // [integer or null] - maximum allowed indentation of subsequent lines in Paren Mode
-    indentDelta: 0,         // [integer] - how far indentation was shifted by Paren Mode
-                            //  (preserves relative indentation of nested expressions)
+    maxIndent: SENTINEL_NULL,  // [integer] - maximum allowed indentation of subsequent lines in Paren Mode
+    indentDelta: 0,            // [integer] - how far indentation was shifted by Paren Mode
+                               //  (preserves relative indentation of nested expressions)
 
-    error: {                // if 'success' is false, return this error to the user
-      name: null,           // [string or null] - Parinfer's unique name for this error
-      message: null,        // [string or null] - error message to display
-      lineNo: null,         // [integer] - line number of error
-      x: null               // [integer] - start x position of error
+    error: {                   // if 'success' is false, return this error to the user
+      name: SENTINEL_NULL,     // [string] - Parinfer's unique name for this error
+      message: SENTINEL_NULL,  // [string] - error message to display
+      lineNo: SENTINEL_NULL,   // [integer] - line number of error
+      x: SENTINEL_NULL         // [integer] - start x position of error
     },
-    errorPosCache: {}       // [object] - maps error name to a potential error position
+    errorPosCache: {}          // [object] - maps error name to a potential error position
   };
 
-  // make sure no new properties are added to result
-  // (for type safety)
-  Object.preventExtensions(result);
-  Object.preventExtensions(result.parenTrail);
+  // Make sure no new properties are added to the result, for type safety.
+  // (uncomment only when debugging, since it incurs a perf penalty)
+  // Object.preventExtensions(result);
+  // Object.preventExtensions(result.parenTrail);
 
   // merge options if they are valid
   if (options) {
-    if (isInteger(options.cursorX))    { result.cursorX = options.cursorX; }
+    if (isInteger(options.cursorX))    { result.cursorX = result.origCursorX = options.cursorX; }
     if (isInteger(options.cursorLine)) { result.cursorLine = options.cursorLine; }
     if (isInteger(options.cursorDx))   { result.cursorDx = options.cursorDx; }
   }
@@ -166,10 +174,10 @@ function cacheErrorPos(result, errorName, lineNo, x) {
 }
 
 function error(result, errorName, lineNo, x) {
-  if (lineNo === null) {
+  if (lineNo === SENTINEL_NULL) {
     lineNo = result.errorPosCache[errorName].lineNo;
   }
-  if (x === null) {
+  if (x === SENTINEL_NULL) {
     x = result.errorPosCache[errorName].x;
   }
 
@@ -186,25 +194,10 @@ function error(result, errorName, lineNo, x) {
 // String Operations
 //------------------------------------------------------------------------------
 
-function insertWithinString(orig, idx, insert) {
-  return (
-    orig.substring(0, idx) +
-    insert +
-    orig.substring(idx)
-  );
-}
-
 function replaceWithinString(orig, start, end, replace) {
   return (
     orig.substring(0, start) +
     replace +
-    orig.substring(end)
-  );
-}
-
-function removeWithinString(orig, start, end) {
-  return (
-    orig.substring(0, start) +
     orig.substring(end)
   );
 }
@@ -232,19 +225,37 @@ function getLineEnding(text) {
 // Line operations
 //------------------------------------------------------------------------------
 
-function insertWithinLine(result, lineNo, idx, insert) {
-  var line = result.lines[lineNo];
-  result.lines[lineNo] = insertWithinString(line, idx, insert);
+function isCursorAffected(result, start, end) {
+  if (result.cursorX === start &&
+      result.cursorX === end) {
+    return result.cursorX === 0;
+  }
+  return result.cursorX >= end;
+}
+
+function shiftCursorOnEdit(result, lineNo, start, end, replace) {
+  var oldLength = end - start;
+  var newLength = replace.length;
+  var dx = newLength - oldLength;
+
+  if (dx !== 0 &&
+      result.cursorLine === lineNo &&
+      result.cursorX !== SENTINEL_NULL &&
+      isCursorAffected(result, start, end)) {
+    result.cursorX += dx;
+  }
 }
 
 function replaceWithinLine(result, lineNo, start, end, replace) {
   var line = result.lines[lineNo];
-  result.lines[lineNo] = replaceWithinString(line, start, end, replace);
+  var newLine = replaceWithinString(line, start, end, replace);
+  result.lines[lineNo] = newLine;
+
+  shiftCursorOnEdit(result, lineNo, start, end, replace);
 }
 
-function removeWithinLine(result, lineNo, start, end) {
-  var line = result.lines[lineNo];
-  result.lines[lineNo] = removeWithinString(line, start, end);
+function insertWithinLine(result, lineNo, idx, insert) {
+  replaceWithinLine(result, lineNo, idx, idx, insert);
 }
 
 function initLine(result, line) {
@@ -253,7 +264,7 @@ function initLine(result, line) {
   result.lines.push(line);
 
   // reset line-specific state
-  result.commentX = null;
+  result.commentX = SENTINEL_NULL;
   result.indentDelta = 0;
 }
 
@@ -271,10 +282,10 @@ function commitChar(result, origCh) {
 //------------------------------------------------------------------------------
 
 function clamp(val, minN, maxN) {
-  if (minN !== null) {
+  if (minN !== SENTINEL_NULL) {
     val = Math.max(minN, val);
   }
-  if (maxN !== null) {
+  if (maxN !== SENTINEL_NULL) {
     val = Math.min(maxN, val);
   }
   return val;
@@ -282,7 +293,7 @@ function clamp(val, minN, maxN) {
 
 function peek(array) {
   if (array.length === 0) {
-    return null;
+    return SENTINEL_NULL;
   }
   return array[array.length - 1];
 }
@@ -402,7 +413,7 @@ function onChar(result) {
 function isCursorOnLeft(result) {
   return (
     result.lineNo === result.cursorLine &&
-    result.cursorX !== null &&
+    result.cursorX !== SENTINEL_NULL &&
     result.cursorX <= result.x
   );
 }
@@ -410,8 +421,8 @@ function isCursorOnLeft(result) {
 function isCursorOnRight(result, x) {
   return (
     result.lineNo === result.cursorLine &&
-    result.cursorX !== null &&
-    x !== null &&
+    result.cursorX !== SENTINEL_NULL &&
+    x !== SENTINEL_NULL &&
     result.cursorX > x
   );
 }
@@ -422,7 +433,7 @@ function isCursorInComment(result) {
 
 function handleCursorDelta(result) {
   var hasCursorDelta = (
-    result.cursorDx !== null &&
+    result.cursorDx !== SENTINEL_NULL &&
     result.cursorLine === result.lineNo &&
     result.cursorX === result.x
   );
@@ -440,7 +451,7 @@ function handleCursorDelta(result) {
 // NOTE: `onMatchedCloseParen` modifies the endX
 function updateParenTrailBounds(result) {
   var line = result.lines[result.lineNo];
-  var prevCh = null;
+  var prevCh = SENTINEL_NULL;
   if (result.x > 0) { prevCh = line[result.x - 1]; }
   var ch = result.ch;
 
@@ -457,7 +468,7 @@ function updateParenTrailBounds(result) {
     result.parenTrail.startX = result.x + 1;
     result.parenTrail.endX = result.x + 1;
     result.parenTrail.openers = [];
-    result.maxIndent = null;
+    result.maxIndent = SENTINEL_NULL;
   }
 }
 
@@ -490,8 +501,8 @@ function clampParenTrailToCursor(result) {
   }
 }
 
-// INDENT MODE: removes the paren trail from the line
-function removeParenTrail(result) {
+// INDENT MODE: pops the paren trail from the stack
+function popParenTrail(result) {
   var startX = result.parenTrail.startX;
   var endX = result.parenTrail.endX;
 
@@ -503,8 +514,6 @@ function removeParenTrail(result) {
   while (openers.length !== 0) {
     result.parenStack.push(openers.pop());
   }
-
-  removeWithinLine(result, result.lineNo, startX, endX);
 }
 
 // INDENT MODE: correct paren trail from indentation
@@ -522,7 +531,7 @@ function correctParenTrail(result, indentX) {
     }
   }
 
-  insertWithinLine(result, result.parenTrail.lineNo, result.parenTrail.startX, parens);
+  replaceWithinLine(result, result.parenTrail.lineNo, result.parenTrail.startX, result.parenTrail.endX, parens);
 }
 
 // PAREN MODE: remove spaces from the paren trail
@@ -567,7 +576,7 @@ function appendParenTrail(result) {
 function finishNewParenTrail(result) {
   if (result.mode === INDENT_MODE) {
     clampParenTrailToCursor(result);
-    removeParenTrail(result);
+    popParenTrail(result);
   }
   else if (result.mode === PAREN_MODE) {
     if (result.lineNo !== result.cursorLine) {
@@ -587,7 +596,7 @@ function correctIndent(result) {
   var maxIndent = result.maxIndent;
 
   var opener = peek(result.parenStack);
-  if (opener !== null) {
+  if (opener !== SENTINEL_NULL) {
     minIndent = opener.x + 1;
     newIndent += opener.indentDelta;
   }
@@ -606,7 +615,7 @@ function onProperIndent(result) {
   result.trackingIndent = false;
 
   if (result.quoteDanger) {
-    throw error(result, ERROR_QUOTE_DANGER, null, null);
+    throw error(result, ERROR_QUOTE_DANGER, SENTINEL_NULL, SENTINEL_NULL);
   }
 
   if (result.mode === INDENT_MODE) {
@@ -701,8 +710,8 @@ function processLine(result, line) {
 }
 
 function finalizeResult(result) {
-  if (result.quoteDanger) { throw error(result, ERROR_QUOTE_DANGER, null, null); }
-  if (result.isInStr)     { throw error(result, ERROR_UNCLOSED_QUOTE, null, null); }
+  if (result.quoteDanger) { throw error(result, ERROR_QUOTE_DANGER, SENTINEL_NULL, SENTINEL_NULL); }
+  if (result.isInStr)     { throw error(result, ERROR_UNCLOSED_QUOTE, SENTINEL_NULL, SENTINEL_NULL); }
 
   if (result.parenStack.length !== 0) {
     if (result.mode === PAREN_MODE) {
@@ -767,6 +776,7 @@ function publicResult(result) {
   if (!result.success) {
     return {
       text: result.origText,
+      cursorX: result.origCursorX,
       success: false,
       error: result.error
     };
@@ -775,6 +785,7 @@ function publicResult(result) {
   var lineEnding = getLineEnding(result.origText);
   return {
     text: result.lines.join(lineEnding),
+    cursorX: result.cursorX,
     success: true,
     changedLines: getChangedLines(result)
   }

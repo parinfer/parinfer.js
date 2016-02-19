@@ -19,41 +19,6 @@
 ;; Operations
 ;;----------------------------------------------------------------------
 
-(defn update-cursor!
-  "Correctly position cursor after text that was just typed.
-  We need this since reformatting the text can shift things forward past our cursor."
-  [cm change]
-  (when (= "+input" (.-origin change))
-    (let [selection? (.somethingSelected cm)
-          text (join "\n" (.-text change))
-          from-x (.. change -from -ch)
-          line-no (.. change -from -line)
-          line (.getLine cm line-no)
-          insert-x (.indexOf line text from-x)
-          after-x (+ insert-x (count text))]
-      (cond
-        ;; something is selected, don't touch the cursor
-        selection?
-        nil
-
-        ;; pressing return, keep current position then.
-        (= text "\n")
-        nil
-
-        ;; only move the semicolon ahead since it can be pushed forward by
-        ;; commenting out inferred parens meaning they are immediately
-        ;; reinserted behind it.
-        (= text ";")
-        (.setCursor cm line-no after-x)
-
-        ;; typed character not found where expected it, we probably prevented it. keep cursor where it was.
-        (or (= -1 insert-x)
-            (> insert-x from-x))
-        (.setCursor cm line-no from-x)
-
-        :else nil))))
-
-
 (defn compute-cursor-dx
   [cursor change]
   (when change
@@ -115,18 +80,15 @@
 
         prev-state (get-prev-state cm)
 
-        ;; format the text
-        new-text
+        result
         (case mode
-          :indent-mode
-          (let [result (indent-mode current-text options)]
-            (:text result))
+          :indent-mode (indent-mode current-text options)
+          :paren-mode (paren-mode current-text options)
+          nil)
 
-          :paren-mode
-          (let [result (paren-mode current-text options)]
-            (:text result))
-
-          nil)]
+        ;; format the text
+        new-text (:text result)
+        new-cursor-x (:cursor-x result)]
 
     ;; update the text
     (swap! state assoc-in [key- :text] new-text)
@@ -135,5 +97,5 @@
     ;; since these are reset when overwriting codemirror's value.
     (if selection?
       (.setSelections cm selections)
-      (.setCursor cm cursor))
+      (.setCursor cm (aget cursor "line") new-cursor-x))
     (.scrollTo cm scroll-x scroll-y)))

@@ -1575,60 +1575,64 @@
     :recording? false})
 
 (def comment-
-  '{:timescale 2
-    :changes
-    [{:change
-      {:from {:line 3, :ch 3},
-       :to {:line 3, :ch 3},
-       :text (";"),
-       :origin "+input"},
+  '{:changes
+    [{:selections ({:anchor {:line 3, :ch 3}, :head {:line 3, :ch 3}}),
       :dt 0}
-     {:change
-      {:from {:line 3, :ch 4},
-       :to {:line 3, :ch 4},
-       :text (";"),
-       :origin "+input"},
-      :dt 234}
-     {:change
-      {:from {:line 3, :ch 4},
-       :to {:line 3, :ch 5},
-       :text (""),
-       :origin "+delete"},
-      :dt 868}
-     {:change
-      {:from {:line 3, :ch 3},
-       :to {:line 3, :ch 4},
-       :text (""),
-       :origin "+delete"},
-      :dt 370}
+     {:selections ({:anchor {:line 3, :ch 3}, :head {:line 3, :ch 3}}),
+      :dt 3}
      {:change
       {:from {:line 3, :ch 3},
        :to {:line 3, :ch 3},
        :text (";"),
        :origin "+input"},
-      :dt 1060}
+      :dt 1045}
      {:change
       {:from {:line 3, :ch 4},
        :to {:line 3, :ch 4},
        :text (";"),
        :origin "+input"},
-      :dt 370}
+      :dt 186}
      {:change
       {:from {:line 3, :ch 4},
        :to {:line 3, :ch 5},
        :text (""),
        :origin "+delete"},
-      :dt 932}
+      :dt 704}
      {:change
       {:from {:line 3, :ch 3},
        :to {:line 3, :ch 4},
        :text (""),
        :origin "+delete"},
-      :dt 323}],
+      :dt 151}
+     {:change
+      {:from {:line 3, :ch 3},
+       :to {:line 3, :ch 3},
+       :text (";"),
+       :origin "+input"},
+      :dt 829}
+     {:change
+      {:from {:line 3, :ch 4},
+       :to {:line 3, :ch 4},
+       :text (";"),
+       :origin "+input"},
+      :dt 168}
+     {:change
+      {:from {:line 3, :ch 4},
+       :to {:line 3, :ch 5},
+       :text (""),
+       :origin "+delete"},
+      :dt 677}
+     {:change
+      {:from {:line 3, :ch 3},
+       :to {:line 3, :ch 4},
+       :text (""),
+       :origin "+delete"},
+      :dt 171}],
     :init-value
     "(cljs.build.api/build \"src\"\n  {:main 'hello-world.core\n   :output-to \"out/main.js\"\n   :verbose true})",
-    :last-time 1444400762946,
-    :recording? false})
+    :last-time 1455861506898,
+    :recording? false,
+    :timescale 1.2})
 
 (def wrap
   '{:timescale 2

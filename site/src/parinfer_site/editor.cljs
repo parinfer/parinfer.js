@@ -4,8 +4,7 @@
     [clojure.string :refer [join]]
     [parinfer-site.state :refer [state
                                  empty-editor-state]]
-    [parinfer-site.editor-support :refer [update-cursor!
-                                          fix-text!
+    [parinfer-site.editor-support :refer [fix-text!
                                           cm-key
                                           IEditor
                                           get-prev-state
@@ -48,7 +47,6 @@
   (when (not= "setValue" (.-origin change))
     (record-change! cm {:change (parse-change change)})
     (fix-text! cm :change change)
-    (update-cursor! cm change)
     (set-frame-updated! cm true)))
 
 (defn on-cursor-activity
