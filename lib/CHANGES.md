@@ -1,3 +1,7 @@
+## 1.6.1
+
+- fix cursor position bug (see [comment](https://github.com/shaunlebron/parinfer/issues/47#issuecomment-186063654))
+
 ## 1.6.0
 
 - return cursor position (see [#96](https://github.com/shaunlebron/parinfer/pull/96))
