@@ -540,3 +540,13 @@ Commenting multiple inferred close-parens
 (let [x 1
       y 2]);|])
 ```
+
+When typing an open-paren, a close-paren should come after the cursor:
+
+```in
+(|
+```
+
+```out
+(|)
+```

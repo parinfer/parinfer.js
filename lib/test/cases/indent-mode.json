@@ -812,5 +812,27 @@
         "cursorLine": 1
       }
     }
+  },
+  {
+    "in": {
+      "fileLineNo": 545,
+      "lines": [
+        "("
+      ],
+      "cursor": {
+        "cursorX": 1,
+        "cursorLine": 0
+      }
+    },
+    "out": {
+      "fileLineNo": 549,
+      "lines": [
+        "()"
+      ],
+      "cursor": {
+        "cursorX": 1,
+        "cursorLine": 0
+      }
+    }
   }
 ]
