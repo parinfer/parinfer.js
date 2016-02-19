@@ -90,6 +90,9 @@ something that you can try:
    `indentMode` and replace the contents with its result.  You now have Indent Mode.
 1. __Locate the cursor__: Since Parinfer relaxes its rules around the cursor,
    make sure the aforementioned function receives the location of the cursor.
+1. __Update the cursor__: Parinfer may have to shift your cursor around since
+   some parts of a line may be added/removed/replaced.  Move your cursor to
+   the position at `cursorX`.
 1. __When the editor opens a file__ you must first pass their content to
   `parenMode` and replace its contents with the result.  This ensures
   indentation of a file is correct before using with Indent Mode.
@@ -117,6 +120,9 @@ we can assume a default subset of the features for quick input:
    Mode.
 1. __Locate the cursor__: Since Parinfer relaxes its rules around the cursor,
    make sure the aforementioned function receives the location of the cursor.
+1. __Update the cursor__: Parinfer may have to shift your cursor around since
+   some parts of a line may be added/removed/replaced.  Move your cursor to
+   the position at `cursorX`.
 1. __For auto-indent__, run
    `parenMode` instead of Indent Mode when pressing enter, and reposition the
    cursor at the first non-space character of its line.
