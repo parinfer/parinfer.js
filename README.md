@@ -39,7 +39,7 @@ __Works in Progress__:
 - [vim-parinfer] for [Vim]
 - [vscode-parinfer] for [Visual Studio Code]
 - [sublime-text-parinfer] for [Sublime Text]
-- [parinfer-mode] or [elisp-parinfer] for [Emacs]
+- [parinfer-mode] for [Emacs]
 - [codemirror-parinfer] for [CodeMirror]
 - [lt_parinfer] for [Light Table]
 
@@ -66,7 +66,6 @@ Parinfer will soon be available for some REPL environments as well:
 [Emacs]:https://www.gnu.org/software/emacs/
 [vim-parinfer]:https://github.com/bhurlow/vim-parinfer
 [Vim]:http://www.vim.org/
-[elisp-parinfer]:https://github.com/dongcarl/parinfer
 [codemirror-parinfer]:https://github.com/hiram-madelaine/codemirror-parinfer
 [CodeMirror]:https://codemirror.net/
 [lt_parinfer]:https://github.com/mauricioszabo/lt_parinfer
