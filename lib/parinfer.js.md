@@ -504,6 +504,31 @@ the region.  But we only apply this if the cursor is to the right of the
 region.  We do not consider the case of the cursor being inside the region
 since it doesn't seem to come up in practice.
 
+Unfortunately, this gets tricky when _inserting_ text directly at the cursor
+because we have conflicting expectations for different cases.
+
+For example, if indentation is inserted at the cursor, we want the cursor to be
+pushed forward:
+
+```clj
+|foo      ;; BEFORE
+  |foo    ;; AFTER
+```
+
+For another example, typing an open-paren in Indent Mode may result in a
+close-paren being inserted at the cursor.  In this case, we want the cursor
+to stay put instead of being pushed forward:
+
+```clj
+(|        ;; BEFORE
+(|)       ;; AFTER
+```
+
+As a hack, we distinguish between these two cases by only pushing the cursor
+forward if the cursor is at the front of the line. This works because
+close-paren insertions will never happen at the front of a line.  See
+[`isCursorAffected`].
+
 ### Preserving Relative Indentation
 
 As we have seen, Paren Mode will correct the indentation of lines one-by-one.
@@ -991,49 +1016,50 @@ chatroom].  I'll answer questions as soon as I can.
 [`replaceWithinString`]:parinfer.js#L197
 [`repeatString`]:parinfer.js#L205
 [`getLineEnding`]:parinfer.js#L214
-[`shiftCursorOnEdit`]:parinfer.js#L228
-[`replaceWithinLine`]:parinfer.js#L241
-[`insertWithinLine`]:parinfer.js#L249
-[`initLine`]:parinfer.js#L253
-[`commitChar`]:parinfer.js#L264
-[`clamp`]:parinfer.js#L276
-[`peek`]:parinfer.js#L286
-[`isValidCloseParen`]:parinfer.js#L297
-[`onOpenParen`]:parinfer.js#L304
-[`onMatchedCloseParen`]:parinfer.js#L315
-[`onUnmatchedCloseParen`]:parinfer.js#L323
-[`onCloseParen`]:parinfer.js#L327
-[`onTab`]:parinfer.js#L338
-[`onSemicolon`]:parinfer.js#L344
-[`onNewline`]:parinfer.js#L351
-[`onQuote`]:parinfer.js#L356
-[`onBackslash`]:parinfer.js#L372
-[`afterBackslash`]:parinfer.js#L376
-[`onChar`]:parinfer.js#L387
-[`isCursorOnLeft`]:parinfer.js#L405
-[`isCursorOnRight`]:parinfer.js#L413
-[`isCursorInComment`]:parinfer.js#L422
-[`handleCursorDelta`]:parinfer.js#L426
-[`updateParenTrailBounds`]:parinfer.js#L444
-[`clampParenTrailToCursor`]:parinfer.js#L468
-[`popParenTrail`]:parinfer.js#L497
-[`correctParenTrail`]:parinfer.js#L512
-[`cleanParenTrail`]:parinfer.js#L530
-[`appendParenTrail`]:parinfer.js#L559
-[`finishNewParenTrail`]:parinfer.js#L568
-[`correctIndent`]:parinfer.js#L584
-[`onProperIndent`]:parinfer.js#L606
-[`onLeadingCloseParen`]:parinfer.js#L621
-[`onIndent`]:parinfer.js#L638
-[`processChar`]:parinfer.js#L655
-[`processLine`]:parinfer.js#L680
-[`finalizeResult`]:parinfer.js#L704
-[`processError`]:parinfer.js#L720
-[`processText`]:parinfer.js#L732
-[`getChangedLines`]:parinfer.js#L753
-[`publicResult`]:parinfer.js#L767
-[`indentMode`]:parinfer.js#L786
-[`parenMode`]:parinfer.js#L791
+[`isCursorAffected`]:parinfer.js#L228
+[`shiftCursorOnEdit`]:parinfer.js#L236
+[`replaceWithinLine`]:parinfer.js#L249
+[`insertWithinLine`]:parinfer.js#L257
+[`initLine`]:parinfer.js#L261
+[`commitChar`]:parinfer.js#L272
+[`clamp`]:parinfer.js#L284
+[`peek`]:parinfer.js#L294
+[`isValidCloseParen`]:parinfer.js#L305
+[`onOpenParen`]:parinfer.js#L312
+[`onMatchedCloseParen`]:parinfer.js#L323
+[`onUnmatchedCloseParen`]:parinfer.js#L331
+[`onCloseParen`]:parinfer.js#L335
+[`onTab`]:parinfer.js#L346
+[`onSemicolon`]:parinfer.js#L352
+[`onNewline`]:parinfer.js#L359
+[`onQuote`]:parinfer.js#L364
+[`onBackslash`]:parinfer.js#L380
+[`afterBackslash`]:parinfer.js#L384
+[`onChar`]:parinfer.js#L395
+[`isCursorOnLeft`]:parinfer.js#L413
+[`isCursorOnRight`]:parinfer.js#L421
+[`isCursorInComment`]:parinfer.js#L430
+[`handleCursorDelta`]:parinfer.js#L434
+[`updateParenTrailBounds`]:parinfer.js#L452
+[`clampParenTrailToCursor`]:parinfer.js#L476
+[`popParenTrail`]:parinfer.js#L505
+[`correctParenTrail`]:parinfer.js#L520
+[`cleanParenTrail`]:parinfer.js#L538
+[`appendParenTrail`]:parinfer.js#L567
+[`finishNewParenTrail`]:parinfer.js#L576
+[`correctIndent`]:parinfer.js#L592
+[`onProperIndent`]:parinfer.js#L614
+[`onLeadingCloseParen`]:parinfer.js#L629
+[`onIndent`]:parinfer.js#L646
+[`processChar`]:parinfer.js#L663
+[`processLine`]:parinfer.js#L688
+[`finalizeResult`]:parinfer.js#L712
+[`processError`]:parinfer.js#L728
+[`processText`]:parinfer.js#L740
+[`getChangedLines`]:parinfer.js#L761
+[`publicResult`]:parinfer.js#L775
+[`indentMode`]:parinfer.js#L794
+[`parenMode`]:parinfer.js#L799
 [`result.mode`]:parinfer.js#L89
 [`result.origText`]:parinfer.js#L91
 [`result.origLines`]:parinfer.js#L93
