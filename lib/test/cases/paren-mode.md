@@ -319,3 +319,46 @@ Move cursor back after typing invalid characters
 ```out
 (foo | bar)
 ```
+
+## CursorDx
+
+When backspacing, preserve the indentation of the child lines.
+
+```in
+(let |[foo 1
+     ^ cursorDx -4
+           bar 2
+           baz 3])
+```
+
+```out
+(let |[foo 1
+       bar 2
+       baz 3])
+```
+
+```in
+|(def foo
+^ cursorDx -3
+      bar)
+```
+
+```out
+|(def foo
+   bar)
+```
+
+When typing before an open-paren, preserve the indentation of the child lines.
+
+```in
+(def foo |(bar
+         ^ cursorDx 5
+       4 5 6
+       7 8 9))
+```
+
+```out
+(def foo |(bar
+            4 5 6
+            7 8 9))
+```

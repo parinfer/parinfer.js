@@ -68,11 +68,42 @@ is stored in its input or output data:
 }
 ```
 
+## Cursor Dx
+
+An input block can contain a line, with `^ cursorDx` and a number.  The caret
+must be positioned under a cursor `|`.
+
+In Paren Mode, the cursorDx (i.e. delta x) represents the number of characters
+deleted or added behind the cursor that resulted in the current state.
+
+> ```in
+> |(def foo
+> ^ cursorDx -3
+>       bar)
+> ```
+>
+> ```out
+> |(def foo
+>    bar)
+> ```
+
+```json
+"cursor": {
+  "cursorX": 0,
+  "cursorLine": 0,
+  "cursorDx": -3
+}
+```
+
 ## Expected Error
 
 An output block can contain an error line, with a caret `^` and the name
 of the error.  The caret is positioned under the offending character.
 
+> ```in
+> (def foo "bar
+> ```
+>
 > ```out
 > (def foo "bar
 >          ^ unclosed-quote

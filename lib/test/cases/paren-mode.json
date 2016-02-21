@@ -503,5 +503,84 @@
         "cursorLine": 0
       }
     }
+  },
+  {
+    "in": {
+      "fileLineNo": 326,
+      "lines": [
+        "(let [foo 1",
+        "           bar 2",
+        "           baz 3])"
+      ],
+      "cursor": {
+        "cursorX": 5,
+        "cursorLine": 0,
+        "cursorDx": -4
+      }
+    },
+    "out": {
+      "fileLineNo": 333,
+      "lines": [
+        "(let [foo 1",
+        "       bar 2",
+        "       baz 3])"
+      ],
+      "cursor": {
+        "cursorX": 5,
+        "cursorLine": 0
+      }
+    }
+  },
+  {
+    "in": {
+      "fileLineNo": 339,
+      "lines": [
+        "(def foo",
+        "      bar)"
+      ],
+      "cursor": {
+        "cursorX": 0,
+        "cursorLine": 0,
+        "cursorDx": -3
+      }
+    },
+    "out": {
+      "fileLineNo": 345,
+      "lines": [
+        "(def foo",
+        "   bar)"
+      ],
+      "cursor": {
+        "cursorX": 0,
+        "cursorLine": 0
+      }
+    }
+  },
+  {
+    "in": {
+      "fileLineNo": 352,
+      "lines": [
+        "(def foo (bar",
+        "       4 5 6",
+        "       7 8 9))"
+      ],
+      "cursor": {
+        "cursorX": 9,
+        "cursorLine": 0,
+        "cursorDx": 5
+      }
+    },
+    "out": {
+      "fileLineNo": 359,
+      "lines": [
+        "(def foo (bar",
+        "            4 5 6",
+        "            7 8 9))"
+      ],
+      "cursor": {
+        "cursorX": 9,
+        "cursorLine": 0
+      }
+    }
   }
 ]
