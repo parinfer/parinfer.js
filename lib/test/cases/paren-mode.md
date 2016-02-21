@@ -134,6 +134,30 @@ doesn't try to align siblings.
      :bar 2)
 ```
 
+## Unclosed Parens
+
+```in
+(foo
+```
+
+```out
+(foo
+^ unclosed-paren
+```
+
+```in
+(defn foo
+  [arg
+  bar)
+```
+
+```out
+(defn foo
+  [arg
+  ^ unclosed-paren
+  bar)
+```
+
 ## Backslash cases
 
 escape character in comment untouched:
@@ -167,7 +191,23 @@ c)
 
 ```out
 (foo [a b]\
+          ^ eol-backslash
 c)
+```
+
+## Unclosed Quotes
+
+```in
+(def foo
+  "hello
+  bar)
+```
+
+```out
+(def foo
+  "hello
+  ^ unclosed-quote
+  bar)
 ```
 
 ## Dangerous Quotes
@@ -183,6 +223,7 @@ ret)
 ```out
 (def foo [a b]
   ; "my string
+    ^ quote-danger
 ret)
 ```
 

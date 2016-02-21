@@ -154,28 +154,38 @@
       "lines": [
         "(def foo \"as"
       ],
-      "cursor": null
+      "cursor": null,
+      "error": {
+        "name": "unclosed-quote",
+        "lineNo": 0,
+        "x": 9
+      }
     }
   },
   {
     "in": {
-      "fileLineNo": 120,
+      "fileLineNo": 121,
       "lines": [
         "(defn foo [a \"])"
       ],
       "cursor": null
     },
     "out": {
-      "fileLineNo": 124,
+      "fileLineNo": 125,
       "lines": [
         "(defn foo [a \"])"
       ],
-      "cursor": null
+      "cursor": null,
+      "error": {
+        "name": "unclosed-quote",
+        "lineNo": 0,
+        "x": 13
+      }
     }
   },
   {
     "in": {
-      "fileLineNo": 130,
+      "fileLineNo": 132,
       "lines": [
         "(defn foo",
         "  \"This is docstring.",
@@ -185,7 +195,7 @@
       "cursor": null
     },
     "out": {
-      "fileLineNo": 137,
+      "fileLineNo": 139,
       "lines": [
         "(defn foo",
         "  \"This is docstring.",
@@ -197,7 +207,7 @@
   },
   {
     "in": {
-      "fileLineNo": 146,
+      "fileLineNo": 148,
       "lines": [
         "(let [a \"Hello",
         "World\"",
@@ -207,7 +217,7 @@
       "cursor": null
     },
     "out": {
-      "fileLineNo": 153,
+      "fileLineNo": 155,
       "lines": [
         "(let [a \"Hello",
         "World\"",
@@ -219,7 +229,7 @@
   },
   {
     "in": {
-      "fileLineNo": 162,
+      "fileLineNo": 164,
       "lines": [
         "(let [a \"])\"",
         "      b 2"
@@ -227,7 +237,7 @@
       "cursor": null
     },
     "out": {
-      "fileLineNo": 167,
+      "fileLineNo": 169,
       "lines": [
         "(let [a \"])\"",
         "      b 2])"
@@ -237,14 +247,14 @@
   },
   {
     "in": {
-      "fileLineNo": 174,
+      "fileLineNo": 176,
       "lines": [
         "(def foo \"\\\"\""
       ],
       "cursor": null
     },
     "out": {
-      "fileLineNo": 178,
+      "fileLineNo": 180,
       "lines": [
         "(def foo \"\\\"\")"
       ],
@@ -253,9 +263,9 @@
   },
   {
     "in": {
-      "fileLineNo": 191,
+      "fileLineNo": 193,
       "lines": [
-        "\"\"]\""
+        "\"\"foo\""
       ],
       "cursor": {
         "cursorX": 1,
@@ -263,19 +273,24 @@
       }
     },
     "out": {
-      "fileLineNo": 195,
+      "fileLineNo": 197,
       "lines": [
-        "\"\"]\""
+        "\"\"foo\""
       ],
       "cursor": {
         "cursorX": 1,
         "cursorLine": 0
+      },
+      "error": {
+        "name": "unclosed-quote",
+        "lineNo": 0,
+        "x": 5
       }
     }
   },
   {
     "in": {
-      "fileLineNo": 201,
+      "fileLineNo": 204,
       "lines": [
         "(def foo",
         "  \"",
@@ -288,7 +303,7 @@
       }
     },
     "out": {
-      "fileLineNo": 208,
+      "fileLineNo": 211,
       "lines": [
         "(def foo",
         "  \"",
@@ -298,12 +313,17 @@
       "cursor": {
         "cursorX": 3,
         "cursorLine": 1
+      },
+      "error": {
+        "name": "unclosed-quote",
+        "lineNo": 3,
+        "x": 7
       }
     }
   },
   {
     "in": {
-      "fileLineNo": 224,
+      "fileLineNo": 228,
       "lines": [
         "(for [col columns]",
         "  \"",
@@ -315,7 +335,7 @@
       }
     },
     "out": {
-      "fileLineNo": 230,
+      "fileLineNo": 234,
       "lines": [
         "(for [col columns]",
         "  \"",
@@ -324,12 +344,17 @@
       "cursor": {
         "cursorX": 3,
         "cursorLine": 1
+      },
+      "error": {
+        "name": "quote-danger",
+        "lineNo": 2,
+        "x": 37
       }
     }
   },
   {
     "in": {
-      "fileLineNo": 240,
+      "fileLineNo": 245,
       "lines": [
         "(def foo [a b]",
         "  ; \"my multiline",
@@ -339,7 +364,7 @@
       "cursor": null
     },
     "out": {
-      "fileLineNo": 247,
+      "fileLineNo": 252,
       "lines": [
         "(def foo [a b])",
         "  ; \"my multiline",
@@ -351,7 +376,7 @@
   },
   {
     "in": {
-      "fileLineNo": 256,
+      "fileLineNo": 261,
       "lines": [
         "(def foo [a b]",
         "  ; \"\"\\\"",
@@ -360,7 +385,7 @@
       "cursor": null
     },
     "out": {
-      "fileLineNo": 262,
+      "fileLineNo": 267,
       "lines": [
         "(def foo [a b])",
         "  ; \"\"\\\"",
@@ -371,7 +396,7 @@
   },
   {
     "in": {
-      "fileLineNo": 272,
+      "fileLineNo": 277,
       "lines": [
         "(defn foo [a b",
         "  \\[",
@@ -380,7 +405,7 @@
       "cursor": null
     },
     "out": {
-      "fileLineNo": 278,
+      "fileLineNo": 283,
       "lines": [
         "(defn foo [a b]",
         "  \\[",
@@ -391,14 +416,14 @@
   },
   {
     "in": {
-      "fileLineNo": 287,
+      "fileLineNo": 292,
       "lines": [
         "(def foo \\;"
       ],
       "cursor": null
     },
     "out": {
-      "fileLineNo": 291,
+      "fileLineNo": 296,
       "lines": [
         "(def foo \\;)"
       ],
@@ -407,7 +432,7 @@
   },
   {
     "in": {
-      "fileLineNo": 297,
+      "fileLineNo": 302,
       "lines": [
         "(def foo \\,",
         "(def bar \\ "
@@ -415,7 +440,7 @@
       "cursor": null
     },
     "out": {
-      "fileLineNo": 302,
+      "fileLineNo": 307,
       "lines": [
         "(def foo \\,)",
         "(def bar \\ )"
@@ -425,32 +450,37 @@
   },
   {
     "in": {
-      "fileLineNo": 309,
-      "lines": [
-        "(foo [a b\\",
-        "  c)"
-      ],
-      "cursor": null
-    },
-    "out": {
       "fileLineNo": 314,
       "lines": [
         "(foo [a b\\",
         "  c)"
       ],
       "cursor": null
+    },
+    "out": {
+      "fileLineNo": 319,
+      "lines": [
+        "(foo [a b\\",
+        "  c)"
+      ],
+      "cursor": null,
+      "error": {
+        "name": "eol-backslash",
+        "lineNo": 0,
+        "x": 9
+      }
     }
   },
   {
     "in": {
-      "fileLineNo": 324,
+      "fileLineNo": 330,
       "lines": [
         "(def foo ;)"
       ],
       "cursor": null
     },
     "out": {
-      "fileLineNo": 328,
+      "fileLineNo": 334,
       "lines": [
         "(def foo) ;)"
       ],
@@ -459,7 +489,7 @@
   },
   {
     "in": {
-      "fileLineNo": 335,
+      "fileLineNo": 341,
       "lines": [
         "(let [a 1",
         "      b 2",
@@ -470,7 +500,7 @@
       "cursor": null
     },
     "out": {
-      "fileLineNo": 343,
+      "fileLineNo": 349,
       "lines": [
         "(let [a 1",
         "      b 2",
@@ -483,7 +513,7 @@
   },
   {
     "in": {
-      "fileLineNo": 353,
+      "fileLineNo": 359,
       "lines": [
         "(let [a 1 ;; a comment",
         "  ret)"
@@ -491,7 +521,7 @@
       "cursor": null
     },
     "out": {
-      "fileLineNo": 358,
+      "fileLineNo": 364,
       "lines": [
         "(let [a 1] ;; a comment",
         "  ret)"
@@ -501,14 +531,14 @@
   },
   {
     "in": {
-      "fileLineNo": 365,
+      "fileLineNo": 371,
       "lines": [
         "; hello \\n world"
       ],
       "cursor": null
     },
     "out": {
-      "fileLineNo": 369,
+      "fileLineNo": 375,
       "lines": [
         "; hello \\n world"
       ],
@@ -517,7 +547,7 @@
   },
   {
     "in": {
-      "fileLineNo": 382,
+      "fileLineNo": 388,
       "lines": [
         "(def b )"
       ],
@@ -527,26 +557,26 @@
       }
     },
     "out": {
-      "fileLineNo": 386,
-      "lines": [
-        "(def b )"
-      ],
-      "cursor": {
-        "cursorX": 7,
-        "cursorLine": 0
-      }
-    }
-  },
-  {
-    "in": {
       "fileLineNo": 392,
       "lines": [
         "(def b )"
       ],
+      "cursor": {
+        "cursorX": 7,
+        "cursorLine": 0
+      }
+    }
+  },
+  {
+    "in": {
+      "fileLineNo": 398,
+      "lines": [
+        "(def b )"
+      ],
       "cursor": null
     },
     "out": {
-      "fileLineNo": 396,
+      "fileLineNo": 402,
       "lines": [
         "(def b)"
       ],
@@ -555,7 +585,7 @@
   },
   {
     "in": {
-      "fileLineNo": 402,
+      "fileLineNo": 408,
       "lines": [
         "(def b [[c d] ])"
       ],
@@ -565,26 +595,26 @@
       }
     },
     "out": {
-      "fileLineNo": 406,
-      "lines": [
-        "(def b [[c d] ])"
-      ],
-      "cursor": {
-        "cursorX": 14,
-        "cursorLine": 0
-      }
-    }
-  },
-  {
-    "in": {
       "fileLineNo": 412,
       "lines": [
         "(def b [[c d] ])"
       ],
+      "cursor": {
+        "cursorX": 14,
+        "cursorLine": 0
+      }
+    }
+  },
+  {
+    "in": {
+      "fileLineNo": 418,
+      "lines": [
+        "(def b [[c d] ])"
+      ],
       "cursor": null
     },
     "out": {
-      "fileLineNo": 416,
+      "fileLineNo": 422,
       "lines": [
         "(def b [[c d]])"
       ],
@@ -593,7 +623,7 @@
   },
   {
     "in": {
-      "fileLineNo": 423,
+      "fileLineNo": 429,
       "lines": [
         "(def b [[c d] ])"
       ],
@@ -603,7 +633,7 @@
       }
     },
     "out": {
-      "fileLineNo": 427,
+      "fileLineNo": 433,
       "lines": [
         "(def b [[c d]])"
       ],
@@ -615,7 +645,7 @@
   },
   {
     "in": {
-      "fileLineNo": 437,
+      "fileLineNo": 443,
       "lines": [
         "(let [a 1])",
         "  ret)"
@@ -623,7 +653,7 @@
       "cursor": null
     },
     "out": {
-      "fileLineNo": 442,
+      "fileLineNo": 448,
       "lines": [
         "(let [a 1]",
         "  ret)"
@@ -633,7 +663,7 @@
   },
   {
     "in": {
-      "fileLineNo": 449,
+      "fileLineNo": 455,
       "lines": [
         "(let [a 1])",
         "  ret)"
@@ -644,7 +674,7 @@
       }
     },
     "out": {
-      "fileLineNo": 454,
+      "fileLineNo": 460,
       "lines": [
         "(let [a 1])",
         "  ret"
@@ -657,7 +687,7 @@
   },
   {
     "in": {
-      "fileLineNo": 462,
+      "fileLineNo": 468,
       "lines": [
         "(let [a 1]) 2",
         "  ret"
@@ -665,7 +695,7 @@
       "cursor": null
     },
     "out": {
-      "fileLineNo": 467,
+      "fileLineNo": 473,
       "lines": [
         "(let [a 1]) 2",
         "  ret"
@@ -675,7 +705,7 @@
   },
   {
     "in": {
-      "fileLineNo": 475,
+      "fileLineNo": 481,
       "lines": [
         "(let [a 1])",
         "  ret)"
@@ -686,7 +716,7 @@
       }
     },
     "out": {
-      "fileLineNo": 480,
+      "fileLineNo": 486,
       "lines": [
         "(let [a 1]",
         "  ret)"
@@ -699,7 +729,7 @@
   },
   {
     "in": {
-      "fileLineNo": 487,
+      "fileLineNo": 493,
       "lines": [
         "(let [a 1]) ;",
         "  ret"
@@ -710,7 +740,7 @@
       }
     },
     "out": {
-      "fileLineNo": 492,
+      "fileLineNo": 498,
       "lines": [
         "(let [a 1] ;",
         "  ret)"
@@ -723,7 +753,7 @@
   },
   {
     "in": {
-      "fileLineNo": 501,
+      "fileLineNo": 507,
       "lines": [
         "(let [a 1",
         "      ])"
@@ -734,7 +764,7 @@
       }
     },
     "out": {
-      "fileLineNo": 506,
+      "fileLineNo": 512,
       "lines": [
         "(let [a 1])",
         "      "
@@ -747,7 +777,7 @@
   },
   {
     "in": {
-      "fileLineNo": 513,
+      "fileLineNo": 519,
       "lines": [
         "(foo ]] bar)"
       ],
@@ -757,7 +787,7 @@
       }
     },
     "out": {
-      "fileLineNo": 517,
+      "fileLineNo": 523,
       "lines": [
         "(foo  bar)"
       ],
@@ -769,7 +799,7 @@
   },
   {
     "in": {
-      "fileLineNo": 523,
+      "fileLineNo": 529,
       "lines": [
         "(foo bar ;)"
       ],
@@ -779,7 +809,7 @@
       }
     },
     "out": {
-      "fileLineNo": 527,
+      "fileLineNo": 533,
       "lines": [
         "(foo bar) ;)"
       ],
@@ -791,7 +821,7 @@
   },
   {
     "in": {
-      "fileLineNo": 533,
+      "fileLineNo": 539,
       "lines": [
         "(let [x 1",
         "      y 2;])"
@@ -802,7 +832,7 @@
       }
     },
     "out": {
-      "fileLineNo": 538,
+      "fileLineNo": 544,
       "lines": [
         "(let [x 1",
         "      y 2]);])"
@@ -815,7 +845,7 @@
   },
   {
     "in": {
-      "fileLineNo": 545,
+      "fileLineNo": 551,
       "lines": [
         "("
       ],
@@ -825,7 +855,7 @@
       }
     },
     "out": {
-      "fileLineNo": 549,
+      "fileLineNo": 555,
       "lines": [
         "()"
       ],

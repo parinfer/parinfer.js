@@ -114,6 +114,7 @@ No close-parens are inserted when a string is unclosed.
 
 ```out
 (def foo "as
+         ^ unclosed-quote
 ```
 
 even if close-parens are quoted out, do not do anything.
@@ -124,6 +125,7 @@ even if close-parens are quoted out, do not do anything.
 
 ```out
 (defn foo [a "])
+             ^ unclosed-quote
 ```
 
 Multiline strings are supported:
@@ -190,11 +192,12 @@ Typing a quote before another string does not corrupt it (i.e. turn it inside
 out, causing Parinfer to treat its contents as code).
 
 ```in
-"|"]"
+"|"foo"
 ```
 
 ```out
-"|"]"
+"|"foo"
+      ^ unclosed-quote
 ```
 
 Another case:
@@ -211,6 +214,7 @@ Another case:
   "|
   "(a b)
       c")
+       ^ unclosed-quote
 ```
 
 ## Unbalanced Quotes in Comments
@@ -232,6 +236,7 @@ odd number of quotes (one):
 (for [col columns]
   "|
   [:div.td {:style "max-width: 500px;"}])
+                                     ^ quote-danger
 ```
 
 But a comment can contain an odd number of quotes if it is in a contiguous group of comments
@@ -314,6 +319,7 @@ Hanging backslash at end of line is invalid and causes processing to be abandone
 
 ```out
 (foo [a b\
+         ^ eol-backslash
   c)
 ```
 
