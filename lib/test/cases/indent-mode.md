@@ -573,6 +573,19 @@ Moving the cursor back will adjust the scope.
  |)
 ```
 
+Moving the cursor forward will adjust the scope.
+
+```in
+(let [a 1]
+ )|
+  ^ previewCursorScope
+```
+
+```out
+(let [a 1]
+  |)
+```
+
 The same rules do not apply for the following example
 because it represents an unstable code state.
 

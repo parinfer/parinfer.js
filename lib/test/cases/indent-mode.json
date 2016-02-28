@@ -876,7 +876,32 @@
   },
   {
     "in": {
-      "fileLineNo": 578,
+      "fileLineNo": 577,
+      "lines": [
+        "(let [a 1]",
+        " )"
+      ],
+      "cursor": {
+        "cursorX": 2,
+        "cursorLine": 1,
+        "previewCursorScope": true
+      }
+    },
+    "out": {
+      "fileLineNo": 583,
+      "lines": [
+        "(let [a 1]",
+        "  )"
+      ],
+      "cursor": {
+        "cursorX": 2,
+        "cursorLine": 1
+      }
+    }
+  },
+  {
+    "in": {
+      "fileLineNo": 591,
       "lines": [
         "(let [a 1",
         "      ] b)"
@@ -888,7 +913,7 @@
       }
     },
     "out": {
-      "fileLineNo": 584,
+      "fileLineNo": 597,
       "lines": [
         "(let [a 1",
         "       b])"
@@ -901,7 +926,7 @@
   },
   {
     "in": {
-      "fileLineNo": 597,
+      "fileLineNo": 610,
       "lines": [
         "(foo ]] bar)"
       ],
@@ -911,7 +936,7 @@
       }
     },
     "out": {
-      "fileLineNo": 601,
+      "fileLineNo": 614,
       "lines": [
         "(foo  bar)"
       ],
@@ -923,7 +948,7 @@
   },
   {
     "in": {
-      "fileLineNo": 607,
+      "fileLineNo": 620,
       "lines": [
         "(foo bar ;)"
       ],
@@ -933,7 +958,7 @@
       }
     },
     "out": {
-      "fileLineNo": 611,
+      "fileLineNo": 624,
       "lines": [
         "(foo bar) ;)"
       ],
@@ -945,7 +970,7 @@
   },
   {
     "in": {
-      "fileLineNo": 617,
+      "fileLineNo": 630,
       "lines": [
         "(let [x 1",
         "      y 2;])"
@@ -956,7 +981,7 @@
       }
     },
     "out": {
-      "fileLineNo": 622,
+      "fileLineNo": 635,
       "lines": [
         "(let [x 1",
         "      y 2]);])"
@@ -969,7 +994,7 @@
   },
   {
     "in": {
-      "fileLineNo": 629,
+      "fileLineNo": 642,
       "lines": [
         "("
       ],
@@ -979,7 +1004,7 @@
       }
     },
     "out": {
-      "fileLineNo": 633,
+      "fileLineNo": 646,
       "lines": [
         "()"
       ],
