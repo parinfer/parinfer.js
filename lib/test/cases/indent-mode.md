@@ -379,7 +379,7 @@ escape character in comment untouched:
 
 ---
 
-## Cursor Cases
+## Cursor Padding in Paren Trail
 
 __NOTE__: the pipe `|` represents the cursor, but the character is removed from the input.
 
@@ -434,6 +434,8 @@ cursor is to the left of the gaps.
 ```out
 (def |b [[c d]])
 ```
+
+## Cursor Blocking displacement of Paren Trail
 
 Inferred close-parens before the cursor are never removed, which may
 cause indented lines below to be ignored.  This is to allow inserting a token
@@ -501,6 +503,8 @@ If the cursor is in a comment after such a close-paren, we can safely move it:
   ret)
 ```
 
+## Cursor Behind Standalone Close-Parens
+
 It is common to press enter when the cursor is the left of a close-paren.
 Since a line cannot start with a close-paren, they are moved back to where
 they were.
@@ -514,6 +518,80 @@ they were.
 (let [a 1])
       |
 ```
+
+The close-parens will move back once you start typing something:
+
+```in
+(let [a 1])
+      b|
+```
+
+```out
+(let [a 1
+      b|])
+```
+
+Some may prefer to allow the parentheses to stay after the cursor even before
+typing.  Thus, you can enable a `previewCursorScope` option that will allow you
+to preview where the Paren Trail would be after inserting text at the cursor.
+
+```in
+(let [a 1
+      |])
+      ^ previewCursorScope
+```
+
+```out
+(let [a 1
+      |])
+```
+
+If you place the cursor on an empty line, `previewCursorScope` will allow you
+to see where the paren trail will go, revealing the cursor's current scope.
+
+```in
+(let [a 1])
+  |
+  ^ previewCursorScope
+```
+
+```out
+(let [a 1]
+  |)
+```
+
+Moving the cursor back will adjust the scope.
+
+```in
+(let [a 1]
+ | )
+ ^ previewCursorScope
+```
+
+```out
+(let [a 1]
+ |)
+```
+
+The same rules do not apply for the following example
+because it represents an unstable code state.
+
+```in
+(let [a 1
+      |] b)
+      ^ previewCursorScope
+```
+
+```out
+(let [a 1
+      | b])
+```
+
+This is expected behavior, but the common path to this state (i.e. pressing
+enter at `(let [a 1|] b)`) is handled using an explicit action external to
+Indent Mode.
+
+## Cursor Shifting
 
 Removing invalid close-parens should pull back the cursor
 
