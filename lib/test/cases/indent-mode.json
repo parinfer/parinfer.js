@@ -854,7 +854,7 @@
       "fileLineNo": 564,
       "lines": [
         "(let [a 1]",
-        "  )"
+        "   )"
       ],
       "cursor": {
         "cursorX": 1,

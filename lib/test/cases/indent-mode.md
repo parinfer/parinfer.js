@@ -564,7 +564,7 @@ Moving the cursor back will adjust the scope.
 
 ```in
 (let [a 1]
- | )
+ |  )
  ^ previewCursorScope
 ```
 
