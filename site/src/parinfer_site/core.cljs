@@ -312,8 +312,8 @@
 
 (defn init! []
   (cond
-    js/window.parinfer_devpage (render-dev!)
-    js/window.parinfer_debug_state (render-debug-state!)
+    (aget js/window "parinfer_devpage") (render-dev!)
+    (aget js/window "parinfer_debug_state") (render-debug-state!)
     :else (render-index!)))
 
 (init!)
