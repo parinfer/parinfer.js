@@ -21,7 +21,8 @@
 (defn- convert-options [option]
   #js {:cursorX (:cursor-x option)
        :cursorLine (:cursor-line option)
-       :cursorDx (:cursor-dx option)})
+       :cursorDx (:cursor-dx option)
+       :previewCursorScope (:preview-cursor-scope option)})
 
 (def indent-mode* (aget js/window "parinfer" "indentMode"))
 (def paren-mode* (aget js/window "parinfer" "parenMode"))

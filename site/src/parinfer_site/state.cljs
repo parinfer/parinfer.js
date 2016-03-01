@@ -8,6 +8,8 @@
 (def empty-editor-state
   {:text ""             ;; text of the editor
    :mode :indent-mode   ;; editor mode (:indent-mode, :paren-mode)
+   :options nil         ;; Parinfer input options
+   :result nil          ;; Parinfer result
    :cm nil              ;; the CodeMirror instance
    :watcher nil})       ;; the ScrollMonitor instance
 

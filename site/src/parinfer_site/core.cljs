@@ -16,6 +16,7 @@
     [parinfer-site.editor-support :refer [get-prev-state]]
     [parinfer-site.state :refer [state]]
     [parinfer-site.toc :as toc]
+    [parinfer-site.editor-ui :as editor-ui]
     [parinfer-site.gears :refer [create-gears!]]))
 
 (enable-console-print!)
@@ -273,9 +274,9 @@
   (load-index-anims!)
   (render-controls!))
 
-(defn render-dev! []
-  (create-editor! "code-indent-mode" :indent-mode)
-  (create-editor! "code-paren-mode" :paren-mode {:parinfer-mode :paren-mode})
+(defn render-demo! []
+  (create-editor! "code-demo" :demo)
+  (editor-ui/render! :demo)
   (start-editor-sync!))
 
 (defn state-viewer
@@ -312,7 +313,7 @@
 
 (defn init! []
   (cond
-    (aget js/window "parinfer_devpage") (render-dev!)
+    (aget js/window "parinfer_demopage") (render-demo!)
     (aget js/window "parinfer_debug_state") (render-debug-state!)
     :else (render-index!)))
 

@@ -17,26 +17,15 @@
 <div class="wrapper">
 <section>
 <p>
-Use the editors below to try out each mode.
+Use the demo editor below to try out the canonical version of Parinfer.
 </p>
 
 <div>
-<div class="caption"><strong>Indent Mode</strong>:</div>
-<textarea id="code-indent-mode">
-(defn foo [a b]
-  (let [x (+ a b)]
-    (println "The sum is" x)))
-</textarea>
+  <div id="editor-ui"></div>
+  <textarea id="code-demo">
+  </textarea>
 </div>
 
-<div>
-<div class="caption"><strong>Paren Mode</strong>:</div>
-<textarea id="code-paren-mode">
-(defn foo [a b]
-  (let [x (+ a b)]
-    (println "The sum is" x)))
-</textarea>
-</div>
 </section>
 </div>
 
@@ -51,7 +40,7 @@ Use the editors below to try out each mode.
     <script src="js/lib/scrollMonitor.js"></script>
 
     <script>
-    window.parinfer_devpage = true;
+    window.parinfer_demopage = true;
     </script>
     <script src="parinfer.js"></script>
     <script src="js/compiled/parinfer-site.js" type="text/javascript"></script>

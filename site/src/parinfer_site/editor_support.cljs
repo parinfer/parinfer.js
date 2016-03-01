@@ -76,6 +76,7 @@
                  :cursor-dx (compute-cursor-dx cursor change)}
 
         key- (cm-key cm)
+        options (merge options (get-in @state [key- :options]))
         mode (or (get-in @state [key- :mode]) :indent-mode)
 
         prev-state (get-prev-state cm)
@@ -89,6 +90,10 @@
         ;; format the text
         new-text (:text result)
         new-cursor-x (:cursor-x result)]
+
+    (when (= key- :demo)
+      (swap! state assoc-in [key- :result] result)
+      (swap! state assoc-in [key- :prev-options] options))
 
     ;; update the text
     (swap! state assoc-in [key- :text] new-text)

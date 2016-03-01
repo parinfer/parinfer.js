@@ -100,7 +100,7 @@
            wrapper (.getWrapperElement cm)
            watcher (js/scrollMonitor.create wrapper)
            initial-state (assoc empty-editor-state
-                                :mode (:parinfer-mode opts))
+                                :mode (or (:parinfer-mode opts) :indent-mode))
            prev-editor-state (atom nil)]
 
 
