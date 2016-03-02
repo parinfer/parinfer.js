@@ -274,10 +274,22 @@
   (load-index-anims!)
   (render-controls!))
 
+
+(def demo-example
+  (string/join "\n"
+    ["(defn foo"
+     "  \"hello, this is a docstring\""
+     "  [a b]"
+     "  (let [sum (+ a b)"
+     "        prod (* a b)]"
+     "     {:sum sum"
+     "      :prod prod}))"]))
+
 (defn render-demo! []
   (create-editor! "code-demo" :demo)
   (editor-ui/render! :demo)
-  (start-editor-sync!))
+  (start-editor-sync!)
+  (swap! state assoc-in [:demo :text] demo-example))
 
 (defn state-viewer
   [{:keys [postline-states cursor-line]} owner]
