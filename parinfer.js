@@ -1,5 +1,5 @@
 //
-// Parinfer 1.6.1
+// Parinfer 1.6.1+dev
 //
 // Copyright 2015-2016 © Shaun LeBron
 // MIT License
@@ -51,6 +51,9 @@ var BACKSLASH = '\\',
 
 var LINE_ENDING_REGEX = /\r?\n/;
 
+// determines if a line only contains a Paren Trail (possibly w/ a comment)
+var STANDALONE_PAREN_TRAIL = /^[\s\]\)\}]*(;.*)?$/
+
 var PARENS = {
   "{": "}",
   "}": "{",
@@ -59,6 +62,10 @@ var PARENS = {
   "(": ")",
   ")": "("
 };
+
+function isBoolean(x) {
+  return typeof x === 'boolean';
+}
 
 function isInteger(x) {
   return typeof x === 'number' &&
@@ -112,6 +119,8 @@ function getInitialResult(text, options, mode) {
     cursorX: SENTINEL_NULL,    // [integer] - x position of the cursor
     cursorLine: SENTINEL_NULL, // [integer] - line number of the cursor
     cursorDx: SENTINEL_NULL,   // [integer] - amount that the cursor moved horizontally if something was inserted or deleted
+    previewCursorScope: false, // [boolean] - preview the cursor's scope by showing the Paren Trail after it (on an empty line)
+    indentAtCursor: false,     // [boolean] - determines if the current line will be transformed for `previewCursorScope`
 
     isInCode: true,            // [boolean] - indicates if we are currently in "code space" (not string or comment)
     isEscaping: false,         // [boolean] - indicates if the next character will be escaped (e.g. `\c`).  This may be inside string, comment, or code.
@@ -144,9 +153,11 @@ function getInitialResult(text, options, mode) {
 
   // merge options if they are valid
   if (options) {
-    if (isInteger(options.cursorX))    { result.cursorX = result.origCursorX = options.cursorX; }
-    if (isInteger(options.cursorLine)) { result.cursorLine = options.cursorLine; }
-    if (isInteger(options.cursorDx))   { result.cursorDx = options.cursorDx; }
+    if (isInteger(options.cursorX))            { result.cursorX            = options.cursorX;
+                                                 result.origCursorX        = options.cursorX; }
+    if (isInteger(options.cursorLine))         { result.cursorLine         = options.cursorLine; }
+    if (isInteger(options.cursorDx))           { result.cursorDx           = options.cursorDx; }
+    if (isBoolean(options.previewCursorScope)) { result.previewCursorScope = options.previewCursorScope; }
   }
 
   return result;
@@ -447,6 +458,14 @@ function handleCursorDelta(result) {
 // Paren Trail functions
 //------------------------------------------------------------------------------
 
+function resetParenTrail(result, lineNo, x) {
+  result.parenTrail.lineNo = lineNo;
+  result.parenTrail.startX = x;
+  result.parenTrail.endX = x;
+  result.parenTrail.openers = [];
+  result.maxIndent = SENTINEL_NULL;
+}
+
 // update the head of the paren trail as we scan each character.
 // NOTE: `onMatchedCloseParen` modifies the endX
 function updateParenTrailBounds(result) {
@@ -464,11 +483,7 @@ function updateParenTrailBounds(result) {
   );
 
   if (shouldReset) {
-    result.parenTrail.lineNo = result.lineNo;
-    result.parenTrail.startX = result.x + 1;
-    result.parenTrail.endX = result.x + 1;
-    result.parenTrail.openers = [];
-    result.maxIndent = SENTINEL_NULL;
+    resetParenTrail(result, result.lineNo, result.x+1);
   }
 }
 
@@ -611,7 +626,7 @@ function correctIndent(result) {
   }
 }
 
-function onProperIndent(result) {
+function onIndent(result) {
   result.trackingIndent = false;
 
   if (result.quoteDanger) {
@@ -628,13 +643,18 @@ function onProperIndent(result) {
 
 function onLeadingCloseParen(result) {
   result.skipChar = true;
-  result.trackingIndent = true;
 
+  if (result.mode === INDENT_MODE) {
+    if (result.indentAtCursor) {
+      result.skipChar = false;
+      result.ch = BLANK_SPACE;
+    }
+  }
   if (result.mode === PAREN_MODE) {
     if (isValidCloseParen(result.parenStack, result.ch)) {
       if (isCursorOnLeft(result)) {
         result.skipChar = false;
-        onProperIndent(result);
+        onIndent(result);
       }
       else {
         appendParenTrail(result);
@@ -643,16 +663,45 @@ function onLeadingCloseParen(result) {
   }
 }
 
-function onIndent(result) {
-  if (isCloseParen(result.ch)) {
+function checkIndent(result) {
+
+  // treat cursor as indentation point under special circumstances
+  if (result.indentAtCursor && result.cursorX === result.x) {
+    onIndent(result);
+    resetParenTrail(result, result.lineNo, result.x);
+  }
+  else if (isCloseParen(result.ch)) {
     onLeadingCloseParen(result);
   }
   else if (result.ch === SEMICOLON) {
     // comments don't count as indentation points
     result.trackingIndent = false;
   }
-  else if (result.ch !== NEWLINE) {
-    onProperIndent(result);
+  else if (result.ch !== NEWLINE &&
+           result.ch !== BLANK_SPACE &&
+           result.ch !== TAB) {
+    onIndent(result);
+  }
+}
+
+function initIndent(result) {
+  if (result.mode === INDENT_MODE) {
+    result.trackingIndent = (
+      result.parenStack.length !== 0 &&
+      !result.isInStr
+    );
+
+    var semicolonX = result.lines[result.lineNo].indexOf(";");
+    result.indentAtCursor = (
+      result.previewCursorScope &&
+      result.trackingIndent &&
+      result.cursorLine === result.lineNo &&
+      STANDALONE_PAREN_TRAIL.test(result.lines[result.lineNo]) &&
+      (semicolonX === -1 || result.cursorX <= semicolonX)
+    );
+  }
+  else if (result.mode === PAREN_MODE) {
+    result.trackingIndent = !result.isInStr;
   }
 }
 
@@ -670,8 +719,8 @@ function processChar(result, ch) {
     handleCursorDelta(result);
   }
 
-  if (result.trackingIndent && ch !== BLANK_SPACE && ch !== TAB) {
-    onIndent(result);
+  if (result.trackingIndent) {
+    checkIndent(result);
   }
 
   if (result.skipChar) {
@@ -687,16 +736,7 @@ function processChar(result, ch) {
 
 function processLine(result, line) {
   initLine(result, line);
-
-  if (result.mode === INDENT_MODE) {
-    result.trackingIndent = (
-      result.parenStack.length !== 0 &&
-      !result.isInStr
-    );
-  }
-  else if (result.mode === PAREN_MODE) {
-    result.trackingIndent = !result.isInStr;
-  }
+  initIndent(result);
 
   var i;
   var chars = line + NEWLINE;
@@ -802,6 +842,7 @@ function parenMode(text, options) {
 }
 
 var API = {
+  version: "1.6.1+dev",
   indentMode: indentMode,
   parenMode: parenMode
 };
