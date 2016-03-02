@@ -41,10 +41,16 @@ h1 em {
 }
 
 .subtitle {
-  margin-bottom: 30px;
+  margin-bottom: 10px;
   font-size: 0.8em;
   color: #555;
   text-align: center;
+}
+
+.subtitle a {
+  opacity: 0.5;
+  color: #333;
+  border-bottom: 0;
 }
 
 .features {
@@ -188,12 +194,26 @@ select.mode {
   margin: 20px;
 }
 
-label.option {
+label.user-option {
+  font-family: Menlo, Consolas, 'DejaVu Sans Mono', monospace;
   font-size: 14px;
 }
 
-input.option {
+label.user-option input {
   margin: 10px;
+}
+
+label.calc-option {
+  font-family: Menlo, Consolas, 'DejaVu Sans Mono', monospace;
+  font-size: 14px;
+  text-align: right;
+}
+
+span.calc-option {
+  display: inline-block;
+  margin-left: 8px;
+  font-size: 12px;
+  opacity: 0.7;
 }
 
 .status {
@@ -217,5 +237,23 @@ input.option {
   display: inline-block;
 }
 
+.help-caption {
+  padding: 10px;
+  color: #aaa;
+  font-size: 14px;
+}
+
+.help-caption em {
+  display: inline-block;
+  margin-right: 5px;
+  font-weight: 600;
+  font-style: normal;
+  color: #777;
+}
+
 .editor-footer {
+}
+
+.CodeMirror-focused {
+  border-color: #CCC;
 }
