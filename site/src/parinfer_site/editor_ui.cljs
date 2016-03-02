@@ -3,7 +3,15 @@
     [parinfer-site.state :refer [state]]
     [om.core :as om]
     [sablono.core :refer-macros [html]]
-    ))
+    [parinfer-site.editor-support :refer [fix-text!]]
+    [goog.dom :as gdom]))
+
+(defn refresh!
+  [cm]
+  (fix-text! cm)
+  (let [element (.getWrapperElement cm)
+        cursor (gdom/getElementByClass "CodeMirror-cursors" element)]
+    (set! (.. cursor -style -visibility) "visible")))
 
 (defn editor-header
   [editor]
@@ -18,7 +26,8 @@
          [:select.mode
           {:value (name (:mode editor))
            :on-change (fn [e]
-                        (om/update! editor :mode (keyword (.. e -target -value))))}
+                        (om/update! editor :mode (keyword (.. e -target -value)))
+                        (refresh! (:cm editor)))}
           [:option {:value "indent-mode"} "Indent Mode"]
           [:option {:value "paren-mode"} "Paren Mode"]]
 
@@ -29,7 +38,8 @@
                {:type "checkbox"
                 :checked (get-in editor path)
                 :on-change (fn [e]
-                             (om/update! editor path (.. e -target -checked)))}]
+                             (om/update! editor path (.. e -target -checked))
+                             (refresh! (:cm editor)))}]
               "preview cursor scope"]))
 
          (when (= (:mode editor) :paren-mode)
