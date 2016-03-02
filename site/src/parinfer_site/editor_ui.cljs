@@ -5,14 +5,15 @@
     [sablono.core :refer-macros [html]]
     ))
 
-(defn editor-ui
+(defn editor-header
   [editor]
   (reify
     om/IRender
     (render [_]
       (html
-        [:div.devcomp
-         [:div.version (aget js/window "parinfer" "version")]
+        [:div
+         [:h1 "Par" [:em "infer"]]
+         [:div.subtitle "Demo Editor for " (aget js/window "parinfer" "version")]
 
          [:select.mode
           {:value (name (:mode editor))
@@ -23,33 +24,40 @@
 
          (when (= (:mode editor) :indent-mode)
            (let [path [:options :preview-cursor-scope]]
-             [:label
-              [:input
+             [:label.option
+              [:input.option
                {:type "checkbox"
                 :checked (get-in editor path)
                 :on-change (fn [e]
                              (om/update! editor path (.. e -target -checked)))}]
               "preview cursor scope"]))
 
-         (let [{:keys [cursor-line cursor-x cursor-dx]} (:prev-options editor)]
-           [:div.cursor
-            [:div.cursor-line "cursorLine:" cursor-line]
-            [:div.cursor-line "cursorX" cursor-x]
-            (when (= (:mode editor) :paren-mode)
-              [:div.cursor-dx "cursorDx:" cursor-dx])])
+         (when (= (:mode editor) :paren-mode)
+           (list
+             [:label.option "cursorDx = " (:cursor-dx (:prev-options editor))]))]))))
 
-         (let [{:keys [name message]} (get-in editor [:result :error])]
-           [:div.error
-            [:div.error-name name]
-            [:div.error-msg message]])]))))
+(defn editor-footer
+  [editor]
+  (reify
+    om/IRender
+     (render [_]
+       (html
+         [:div
+          (let [{:keys [name message] :as error} (get-in editor [:result :error])]
+            (if error
+              [:div.status.error
+               [:div.status-name "Parinfer suspended: "]
+               [:div.status-msg message]]
+              [:div.status.success
+               [:div.status-name "Parinfer succeeded."]]))]))))
 
 (defn render! [editor-key]
   (om/root
-    (fn [editors]
-      (reify
-        om/IRender
-        (render [_]
-          (om/build editor-ui (get editors editor-key)))))
+    (fn [editors] (reify om/IRender (render [_] (om/build editor-header (get editors editor-key)))))
     state
-    {:target (js/document.getElementById "editor-ui")}))
+    {:target (js/document.getElementById "editor-header")})
+  (om/root
+    (fn [editors] (reify om/IRender (render [_] (om/build editor-footer (get editors editor-key)))))
+    state
+    {:target (js/document.getElementById "editor-footer")}))
 
