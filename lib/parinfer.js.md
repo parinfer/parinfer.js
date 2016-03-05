@@ -812,162 +812,60 @@ And if we move the cursor back a bit...
   |)
 ```
 
-And finally, when moving the cursor to another line, normal formatting rules apply:
+When moving the cursor to another line, normal formatting rules apply:
 
 ```clj
 (let [foo 1
       bar 2])
 ```
 
-It's not technically necessary to apply this special rule for the cursor since
-typing would reveal the same close-parens anyway. Nonetheless, it is both a
-useful UX option and one that can be implemented in a manner consistent to
-Parinfer's system.
+Intuitively, we only want to show cursor scope if it is appending close-parens
+to the cursor.  For example, how would you show the cursor scope here?
+
+```clj
+(let [foo 1
+      bar 2]
+|
+  (+ foo bar))
+```
+
+You cannot show cursor scope by appending close-parens to the cursor here, so we
+do not bother.  More precisely, trying to do something clever like showing the
+effect on all Paren Trails if you were to insert text would show:
+
+```clj
+(let [foo 1
+      bar 2])
+|
+  (+ foo bar)
+```
+
+But this is not what the user expects to see when moving the cursor around.  It
+also has the unfortunate side effect of modifying the AST, allowing the user to
+accidentally corrupt the code when saving the file.
+
+All in all, it's not technically necessary to allow the user to see the cursor
+scope since typing would reveal the same close-parens anyway. Nonetheless, it
+is both a useful UX option and one that can be implemented in a manner
+consistent to Parinfer's system.
 
 _See [`result.previewCursorScope`] to enable._
 
 --
 
 __Implementation-wise__, we define this as a special rule which only applies to
-_lines containing whitespace, close-parens, or comments_.  If a cursor is found
-on such a line and the cursor is not inside a comment, then [`initIndent`] will
-set [`result.indentAtCursor`] to `true` to proceed.
+_lines containing whitespace, close-parens, or comments_.  This is determined
+by [`initPreviewCursorScope`], called by [`initIndent`] at the start of every
+line.  If a cursor is found on such a line and the cursor is not inside a
+comment, then it will set [`result.canPreviewCursorScope`] to `true` to
+proceed.
 
-[`checkIndent`] will then treat the cursor as an indentation point AND the
-start of a new Paren Trail.  Everything else falls into place based on the
-usual rules of Indent Mode, but here's more exposition if you want examples.
-
-For example, we have a cursor on an empty line:
-
-```clj
-(let [foo 1
-      bar 2])
-      |
-```
-
-Since the last line is only whitespace, it matches our special rule's pattern.
-So we now consider the left of the cursor as indentation and the right of the
-cursor as a Paren Trail.  Using our overloaded underscore notation to label
-this:
-
-```clj
-(let [foo 1
-      bar 2])
-______|_
-```
-
-Following the rules of Indent Mode means that once the indentation point is found (at the
-cursor now), the previous Paren Trail is corrected, so let's mark the previous Paren Trail:
-
-```clj
-(let [foo 1
-      bar 2])
-           ^^
-______|_
-```
-
-By existing Indent Mode rules, the Paren Trail is erased due to the indentation threshold:
-
-```clj
-(let [foo 1
-      bar 2_
-______|_
-```
-
-Next, the empty Paren Trail after the cursor will be corrected to:
-
-```clj
-(let [foo 1
-      bar 2_
-______|])
-       ^^
-```
-
-Removing the annotations to see the final result:
-
-```clj
-(let [foo 1
-      bar 2
-      |])
-```
-
-For the next example, we will suppose that the user moves the cursor to
-the left a few spaces in the previous example:
-
-```clj
-(let [foo 1
-      bar 2
-  |    ])
-```
-
-Since the last line still matches our special rule's pattern, we can apply our
-new cursor rules:  left indentation, right Paren Trail.
-
-```clj
-(let [foo 1
-      bar 2_
-__|    ])
-   ^^^^^^
-```
-
-Proceeding exactly as before, we end with the following:
-
-```clj
-(let [foo 1
-      bar 2]
-           ^
-__|)
-   ^
-```
-
-```clj
-(let [foo 1
-      bar 2]
-  |)
-```
-
-For the final example, we will suppose the user moves the cursor to the right
-in the previous example:
-
-```clj
-(let [foo 1
-      bar 2]
-   )|
-```
-
-Since the line still matches the special rule's pattern, we can apply our new labels as before:
-
-```clj
-(let [foo 1
-      bar 2]
-___)|_
-```
-
-Any close-paren caught in the indentation area before the cursor will be
-converted to whitespace rather than removed.  This allow the cursor to remain
-in its position rather than be pulled back, which would revert this whole process.
-See [`onLeadingCloseParen`] to see where this happens.
-
-```clj
-(let [foo 1
-      bar 2]
-____|_
-```
-
-Finally, everything proceeds as before so that we have:
-
-```clj
-(let [foo 1
-      bar 2]
-____|)
-     ^
-```
-
-```clj
-(let [foo 1
-      bar 2]
-    |)
-```
+Whenever the next indentation point is encountered, [`onIndent`] will call
+[`tryPreviewCursorScope`], because it is at this moment that we can verify if
+the cursor is in a safe place to show scope.  The cursor must be to the right
+of this indentation point.  And if it is, we retroactively apply a new
+indentation point and Paren Trail at the cursor.  This will naturally append
+appropriate close-parens to the cursor.
 
 ### Preserving Relative Indentation while typing
 
@@ -1230,7 +1128,7 @@ chatroom].  I'll answer questions as soon as I can.
 [`ERROR_UNCLOSED_PAREN`]:parinfer.js#L174
 [`ERROR_UNHANDLED`]:parinfer.js#L175
 [`errorMessages`]:parinfer.js#L177
-[`API`]:parinfer.js#L844
+[`API`]:parinfer.js#L852
 [`isBoolean`]:parinfer.js#L66
 [`isInteger`]:parinfer.js#L70
 [`isOpenParen`]:parinfer.js#L76
@@ -1274,19 +1172,21 @@ chatroom].  I'll answer questions as soon as I can.
 [`appendParenTrail`]:parinfer.js#L582
 [`finishNewParenTrail`]:parinfer.js#L591
 [`correctIndent`]:parinfer.js#L607
-[`onIndent`]:parinfer.js#L629
-[`onLeadingCloseParen`]:parinfer.js#L644
-[`checkIndent`]:parinfer.js#L666
-[`initIndent`]:parinfer.js#L687
-[`processChar`]:parinfer.js#L712
-[`processLine`]:parinfer.js#L737
-[`finalizeResult`]:parinfer.js#L752
-[`processError`]:parinfer.js#L768
-[`processText`]:parinfer.js#L780
-[`getChangedLines`]:parinfer.js#L801
-[`publicResult`]:parinfer.js#L815
-[`indentMode`]:parinfer.js#L834
-[`parenMode`]:parinfer.js#L839
+[`tryPreviewCursorScope`]:parinfer.js#L629
+[`onIndent`]:parinfer.js#L643
+[`onLeadingCloseParen`]:parinfer.js#L659
+[`checkIndent`]:parinfer.js#L675
+[`initPreviewCursorScope`]:parinfer.js#L690
+[`initIndent`]:parinfer.js#L701
+[`processChar`]:parinfer.js#L719
+[`processLine`]:parinfer.js#L744
+[`finalizeResult`]:parinfer.js#L759
+[`processError`]:parinfer.js#L776
+[`processText`]:parinfer.js#L788
+[`getChangedLines`]:parinfer.js#L809
+[`publicResult`]:parinfer.js#L823
+[`indentMode`]:parinfer.js#L842
+[`parenMode`]:parinfer.js#L847
 [`result.mode`]:parinfer.js#L96
 [`result.origText`]:parinfer.js#L98
 [`result.origLines`]:parinfer.js#L100
@@ -1300,7 +1200,7 @@ chatroom].  I'll answer questions as soon as I can.
 [`result.cursorLine`]:parinfer.js#L120
 [`result.cursorDx`]:parinfer.js#L121
 [`result.previewCursorScope`]:parinfer.js#L122
-[`result.indentAtCursor`]:parinfer.js#L123
+[`result.canPreviewCursorScope`]:parinfer.js#L123
 [`result.isInCode`]:parinfer.js#L125
 [`result.isEscaping`]:parinfer.js#L126
 [`result.isInStr`]:parinfer.js#L127

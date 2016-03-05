@@ -564,30 +564,33 @@ Moving the cursor back will adjust the scope.
 
 ```in
 (let [a 1]
- |  )
+ | )
  ^ previewCursorScope
 ```
 
 ```out
 (let [a 1]
- |)
+ |) 
 ```
 
-Moving the cursor forward will adjust the scope.
+The following will not preview cursor scope, because doing so
+will change the AST.
 
 ```in
 (let [a 1]
- )|
-  ^ previewCursorScope
+|
+^ previewCursorScope
+  (+ a 2))
 ```
 
 ```out
 (let [a 1]
-  |)
+|
+  (+ a 2))
 ```
 
-The same rules do not apply for the following example
-because it represents an unstable code state.
+This also does not mean we can hold all leading close-parens
+in place.  The following example represents an unsupported case:
 
 ```in
 (let [a 1

@@ -854,7 +854,7 @@
       "fileLineNo": 564,
       "lines": [
         "(let [a 1]",
-        "   )"
+        "  )"
       ],
       "cursor": {
         "cursorX": 1,
@@ -866,7 +866,7 @@
       "fileLineNo": 570,
       "lines": [
         "(let [a 1]",
-        " )"
+        " ) "
       ],
       "cursor": {
         "cursorX": 1,
@@ -876,32 +876,34 @@
   },
   {
     "in": {
-      "fileLineNo": 577,
+      "fileLineNo": 578,
       "lines": [
         "(let [a 1]",
-        " )"
+        "",
+        "  (+ a 2))"
       ],
       "cursor": {
-        "cursorX": 2,
+        "cursorX": 0,
         "cursorLine": 1,
         "previewCursorScope": true
       }
     },
     "out": {
-      "fileLineNo": 583,
+      "fileLineNo": 585,
       "lines": [
         "(let [a 1]",
-        "  )"
+        "",
+        "  (+ a 2))"
       ],
       "cursor": {
-        "cursorX": 2,
+        "cursorX": 0,
         "cursorLine": 1
       }
     }
   },
   {
     "in": {
-      "fileLineNo": 591,
+      "fileLineNo": 594,
       "lines": [
         "(let [a 1",
         "      ] b)"
@@ -913,7 +915,7 @@
       }
     },
     "out": {
-      "fileLineNo": 597,
+      "fileLineNo": 600,
       "lines": [
         "(let [a 1",
         "       b])"
@@ -926,7 +928,7 @@
   },
   {
     "in": {
-      "fileLineNo": 610,
+      "fileLineNo": 613,
       "lines": [
         "(foo ]] bar)"
       ],
@@ -936,7 +938,7 @@
       }
     },
     "out": {
-      "fileLineNo": 614,
+      "fileLineNo": 617,
       "lines": [
         "(foo  bar)"
       ],
@@ -948,7 +950,7 @@
   },
   {
     "in": {
-      "fileLineNo": 620,
+      "fileLineNo": 623,
       "lines": [
         "(foo bar ;)"
       ],
@@ -958,7 +960,7 @@
       }
     },
     "out": {
-      "fileLineNo": 624,
+      "fileLineNo": 627,
       "lines": [
         "(foo bar) ;)"
       ],
@@ -970,7 +972,7 @@
   },
   {
     "in": {
-      "fileLineNo": 630,
+      "fileLineNo": 633,
       "lines": [
         "(let [x 1",
         "      y 2;])"
@@ -981,7 +983,7 @@
       }
     },
     "out": {
-      "fileLineNo": 635,
+      "fileLineNo": 638,
       "lines": [
         "(let [x 1",
         "      y 2]);])"
@@ -994,7 +996,7 @@
   },
   {
     "in": {
-      "fileLineNo": 642,
+      "fileLineNo": 645,
       "lines": [
         "("
       ],
@@ -1004,7 +1006,7 @@
       }
     },
     "out": {
-      "fileLineNo": 646,
+      "fileLineNo": 649,
       "lines": [
         "()"
       ],
