@@ -120,7 +120,7 @@ function getInitialResult(text, options, mode) {
     cursorLine: SENTINEL_NULL, // [integer] - line number of the cursor
     cursorDx: SENTINEL_NULL,   // [integer] - amount that the cursor moved horizontally if something was inserted or deleted
     previewCursorScope: false, // [boolean] - preview the cursor's scope by showing the Paren Trail after it (on an empty line)
-    indentAtCursor: false,     // [boolean] - determines if the current line will be transformed for `previewCursorScope`
+    canPreviewCursorScope: false, // [boolean] - determines if the cursor is in a valid position to allow previewing scope
 
     isInCode: true,            // [boolean] - indicates if we are currently in "code space" (not string or comment)
     isEscaping: false,         // [boolean] - indicates if the next character will be escaped (e.g. `\c`).  This may be inside string, comment, or code.
@@ -626,6 +626,20 @@ function correctIndent(result) {
   }
 }
 
+function tryPreviewCursorScope(result) {
+  if (result.canPreviewCursorScope) {
+    // If the cursor is to the right of current indentation point we can show
+    // scope by adding close-parens to the cursor.
+    // (i.e. close-parens may be safely moved from the previous Paren Trail to
+    // a new Paren Trail at the cursor since there are no tokens between them.)
+    if (result.cursorX > result.x) {
+      correctParenTrail(result, result.cursorX);
+      resetParenTrail(result, result.cursorLine, result.cursorX);
+    }
+    result.canPreviewCursorScope = false;
+  }
+}
+
 function onIndent(result) {
   result.trackingIndent = false;
 
@@ -634,6 +648,7 @@ function onIndent(result) {
   }
 
   if (result.mode === INDENT_MODE) {
+    tryPreviewCursorScope(result);
     correctParenTrail(result, result.x);
   }
   else if (result.mode === PAREN_MODE) {
@@ -644,12 +659,6 @@ function onIndent(result) {
 function onLeadingCloseParen(result) {
   result.skipChar = true;
 
-  if (result.mode === INDENT_MODE) {
-    if (result.indentAtCursor) {
-      result.skipChar = false;
-      result.ch = BLANK_SPACE;
-    }
-  }
   if (result.mode === PAREN_MODE) {
     if (isValidCloseParen(result.parenStack, result.ch)) {
       if (isCursorOnLeft(result)) {
@@ -664,13 +673,7 @@ function onLeadingCloseParen(result) {
 }
 
 function checkIndent(result) {
-
-  // treat cursor as indentation point under special circumstances
-  if (result.indentAtCursor && result.cursorX === result.x) {
-    onIndent(result);
-    resetParenTrail(result, result.lineNo, result.x);
-  }
-  else if (isCloseParen(result.ch)) {
+  if (isCloseParen(result.ch)) {
     onLeadingCloseParen(result);
   }
   else if (result.ch === SEMICOLON) {
@@ -684,6 +687,17 @@ function checkIndent(result) {
   }
 }
 
+function initPreviewCursorScope(result) {
+  if (result.previewCursorScope && result.cursorLine === result.lineNo) {
+    var semicolonX = result.lines[result.lineNo].indexOf(";");
+    result.canPreviewCursorScope = (
+      result.trackingIndent &&
+      STANDALONE_PAREN_TRAIL.test(result.lines[result.lineNo]) &&
+      (semicolonX === -1 || result.cursorX <= semicolonX)
+    );
+  }
+}
+
 function initIndent(result) {
   if (result.mode === INDENT_MODE) {
     result.trackingIndent = (
@@ -691,14 +705,7 @@ function initIndent(result) {
       !result.isInStr
     );
 
-    var semicolonX = result.lines[result.lineNo].indexOf(";");
-    result.indentAtCursor = (
-      result.previewCursorScope &&
-      result.trackingIndent &&
-      result.cursorLine === result.lineNo &&
-      STANDALONE_PAREN_TRAIL.test(result.lines[result.lineNo]) &&
-      (semicolonX === -1 || result.cursorX <= semicolonX)
-    );
+    initPreviewCursorScope(result);
   }
   else if (result.mode === PAREN_MODE) {
     result.trackingIndent = !result.isInStr;
@@ -759,7 +766,8 @@ function finalizeResult(result) {
       throw error(result, ERROR_UNCLOSED_PAREN, opener.lineNo, opener.x);
     }
     else if (result.mode === INDENT_MODE) {
-      correctParenTrail(result, 0);
+      result.x = 0;
+      onIndent(result);
     }
   }
   result.success = true;
