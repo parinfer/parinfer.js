@@ -1,3 +1,7 @@
+## 1.7.0
+
+- Indent Mode has new `previewCursorScope` option
+
 ## 1.6.1
 
 - fix cursor position bug (see [comment](https://github.com/shaunlebron/parinfer/issues/47#issuecomment-186063654))
