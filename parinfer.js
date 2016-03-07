@@ -1,5 +1,5 @@
 //
-// Parinfer 1.6.1+dev
+// Parinfer 1.7.0
 //
 // Copyright 2015-2016 © Shaun LeBron
 // MIT License
@@ -119,7 +119,7 @@ function getInitialResult(text, options, mode) {
     cursorX: SENTINEL_NULL,    // [integer] - x position of the cursor
     cursorLine: SENTINEL_NULL, // [integer] - line number of the cursor
     cursorDx: SENTINEL_NULL,   // [integer] - amount that the cursor moved horizontally if something was inserted or deleted
-    previewCursorScope: false, // [boolean] - preview the cursor's scope by showing the Paren Trail after it (on an empty line)
+    previewCursorScope: false, // [boolean] - preview the cursor's scope on an empty line by inserting close-parens after it.
     canPreviewCursorScope: false, // [boolean] - determines if the cursor is in a valid position to allow previewing scope
 
     isInCode: true,            // [boolean] - indicates if we are currently in "code space" (not string or comment)
@@ -850,7 +850,7 @@ function parenMode(text, options) {
 }
 
 var API = {
-  version: "1.6.1+dev",
+  version: "1.7.0",
   indentMode: indentMode,
   parenMode: parenMode
 };
