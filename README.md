@@ -26,13 +26,12 @@ This project is split into two parts:
 
 ## How to Use It!
 
-Though Parinfer is still in early development, several contributors have
-started working on plugins for major editors.  Currently, most of them spin up
-an instance of Node to leverage a single, canonical implementation via RPC.
-This allows core bug fixes to reach all editor plugins until the core is
-stabilized and ready for proper porting.
+<em>See the __[Parinfer Demo Editor]__ to try the latest version online.</em>
 
-__Works in Progress__:
+[Parinfer Demo Editor]:http://shaunlebron.github.io/parinfer/demo
+
+Parinfer is still in early development.  Several people have started
+integrating it into code editors at various stages of development.
 
 - [atom-parinfer] for [Atom]
 - [nvim-parinfer.js] for [Neovim]

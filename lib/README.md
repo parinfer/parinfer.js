@@ -7,7 +7,8 @@ This is the canonical implementation of [Parinfer]'s core transformation
 functions. Though it is written in JavaScript, it is ported and synchronized to
 other languages to reach most major text editors.
 
-See [Parinfer Design and Implementation](parinfer.js.md) for deep knowledge on inner workings.
+- [Parinfer Demo Editor](http://shaunlebron.github.io/parinfer/demo) - Try it out online.
+- [Parinfer Design and Implementation](parinfer.js.md) - Read for deep knowledge on inner workings.
 
 [Parinfer]:http://shaunlebron.github.io/parinfer/
 
