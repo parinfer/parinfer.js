@@ -645,7 +645,7 @@
   },
   {
     "in": {
-      "fileLineNo": 443,
+      "fileLineNo": 445,
       "lines": [
         "(let [a 1])",
         "  ret)"
@@ -653,7 +653,7 @@
       "cursor": null
     },
     "out": {
-      "fileLineNo": 448,
+      "fileLineNo": 450,
       "lines": [
         "(let [a 1]",
         "  ret)"
@@ -663,7 +663,7 @@
   },
   {
     "in": {
-      "fileLineNo": 455,
+      "fileLineNo": 457,
       "lines": [
         "(let [a 1])",
         "  ret)"
@@ -674,7 +674,7 @@
       }
     },
     "out": {
-      "fileLineNo": 460,
+      "fileLineNo": 462,
       "lines": [
         "(let [a 1])",
         "  ret"
@@ -687,7 +687,7 @@
   },
   {
     "in": {
-      "fileLineNo": 468,
+      "fileLineNo": 470,
       "lines": [
         "(let [a 1]) 2",
         "  ret"
@@ -695,7 +695,7 @@
       "cursor": null
     },
     "out": {
-      "fileLineNo": 473,
+      "fileLineNo": 475,
       "lines": [
         "(let [a 1]) 2",
         "  ret"
@@ -705,7 +705,7 @@
   },
   {
     "in": {
-      "fileLineNo": 481,
+      "fileLineNo": 483,
       "lines": [
         "(let [a 1])",
         "  ret)"
@@ -716,7 +716,7 @@
       }
     },
     "out": {
-      "fileLineNo": 486,
+      "fileLineNo": 488,
       "lines": [
         "(let [a 1]",
         "  ret)"
@@ -729,7 +729,7 @@
   },
   {
     "in": {
-      "fileLineNo": 493,
+      "fileLineNo": 495,
       "lines": [
         "(let [a 1]) ;",
         "  ret"
@@ -740,7 +740,7 @@
       }
     },
     "out": {
-      "fileLineNo": 498,
+      "fileLineNo": 500,
       "lines": [
         "(let [a 1] ;",
         "  ret)"
@@ -753,7 +753,7 @@
   },
   {
     "in": {
-      "fileLineNo": 507,
+      "fileLineNo": 511,
       "lines": [
         "(let [a 1",
         "      ])"
@@ -764,7 +764,7 @@
       }
     },
     "out": {
-      "fileLineNo": 512,
+      "fileLineNo": 516,
       "lines": [
         "(let [a 1])",
         "      "
@@ -777,7 +777,158 @@
   },
   {
     "in": {
-      "fileLineNo": 519,
+      "fileLineNo": 523,
+      "lines": [
+        "(let [a 1])",
+        "      b"
+      ],
+      "cursor": {
+        "cursorX": 7,
+        "cursorLine": 1
+      }
+    },
+    "out": {
+      "fileLineNo": 528,
+      "lines": [
+        "(let [a 1",
+        "      b])"
+      ],
+      "cursor": {
+        "cursorX": 7,
+        "cursorLine": 1
+      }
+    }
+  },
+  {
+    "in": {
+      "fileLineNo": 537,
+      "lines": [
+        "(let [a 1",
+        "      ])"
+      ],
+      "cursor": {
+        "cursorX": 6,
+        "cursorLine": 1,
+        "previewCursorScope": true
+      }
+    },
+    "out": {
+      "fileLineNo": 543,
+      "lines": [
+        "(let [a 1",
+        "      ])"
+      ],
+      "cursor": {
+        "cursorX": 6,
+        "cursorLine": 1
+      }
+    }
+  },
+  {
+    "in": {
+      "fileLineNo": 551,
+      "lines": [
+        "(let [a 1])",
+        "  "
+      ],
+      "cursor": {
+        "cursorX": 2,
+        "cursorLine": 1,
+        "previewCursorScope": true
+      }
+    },
+    "out": {
+      "fileLineNo": 557,
+      "lines": [
+        "(let [a 1]",
+        "  )"
+      ],
+      "cursor": {
+        "cursorX": 2,
+        "cursorLine": 1
+      }
+    }
+  },
+  {
+    "in": {
+      "fileLineNo": 564,
+      "lines": [
+        "(let [a 1]",
+        "  )"
+      ],
+      "cursor": {
+        "cursorX": 1,
+        "cursorLine": 1,
+        "previewCursorScope": true
+      }
+    },
+    "out": {
+      "fileLineNo": 570,
+      "lines": [
+        "(let [a 1]",
+        " ) "
+      ],
+      "cursor": {
+        "cursorX": 1,
+        "cursorLine": 1
+      }
+    }
+  },
+  {
+    "in": {
+      "fileLineNo": 578,
+      "lines": [
+        "(let [a 1]",
+        "",
+        "  (+ a 2))"
+      ],
+      "cursor": {
+        "cursorX": 0,
+        "cursorLine": 1,
+        "previewCursorScope": true
+      }
+    },
+    "out": {
+      "fileLineNo": 585,
+      "lines": [
+        "(let [a 1]",
+        "",
+        "  (+ a 2))"
+      ],
+      "cursor": {
+        "cursorX": 0,
+        "cursorLine": 1
+      }
+    }
+  },
+  {
+    "in": {
+      "fileLineNo": 594,
+      "lines": [
+        "(let [a 1",
+        "      ] b)"
+      ],
+      "cursor": {
+        "cursorX": 6,
+        "cursorLine": 1,
+        "previewCursorScope": true
+      }
+    },
+    "out": {
+      "fileLineNo": 600,
+      "lines": [
+        "(let [a 1",
+        "       b])"
+      ],
+      "cursor": {
+        "cursorX": 6,
+        "cursorLine": 1
+      }
+    }
+  },
+  {
+    "in": {
+      "fileLineNo": 613,
       "lines": [
         "(foo ]] bar)"
       ],
@@ -787,7 +938,7 @@
       }
     },
     "out": {
-      "fileLineNo": 523,
+      "fileLineNo": 617,
       "lines": [
         "(foo  bar)"
       ],
@@ -799,7 +950,7 @@
   },
   {
     "in": {
-      "fileLineNo": 529,
+      "fileLineNo": 623,
       "lines": [
         "(foo bar ;)"
       ],
@@ -809,7 +960,7 @@
       }
     },
     "out": {
-      "fileLineNo": 533,
+      "fileLineNo": 627,
       "lines": [
         "(foo bar) ;)"
       ],
@@ -821,7 +972,7 @@
   },
   {
     "in": {
-      "fileLineNo": 539,
+      "fileLineNo": 633,
       "lines": [
         "(let [x 1",
         "      y 2;])"
@@ -832,7 +983,7 @@
       }
     },
     "out": {
-      "fileLineNo": 544,
+      "fileLineNo": 638,
       "lines": [
         "(let [x 1",
         "      y 2]);])"
@@ -845,7 +996,7 @@
   },
   {
     "in": {
-      "fileLineNo": 551,
+      "fileLineNo": 645,
       "lines": [
         "("
       ],
@@ -855,7 +1006,7 @@
       }
     },
     "out": {
-      "fileLineNo": 555,
+      "fileLineNo": 649,
       "lines": [
         "()"
       ],

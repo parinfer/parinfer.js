@@ -44,6 +44,7 @@ Thus, we cover the design and implementation of Parinfer in two parts:
 
 - [The Cursor in Indent Mode](#the-cursor-in-indent-mode)
 - [The Cursor in Paren Mode](#the-cursor-in-paren-mode)
+- [Seeing Cursor Scope in Indent Mode](#seeing-cursor-scope-in-indent-mode)
 - [Correcting the Cursor Position](#correcting-the-cursor-position)
 - [Preserving Relative Indentation while typing](#preserving-relative-indentation-while-typing)
 - [Dangerous Quotes](#dangerous-quotes)
@@ -758,6 +759,114 @@ And again, it's important to note that simply moving the cursor to another line
 will reformat the line that was "suspended" by this cursor rule, restoring the
 full rules of Paren Mode.
 
+### Seeing Cursor Scope in Indent Mode
+
+In Indent Mode, when a user has their cursor on an empty line, it may be useful
+for them to always see the "scope" of the cursor.  For example, if we had
+the cursor here:
+
+```clj
+(let [foo 1
+      bar 2])
+  |
+```
+
+It may be more beneficial for the user to see this, so that it's clear where
+text will be inserted before ever typing it:
+
+```clj
+(let [foo 1
+      bar 2]
+  |)
+```
+
+For another example:
+
+```clj
+(let [foo 1
+      bar 2|])
+```
+
+If the user presses Enter, and if the editor auto-indents correctly, they will
+see this:
+
+```clj
+(let [foo 1
+      bar 2
+      |])
+```
+
+And if we move the cursor back a bit...
+
+```clj
+(let [foo 1
+      bar 2
+  |    ])
+```
+
+...the text will be transformed to accomodate the new cursor position:
+
+```clj
+(let [foo 1
+      bar 2]
+  |)
+```
+
+When moving the cursor to another line, normal formatting rules apply:
+
+```clj
+(let [foo 1
+      bar 2])
+```
+
+Intuitively, we only want to show cursor scope if it is appending close-parens
+to the cursor.  For example, how would you show the cursor scope here?
+
+```clj
+(let [foo 1
+      bar 2]
+|
+  (+ foo bar))
+```
+
+You cannot show cursor scope by appending close-parens to the cursor here, so we
+do not bother.  More precisely, trying to do something clever like showing the
+effect on all Paren Trails if you were to insert text would show:
+
+```clj
+(let [foo 1
+      bar 2])
+|
+  (+ foo bar)
+```
+
+But this is not what the user expects to see when moving the cursor around.  It
+also has the unfortunate side effect of modifying the AST, allowing the user to
+accidentally corrupt the code when saving the file.
+
+All in all, it's not technically necessary to allow the user to see the cursor
+scope since typing would reveal the same close-parens anyway. Nonetheless, it
+is both a useful UX option and one that can be implemented in a manner
+consistent to Parinfer's system.
+
+_See [`result.previewCursorScope`] to enable._
+
+--
+
+__Implementation-wise__, we define this as a special rule which only applies to
+_lines containing whitespace, close-parens, or comments_.  This is determined
+by [`initPreviewCursorScope`], called by [`initIndent`] at the start of every
+line.  If a cursor is found on such a line and the cursor is not inside a
+comment, then it will set [`result.canPreviewCursorScope`] to `true` to
+proceed.
+
+Whenever the next indentation point is encountered, [`onIndent`] will call
+[`tryPreviewCursorScope`], because it is at this moment that we can verify if
+the cursor is in a safe place to show scope.  The cursor must be to the right
+of this indentation point.  And if it is, we retroactively apply a new
+indentation point and Paren Trail at the cursor.  This will naturally append
+appropriate close-parens to the cursor.
+
 ### Preserving Relative Indentation while typing
 
 Unfortunately, Paren Mode needs extra help to preserve relative indentation
@@ -969,7 +1078,7 @@ to be commented without triggering a warning:
 Detection of dangerous quotes inside comments is done simply by toggling
 [`result.quoteDanger`] everytime an unescaped quote is encountered inside a
 comment.  This happens in [`onQuote`], and we check if an error should be
-reported at [`onProperIndent`] since that moment signifies that no contiguous
+reported at [`onIndent`] since that moment signifies that no contiguous
 comments follow.
 
 --
@@ -1007,81 +1116,101 @@ chatroom].  I'll answer questions as soon as I can.
 [gitter chatroom]:https://gitter.im/shaunlebron/parinfer
 
 <!-- END OF DOC: All content below is overwritten by `update-doc-reflinks.sh` -->
-[`isInteger`]:parinfer.js#L63
-[`isOpenParen`]:parinfer.js#L69
-[`isCloseParen`]:parinfer.js#L73
-[`getInitialResult`]:parinfer.js#L85
-[`cacheErrorPos`]:parinfer.js#L172
-[`error`]:parinfer.js#L176
-[`replaceWithinString`]:parinfer.js#L197
-[`repeatString`]:parinfer.js#L205
-[`getLineEnding`]:parinfer.js#L214
-[`isCursorAffected`]:parinfer.js#L228
-[`shiftCursorOnEdit`]:parinfer.js#L236
-[`replaceWithinLine`]:parinfer.js#L249
-[`insertWithinLine`]:parinfer.js#L257
-[`initLine`]:parinfer.js#L261
-[`commitChar`]:parinfer.js#L272
-[`clamp`]:parinfer.js#L284
-[`peek`]:parinfer.js#L294
-[`isValidCloseParen`]:parinfer.js#L305
-[`onOpenParen`]:parinfer.js#L312
-[`onMatchedCloseParen`]:parinfer.js#L323
-[`onUnmatchedCloseParen`]:parinfer.js#L331
-[`onCloseParen`]:parinfer.js#L335
-[`onTab`]:parinfer.js#L346
-[`onSemicolon`]:parinfer.js#L352
-[`onNewline`]:parinfer.js#L359
-[`onQuote`]:parinfer.js#L364
-[`onBackslash`]:parinfer.js#L380
-[`afterBackslash`]:parinfer.js#L384
-[`onChar`]:parinfer.js#L395
-[`isCursorOnLeft`]:parinfer.js#L413
-[`isCursorOnRight`]:parinfer.js#L421
-[`isCursorInComment`]:parinfer.js#L430
-[`handleCursorDelta`]:parinfer.js#L434
-[`updateParenTrailBounds`]:parinfer.js#L452
-[`clampParenTrailToCursor`]:parinfer.js#L476
-[`popParenTrail`]:parinfer.js#L505
-[`correctParenTrail`]:parinfer.js#L520
-[`cleanParenTrail`]:parinfer.js#L538
-[`appendParenTrail`]:parinfer.js#L567
-[`finishNewParenTrail`]:parinfer.js#L576
-[`correctIndent`]:parinfer.js#L592
-[`onProperIndent`]:parinfer.js#L614
-[`onLeadingCloseParen`]:parinfer.js#L629
-[`onIndent`]:parinfer.js#L646
-[`processChar`]:parinfer.js#L663
-[`processLine`]:parinfer.js#L688
-[`finalizeResult`]:parinfer.js#L712
-[`processError`]:parinfer.js#L728
-[`processText`]:parinfer.js#L740
-[`getChangedLines`]:parinfer.js#L761
-[`publicResult`]:parinfer.js#L775
-[`indentMode`]:parinfer.js#L794
-[`parenMode`]:parinfer.js#L799
-[`result.mode`]:parinfer.js#L89
-[`result.origText`]:parinfer.js#L91
-[`result.origLines`]:parinfer.js#L93
-[`result.lines`]:parinfer.js#L96
-[`result.lineNo`]:parinfer.js#L97
-[`result.ch`]:parinfer.js#L98
-[`result.x`]:parinfer.js#L99
-[`result.parenStack`]:parinfer.js#L101
-[`result.parenTrail`]:parinfer.js#L105
-[`result.cursorX`]:parinfer.js#L112
-[`result.cursorLine`]:parinfer.js#L113
-[`result.cursorDx`]:parinfer.js#L114
-[`result.isInCode`]:parinfer.js#L116
-[`result.isEscaping`]:parinfer.js#L117
-[`result.isInStr`]:parinfer.js#L118
-[`result.isInComment`]:parinfer.js#L119
-[`result.commentX`]:parinfer.js#L120
-[`result.quoteDanger`]:parinfer.js#L122
-[`result.trackingIndent`]:parinfer.js#L123
-[`result.skipChar`]:parinfer.js#L124
-[`result.success`]:parinfer.js#L125
-[`result.maxIndent`]:parinfer.js#L127
-[`result.indentDelta`]:parinfer.js#L128
-[`result.error`]:parinfer.js#L131
-[`result.errorPosCache`]:parinfer.js#L137
+[`SENTINEL_NULL`]:parinfer.js#L39
+[`INDENT_MODE`]:parinfer.js#L41
+[`BACKSLASH`]:parinfer.js#L44
+[`LINE_ENDING_REGEX`]:parinfer.js#L52
+[`STANDALONE_PAREN_TRAIL`]:parinfer.js#L55
+[`PARENS`]:parinfer.js#L57
+[`ERROR_QUOTE_DANGER`]:parinfer.js#L171
+[`ERROR_EOL_BACKSLASH`]:parinfer.js#L172
+[`ERROR_UNCLOSED_QUOTE`]:parinfer.js#L173
+[`ERROR_UNCLOSED_PAREN`]:parinfer.js#L174
+[`ERROR_UNHANDLED`]:parinfer.js#L175
+[`errorMessages`]:parinfer.js#L177
+[`API`]:parinfer.js#L852
+[`isBoolean`]:parinfer.js#L66
+[`isInteger`]:parinfer.js#L70
+[`isOpenParen`]:parinfer.js#L76
+[`isCloseParen`]:parinfer.js#L80
+[`getInitialResult`]:parinfer.js#L92
+[`cacheErrorPos`]:parinfer.js#L183
+[`error`]:parinfer.js#L187
+[`replaceWithinString`]:parinfer.js#L208
+[`repeatString`]:parinfer.js#L216
+[`getLineEnding`]:parinfer.js#L225
+[`isCursorAffected`]:parinfer.js#L239
+[`shiftCursorOnEdit`]:parinfer.js#L247
+[`replaceWithinLine`]:parinfer.js#L260
+[`insertWithinLine`]:parinfer.js#L268
+[`initLine`]:parinfer.js#L272
+[`commitChar`]:parinfer.js#L283
+[`clamp`]:parinfer.js#L295
+[`peek`]:parinfer.js#L305
+[`isValidCloseParen`]:parinfer.js#L316
+[`onOpenParen`]:parinfer.js#L323
+[`onMatchedCloseParen`]:parinfer.js#L334
+[`onUnmatchedCloseParen`]:parinfer.js#L342
+[`onCloseParen`]:parinfer.js#L346
+[`onTab`]:parinfer.js#L357
+[`onSemicolon`]:parinfer.js#L363
+[`onNewline`]:parinfer.js#L370
+[`onQuote`]:parinfer.js#L375
+[`onBackslash`]:parinfer.js#L391
+[`afterBackslash`]:parinfer.js#L395
+[`onChar`]:parinfer.js#L406
+[`isCursorOnLeft`]:parinfer.js#L424
+[`isCursorOnRight`]:parinfer.js#L432
+[`isCursorInComment`]:parinfer.js#L441
+[`handleCursorDelta`]:parinfer.js#L445
+[`resetParenTrail`]:parinfer.js#L461
+[`updateParenTrailBounds`]:parinfer.js#L471
+[`clampParenTrailToCursor`]:parinfer.js#L491
+[`popParenTrail`]:parinfer.js#L520
+[`correctParenTrail`]:parinfer.js#L535
+[`cleanParenTrail`]:parinfer.js#L553
+[`appendParenTrail`]:parinfer.js#L582
+[`finishNewParenTrail`]:parinfer.js#L591
+[`correctIndent`]:parinfer.js#L607
+[`tryPreviewCursorScope`]:parinfer.js#L629
+[`onIndent`]:parinfer.js#L643
+[`onLeadingCloseParen`]:parinfer.js#L659
+[`checkIndent`]:parinfer.js#L675
+[`initPreviewCursorScope`]:parinfer.js#L690
+[`initIndent`]:parinfer.js#L701
+[`processChar`]:parinfer.js#L719
+[`processLine`]:parinfer.js#L744
+[`finalizeResult`]:parinfer.js#L759
+[`processError`]:parinfer.js#L776
+[`processText`]:parinfer.js#L788
+[`getChangedLines`]:parinfer.js#L809
+[`publicResult`]:parinfer.js#L823
+[`indentMode`]:parinfer.js#L842
+[`parenMode`]:parinfer.js#L847
+[`result.mode`]:parinfer.js#L96
+[`result.origText`]:parinfer.js#L98
+[`result.origLines`]:parinfer.js#L100
+[`result.lines`]:parinfer.js#L103
+[`result.lineNo`]:parinfer.js#L104
+[`result.ch`]:parinfer.js#L105
+[`result.x`]:parinfer.js#L106
+[`result.parenStack`]:parinfer.js#L108
+[`result.parenTrail`]:parinfer.js#L112
+[`result.cursorX`]:parinfer.js#L119
+[`result.cursorLine`]:parinfer.js#L120
+[`result.cursorDx`]:parinfer.js#L121
+[`result.previewCursorScope`]:parinfer.js#L122
+[`result.canPreviewCursorScope`]:parinfer.js#L123
+[`result.isInCode`]:parinfer.js#L125
+[`result.isEscaping`]:parinfer.js#L126
+[`result.isInStr`]:parinfer.js#L127
+[`result.isInComment`]:parinfer.js#L128
+[`result.commentX`]:parinfer.js#L129
+[`result.quoteDanger`]:parinfer.js#L131
+[`result.trackingIndent`]:parinfer.js#L132
+[`result.skipChar`]:parinfer.js#L133
+[`result.success`]:parinfer.js#L134
+[`result.maxIndent`]:parinfer.js#L136
+[`result.indentDelta`]:parinfer.js#L137
+[`result.error`]:parinfer.js#L140
+[`result.errorPosCache`]:parinfer.js#L146

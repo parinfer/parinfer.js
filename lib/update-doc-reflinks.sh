@@ -22,6 +22,9 @@ docfile=parinfer.js.md
 # ref links for each function name
 fn_links=$(perl -n -e'/^function (\w+)/ && print "[`$1`]:parinfer.js#L$.\n"' $srcfile)
 
+# ref links for each var name
+var_links=$(perl -n -e'/^var ([\w_]+) = / && print "[`$1`]:parinfer.js#L$.\n"' $srcfile)
+
 # ref links for each top-level result key
 result_links=$(perl -n -e'm{^    (\w+):.*//} && print "[`result.$1`]:parinfer.js#L$.\n"' $srcfile)
 
@@ -30,4 +33,4 @@ lineno=$(perl -n -e'/<!-- END OF DOC/ && print $.' $docfile)
 
 # add ref links to the docs
 docs=$(head -n $lineno $docfile)
-printf "$docs\n$fn_links\n$result_links" > $docfile
+printf "$docs\n$var_links\n$fn_links\n$result_links" > $docfile
