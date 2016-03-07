@@ -146,6 +146,25 @@ Arguments:
   - `cursorX` - zero-based x-position of the cursor
   - `cursorDx` - amount that the cursor moved horizontally if something was inserted or deleted
     - only used by Paren Mode for preserving relative indentation of child expressions when their parents are shifted
+  - `previewCursorScope` - when set to true in Indent Mode, it shows the cursor's scope on an empty line by inserting close-parens after it. For example:
+
+     With `previewCursorScope = false`:
+
+     ```clj
+     (let [foo 1
+           bar 2]
+           |
+       (+ foo bar))
+     ```
+
+     And with `previewCursorScope = true`:
+
+     ```clj
+     (let [foo 1
+           bar 2
+           |]
+       (+ foo bar))
+     ```
 
 Returns an object with the following properties:
 
