@@ -20,13 +20,13 @@ graciously ported this implementation to the languages required by the plugin
 APIs of most major text editors.  All language ports pass the same
 comprehensive test suite to help ensure consistent behavior.
 
-| implemented in | link             | relevant editor          |
-|----------------|------------------|--------------------------|
-| JavaScript     | parinfer.js (here)   | Atom, VSCode, LightTable |
-| Python         | [parinfer.py]    | Sublime Text             |
-| Kotlin (JVM)   | [parinfer-jvm]   | Cursive IDE              |
-| Emacs Lisp     | [parinfer-elisp] | Emacs                    |
-| Vim Script     | [parinfer-viml]  | Vim                      |
+| implemented in | link               | relevant editor          |
+|----------------|--------------------|--------------------------|
+| JavaScript     | parinfer.js (here) | Atom, VSCode, LightTable |
+| Python         | [parinfer.py]      | Sublime Text             |
+| Kotlin (JVM)   | [parinfer-jvm]     | Cursive IDE, Nightcode   |
+| Emacs Lisp     | [parinfer-elisp]   | Emacs                    |
+| Vim Script     | [parinfer-viml]    | Vim                      |
 
 _<strong>[Open an issue]</strong> if you would like Parinfer ported to another language for
 use in an editor not listed above._
