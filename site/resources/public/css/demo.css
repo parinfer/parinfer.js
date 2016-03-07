@@ -27,11 +27,9 @@ h1 {
   margin-right: auto;
   margin-bottom: 10px;
   padding-bottom: 10px;
-  width: 200px;
-  text-align: center;
-  font-size: 48px;
+  font-size: 32px;
   font-weight: 200;
-  border-bottom: 1px solid #CCC;
+  display: inline-block;
 }
 
 h1 em {
@@ -44,7 +42,6 @@ h1 em {
   margin-bottom: 10px;
   font-size: 0.8em;
   color: #555;
-  text-align: center;
 }
 
 .subtitle a {
@@ -83,7 +80,6 @@ code {
   background: #FEFEFE;
   border: 1px solid #EEE;
   padding: 5px;
-  margin-bottom: 20px;
 }
 
 .cm-bracket.cm-eol {
@@ -191,7 +187,7 @@ i.fa {
 }
 
 select.mode {
-  margin: 20px;
+  margin-right: 10px;
 }
 
 label.user-option {
@@ -200,7 +196,7 @@ label.user-option {
 }
 
 label.user-option input {
-  margin: 10px;
+  margin-right: 10px;
 }
 
 label.calc-option {
@@ -251,7 +247,8 @@ span.calc-option {
   color: #777;
 }
 
-.editor-footer {
+#editor-footer {
+  margin-top: 10px;
 }
 
 .CodeMirror-focused {

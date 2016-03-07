@@ -65,10 +65,28 @@
         [:div
          [:h1 "Par" [:em "infer"]]
          [:div.subtitle
+          {:style {:opacity 0.5
+                   :display "inline-block"
+                   :margin-left 10
+                   }}
+          "(demo editor)"
+          ]
+         [:div.subtitle
+          {:style {:margin-top -42
+                   :text-align "right"}}
           "v" (aget js/window "parinfer" "version")
           " | "
           [:a {:href "https://github.com/shaunlebron/parinfer"} "GitHub"]]
 
+         ]))))
+
+(defn editor-footer
+  [editor]
+  (reify
+    om/IRender
+    (render [_]
+      (html
+        [:div
          [:select.mode
           {:value (name (:mode editor))
            :on-mouse-over (fn [e] (om/update! editor :help-caption (mode->caption (:mode editor))))
@@ -102,22 +120,12 @@
                   :on-mouse-out (fn [e] (om/update! editor :help-caption ""))}
                  [:label.calc-option
                   "cursorDx=" cursor-dx]
-                 [:span.calc-option " calculated when text is added or removed"]])))]))))
-
-(defn editor-footer
-  [editor]
-  (reify
-    om/IRender
-    (render [_]
-      (html
-        [:div
+                 [:span.calc-option " calculated when text is added or removed"]])))
          (let [{:keys [name message] :as error} (get-in editor [:result :error])]
-           (if error
+           (when error
              [:div.status.error
               [:div.status-name "Parinfer is suspended: "]
-              [:div.status-msg message]]
-             [:div.status.success
-              [:div.status-name "Parinfer is running okay."]]))
+              [:div.status-msg message]]))
          [:div.help-caption (:help-caption editor)]]))))
 
 (defn prevent-backspace-navigation!
