@@ -41,6 +41,7 @@ integrating it into code editors at various stages of development.
 - [parinfer-mode] for [Emacs]
 - [codemirror-parinfer] for [CodeMirror]
 - [lt_parinfer] for [Light Table]
+- native support in [Nightcode]
 
 Parinfer will soon be available for some REPL environments as well:
 
@@ -69,6 +70,7 @@ Parinfer will soon be available for some REPL environments as well:
 [CodeMirror]:https://codemirror.net/
 [lt_parinfer]:https://github.com/mauricioszabo/lt_parinfer
 [Light Table]:http://lighttable.com/
+[Nightcode]:https://github.com/oakes/Nightcode
 
 [Replete]:https://github.com/mfikes/replete
 [Dirac DevTools]:https://github.com/binaryage/dirac
