@@ -1,5 +1,5 @@
 //
-// Parinfer 1.7.0
+// Parinfer 1.7.1
 //
 // Copyright 2015-2016 © Shaun LeBron
 // MIT License
@@ -474,12 +474,12 @@ function updateParenTrailBounds(result) {
   if (result.x > 0) { prevCh = line[result.x - 1]; }
   var ch = result.ch;
 
-  var shouldReset = (
-    result.isInCode &&
-    !isCloseParen(ch) &&
-    ch !== "" &&                                    // erased character
-    (ch !== BLANK_SPACE || prevCh === BACKSLASH) && // non-escaped space
-    ch != DOUBLE_SPACE                              // double-space (converted tab)
+  var shouldReset = (                               // In order to reset, the current character...
+    result.isInCode &&                              // - cannot be inside a string or comment
+    (!isCloseParen(ch) || prevCh === BACKSLASH) &&  // - cannot be a close-paren, unless escaped
+    ch !== "" &&                                    // - cannot be an erased character
+    (ch !== BLANK_SPACE || prevCh === BACKSLASH) && // - cannot be a space, unless escaped
+    ch != DOUBLE_SPACE                              // - cannot be a double-space (converted tab)
   );
 
   if (shouldReset) {
@@ -850,7 +850,7 @@ function parenMode(text, options) {
 }
 
 var API = {
-  version: "1.7.0",
+  version: "1.7.1",
   indentMode: indentMode,
   parenMode: parenMode
 };
