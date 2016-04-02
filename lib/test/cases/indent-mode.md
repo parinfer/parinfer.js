@@ -287,6 +287,26 @@ Correctly handle escaped parens as literal characters.
   ret)
 ```
 
+```in
+(defn foo [a b]
+  ret\)
+```
+
+```out
+(defn foo [a b]
+  ret\))
+```
+
+```in
+{:tag-open \[ :tag-close \]}
+{:tag-open \[ :tag-close \]}
+```
+
+```out
+{:tag-open \[ :tag-close \]}
+{:tag-open \[ :tag-close \]}
+```
+
 Correctly handle escaped semicolons as characters instead of comments.
 Otherwise, the inferred close-parens would be inserted before them.
 
