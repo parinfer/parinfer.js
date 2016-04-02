@@ -1,3 +1,7 @@
+## 1.7.1
+
+- allow escaped close-parens
+
 ## 1.7.0
 
 - Indent Mode has new `previewCursorScope` option
