@@ -670,3 +670,55 @@ When typing an open-paren, a close-paren should come after the cursor:
 ```out
 (|)
 ```
+
+## Tab Stops
+
+We can return the positions of the open-parens whose structure would be
+affected by the indentation of the current cursor line.  This allows editors to
+use them to create tab stops for smart indentation snapping.
+
+```in
+(def x [1 2 3])
+(def y 2)
+|
+```
+
+```out
+(def x [1 2 3])
+(def y 2)
+^ tabStop
+|
+```
+
+```in
+(let [a {:foo 1}
+      |
+      bar [1 2 3]]
+  bar)
+```
+
+```out
+(let [a {:foo 1}
+^    ^  ^           tabStops
+      |
+      bar [1 2 3]]
+  bar)
+```
+
+
+```in
+(let [a {:foo 1}
+      bar [1 2 3]]
+  |
+  bar)
+```
+
+```out
+(let [a {:foo 1}
+^    ^                tabStops
+      bar [1 2 3]]
+          ^           tabStop
+  |
+  bar)
+```
+
