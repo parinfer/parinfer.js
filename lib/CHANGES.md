@@ -1,3 +1,7 @@
+## 1.8.0
+
+- return new `tabStops` property (see #110)
+
 ## 1.7.1
 
 - allow escaped close-parens
