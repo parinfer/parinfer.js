@@ -97,6 +97,30 @@ something that you can try:
 1. __When the editor opens a file__ you must first pass their content to
   `parenMode` and replace its contents with the result.  This ensures
   indentation of a file is correct before using with Indent Mode.
+1. __Use Tab Stops__ to allow the user to quickly indent/dedent lines to
+   important points in Indent Mode.  When the user presses <kbd>Tab</kbd> or
+   <kbd>Shift</kbd>+<kbd>Tab</kbd>, do the following:
+   1. Prevent <kbd>Tab</kbd> from doing its normal space insertion, or just
+      remove them prior to the next step.
+   1. Run Indent Mode on the text, passing the cursor in as normal. BUT, if you
+      have multiple lines selected, you must instead pass in the
+      _starting position of the selection_ as the cursor.
+   1. The result returned by the previous step should include a `tabStops`
+      property.  These returned tab stops only represent open-paren positions,
+      so you need to insert extra tab stops depending on your desired
+      indentation conventions.  For example, you can add a tab stop to
+      represent a one-space indentation after every `[`, a two-space indentation
+      after every `(`, or even get fancy by reading the text that comes after `(`
+      to determine context-specific indentation, as is common in Lisp.
+   1. If you pressed <kbd>Tab</kbd>, indent the current line (or first line of
+      the selection) to the next tab stop.
+   1. If you pressed <kbd>Shift</kbd>+<kbd>Tab</kbd>, dedent the current line
+      (or first line of the selection) to the previous tab stop.
+   1. If there is more than one selected line that you are indenting, shift the
+      subsequent lines by the same delta applied to the first.
+   1. If no tab stop is available in the direction you're indenting, just use
+      two spaces as normal.
+
 1. __Allow mode toggling__ by using some hotkeys.  For example:
   - <kbd>Ctrl</kbd>+<kbd>(</kbd> to toggle between Indent Mode and Paren Mode
   - <kbd>Ctrl</kbd>+<kbd>)</kbd> to turn Parinfer off
@@ -185,6 +209,16 @@ Returns an object with the following properties:
   - `message` is a message describing the error
   - `lineNo` is a zero-based line number where the error occurred
   - `x` is a zero-based column where the error occurred
+- `tabStops` is an array of objects representing [Tab stops], which is
+  populated in Indent Mode if a cursor position is supplied. We identify tab
+  stops at relevant open-parens, and supply the following extra information so
+  you may compute extra tab stops for one-space or two-space indentation
+  conventions based on the type of open-paren.
+  - `x` is a zero-based x-position of the tab stop
+  - `lineNo` is a zero-based line number of the open-paren responsible for the tab stop
+  - `ch` is the character of the open-paren responsible for the tab stop (e.g. `(`,`[`,`{`)
+
+[Tab stops]:https://en.wikipedia.org/wiki/Tab_stop
 
 ## Questions?
 
