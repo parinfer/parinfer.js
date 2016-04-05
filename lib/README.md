@@ -100,6 +100,11 @@ something that you can try:
 1. __Allow mode toggling__ by using some hotkeys.  For example:
   - <kbd>Ctrl</kbd>+<kbd>(</kbd> to toggle between Indent Mode and Paren Mode
   - <kbd>Ctrl</kbd>+<kbd>)</kbd> to turn Parinfer off
+1. __Supply extra info to Paren Mode__ to allow it to preserve relative indentaiton
+   as you type.  If your editor can notify you of the _type_ of change the user
+   just performed, such as the portion of text that was inserted, deleted, or removed,
+   then you can calculate a `cursorDx` value from it, allowing Paren Mode
+   to keep expressions well-formatted. (TODO, explain how to compute this)
 1. __For better performance__ on larger files, you can limit the call frequency
   of `indentMode` and `parenMode` by waiting for the user to stop typing after
   some interval, or by [debouncing] the function.
