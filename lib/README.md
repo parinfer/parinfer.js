@@ -129,9 +129,7 @@ we can assume a default subset of the features for quick input:
 1. __Update the cursor__: Parinfer may have to shift your cursor around since
    some parts of a line may be added/removed/replaced.  Move your cursor to
    the position at `cursorX`.
-1. __For auto-indent__, run
-   `parenMode` instead of Indent Mode when pressing enter, and reposition the
-   cursor at the first non-space character of its line.
+1. __For auto-indent__, run `parenMode` instead of `indentMode` when pressing enter.
 
 ## API
 
