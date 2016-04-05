@@ -1051,5 +1051,128 @@
         "cursorLine": 0
       }
     }
+  },
+  {
+    "in": {
+      "fileLineNo": 679,
+      "lines": [
+        "(def x [1 2 3])",
+        "(def y 2)",
+        ""
+      ],
+      "cursor": {
+        "cursorX": 0,
+        "cursorLine": 2
+      }
+    },
+    "out": {
+      "fileLineNo": 685,
+      "lines": [
+        "(def x [1 2 3])",
+        "(def y 2)",
+        ""
+      ],
+      "cursor": {
+        "cursorX": 0,
+        "cursorLine": 2
+      },
+      "tabStops": [
+        {
+          "ch": "(",
+          "x": 0,
+          "lineNo": 1
+        }
+      ]
+    }
+  },
+  {
+    "in": {
+      "fileLineNo": 692,
+      "lines": [
+        "(let [a {:foo 1}",
+        "      ",
+        "      bar [1 2 3]]",
+        "  bar)"
+      ],
+      "cursor": {
+        "cursorX": 6,
+        "cursorLine": 1
+      }
+    },
+    "out": {
+      "fileLineNo": 699,
+      "lines": [
+        "(let [a {:foo 1}",
+        "      ",
+        "      bar [1 2 3]]",
+        "  bar)"
+      ],
+      "cursor": {
+        "cursorX": 6,
+        "cursorLine": 1
+      },
+      "tabStops": [
+        {
+          "ch": "(",
+          "x": 0,
+          "lineNo": 0
+        },
+        {
+          "ch": "[",
+          "x": 5,
+          "lineNo": 0
+        },
+        {
+          "ch": "{",
+          "x": 8,
+          "lineNo": 0
+        }
+      ]
+    }
+  },
+  {
+    "in": {
+      "fileLineNo": 708,
+      "lines": [
+        "(let [a {:foo 1}",
+        "      bar [1 2 3]]",
+        "  ",
+        "  bar)"
+      ],
+      "cursor": {
+        "cursorX": 2,
+        "cursorLine": 2
+      }
+    },
+    "out": {
+      "fileLineNo": 715,
+      "lines": [
+        "(let [a {:foo 1}",
+        "      bar [1 2 3]]",
+        "  ",
+        "  bar)"
+      ],
+      "cursor": {
+        "cursorX": 2,
+        "cursorLine": 2
+      },
+      "tabStops": [
+        {
+          "ch": "(",
+          "x": 0,
+          "lineNo": 0
+        },
+        {
+          "ch": "[",
+          "x": 5,
+          "lineNo": 0
+        },
+        {
+          "ch": "[",
+          "x": 10,
+          "lineNo": 1
+        }
+      ]
+    }
   }
 ]
