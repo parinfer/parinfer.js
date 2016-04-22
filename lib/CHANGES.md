@@ -1,6 +1,10 @@
+## 1.8.1
+
+- correctly handle lines ending in unclosed string (see [#112](https://github.com/shaunlebron/parinfer/issues/112))
+
 ## 1.8.0
 
-- return new `tabStops` property (see #110)
+- return new `tabStops` property (see [#110](https://github.com/shaunlebron/parinfer/pull/110))
 
 ## 1.7.1
 
