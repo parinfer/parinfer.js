@@ -243,6 +243,21 @@ ret)
  ret)
 ```
 
+## Multiline Strings
+
+A line ending inside a string will not have a definable Paren Trail.  This
+minimal test case will fail if the close-paren is treated as a Paren Trail.
+
+```in
+( )"
+"
+```
+
+```out
+( )"
+"
+```
+
 ## Spaces in Paren Trail
 
 Preserve spaces in paren trail for the cursor line.  This allows the user

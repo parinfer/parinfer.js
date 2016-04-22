@@ -182,6 +182,19 @@ Escaped quotes are handled correctly.
 (def foo "\"")
 ```
 
+A line ending inside a string will not have a definable Paren Trail.  This
+minimal test case will fail if the close-paren is treated as a Paren Trail.
+
+```in
+()"
+"
+```
+
+```out
+()"
+"
+```
+
 ## Unbalanced Quotes
 
 __NOTE:__ The pipe `|` represents the cursor, and its character is removed from
