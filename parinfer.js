@@ -1,5 +1,5 @@
 //
-// Parinfer 1.8.0
+// Parinfer 1.8.1
 //
 // Copyright 2015-2016 © Shaun LeBron
 // MIT License
@@ -592,8 +592,20 @@ function appendParenTrail(result) {
   result.parenTrail.endX++;
 }
 
+function invalidateParenTrail(result) {
+  result.parenTrail = {
+    lineNo: SENTINEL_NULL,
+    startX: SENTINEL_NULL,
+    endX: SENTINEL_NULL,
+    openers: []
+  };
+}
+
 function finishNewParenTrail(result) {
-  if (result.mode === INDENT_MODE) {
+  if (result.isInStr) {
+    invalidateParenTrail(result);
+  }
+  else if (result.mode === INDENT_MODE) {
     clampParenTrailToCursor(result);
     popParenTrail(result);
   }
@@ -874,7 +886,7 @@ function parenMode(text, options) {
 }
 
 var API = {
-  version: "1.8.0",
+  version: "1.8.1",
   indentMode: indentMode,
   parenMode: parenMode
 };
