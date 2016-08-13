@@ -112,14 +112,15 @@ something that you can try:
       represent a one-space indentation after every `[`, a two-space indentation
       after every `(`, or even get fancy by reading the text that comes after `(`
       to determine context-specific indentation, as is common in Lisp.
-   1. If you pressed <kbd>Tab</kbd>, indent the current line (or first line of
-      the selection) to the next tab stop.
-   1. If you pressed <kbd>Shift</kbd>+<kbd>Tab</kbd>, dedent the current line
-      (or first line of the selection) to the previous tab stop.
-   1. If there is more than one selected line that you are indenting, shift the
-      subsequent lines by the same delta applied to the first.
-   1. If no tab stop is available in the direction you're indenting, just use
-      two spaces as normal.
+   1. Insert the correct number of spaces (then re-run indent mode after the change as normal):
+     - If you pressed <kbd>Tab</kbd>, indent the current line (or first line of
+       the selection) to the next tab stop.
+     - If you pressed <kbd>Shift</kbd>+<kbd>Tab</kbd>, dedent the current line
+       (or first line of the selection) to the previous tab stop.
+     - If there is more than one selected line that you are indenting, shift the
+       subsequent lines by the same delta applied to the first.
+     - If no tab stop is available in the direction you're indenting, just use
+       two spaces as normal.
 
 1. __Allow mode toggling__ by using some hotkeys.  For example:
   - <kbd>Ctrl</kbd>+<kbd>(</kbd> to toggle between Indent Mode and Paren Mode
