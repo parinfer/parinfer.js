@@ -1,3 +1,7 @@
+## 1.8.2
+
+- fix missing semicolons to prevent closure minification errors (see [#120](https://github.com/shaunlebron/parinfer/issues/120))
+
 ## 1.8.1
 
 - correctly handle lines ending in unclosed string (see [#112](https://github.com/shaunlebron/parinfer/issues/112))
