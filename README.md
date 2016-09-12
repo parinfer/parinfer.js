@@ -21,8 +21,8 @@ to satisfy the need for more advanced operations.
 
 This project is split into two parts:
 
-- __[Parinfer Lib](lib)__ - the _editor-agnostic_ library
-- __[Parinfer Site](site)__ - the code for the website
+- __[Parinfer Lib](https://github.com/shaunlebron/parinfer/tree/master/lib)__ - the _editor-agnostic_ library
+- __[Parinfer Site](https://github.com/shaunlebron/parinfer/tree/master/site)__ - the code for the website
 
 ## How to Use It!
 
@@ -58,7 +58,7 @@ Parinfer will soon be available for some REPL environments as well:
 [Atom]:https://atom.io/
 [nvim-parinfer.js]:https://github.com/snoe/nvim-parinfer.js
 [Neovim]:https://neovim.io/
-[vscode-parinfer]:https://github.com/Microsoft/vscode-parinfer
+[vscode-parinfer]:https://github.com/narma/vscode-parinfer
 [Visual Studio Code]:https://code.visualstudio.com/
 [sublime-text-parinfer]:https://github.com/oakmac/sublime-text-parinfer
 [Sublime Text]:http://www.sublimetext.com/
