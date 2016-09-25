@@ -38,7 +38,7 @@ integrating it into code editors at various stages of development.
 - [vim-parinfer] for [Vim]
 - [vscode-parinfer] for [Visual Studio Code]
 - [sublime-text-parinfer] for [Sublime Text]
-- [parinfer-mode] for [Emacs]
+- parinfer-mode [1][parinfer-mode-1] or [2][parinfer-mode-2] for [Emacs]
 - [codemirror-parinfer] for [CodeMirror]
 - [lt_parinfer] for [Light Table]
 - native support in [Nightcode]
@@ -62,7 +62,8 @@ Parinfer will soon be available for some REPL environments as well:
 [Visual Studio Code]:https://code.visualstudio.com/
 [sublime-text-parinfer]:https://github.com/oakmac/sublime-text-parinfer
 [Sublime Text]:http://www.sublimetext.com/
-[parinfer-mode]:https://github.com/edpaget/parinfer-mode
+[parinfer-mode-1]:https://github.com/edpaget/parinfer-mode
+[parinfer-mode-2]:https://github.com/DogLooksGood/parinfer-mode
 [Emacs]:https://www.gnu.org/software/emacs/
 [vim-parinfer]:https://github.com/bhurlow/vim-parinfer
 [Vim]:http://www.vim.org/
