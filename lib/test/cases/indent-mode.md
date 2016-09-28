@@ -82,7 +82,7 @@ multiple functions:
 
 ## Bad Closers
 
-close-paren is wrong type:
+close-paren at end-of-line is wrong type:
 
 ```in
 (def foo [a b]]
@@ -92,7 +92,7 @@ close-paren is wrong type:
 (def foo [a b])
 ```
 
-insert missing close-paren inside another:
+insert missing close-paren inside another when at end-of-line:
 
 ```in
 (let [x {:foo 1 :bar 2]
@@ -102,6 +102,17 @@ insert missing close-paren inside another:
 ```out
 (let [x {:foo 1 :bar 2}]
   x)
+```
+
+close-paren _inside_ a line is unmatched:
+
+```in
+(foo [a (b] c)
+```
+
+```out
+(foo [a (b] c)
+          ^ unmatched-close-paren
 ```
 
 ## Strings
@@ -335,7 +346,7 @@ Inferred close-parens are inserted after escaped whitespace.
 
 ```in
 (def foo \,
-(def bar \ 
+(def bar \
 ```
 
 ```out
@@ -603,7 +614,7 @@ Moving the cursor back will adjust the scope.
 
 ```out
 (let [a 1]
- |) 
+ |)
 ```
 
 The following will not preview cursor scope, because doing so
@@ -734,4 +745,3 @@ use them to create tab stops for smart indentation snapping.
   |
   bar)
 ```
-
