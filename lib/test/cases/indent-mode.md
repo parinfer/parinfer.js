@@ -82,6 +82,16 @@ multiple functions:
 
 ## Bad Closers
 
+close-paren at end-of-line with no open-paren:
+
+```in
+bar)
+```
+
+```out
+bar
+```
+
 close-paren at end-of-line is wrong type:
 
 ```in
