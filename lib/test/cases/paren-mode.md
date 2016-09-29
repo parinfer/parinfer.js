@@ -325,16 +325,6 @@ Cursor pushed forward when a form is balanced and indented.
       7 8 9])|
 ```
 
-Move cursor back after typing invalid characters
-
-```in
-(foo ]]| bar)
-```
-
-```out
-(foo | bar)
-```
-
 ## CursorDx
 
 When backspacing, preserve the indentation of the child lines.

@@ -653,16 +653,6 @@ Indent Mode.
 
 ## Cursor Shifting
 
-Removing invalid close-parens should pull back the cursor
-
-```in
-(foo ]]| bar)
-```
-
-```out
-(foo | bar)
-```
-
 Commenting an inferred close-paren
 
 ```in
