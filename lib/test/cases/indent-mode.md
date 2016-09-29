@@ -346,12 +346,12 @@ Inferred close-parens are inserted after escaped whitespace.
 
 ```in
 (def foo \,
-(def bar \
+(def bar \ ; <-- space
 ```
 
 ```out
 (def foo \,)
-(def bar \ )
+(def bar \ ); <-- space
 ```
 
 Hanging backslash at end of line is invalid and causes processing to be abandoned.

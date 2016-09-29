@@ -78,13 +78,13 @@ spaces before the close-paren are not removed.
 
 ```in
 (let [foo 1
-      ]
+      ]; <-- spaces
   foo)
 ```
 
 ```out
 (let [foo 1]
-      
+      ; <-- spaces
   foo)
 ```
 
@@ -93,7 +93,7 @@ spaces before the close-paren are not removed.
       bar 2
 
      ] (+ foo bar
-  )
+  ); <-- spaces
 )
 ```
 
@@ -102,7 +102,7 @@ spaces before the close-paren are not removed.
       bar 2]
 
      (+ foo bar))
-  
+  ; <-- spaces
 
 ```
 
