@@ -945,7 +945,7 @@
       "fileLineNo": 618,
       "lines": [
         "(let [a 1]",
-        "  )"
+        "  ); <-- space"
       ],
       "cursor": {
         "cursorX": 1,
@@ -957,7 +957,7 @@
       "fileLineNo": 624,
       "lines": [
         "(let [a 1]",
-        " )"
+        " ) ; <-- space"
       ],
       "cursor": {
         "cursorX": 1,

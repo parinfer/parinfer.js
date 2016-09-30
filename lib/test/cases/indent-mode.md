@@ -618,13 +618,13 @@ Moving the cursor back will adjust the scope.
 
 ```in
 (let [a 1]
- | )
+ | ); <-- space
  ^ previewCursorScope
 ```
 
 ```out
 (let [a 1]
- |)
+ |) ; <-- space
 ```
 
 The following will not preview cursor scope, because doing so
