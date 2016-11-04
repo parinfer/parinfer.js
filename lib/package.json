@@ -4,6 +4,7 @@
   "description": "a simpler way to write Lisp",
   "main": "parinfer.js",
   "scripts": {
+    "compile": "lispy parinfer.ls",
     "test": "eslint parinfer.js && mocha"
   },
   "eslintConfig": {
@@ -39,6 +40,7 @@
   "devDependencies": {
     "eslint": "^1.10.3",
     "eslint-config-defaults": "^7.1.1",
+    "lispyscript": "^1.0.1",
     "mocha": "^2.3.4"
   }
 }
