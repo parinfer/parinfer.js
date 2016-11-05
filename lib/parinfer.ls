@@ -179,3 +179,25 @@
    message: errorMessages[errorName],
    lineNo: lineNo,
    x: x})
+
+;;------------------------------------------------------------------------------
+;; String Operations
+;;------------------------------------------------------------------------------
+
+(function replaceWithinString (orig start end replace)
+  (str
+    (orig.substring 0 start)
+    replace
+    (orig.substring end)))
+
+(function repeatString (text n)
+  (loop (result i) ("" 0)
+    (if (< i n)
+      (recur (str result text) ++i)
+      result)))
+
+(function getLineEnding (text)
+  ;; NOTE: We assume that if the CR char "\r" is used anywhere,
+  ;;       then we should use CRLF line-endings after every line.
+  (var i (text.search "\r"))
+  (if (!= i -1) "\r\n" "\n"))
