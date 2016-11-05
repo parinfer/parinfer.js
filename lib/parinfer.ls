@@ -144,3 +144,38 @@
       (set result.previewCursorScope options.previewCursorScope)))
 
   result)
+
+;;------------------------------------------------------------------------------
+;; Possible Errors
+;;------------------------------------------------------------------------------
+
+;; `result.error.name` is set to any of these
+(var ERROR_QUOTE_DANGER "quote-danger")
+(var ERROR_EOL_BACKSLASH "eol-backslash")
+(var ERROR_UNCLOSED_QUOTE "unclosed-quote")
+(var ERROR_UNCLOSED_PAREN "unclosed-paren")
+(var ERROR_UNMATCHED_CLOSE_PAREN "unmatched-close-paren")
+(var ERROR_UNHANDLED "unhandled")
+
+(var errorMessages {})
+(set errorMessages[ERROR_QUOTE_DANGER] "Quotes must balanced inside comment blocks.")
+(set errorMessages[ERROR_EOL_BACKSLASH] "Line cannot end in a hanging backslash.")
+(set errorMessages[ERROR_UNCLOSED_QUOTE] "String is missing a closing quote.")
+(set errorMessages[ERROR_UNCLOSED_PAREN] "Unmatched open-paren.")
+(set errorMessages[ERROR_UNMATCHED_CLOSE_PAREN] "Unmatched close-paren.")
+(set errorMessages[ERROR_UNHANDLED] "Unhandled error.")
+
+(function cacheErrorPos (result errorName lineNo x)
+  (set result.errorPosCache[errorName]
+    {lineNo: lineNo, x: x}))
+
+(function error (result errorName lineNo x)
+  (when (= lineNo SENTINEL_NULL)
+    (set lineNo result.errorPosCache[errorName].lineNo))
+  (when (= x SENTINEL_NULL)
+    (set x result.errorPosCache[errorName].x))
+  {parinferError: true,
+   name: errorName,
+   message: errorMessages[errorName],
+   lineNo: lineNo,
+   x: x})
