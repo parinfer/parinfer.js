@@ -201,3 +201,145 @@
   ;;       then we should use CRLF line-endings after every line.
   (var i (text.search "\r"))
   (if (!= i -1) "\r\n" "\n"))
+
+;;------------------------------------------------------------------------------
+;; Line operations
+;;------------------------------------------------------------------------------
+
+(function isCursorAffected (result start end)
+  (var x result.cursorX)
+  (if (= x start end)
+    (= x 0)
+    (>= x end)))
+
+(function shiftCursorOnEdit (result lineNo start end replace)
+  (var oldLength (- end start))
+  (var newLength replace.length)
+  (var dx (- newLength oldLength))
+  (if (&& (!= dx 0)
+          (= result.cursorLine lineNo)
+          (!= result.cursorX SENTINEL_NULL)
+          (isCursorAffected result start end))
+    (set result.cursorX (+ result.cursorX dx))))
+
+(function replaceWithinLine (result lineNo start end replace)
+  (var line result.lines[lineNo])
+  (var newLine (replaceWithinString line start end replace))
+  (set result.lines[lineNo] newLine)
+  (shiftCursorOnEdit result lineNo start end replace))
+
+(function insertWithinLine (result lineNo idx insert)
+  (replaceWithinLine result lineNo idx idx insert))
+
+(function initLine (result line)
+  (set result.x 0)
+  result.lineNo++
+
+  ;; reset line-specific state
+  (set result.commentX SENTINEL_NULL)
+  (set result.indentDelta 0)
+  (set result.firstUnmatchedCloseParenX SENTINEL_NULL))
+
+;; if the current character has changed, commit its change to the current line
+(function commitChar (result origCh)
+  (var ch result.ch)
+  (if (!= origCh ch)
+    (replaceWithinLine result result.lineNo result.x (+ result.x origCh.length) ch))
+  (set result.x (+ result.x ch.length)))
+
+;;------------------------------------------------------------------------------
+;; Misc Utils
+;;------------------------------------------------------------------------------
+
+(function clamp (val minN maxN)
+  (cond
+    (!= minN SENTINEL_NULL) (Math.max minN val)
+    (!= maxN SENTINEL_NULL) (Math.min maxN val)
+    true val))
+
+(function peek (array)
+  (if (= array.length 0)
+    SENTINEL_NULL
+    array[array.length - 1]))
+
+;;------------------------------------------------------------------------------
+;; Character functions
+;;------------------------------------------------------------------------------
+
+(function isValidCloseParen (parenStack ch)
+  (var lastParen (peek parenStack))
+  (if (= lastParen SENTINEL_NULL)
+    false
+    (= lastParen.ch PARENS[ch])))
+
+(function onOpenParen (result)
+  (when result.isInCode
+    (result.parenStack.push
+      {lineNo: result.lineNo,
+       x: result.x,
+       ch: result.ch,
+       indentDelta: result.indentDelta})))
+
+(function onMatchedClosedParen (result)
+  (var opener (peek result.parenStack))
+  (set result.parenTrail.endX (+ result.x 1))
+  (set result.maxIndent opener.x)
+  (result.parenTrail.openers.push opener)
+  (result.parenStack.pop))
+
+(function onUnmatchedCloseParen (result)
+  (when (= result.firstUnmatchedCloseParenX SENTINEL_NULL)
+    (set result.firstUnmatchedCloseParenX result.x)
+    (set result.parenTrail.endX (+ result.x 1))))
+
+(function onTab (result)
+  (when result.isInCode
+    (set result.ch DOUBLE_SPACE)))
+
+(function onSemicolon (result)
+  (when result.isInCode
+    (set result.isInComment true)
+    (set result.commentX result.x)))
+
+(function onNewline (result)
+  (set result.isInComment false)
+  (set result.ch ""))
+
+(function onQuote (result)
+  (cond
+    result.isInStr
+    (set result.isInStr false)
+
+    result.isInComment
+    (do
+      (set result.quoteDanger !result.quoteDanger)
+      (when result.quoteDanger
+        (cacheErrorPos result ERROR_QUOTE_DANGER result.lineNo result.x)))
+
+    true
+    (do
+      (set result.isInStr true)
+      (cacheErrorPos result ERROR_UNCLOSED_QUOTE result.lineNo result.x))))
+
+(function onBackslash (result)
+  (set result.isEscaping true))
+
+(function afterBackslash (result)
+  (set result.isEscaping false)
+  (when (= result.ch NEWLINE)
+    (when result.isInCode
+      (throw (error result ERROR_EOL_BACKSLASH result.lineNo (- result.x 1))))
+    (onNewline result)))
+
+(function onChar (result)
+  (var ch result.ch)
+  (cond
+    result.isEscaping   (afterBackslash result)
+    (isOpenParen ch)    (onOpenParen result)
+    (isCloseParen ch)   (onCloseParen result)
+    (= ch DOUBLE_QUOTE) (onQuote result)
+    (= ch SEMICOLON)    (onSemicolon result)
+    (= ch BACKSLASH)    (onBackslash result)
+    (= ch TAB)          (onTab result)
+    (= ch NEWLINE)      (onNewline result))
+  (set result.isInCode (&& !result.isInComment !result.isInStr)))
