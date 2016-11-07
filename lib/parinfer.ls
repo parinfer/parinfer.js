@@ -220,7 +220,7 @@
           (= result.cursorLine lineNo)
           (!= result.cursorX SENTINEL_NULL)
           (isCursorAffected result start end))
-    (set result.cursorX (+ result.cursorX dx))))
+    result.cursorX+=dx))
 
 (function replaceWithinLine (result lineNo start end replace)
   (var line result.lines[lineNo])
@@ -245,7 +245,7 @@
   (var ch result.ch)
   (if (!= origCh ch)
     (replaceWithinLine result result.lineNo result.x (+ result.x origCh.length) ch))
-  (set result.x (+ result.x ch.length)))
+  result.x+=ch.length)
 
 ;;------------------------------------------------------------------------------
 ;; Misc Utils
@@ -343,3 +343,29 @@
     (= ch TAB)          (onTab result)
     (= ch NEWLINE)      (onNewline result))
   (set result.isInCode (&& !result.isInComment !result.isInStr)))
+
+;;------------------------------------------------------------------------------
+;; Cursor functions
+;;------------------------------------------------------------------------------
+
+(function isCursorOnLeft (result)
+  (&& (= result.lineNo result.cursorLine)
+      (!= result.cursorX SENTINEL_NULL)
+      (<= result.cursorX result.x)))
+
+(function isCursorOnRight (result x)
+  (&& (= result.lineNo result.cursorLine)
+      (!= result.cursorX SENTINEL_NULL)
+      (!= x SENTINEL_NULL)
+      (> result.cursorX x)))
+
+(function isCursorInComment (result)
+  (isCursorOnRight result result.commentX))
+
+(function handleCursorDelta (result)
+  (var hasCursorDelta
+    (&& (!= result.cursorDx SENTINEL_NULL)
+        (= result.cursorLine result.lineNo)
+        (= result.cursorX result.x)))
+  (when hasCursorDelta
+    result.indentDelta+=result.cursorDx))
