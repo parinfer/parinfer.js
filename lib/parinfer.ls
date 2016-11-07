@@ -491,3 +491,112 @@
     (= result.mode PAREN_MODE)
     (when (!= result.lineNo result.cursorLine)
       (cleanParenTrail result))))
+
+;;------------------------------------------------------------------------------
+;; Indentation functions
+;;------------------------------------------------------------------------------
+
+(function correctIndent (result)
+  (var origIndent result.x)
+  (var newIndent origIndent)
+  (var minIndent 0)
+  (var maxIndent result.maxIndent)
+
+  (var opener (peek result.parenStack))
+  (when (!= opener SENTINEL_NULL)
+    (set minIndent (+ opener.x 1))
+    newIndent+=opener.indentDelta)
+
+  (set newIndent (clamp newIndent minIndent maxIndent))
+
+  (when (!= newIndent origIndent)
+    (var indentStr (repeatString BLANK_SPACE newIndent))
+    (replaceWithinLine result result.lineNo 0 origIndent indentStr)
+    (set result.x newIndent)
+    (var dx (- newIndent origIndent))
+    result.indentDelta+=dx))
+
+(function tryPreviewCursorScope (result)
+  (when result.canPreviewCursorScope
+    ;; If the cursor is to the right of current indentation point we can show
+    ;; scope by adding close-parens to the cursor.
+    ;; (i.e. close-parens may be safely moved from the previous Paren Trail to
+    ;;  a new Paren Trail at the cursor since there are no tokens between them.)
+    (when (> result.cursorX result.x)
+      (correctParenTrail result result.cursorX)
+      (resetParenTrail result result.cursorLine result.cursorX))
+    (set result.canPreviewCursorScope false)))
+
+(function onIndent (result)
+  (set result.trackingIndent false)
+
+  (when result.quoteDanger
+    (throw (error result ERROR_QUOTE_DANGER SENTINEL_NULL SENTINEL_NULL)))
+
+  (cond
+    (= result.mode INDENT_MODE)
+    (do
+      (tryPreviewCursorScope result)
+      (correctParenTrail result result.x))
+
+    (= result.mode PAREN_MODE)
+    (correctIndent result)))
+
+(function onLeadingCloseParen (result)
+  (set result.skipChar true)
+  (when (= result.mode PAREN_MODE)
+    (when (isValidCloseParen result.parenStack result.ch)
+      (if (isCursorOnLeft result)
+        (do
+          (set result.skipChar false)
+          (onIndent result))
+        (appendParenTrail)))))
+
+(function checkIndent (result)
+  (cond
+    (isCloseParen result.ch)
+    (onLeadingCloseParen result)
+
+    (= result.ch SEMICOLON)
+    ;; comments don't count as indentation points
+    (set result.trackingIndent false)
+
+    (&& (!= result.ch NEWLINE)
+        (!= result.ch BLANK_SPACE)
+        (!= result.ch TAB))
+    (onIndent result)))
+
+(function initPreviewCursorScope (result)
+  (when (&& result.previewCursorScope
+            (= result.cursorLine result.lineNo))
+    (var line result.lines[result.lineNo])
+    (var semicolonX (line.indexof ";"))
+    (set result.canPreviewCursorScope
+      (&& result.trackingIndent
+          (STANDALONE_PAREN_TRAIL.test line)
+          (|| (= semicolonX -1)
+              (<= result.cursorX semicolonX))))))
+
+(function initIndent (result)
+  (cond
+    (= result.mode INDENT_MODE)
+    (do
+      (set result.trackingIndent
+        (&& (!= result.parenStack.length 0)
+            !result.isInStr))
+      (initPreviewCursorScope))
+
+    (= result.mode PAREN_MODE)
+    (set result.trackingIndent !result.isInStr)))
+
+(function setTabStops (result)
+  (when (&& (= result.cursorLine result.lineNo)
+            (= result.mode INDENT_MODE))
+    (loop (i) (0)
+      (when (< i result.parenStack.length)
+        (var e result.parenStack[i])
+        (result.tabStops.push
+          {ch: e.ch,
+           x: e.x,
+           lineNo: e.lineNo})
+        (recur ++i)))))
