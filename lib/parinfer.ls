@@ -191,10 +191,12 @@
     (orig.substring end)))
 
 (function repeatString (text n)
-  (loop (result i) ("" 0)
-    (if (< i n)
-      (recur (str result text) ++i)
-      result)))
+  (var result "")
+  (loop (i) (0)
+    (when (< i n)
+      result+=text
+      (recur ++i)))
+  result)
 
 (function getLineEnding (text)
   ;; NOTE: We assume that if the CR char "\r" is used anywhere,
@@ -369,3 +371,123 @@
         (= result.cursorX result.x)))
   (when hasCursorDelta
     result.indentDelta+=result.cursorDx))
+
+;;------------------------------------------------------------------------------
+;; Paren Trail functions
+;;------------------------------------------------------------------------------
+
+(function resetParenTrail (result lineNo x)
+  (set result.parenTrail.lineNo lineNo)
+  (set result.parenTrail.startX x)
+  (set result.parenTrail.endX x)
+  (set result.parenTrail.openers [])
+  (set result.maxIndent SENTINEL_NULL))
+
+;; update the head of the paren trail as we scan each character.
+;; NOTE: `onMatchedCloseParen` modifies the endX
+(function updateParenTrailBounds (result)
+  (var line result.lines[result.lineNo])
+  (var prevCh (if (> result.x 0) line[result.x-1] SENTINEL_NULL))
+  (var ch result.ch)
+  (var shouldReset                                    ;; In order to reset, the current character...
+    (&& result.isInCode                               ;; - cannot be inside a string or comment
+        (|| (!isCloseParen ch) (= prevCh BACKSLASH))  ;; - cannot be a close-paren, unless escaped
+        (!= ch "")                                    ;; - cannot be an erased character
+        (|| (!= ch BLANK_SPACE) (= prevCh BACKSLASH)) ;; - cannot be a space, unless escaped
+        (!= ch DOUBLE_SPACE)))                        ;; - cannot be a double-space (converted tab)
+  (when shouldReset
+    (resetParenTrail result result.lineNo result.x+1)))
+
+;; INDENT MODE: allow the cursor to clamp the paren trail
+(function clampParenTrailToCursor (result)
+  (var startX result.parenTrail.startX)
+  (var endX result.parenTrail.endX)
+  (var isCursorClamping
+    (&& (isCursorOnRight result startX)
+        (!isCursorInComment result)))
+  (when isCursorClamping
+    (var newStartX (Math.max startX result.cursorX))
+    (var newEndX (Math.max endX result.cursorX))
+
+    (var line result.lines[result.lineNo])
+    (var removeCount 0)
+    (loop (i) (0)
+      (when (< i newStartX)
+        removeCount++
+        (recur i+1)))
+
+    (result.parenTrail.openers.splice 0 removeCount)
+    (set result.parenTrail.startX newStartX)
+    (set result.parenTrail.endX newEndX)))
+
+;; INDENT MODE: pops the paren trail from the stack
+(function popParenTrail (result)
+  (var startX result.parenTrail.startX)
+  (var endX result.parenTrail.endX)
+  (when (!= startX endX)
+    (loop () ()
+      (when (!= openers.length 0)
+        (result.parenStack.push (openers.pop))
+        (recur)))))
+
+;; INDENT MODE: correct paren trail from indentation
+(function correctParenTrail (result indentX)
+  (var parens "")
+  (loop () ()
+    (var opener (peek result.parenStack))
+    (when (&& (!= opener SENTINEL_NULL)
+              (>= opener.x indentX))
+        (result.parenStack.pop)
+        parens+=PARENS[opener.ch]
+        (recur)))
+  (replaceWithinLine result result.parenTrail.lineNo result.parenTrail.startX result.parenTrail.endX parens))
+
+;; PAREN MODE: remove spaces from the paren trail
+(function cleanParenTrail (result)
+  (var startX result.parenTrail.startX)
+  (var endX result.parenTrail.endX)
+
+  (when (&& (!= startX endX)
+            (!= result.lineNo result.parenTrail.lineNo))
+
+    (var line result.lines[result.lineNo])
+    (var newTrail "")
+    (var spaceCount 0)
+    (loop (i) (startX)
+      (when (< i endX)
+        (if (isCloseParen line[i])
+          newTrail+=line[i]
+          spaceCount++)
+        (recur ++i)))
+
+    (when (> spaceCount 0)
+      (replaceWithinLine result result.lineNo startX endX newTrail);
+      result.parenTrail.endX-=spaceCount)))
+
+(function appendParenTrail (result)
+  (var opener (result.parenStack.pop))
+  (var closeCh PARENS[opener.ch])
+  (set result.maxIndent opener.x)
+  (insertWithinLine result result.parenTrail.lineNo result.parenTrail.endX closeCh)
+  result.parenTrail.endX++)
+
+(function invalidateParenTrail (result)
+  (set result.parenTrail
+    {lineNo: SENTINEL_NULL,
+     startX: SENTINEL_NULL,
+     endX: SENTINEL_NULL,
+     openers: []}))
+
+(function finishNewParenTrail (result)
+  (cond
+    result.isInStr
+    (invalidateParenTrail result)
+
+    (= result.mode INDENT_MODE)
+    (do
+      (clampParenTrailToCursor result)
+      (popParenTrail result))
+
+    (= result.mode PAREN_MODE)
+    (when (!= result.lineNo result.cursorLine)
+      (cleanParenTrail result))))
