@@ -26,14 +26,15 @@
 
 (var BACKSLASH "\\")
 (var BLANK_SPACE " ")
+(var DOUBLE_SPACE "  ")
 (var DOUBLE_QUOTE "\"")
 (var NEWLINE "\n")
 (var SEMICOLON ";")
 (var TAB "\t")
 
-(var LINE_ENDING_REGEX (new RegExp "\r?\n"))
+(var LINE_ENDING_REGEX (new RegExp "\\r?\\n"))
 
-(var STANDALONE_PAREN_TRAIL (new RegExp "^[\s\]\)\}]*(;.*)?$"))
+(var STANDALONE_PAREN_TRAIL (new RegExp "^[\\s\\]\\)\\}]*(;.*)?$"))
 
 (var PARENS {"{": "}",
              "}": "{",
@@ -236,6 +237,7 @@
 (function initLine (result line)
   (set result.x 0)
   result.lineNo++
+  (result.lines.push line)
 
   ;; reset line-specific state
   (set result.commentX SENTINEL_NULL)
@@ -293,6 +295,12 @@
   (when (= result.firstUnmatchedCloseParenX SENTINEL_NULL)
     (set result.firstUnmatchedCloseParenX result.x)
     (set result.parenTrail.endX (+ result.x 1))))
+
+(function onCloseParen (result)
+  (when result.isInCode
+    (if (isValidCloseParen result.parenStack result.ch)
+      (onMatchedClosedParen result)
+      (onUnmatchedCloseParen result))))
 
 (function onTab (result)
   (when result.isInCode
@@ -413,7 +421,8 @@
     (var removeCount 0)
     (loop (i) (0)
       (when (< i newStartX)
-        removeCount++
+        (when (isCloseParen line[i])
+          removeCount++)
         (recur i+1)))
 
     (result.parenTrail.openers.splice 0 removeCount)
@@ -424,6 +433,7 @@
 (function popParenTrail (result)
   (var startX result.parenTrail.startX)
   (var endX result.parenTrail.endX)
+  (var openers result.parenTrail.openers)
   (when (!= startX endX)
     (loop () ()
       (when (!= openers.length 0)
@@ -600,3 +610,146 @@
            x: e.x,
            lineNo: e.lineNo})
         (recur ++i)))))
+
+;;------------------------------------------------------------------------------
+;; High-level processing functions
+;;------------------------------------------------------------------------------
+
+(function processChar (result ch)
+  (var origCh ch)
+
+  (set result.ch ch)
+  (set result.skipChar false)
+
+  (when (= result.mode PAREN_MODE)
+    (handleCursorDelta result))
+
+  (when result.trackingIndent
+    (checkIndent result))
+
+  (if result.skipChar
+    (set result.ch "")
+    (do
+      (onChar result)
+      (updateParenTrailBounds result)))
+
+  (commitChar result origCh))
+
+(function processLine (result line)
+  (initLine result line)
+  (initIndent result)
+
+  (setTabStops result)
+
+  (var chars (str line NEWLINE))
+  (loop (i) (0)
+    (when (< i chars.length)
+      (processChar result chars[i])
+      (recur ++i)))
+
+  (var unmatchedX result.firstUnmatchedCloseParenX)
+  (when (&& (!= unmatchedX SENTINEL_NULL)
+            (< unmatchedX result.parenTrail.startX))
+    (throw (error result ERROR_UNMATCHED_CLOSE_PAREN result.lineNo unmatchedX)))
+
+  (when (= result.lineNo result.parenTrail.lineNo)
+    (finishNewParenTrail result)))
+
+(function finalizeResult (result)
+  (when result.quoteDanger
+    (throw (error result ERROR_QUOTE_DANGER SENTINEL_NULL SENTINEL_NULL)))
+  (when result.isInStr
+    (throw (error result ERROR_UNCLOSED_QUOTE SENTINEL_NULL SENTINEL_NULL)))
+
+  (when (&& (!= result.parenStack.length 0)
+            (= result.mode PAREN_MODE))
+    (var opener (peek result.parenStack))
+    (throw (error result ERROR_UNCLOSED_PAREN opener.lineNo opener.x)))
+
+  (when (= result.mode INDENT_MODE)
+    (set result.x 0)
+    (onIndent result))
+
+  (set result.success true))
+
+(function processError (result e)
+  (set result.success false)
+  (if e.parinferError
+    (do
+      (delete e.parinferError)
+      (set result.error e))
+    (do
+      (set result.error.name ERROR_UNHANDLED)
+      (set result.error.message e.stack))))
+
+(function processText (text options mode)
+  (var result (getInitialResult text options mode))
+  (try
+    (loop (i) (0)
+      (when (< i result.origLines.length)
+        (processLine result result.origLines[i])
+        (recur ++i)))
+    (finalizeResult result)
+    (function (e)
+      (processError result e)))
+  result)
+
+;;------------------------------------------------------------------------------
+;; Public API
+;;------------------------------------------------------------------------------
+
+(function getChangedLines (result)
+  (var changedLines [])
+  (loop (i) (0)
+    (when (< i result.lines.length)
+      (when (!= result.lines[i] result.origLines[i])
+        (changedLines.push
+          {lineNo: i,
+           line: result.lines[i]}))
+      (recur ++i)))
+  changedLines)
+
+(function publicResult (result)
+  (if !result.success
+    {text: result.origText,
+     cursorX: result.origCursorX,
+     success: false,
+     error: result.error}
+    (do
+      (var lineEnding (getLineEnding result.origText))
+      (var text (result.lines.join lineEnding))
+      (var changedLines (getChangedLines result))
+      {text: text,
+       cursorX: result.cursorX,
+       success: true,
+       changedLines: changedLines,
+       tabStops: result.tabStops})))
+
+(function indentMode (text options)
+  (var result (processText text options INDENT_MODE))
+  (publicResult result))
+
+(function parenMode (text options)
+  (var result (processText text options PAREN_MODE))
+  (publicResult result))
+
+(var API
+  {version: "1.9.0-beta",
+   indentMode: indentMode,
+   parenMode: parenMode})
+
+;;------------------------------------------------------------------------------
+;; JS Module Boilerplate
+;;------------------------------------------------------------------------------
+
+(cond
+  (&& (= (typeof define) "function")
+      define.amd)
+  (define [] (function () API))
+
+  (&& (= (typeof module) "object")
+      module.exports)
+  (set module.exports API)
+
+  true
+  (set this.parinfer API))

@@ -4,7 +4,6 @@
   "description": "a simpler way to write Lisp",
   "main": "parinfer.js",
   "scripts": {
-    "compile": "lispy parinfer.ls",
     "test": "eslint parinfer.js && mocha"
   },
   "eslintConfig": {
@@ -19,6 +18,7 @@
     },
     "rules": {
       "no-console": 0,
+      "no-constant-condition": 0,
       "semi": 2
     }
   },
