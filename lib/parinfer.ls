@@ -11,6 +11,26 @@
 ;;
 
 ;;------------------------------------------------------------------------------
+;; LispyScript loop macros
+;;------------------------------------------------------------------------------
+
+(macro forloop (i start n rest...)
+  (loop (i) (~start)
+    (if (< i ~n)
+      (do
+        ~rest...
+        (recur (+ i 1)))
+      null)))
+
+(macro while (condition rest...)
+  (loop () ()
+    (if ~condition
+      (do
+        ~rest...
+        (recur))
+      null)))
+
+;;------------------------------------------------------------------------------
 ;; Constants / Predicates
 ;;------------------------------------------------------------------------------
 
@@ -193,10 +213,8 @@
 
 (function repeatString (text n)
   (var result "")
-  (loop (i) (0)
-    (when (< i n)
-      result+=text
-      (recur ++i)))
+  (forloop i 0 n
+    (set result (str result text)))
   result)
 
 (function getLineEnding (text)
@@ -419,11 +437,9 @@
 
     (var line result.lines[result.lineNo])
     (var removeCount 0)
-    (loop (i) (0)
-      (when (< i newStartX)
-        (when (isCloseParen line[i])
-          removeCount++)
-        (recur i+1)))
+    (forloop i 0 newStartX
+      (when (isCloseParen line[i])
+        removeCount++))
 
     (result.parenTrail.openers.splice 0 removeCount)
     (set result.parenTrail.startX newStartX)
@@ -435,21 +451,17 @@
   (var endX result.parenTrail.endX)
   (var openers result.parenTrail.openers)
   (when (!= startX endX)
-    (loop () ()
-      (when (!= openers.length 0)
-        (result.parenStack.push (openers.pop))
-        (recur)))))
+    (while (!= openers.length 0)
+      (result.parenStack.push (openers.pop)))))
 
 ;; INDENT MODE: correct paren trail from indentation
 (function correctParenTrail (result indentX)
   (var parens "")
-  (loop () ()
+  (while (&& (!= result.parenStack.length 0)
+             (>= opener.x indentX))
     (var opener (peek result.parenStack))
-    (when (&& (!= opener SENTINEL_NULL)
-              (>= opener.x indentX))
-        (result.parenStack.pop)
-        parens+=PARENS[opener.ch]
-        (recur)))
+    (result.parenStack.pop)
+    parens+=PARENS[opener.ch])
   (replaceWithinLine result result.parenTrail.lineNo result.parenTrail.startX result.parenTrail.endX parens))
 
 ;; PAREN MODE: remove spaces from the paren trail
@@ -463,12 +475,10 @@
     (var line result.lines[result.lineNo])
     (var newTrail "")
     (var spaceCount 0)
-    (loop (i) (startX)
-      (when (< i endX)
-        (if (isCloseParen line[i])
-          newTrail+=line[i]
-          spaceCount++)
-        (recur ++i)))
+    (forloop i startX endX
+      (if (isCloseParen line[i])
+        newTrail+=line[i]
+        spaceCount++))
 
     (when (> spaceCount 0)
       (replaceWithinLine result result.lineNo startX endX newTrail);
@@ -602,14 +612,12 @@
 (function setTabStops (result)
   (when (&& (= result.cursorLine result.lineNo)
             (= result.mode INDENT_MODE))
-    (loop (i) (0)
-      (when (< i result.parenStack.length)
-        (var e result.parenStack[i])
-        (result.tabStops.push
-          {ch: e.ch,
-           x: e.x,
-           lineNo: e.lineNo})
-        (recur ++i)))))
+    (forloop i 0 result.parenStack.length
+      (var e result.parenStack[i])
+      (result.tabStops.push
+        {ch: e.ch,
+         x: e.x,
+         lineNo: e.lineNo}))))
 
 ;;------------------------------------------------------------------------------
 ;; High-level processing functions
@@ -642,10 +650,8 @@
   (setTabStops result)
 
   (var chars (str line NEWLINE))
-  (loop (i) (0)
-    (when (< i chars.length)
-      (processChar result chars[i])
-      (recur ++i)))
+  (forloop i 0 chars.length
+    (processChar result chars[i]))
 
   (var unmatchedX result.firstUnmatchedCloseParenX)
   (when (&& (!= unmatchedX SENTINEL_NULL)
@@ -685,10 +691,8 @@
 (function processText (text options mode)
   (var result (getInitialResult text options mode))
   (try
-    (loop (i) (0)
-      (when (< i result.origLines.length)
-        (processLine result result.origLines[i])
-        (recur ++i)))
+    (forloop i 0 result.origLines.length
+      (processLine result result.origLines[i]))
     (finalizeResult result)
     (function (e)
       (processError result e)))
@@ -700,13 +704,11 @@
 
 (function getChangedLines (result)
   (var changedLines [])
-  (loop (i) (0)
-    (when (< i result.lines.length)
-      (when (!= result.lines[i] result.origLines[i])
-        (changedLines.push
-          {lineNo: i,
-           line: result.lines[i]}))
-      (recur ++i)))
+  (forloop i 0 result.lines.length
+    (when (!= result.lines[i] result.origLines[i])
+      (changedLines.push
+        {lineNo: i,
+         line: result.lines[i]})))
   changedLines)
 
 (function publicResult (result)
