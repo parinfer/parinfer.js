@@ -10,25 +10,8 @@
 ;; For DOCUMENTATION on this file, please see `parinfer.js.md`
 ;;
 
-;;------------------------------------------------------------------------------
-;; LispyScript loop macros
-;;------------------------------------------------------------------------------
-
-(macro forloop (i start n rest...)
-  (loop (i) (~start)
-    (if (< i ~n)
-      (do
-        ~rest...
-        (recur (+ i 1)))
-      null)))
-
-(macro while (condition rest...)
-  (loop () ()
-    (if ~condition
-      (do
-        ~rest...
-        (recur))
-      null)))
+;; (syntax helpers for imperative loops)
+(include "macros.ls")
 
 ;;------------------------------------------------------------------------------
 ;; Constants / Predicates
@@ -213,8 +196,8 @@
 
 (function repeatString (text n)
   (var result "")
-  (forloop i 0 n
-    (set result (str result text)))
+  (forindex i 0 n
+    result+=text)
   result)
 
 (function getLineEnding (text)
@@ -436,10 +419,8 @@
     (var newEndX (Math.max endX result.cursorX))
 
     (var line result.lines[result.lineNo])
-    (var removeCount 0)
-    (forloop i 0 newStartX
-      (when (isCloseParen line[i])
-        removeCount++))
+    (var removeCount
+      (.length (filter isCloseParen (line.substring 0 newStartX))))
 
     (result.parenTrail.openers.splice 0 removeCount)
     (set result.parenTrail.startX newStartX)
@@ -475,9 +456,9 @@
     (var line result.lines[result.lineNo])
     (var newTrail "")
     (var spaceCount 0)
-    (forloop i startX endX
-      (if (isCloseParen line[i])
-        newTrail+=line[i]
+    (foreach c (line.substring startX endX)
+      (if (isCloseParen c)
+        newTrail+=c
         spaceCount++))
 
     (when (> spaceCount 0)
@@ -612,8 +593,7 @@
 (function setTabStops (result)
   (when (&& (= result.cursorLine result.lineNo)
             (= result.mode INDENT_MODE))
-    (forloop i 0 result.parenStack.length
-      (var e result.parenStack[i])
+    (foreach e result.parenStack
       (result.tabStops.push
         {ch: e.ch,
          x: e.x,
@@ -650,8 +630,8 @@
   (setTabStops result)
 
   (var chars (str line NEWLINE))
-  (forloop i 0 chars.length
-    (processChar result chars[i]))
+  (foreach c chars
+    (processChar result c))
 
   (var unmatchedX result.firstUnmatchedCloseParenX)
   (when (&& (!= unmatchedX SENTINEL_NULL)
@@ -691,8 +671,8 @@
 (function processText (text options mode)
   (var result (getInitialResult text options mode))
   (try
-    (forloop i 0 result.origLines.length
-      (processLine result result.origLines[i]))
+    (foreach line result.origLines
+      (processLine result line))
     (finalizeResult result)
     (function (e)
       (processError result e)))
@@ -704,7 +684,7 @@
 
 (function getChangedLines (result)
   (var changedLines [])
-  (forloop i 0 result.lines.length
+  (forindex i 0 result.lines.length
     (when (!= result.lines[i] result.origLines[i])
       (changedLines.push
         {lineNo: i,
