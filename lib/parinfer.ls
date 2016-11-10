@@ -286,7 +286,7 @@
        ch: result.ch,
        indentDelta: result.indentDelta})))
 
-(function onMatchedClosedParen (result)
+(function onMatchedCloseParen (result)
   (var opener (peek result.parenStack))
   (set result.parenTrail.endX (+ result.x 1))
   (set result.maxIndent opener.x)
@@ -301,7 +301,7 @@
 (function onCloseParen (result)
   (when result.isInCode
     (if (isValidCloseParen result.parenStack result.ch)
-      (onMatchedClosedParen result)
+      (onMatchedCloseParen result)
       (onUnmatchedCloseParen result))))
 
 (function onTab (result)
@@ -409,6 +409,7 @@
     (resetParenTrail result result.lineNo result.x+1)))
 
 ;; INDENT MODE: allow the cursor to clamp the paren trail
+;; FIXME: broken
 (function clampParenTrailToCursor (result)
   (var startX result.parenTrail.startX)
   (var endX result.parenTrail.endX)
@@ -437,6 +438,7 @@
       (result.parenStack.push (openers.pop)))))
 
 ;; INDENT MODE: correct paren trail from indentation
+;; FIXME: broken
 (function correctParenTrail (result indentX)
   (var parens "")
   (while (&& (!= result.parenStack.length 0)
@@ -447,6 +449,7 @@
   (replaceWithinLine result result.parenTrail.lineNo result.parenTrail.startX result.parenTrail.endX parens))
 
 ;; PAREN MODE: remove spaces from the paren trail
+;; FIXME: broken
 (function cleanParenTrail (result)
   (var startX result.parenTrail.startX)
   (var endX result.parenTrail.endX)
@@ -544,6 +547,7 @@
     (= result.mode PAREN_MODE)
     (correctIndent result)))
 
+;; FIXME: broken
 (function onLeadingCloseParen (result)
   (set result.skipChar true)
   (when (= result.mode PAREN_MODE)
@@ -568,6 +572,7 @@
         (!= result.ch TAB))
     (onIndent result)))
 
+;; FIXME: broken
 (function initPreviewCursorScope (result)
   (when (&& result.previewCursorScope
             (= result.cursorLine result.lineNo))
@@ -579,6 +584,7 @@
           (|| (= semicolonX -1)
               (<= result.cursorX semicolonX))))))
 
+;; FIXME: broken
 (function initIndent (result)
   (cond
     (= result.mode INDENT_MODE)
@@ -624,6 +630,7 @@
 
   (commitChar result origCh))
 
+;; FIXME: broken
 (function processLine (result line)
   (initLine result line)
   (initIndent result)

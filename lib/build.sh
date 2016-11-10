@@ -3,4 +3,4 @@ cat \
   <(echo '(function(){') \
   <(cat parinfer.ls | $(npm bin)/lispy) \
   <(echo '})();') \
-  > parinfer.js
+  > parinfer.ls.js
