@@ -1,6 +1,6 @@
 #!/bin/bash
 cat \
-  <(echo 'function(){') \
+  <(echo '(function(){') \
   <(cat parinfer.ls | $(npm bin)/lispy) \
   <(echo '})();') \
   > parinfer.js

@@ -257,10 +257,11 @@
 ;;------------------------------------------------------------------------------
 
 (function clamp (val minN maxN)
-  (cond
-    (!= minN SENTINEL_NULL) (Math.max minN val)
-    (!= maxN SENTINEL_NULL) (Math.min maxN val)
-    true val))
+  (when (!= minN SENTINEL_NULL)
+    (set val (Math.max minN val)))
+  (when (!= maxN SENTINEL_NULL)
+    (set val (Math.min maxN val)))
+  val)
 
 (function peek (array)
   (if (= array.length 0)
