@@ -582,7 +582,6 @@
           (|| (= semicolonX -1)
               (<= result.cursorX semicolonX))))))
 
-;; FIXME: broken
 (function initIndent (result)
   (cond
     (= result.mode INDENT_MODE)
@@ -590,7 +589,7 @@
       (set result.trackingIndent
         (&& (!= result.parenStack.length 0)
             !result.isInStr))
-      (initPreviewCursorScope))
+      (initPreviewCursorScope result))
 
     (= result.mode PAREN_MODE)
     (set result.trackingIndent !result.isInStr)))
