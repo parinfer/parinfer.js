@@ -67,18 +67,18 @@
          [:div.subtitle
           {:style {:opacity 0.5
                    :display "inline-block"
-                   :margin-left 10
-                   }}
-          "(demo editor)"
-          ]
+                   :margin-left 10}}
+
+          "(demo editor)"]
+
          [:div.subtitle
           {:style {:margin-top -42
                    :text-align "right"}}
           "v" (aget js/window "parinfer" "version")
           " | "
-          [:a {:href "https://github.com/shaunlebron/parinfer"} "GitHub"]]
+          [:a {:href "https://github.com/shaunlebron/parinfer"} "GitHub"]]]))))
 
-         ]))))
+
 
 (defn editor-footer
   [editor]
@@ -157,4 +157,3 @@
   (prevent-backspace-navigation!)
   (create-ui-section editor-key editor-header "editor-header")
   (create-ui-section editor-key editor-footer "editor-footer"))
-

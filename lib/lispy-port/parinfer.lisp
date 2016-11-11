@@ -11,7 +11,7 @@
 ;;
 
 ;; (syntax helpers for imperative loops)
-(include "macros.ls")
+(include "macros.lisp")
 
 ;;------------------------------------------------------------------------------
 ;; Constants / Predicates
