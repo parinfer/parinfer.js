@@ -409,7 +409,6 @@
     (resetParenTrail result result.lineNo result.x+1)))
 
 ;; INDENT MODE: allow the cursor to clamp the paren trail
-;; FIXME: broken
 (function clampParenTrailToCursor (result)
   (var startX result.parenTrail.startX)
   (var endX result.parenTrail.endX)
@@ -421,8 +420,10 @@
     (var newEndX (Math.max endX result.cursorX))
 
     (var line result.lines[result.lineNo])
-    (var removeCount
-      (.length (filter isCloseParen (line.substring 0 newStartX))))
+    (var removeCount 0)
+    (forindex i startX newStartX
+      (when (isCloseParen line[i])
+        removeCount++))
 
     (result.parenTrail.openers.splice 0 removeCount)
     (set result.parenTrail.startX newStartX)
