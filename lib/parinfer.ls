@@ -439,14 +439,14 @@
       (result.parenStack.push (openers.pop)))))
 
 ;; INDENT MODE: correct paren trail from indentation
-;; FIXME: broken
 (function correctParenTrail (result indentX)
   (var parens "")
-  (while (&& (!= result.parenStack.length 0)
+  (var opener (peek result.parenStack))
+  (while (&& (!= opener SENTINEL_NULL)
              (>= opener.x indentX))
-    (var opener (peek result.parenStack))
     (result.parenStack.pop)
-    parens+=PARENS[opener.ch])
+    parens+=PARENS[opener.ch]
+    (set opener (peek result.parenStack)))
   (replaceWithinLine result result.parenTrail.lineNo result.parenTrail.startX result.parenTrail.endX parens))
 
 ;; PAREN MODE: remove spaces from the paren trail
