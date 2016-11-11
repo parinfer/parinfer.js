@@ -450,20 +450,19 @@
   (replaceWithinLine result result.parenTrail.lineNo result.parenTrail.startX result.parenTrail.endX parens))
 
 ;; PAREN MODE: remove spaces from the paren trail
-;; FIXME: broken
 (function cleanParenTrail (result)
   (var startX result.parenTrail.startX)
   (var endX result.parenTrail.endX)
 
   (when (&& (!= startX endX)
-            (!= result.lineNo result.parenTrail.lineNo))
+            (= result.lineNo result.parenTrail.lineNo))
 
     (var line result.lines[result.lineNo])
     (var newTrail "")
     (var spaceCount 0)
-    (foreach c (line.substring startX endX)
-      (if (isCloseParen c)
-        newTrail+=c
+    (forindex i startX endX
+      (if (isCloseParen line[i])
+        newTrail+=line[i]
         spaceCount++))
 
     (when (> spaceCount 0)
