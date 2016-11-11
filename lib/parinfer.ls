@@ -627,7 +627,6 @@
 
   (commitChar result origCh))
 
-;; FIXME: broken
 (function processLine (result line)
   (initLine result line)
   (initIndent result)
@@ -635,8 +634,8 @@
   (setTabStops result)
 
   (var chars (str line NEWLINE))
-  (foreach c chars
-    (processChar result c))
+  (forindex i 0 chars.length
+    (processChar result chars[i]))
 
   (var unmatchedX result.firstUnmatchedCloseParenX)
   (when (&& (!= unmatchedX SENTINEL_NULL)
