@@ -571,12 +571,11 @@
         (!= result.ch TAB))
     (onIndent result)))
 
-;; FIXME: broken
 (function initPreviewCursorScope (result)
   (when (&& result.previewCursorScope
             (= result.cursorLine result.lineNo))
     (var line result.lines[result.lineNo])
-    (var semicolonX (line.indexof ";"))
+    (var semicolonX (line.indexOf ";"))
     (set result.canPreviewCursorScope
       (&& result.trackingIndent
           (STANDALONE_PAREN_TRAIL.test line)
