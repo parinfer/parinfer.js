@@ -547,7 +547,6 @@
     (= result.mode PAREN_MODE)
     (correctIndent result)))
 
-;; FIXME: broken
 (function onLeadingCloseParen (result)
   (set result.skipChar true)
   (when (= result.mode PAREN_MODE)
@@ -556,7 +555,7 @@
         (do
           (set result.skipChar false)
           (onIndent result))
-        (appendParenTrail)))))
+        (appendParenTrail result)))))
 
 (function checkIndent (result)
   (cond
