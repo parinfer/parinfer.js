@@ -1,14 +1,3 @@
-;;
-;; Parinfer 1.9.0-beta
-;;
-;; Copyright 2015-2016 © Shaun LeBron
-;; MIT License
-;;
-;; Home Page: http://shaunlebron.github.io/parinfer/
-;; GitHub: https://github.com/shaunlebron/parinfer
-;;
-;; For DOCUMENTATION on this file, please see `parinfer.js.md`
-;;
 
 ;; (syntax helpers for imperative loops)
 (include "macros.lisp")
