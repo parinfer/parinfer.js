@@ -1,6 +1,5 @@
 # Parinfer Lib
 
-[![Gitter](https://badges.gitter.im/shaunlebron/parinfer.svg)](https://gitter.im/shaunlebron/parinfer?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 [![Travis](https://travis-ci.org/shaunlebron/parinfer.svg?branch=master)](https://travis-ci.org/shaunlebron/parinfer)
 
 This is the canonical implementation of [Parinfer]'s core transformation
@@ -8,7 +7,10 @@ functions. Though it is written in JavaScript, it is ported and synchronized to
 other languages to reach most major text editors.
 
 - [Parinfer Demo Editor](http://shaunlebron.github.io/parinfer/demo) - Try it out online.
-- [Parinfer Design and Implementation](parinfer.js.md) - Read for deep knowledge on inner workings.
+- [Parinfer Design and Implementation][parinfer.js.md] - Read for deep knowledge on inner workings.
+
+<!-- file links need to be full path to make them work for the NPM readme -->
+[parinfer.js.md]:https://github.com/shaunlebron/parinfer/blob/master/lib/parinfer.js.md
 
 [Parinfer]:http://shaunlebron.github.io/parinfer/
 
@@ -174,27 +176,11 @@ Arguments:
 - `options` is an object with the following properties:
   - `cursorLine` - zero-based line number of the cursor
   - `cursorX` - zero-based x-position of the cursor
-  - `cursorDx` - amount that the cursor moved horizontally if something was inserted or deleted
-    - only used by Paren Mode for preserving relative indentation of child expressions when their parents are shifted
-  - `previewCursorScope` - when set to true in Indent Mode, it shows the cursor's scope on an empty line by inserting close-parens after it. For example:
+  - `cursorDx` - (Paren Mode only) indicates the amount the cursor moved horizontally if something was inserted or deleted in order to help preserve relative indentation of child expressions ([see docs][cursorDx]).
+  - `previewCursorScope` - (Indent Mode only) when set to true, shows the cursor's scope on an empty line by inserting close-parens after it ([see docs][previewCursorScope]).
 
-     With `previewCursorScope = false`:
-
-     ```clj
-     (let [foo 1
-           bar 2]
-           |
-       (+ foo bar))
-     ```
-
-     And with `previewCursorScope = true`:
-
-     ```clj
-     (let [foo 1
-           bar 2
-           |]
-       (+ foo bar))
-     ```
+[cursorDx]:https://github.com/shaunlebron/parinfer/blob/master/lib/parinfer.js.md#preserving-relative-indentation-while-typing
+[previewCursorScope]:https://github.com/shaunlebron/parinfer/blob/master/lib/parinfer.js.md#seeing-cursor-scope-in-indent-mode
 
 Returns an object with the following properties:
 
@@ -210,6 +196,7 @@ Returns an object with the following properties:
     - `"eol-backslash"`
     - `"unclosed-quote"`
     - `"unclosed-paren"`
+    - `"unmatched-close-paren"`
     - `"unhandled"`
   - `message` is a message describing the error
   - `lineNo` is a zero-based line number where the error occurred
@@ -235,11 +222,11 @@ or use our [gitter chatroom].  I'll answer questions as soon as I can.
 
 ## Development
 
-__Language choice__: Parinfer is implemented in ECMAScript 5, which is old JavaScript
-supported nearly everywhere.  It was created initially in Clojure ([see
-here][old-clojure]), which was useful for exploring the idea in an immutable
-environment, but it is now maintained in JS because of speed demands and ease
-of portability to different environments.
+__Code__: [`parinfer.js`] is implemented in ECMAScript 5 for easy speed and portability.
+Original version was in ClojureScript [here][old-clojure]. Currently also
+maintaining [`parinfer.lisp`] in LispyScript, compiling to JS comparable
+in size and performance to direct JS-- about as close as I can get to using
+Parinfer while coding Parinfer.
 
 __Documentation__: Design and implementation is documented in [`parinfer.js.md`].
 
@@ -260,6 +247,7 @@ node test/perf.js
 
 <!-- file links need to be full path to make them work for the NPM readme -->
 
-[`test/cases.js`]:https://github.com/shaunlebron/parinfer/blob/master/lib/test/cases.js
+[`parinfer.js`]:https://github.com/shaunlebron/parinfer/blob/master/lib/parinfer.js
 [`parinfer.js.md`]:https://github.com/shaunlebron/parinfer/blob/master/lib/parinfer.js.md
+[`parinfer.lisp`]:https://github.com/shaunlebron/parinfer/blob/master/lib/lisp/parinfer.lisp
 [`test/cases/`]:https://github.com/shaunlebron/parinfer/tree/master/lib/test/cases
