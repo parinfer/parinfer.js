@@ -1,3 +1,7 @@
+## 2.0.0
+
+- do not remove unmatched close parens indiscriminately (see [relevant docs](parinfer.js.md#unmatched-close-parens))
+
 ## 1.8.2
 
 - fix missing semicolons to prevent closure minification errors (see [#120](https://github.com/shaunlebron/parinfer/issues/120))
