@@ -1,11 +1,11 @@
 #!/bin/sh
 
 ## Sync dependent files with each other:
-## - parinfer.js symbols => parinfer.js.md
+## - parinfer.js symbols => design.md
 ## - package.json version => parinfer.js and parinfer.lisp
 
 jsfile=parinfer.js
-docfile=parinfer.js.md
+docfile=doc/design.md
 lispfile=lisp/parinfer.lisp
 
 ##----------------------------------------------------------------------------
@@ -13,13 +13,13 @@ lispfile=lisp/parinfer.lisp
 ##----------------------------------------------------------------------------
 
 # ref links for each function name
-fn_links=$(perl -n -e'/^function (\w+)/ && print "[`$1`]:parinfer.js#L$.\n"' $jsfile)
+fn_links=$(perl -n -e'/^function (\w+)/ && print "[`$1`]:../parinfer.js#L$.\n"' $jsfile)
 
 # ref links for each var name
-var_links=$(perl -n -e'/^var ([\w_]+) = / && print "[`$1`]:parinfer.js#L$.\n"' $jsfile)
+var_links=$(perl -n -e'/^var ([\w_]+) = / && print "[`$1`]:../parinfer.js#L$.\n"' $jsfile)
 
 # ref links for each top-level result key
-result_links=$(perl -n -e'm{^    (\w+):.*//} && print "[`result.$1`]:parinfer.js#L$.\n"' $jsfile)
+result_links=$(perl -n -e'm{^    (\w+):.*//} && print "[`result.$1`]:../parinfer.js#L$.\n"' $jsfile)
 
 # where to insert the ref links
 lineno=$(perl -n -e'/<!-- END OF DOC/ && print $.' $docfile)

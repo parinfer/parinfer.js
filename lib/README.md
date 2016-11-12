@@ -5,10 +5,10 @@ functions. Though it is written in JavaScript, it is ported and synchronized to
 other languages to reach most major text editors.
 
 - [Parinfer Demo Editor](http://shaunlebron.github.io/parinfer/demo) - Try it out online.
-- [Parinfer Design and Implementation][parinfer.js.md] - Read for deep knowledge on inner workings.
+- [Parinfer Design and Implementation][design.md] - Read for deep knowledge on inner workings.
 
 <!-- file links need to be full path to make them work for the NPM readme -->
-[parinfer.js.md]:https://github.com/shaunlebron/parinfer/blob/master/lib/parinfer.js.md
+[design.md]:https://github.com/shaunlebron/parinfer/blob/master/lib/doc/design.md
 
 [Parinfer]:http://shaunlebron.github.io/parinfer/
 
@@ -81,7 +81,7 @@ console.log(result.text);
 _See [integrating.md]_
 
 <!-- file links need to be full path to make them work for the NPM readme -->
-[integrating.md]:https://github.com/shaunlebron/parinfer/blob/master/lib/integrating.md
+[integrating.md]:https://github.com/shaunlebron/parinfer/blob/master/lib/doc/integrating.md
 
 ## API
 
@@ -104,8 +104,8 @@ Arguments:
   - `previewCursorScope` - (Indent Mode only) when set to true, shows the cursor's scope on an empty line by inserting close-parens after it ([see docs][previewCursorScope]).
 
 <!-- file links need to be full path to make them work for the NPM readme -->
-[cursorDx]:https://github.com/shaunlebron/parinfer/blob/master/lib/parinfer.js.md#preserving-relative-indentation-while-typing
-[previewCursorScope]:https://github.com/shaunlebron/parinfer/blob/master/lib/parinfer.js.md#seeing-cursor-scope-in-indent-mode
+[cursorDx]:https://github.com/shaunlebron/parinfer/blob/master/lib/doc/design.md#preserving-relative-indentation-while-typing
+[previewCursorScope]:https://github.com/shaunlebron/parinfer/blob/master/lib/doc/design.md#seeing-cursor-scope-in-indent-mode
 
 Returns an object with the following properties:
 
@@ -154,7 +154,7 @@ __Code__: [`parinfer.js`] is implemented in ECMAScript 5 for easy speed and port
   in size and performance to direct JS-- about as close as I can get to using
   Parinfer while coding Parinfer.
 
-__Documentation__: Design and implementation is documented in [`parinfer.js.md`].
+__Documentation__: Design and implementation is documented in [`design.md`].
 
 __Testing__: See [`test/cases/`] directory for testing details.  Or just run the following:
 
@@ -173,6 +173,6 @@ node test/perf.js
 
 <!-- file links need to be full path to make them work for the NPM readme -->
 [`parinfer.js`]:https://github.com/shaunlebron/parinfer/blob/master/lib/parinfer.js
-[`parinfer.js.md`]:https://github.com/shaunlebron/parinfer/blob/master/lib/parinfer.js.md
+[`design.md`]:https://github.com/shaunlebron/parinfer/blob/master/lib/doc/design.md
 [`parinfer.lisp`]:https://github.com/shaunlebron/parinfer/blob/master/lib/lisp/parinfer.lisp
 [`test/cases/`]:https://github.com/shaunlebron/parinfer/tree/master/lib/test/cases
