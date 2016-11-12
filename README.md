@@ -1,7 +1,5 @@
 # Parinfer
 
-[![Gitter](https://badges.gitter.im/shaunlebron/parinfer.svg)](https://gitter.im/shaunlebron/parinfer?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
-
 _parentheses inference for Lisp_
 
 <img src="http://zippy.gfycat.com/WeirdOddBluefintuna.gif" width="400">
