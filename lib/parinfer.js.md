@@ -151,20 +151,29 @@ _This operation happens at [`onTab`], committed by [`commitChar`]._
 
 #### Unmatched Close Parens
 
-Any unmatched close-parens are removed. This makes the next transformations
-simpler and more predictable.
+Unmatched close-parens used to be removed indiscriminately.  This was a mistake
+that caused _undesirable_ and _irreversible_ code transformations in some cases.
+For example:
 
 ```clj
-(foo} 1 2 3)  ;; <-- before: the "}" is unmatched
-(foo 1 2 3)   ;; <-- after:  the "}" is removed
+(let [{:keys } some-map])   ;; 1. Everything is balanced currently
+
+(let [{:keys [} some-map])  ;; 2. When we type a `[` before `}`
+              ^             ;; <-- then `}` becomes unmatched
+
+(let [{:keys [ some-map]}]) ;; 3. If we remove the unmatched `}` in Indent Mode
+                        ^   ;; <-- it will end up reinserted here.
+
+(let [{:keys  some-map}])   ;; 4. Removing the initial `[` does not return the
+                            ;;    code to its original form.
 ```
 
-```clj
-(bar) 4 5 6)  ;; <-- before: the last ")" is unmatched
-(bar) 4 5 6   ;; <-- after:  the last ")" is removed
-```
+Thus, we do not indiscriminately remove unmatched close-parens as of `2.0.0`.
+Instead, we halt Parinfer until these unmatched close parens are resolved, which
+we mark by returning an [`ERROR_UNMATCHED_CLOSE_PAREN`] with the location of the
+offending character.
 
-_The operation happens at [`onUnmatchedCloseParen`], committed by [`commitChar`]._
+_This detection happens at [`onUnmatchedCloseParen`]._
 
 ## Analyzing a Line
 
@@ -453,7 +462,7 @@ since moving it to the end of the previous line would result in it being
 removed anyway by [`popParenTrail`].
 
 _Paren Mode_ will move any leading close-parens to the end of the previous Paren
-Trail. 
+Trail.
 
 _See the [`onLeadingCloseParen`] function for details._
 
