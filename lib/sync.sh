@@ -26,7 +26,7 @@ lineno=$(perl -n -e'/<!-- END OF DOC/ && print $.' $docfile)
 
 # add ref links to the docs
 docs=$(head -n $lineno $docfile)
-printf "$docs\n$var_links\n$fn_links\n$result_links" > $docfile
+printf "$docs\n$var_links\n$fn_links\n$result_links\n" > $docfile
 
 echo "Updated $docfile with $jsfile symbol locations."
 
