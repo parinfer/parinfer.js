@@ -709,7 +709,7 @@
   (publicResult result))
 
 (var API
-  {version: "1.9.0-beta",
+  {version: "2.0.0",
    indentMode: indentMode,
    parenMode: parenMode})
 

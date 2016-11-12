@@ -6,7 +6,7 @@
 
 jsfile=parinfer.js
 docfile=parinfer.js.md
-lispfile=lispy-port/parinfer.lisp
+lispfile=lisp/parinfer.lisp
 
 ##----------------------------------------------------------------------------
 ## Doc Symbol sync
