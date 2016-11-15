@@ -28,6 +28,8 @@
 
 (var STANDALONE_PAREN_TRAIL (new RegExp "^[\\s\\]\\)\\}]*(;.*)?$"))
 
+(var NOT_SPACE_OR_CLOSE_PAREN (new RegExp "[^\\s\\]\\)\\}]"))
+
 (var PARENS {"{": "}",
              "}": "{",
              "[": "]",
@@ -61,6 +63,8 @@
   (var result
     (object
       mode mode                ;; [enum] - current processing mode (INDENT_MODE or PAREN_MODE)
+      isNewlineMode false      ;; [boolean] - Newline Mode safely transforms the code when pressing enter in Indent Mode,
+                               ;;             by splitting the cursor line with Paren Mode.
 
       origText text            ;; [string] - original text
       origCursorX SENTINEL_NULL
@@ -109,6 +113,7 @@
       maxIndent SENTINEL_NULL  ;; [integer] - maximum allowed indentation of subsequent lines in Paren Mode
       indentDelta 0            ;; [integer] - how far indentation was shifted by Paren Mode
                                ;;  (preserves relative indentation of nested expressions)
+      nextIndentDelta 0        ;; [integer] - allows a previous line to set indentDelta of next line
 
       error                    ;; if 'success' is false, return this error to the user
       (object
@@ -134,7 +139,12 @@
     (when (isInteger options.cursorDx)
       (set result.cursorDx options.cursorDx))
     (when (isBoolean options.previewCursorScope)
-      (set result.previewCursorScope options.previewCursorScope)))
+      (set result.previewCursorScope options.previewCursorScope))
+    (when options.isNewlineMode
+      (set result.isNewlineMode options.isNewlineMode)
+      ;; calculate cursorDx
+      (var prevCursorLine result.origLines[result.cursorLine-1])
+      (set result.cursorDx (- result.cursorX prevCursorLine.length))))
 
   result)
 
@@ -224,6 +234,9 @@
 (function insertWithinLine (result lineNo idx insert)
   (replaceWithinLine result lineNo idx idx insert))
 
+(function insertLineAt (result lineNo line)
+  (result.lines.splice lineNo 0 line))
+
 (function initLine (result line)
   (set result.x 0)
   result.lineNo++
@@ -231,7 +244,8 @@
 
   ;; reset line-specific state
   (set result.commentX SENTINEL_NULL)
-  (set result.indentDelta 0)
+  (set result.indentDelta result.nextIndentDelta)
+  (set result.nextIndentDelta 0)
   (set result.firstUnmatchedCloseParenX SENTINEL_NULL))
 
 ;; if the current character has changed, commit its change to the current line
@@ -490,6 +504,17 @@
 ;; Indentation functions
 ;;------------------------------------------------------------------------------
 
+(function splitLineForStability (result)
+  (when (isCloseParen result.ch)
+    (var line result.lines[result.lineNo])
+    (var i (line.search NOT_SPACE_OR_CLOSE_PAREN))
+    (when (&& (!= i -1) (!= line[i] ";"))
+      (var lineA (line.substring 0 i))
+      (var lineB (line.substring i))
+      (set result.lines[result.lineNo] lineA)
+      (insertLineAt result (+ result.lineNo 1) lineB)
+      (set result.nextIndentDelta (+ result.indentDelta -i)))))
+
 (function correctIndent (result)
   (var origIndent result.x)
   (var newIndent origIndent)
@@ -534,6 +559,8 @@
       (correctParenTrail result result.x))
 
     (= result.mode PAREN_MODE)
+    (when (&& result.isNewlineMode (= result.cursorLine result.lineNo))
+      (splitLineForStability result))
     (correctIndent result)))
 
 (function onLeadingCloseParen (result)
@@ -676,6 +703,8 @@
 ;;------------------------------------------------------------------------------
 
 (function getChangedLines (result)
+  ;; FIXME: We can no longer assume that no lines are added/removed
+  ;;        because of Newline Mode.
   (var changedLines [])
   (forindex i 0 result.lines.length
     (when (!= result.lines[i] result.origLines[i])
@@ -706,6 +735,11 @@
 
 (function parenMode (text options)
   (var result (processText text options PAREN_MODE))
+  (publicResult result))
+
+(function newlineMode (text options)
+  (set options.isNewlineMode true)
+  (set result (processText text options PAREN_MODE))
   (publicResult result))
 
 (var API
