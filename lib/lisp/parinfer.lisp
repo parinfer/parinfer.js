@@ -154,12 +154,14 @@
     (when (isBoolean options.previewCursorScope)
       (set result.previewCursorScope options.previewCursorScope))
     (when (isBoolean options.pressedEnter)
-      (set result.pressedEnter options.pressedEnter)
-      ;; calculate cursorDx
-      (var prevCursorLine result.origLines[result.cursorLine-1])
-      (set result.cursorDx (- result.cursorX prevCursorLine.length)))
+      (set result.pressedEnter options.pressedEnter))
     (when (isBoolean options.stabilizeNewline)
       (set result.stabilizeNewline options.stabilizeNewline)))
+
+  ;; auto-calculate cursorDx when pressedEnter is true
+  (when result.pressedEnter
+    (var prevCursorLine result.origLines[result.cursorLine-1])
+    (set result.cursorDx (- result.cursorX prevCursorLine.length)))
 
   result)
 
