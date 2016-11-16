@@ -52,6 +52,18 @@
   (|| (= c "}") (= c ")") (= c "]")))
 
 ;;------------------------------------------------------------------------------
+;; Options Structure
+;;------------------------------------------------------------------------------
+
+(function parseOptions (options)
+  (object
+    cursorX options.cursorX
+    cursorLine options.cursorLine
+    cursorDx options.cursorDx
+    previewCursorScope options.previewCursorScope
+    pressedEnter options.pressedEnter))
+
+;;------------------------------------------------------------------------------
 ;; Result Structure
 ;;------------------------------------------------------------------------------
 
@@ -63,8 +75,6 @@
   (var result
     (object
       mode mode                ;; [enum] - current processing mode (INDENT_MODE or PAREN_MODE)
-      isNewlineMode false      ;; [boolean] - Newline Mode safely transforms the code when pressing enter in Indent Mode,
-                               ;;             by splitting the cursor line with Paren Mode.
 
       origText text            ;; [string] - original text
       origCursorX SENTINEL_NULL
@@ -96,6 +106,9 @@
       cursorDx SENTINEL_NULL      ;; [integer] - amount that the cursor moved horizontally if something was inserted or deleted
       previewCursorScope false    ;; [boolean] - preview the cursor's scope on an empty line by inserting close-parens after it.
       canPreviewCursorScope false ;; [boolean] - determines if the cursor is in a valid position to allow previewing scope
+
+      pressedEnter false
+      stabilizeNewline false
 
       isInCode true            ;; [boolean] - indicates if we are currently in "code space" (not string or comment)
       isEscaping false         ;; [boolean] - indicates if the next character will be escaped (e.g. `\c`).  This may be inside string, comment, or code.
@@ -140,11 +153,13 @@
       (set result.cursorDx options.cursorDx))
     (when (isBoolean options.previewCursorScope)
       (set result.previewCursorScope options.previewCursorScope))
-    (when options.isNewlineMode
-      (set result.isNewlineMode options.isNewlineMode)
+    (when (isBoolean options.pressedEnter)
+      (set result.pressedEnter options.pressedEnter)
       ;; calculate cursorDx
       (var prevCursorLine result.origLines[result.cursorLine-1])
-      (set result.cursorDx (- result.cursorX prevCursorLine.length))))
+      (set result.cursorDx (- result.cursorX prevCursorLine.length)))
+    (when (isBoolean options.stabilizeNewline)
+      (set result.stabilizeNewline options.stabilizeNewline)))
 
   result)
 
@@ -559,9 +574,10 @@
       (correctParenTrail result result.x))
 
     (= result.mode PAREN_MODE)
-    (when (&& result.isNewlineMode (= result.cursorLine result.lineNo))
-      (splitLineForStability result))
-    (correctIndent result)))
+    (do
+      (when (&& result.stabilizeNewline (= result.cursorLine result.lineNo))
+        (splitLineForStability result))
+      (correctIndent result))))
 
 (function onLeadingCloseParen (result)
   (set result.skipChar true)
@@ -730,16 +746,20 @@
        tabStops: result.tabStops})))
 
 (function indentMode (text options)
-  (var result (processText text options INDENT_MODE))
+  (set options (parseOptions options))
+  (var result)
+  (when options.pressedEnter
+    (set options.stabilizeNewline true)
+    (set result (processText text options PAREN_MODE))
+    (set options.stabilizeNewline false)
+    (set options.cursorX result.cursorX)
+    (set text result.text))
+  (set result (processText text options INDENT_MODE))
   (publicResult result))
 
 (function parenMode (text options)
+  (set options (parseOptions options))
   (var result (processText text options PAREN_MODE))
-  (publicResult result))
-
-(function newlineMode (text options)
-  (set options.isNewlineMode true)
-  (set result (processText text options PAREN_MODE))
   (publicResult result))
 
 (var API
