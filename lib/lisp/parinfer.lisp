@@ -56,6 +56,8 @@
 ;;------------------------------------------------------------------------------
 
 (function parseOptions (options)
+  (when !options
+    (set options {}))
   (object
     cursorX options.cursorX
     cursorLine options.cursorLine
@@ -749,7 +751,7 @@
 
 (function indentMode (text options)
   (set options (parseOptions options))
-  (var result)
+  (var result null)
   (when options.pressedEnter
     (set options.stabilizeNewline true)
     (set result (processText text options PAREN_MODE))
