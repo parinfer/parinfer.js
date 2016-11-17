@@ -745,3 +745,51 @@ use them to create tab stops for smart indentation snapping.
   |
   bar)
 ```
+
+## Pressing Enter
+
+Minimally indenting a new line:
+
+```in
+(foo
+|)
+^ pressedEnter
+```
+
+```out
+(foo)
+ |
+```
+
+> 1. pressing enter should not alter the AST
+> 2. pressing enter should not alter the position of the cursor in the AST
+
+```in
+(foo [a b
+|] bar)
+^ pressedEnter
+```
+
+```out
+(foo [a b]
+      |
+ bar)
+```
+
+Implied `cursorDx` value can preserve relative indentation:
+
+```in
+(foo [a b
+|] (bar
+^ pressedEnter
+             123)
+ baz)
+```
+
+```out
+(foo [a b]
+      |
+ (bar
+   123)
+ baz)
+```

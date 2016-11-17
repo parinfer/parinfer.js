@@ -1207,5 +1207,86 @@
         }
       ]
     }
+  },
+  {
+    "in": {
+      "fileLineNo": 752,
+      "lines": [
+        "(foo",
+        ")"
+      ],
+      "cursor": {
+        "cursorX": 0,
+        "cursorLine": 1,
+        "pressedEnter": true
+      }
+    },
+    "out": {
+      "fileLineNo": 758,
+      "lines": [
+        "(foo)",
+        " "
+      ],
+      "cursor": {
+        "cursorX": 1,
+        "cursorLine": 1
+      }
+    }
+  },
+  {
+    "in": {
+      "fileLineNo": 766,
+      "lines": [
+        "(foo [a b",
+        "] bar)"
+      ],
+      "cursor": {
+        "cursorX": 0,
+        "cursorLine": 1,
+        "pressedEnter": true
+      }
+    },
+    "out": {
+      "fileLineNo": 772,
+      "lines": [
+        "(foo [a b]",
+        "      ",
+        " bar)"
+      ],
+      "cursor": {
+        "cursorX": 6,
+        "cursorLine": 1
+      }
+    }
+  },
+  {
+    "in": {
+      "fileLineNo": 780,
+      "lines": [
+        "(foo [a b",
+        "] (bar",
+        "             123)",
+        " baz)"
+      ],
+      "cursor": {
+        "cursorX": 0,
+        "cursorLine": 1,
+        "pressedEnter": true
+      }
+    },
+    "out": {
+      "fileLineNo": 788,
+      "lines": [
+        "(foo [a b]",
+        "      ",
+        " (bar",
+        "   123)",
+        " baz)"
+      ],
+      "cursor": {
+        "cursorX": 6,
+        "cursorLine": 1
+      }
+    }
   }
 ]
