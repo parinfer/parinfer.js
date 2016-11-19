@@ -719,6 +719,67 @@
   result)
 
 ;;------------------------------------------------------------------------------
+;; Test Helper functions
+;;------------------------------------------------------------------------------
+
+(function test_error (lineNo msg)
+  (throw (str "test parse error at line " lineNo ": " msg)))
+
+(function test_parseCaretLine (options lineNo line)
+  (function match (line pattern)
+    (-> (new RegExp pattern) (.exec line)))
+  (var cursorDxMatch           (match line "^\\s*\\^\\s*cursorDx (-?\\d+)\\s*$"))
+  (var cursorPreviewScopeMatch (match line "^\\s*\\^\\spreviewCursorScope\\s*$"))
+  (var pressedEnterMatch       (match line "^\\s*\\^\\s*pressedEnter\\s*$"))
+  (var hasMatch (|| cursorDxMatch cursorPreviewScopeMatch pressedEnterMatch))
+  (when hasMatch
+    (var x (line.indexOf "^"))
+    (when (!= options.cursorX x)
+      (test_error lineNo "the ^ annotation does not point to a cursor."))
+    (cond
+      cursorDxMatch           (set options.cursorDx (parseInt cursorDxMatch[1]))
+      cursorPreviewScopeMatch (set options.previewCursorScope true)
+      pressedEnterMatch       (set options.pressedEnter true)))
+  hasMatch)
+
+(function test_parseCursorFromLine (options lineNo line)
+  (var cursorX (line.indexOf "|"))
+  (when (!= cursorX -1)
+    (when options.cursorX
+      (test_error lineNo "only one cursor allowed.  cursor already found at line" options.cursorLine))
+    (var lineClean (-> line (.split "|") (.join "")))
+    (when (< lineClean.length (- line.length 1))
+      (test_error lineNo "only one cursor allowed"))
+    (set line lineClean)
+    (set options.cursorX cursorX)
+    (set options.cursorLine lineNo))
+  line)
+
+(function test_parse (text)
+  (var options {})
+  (var newLines [])
+  (var origLines (text.split LINE_ENDING_REGEX))
+  (forindex i 0 origLines.length
+    (var line origLines[i])
+    (when (!test_parseCaretLine options i line)
+      (set line (test_parseCursorFromLine options i line))
+      (newLines.push line)))
+  (var newText (newLines.join "\n"))
+  {text: newText, options: options})
+
+(function test_format (result)
+  (var lines (result.lines.slice))
+  (when result.cursorX
+    (var line lines[result.cursorLine])
+    (set lines[result.cursorLine]
+      (replaceWithinString line result.cursorX result.cursorX "|")))
+  (when result.error
+    (lines.splice (+ result.error.lineNo 1) 0
+      (str (repeatString " " result.error.x)
+           "^ " result.error.name)))
+  (lines.join "\n"))
+
+;;------------------------------------------------------------------------------
 ;; Public API
 ;;------------------------------------------------------------------------------
 
@@ -766,10 +827,22 @@
   (var result (processText text options PAREN_MODE))
   (publicResult result))
 
+(function testIndentMode (text)
+  (var parsed (test_parse text))
+  (var result (indentMode parsed.text parsed.options))
+  (console.log (test_format result)))
+
+(function testParenMode (text)
+  (var parsed (test_parse text))
+  (var result (parenMode parsed.text parsed.options))
+  (console.log (test_format result)))
+
 (var API
   {version: "2.0.0",
    indentMode: indentMode,
-   parenMode: parenMode})
+   parenMode: parenMode,
+   testIndentMode: testIndentMode,
+   testParenMode: testParenMode})
 
 ;;------------------------------------------------------------------------------
 ;; JS Module Boilerplate
