@@ -768,7 +768,7 @@
   {text: newText, options: options})
 
 (function test_format (result)
-  (var lines (result.lines.slice))
+  (var lines (result.text.split LINE_ENDING_REGEX))
   (when result.cursorX
     (var line lines[result.cursorLine])
     (set lines[result.cursorLine]
@@ -797,6 +797,7 @@
 (function publicResult (result)
   (if !result.success
     {text: result.origText,
+     cursorLine: result.origCursorLine,
      cursorX: result.origCursorX,
      success: false,
      error: result.error}
@@ -805,6 +806,7 @@
       (var text (result.lines.join lineEnding))
       (var changedLines (getChangedLines result))
       {text: text,
+       cursorLine: result.cursorLine,
        cursorX: result.cursorX,
        success: true,
        changedLines: changedLines,
@@ -815,7 +817,7 @@
   (var result null)
   (when options.pressedEnter
     (set options.stabilizeNewline true)
-    (set result (processText text options PAREN_MODE))
+    (set result (publicResult (processText text options PAREN_MODE)))
     (set options.stabilizeNewline false)
     (set options.cursorX result.cursorX)
     (set text result.text))
