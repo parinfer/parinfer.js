@@ -88,8 +88,7 @@
       ch ""                    ;; [string] - character we are processing (can be changed to indicate a replacement)
       x 0                      ;; [integer] - x position of the current character (ch)
 
-      inputLineNo -1
-      inputX 0
+      inputLineNo -1           ;; [integer] - the current input line number
 
       parenStack []            ;; We track where we are in the Lisp tree by keeping a stack (array) of open-parens.
                                ;; Stack elements are objects containing keys {ch, x, lineNo, indentDelta}
@@ -529,13 +528,13 @@
     (var line result.lines[result.lineNo])
     (var x (line.search NOT_SPACE_OR_CLOSE_PAREN))
     (when (&& (!= x -1) (!= line[x] ";"))
-      (set result.lines[result.lineNo] (line.substring 0 x))
+      (set result.lines[result.lineNo] (-> (line.substring 0 x) (.trimRight)))
       (set result.nextIndentDelta (+ result.indentDelta -x))
 
       (var inputLine result.inputLines[result.inputLineNo])
-      (var inputX (inputLine.search NOT_SPACE_OR_CLOSE_PAREN))
-      (set result.inputLines[result.inputLineNo] (inputLine.substring 0 inputX))
-      (result.inputLines.splice (+ result.inputLineNo 1) 0 (inputLine.substring inputX)))))
+      (var splitX (inputLine.search NOT_SPACE_OR_CLOSE_PAREN))
+      (set result.inputLines[result.inputLineNo] (-> (inputLine.substring 0 splitX) (.trimRight)))
+      (result.inputLines.splice (+ result.inputLineNo 1) 0 (inputLine.substring splitX)))))
 
 (function correctIndent (result)
   (var origIndent result.x)
@@ -675,7 +674,6 @@
   ;; NOTE: inputLines may be mutated inside the loop (i.e. when line-splitting occurs),
   ;; so we cannot use an aliased `line` reference since it may get stale.
   (forindex x 0 result.inputLines[lineNo].length
-    (set result.inputX x)
     (processChar result result.inputLines[lineNo][x]))
 
   (processChar result NEWLINE)
