@@ -783,17 +783,6 @@
 ;; Public API
 ;;------------------------------------------------------------------------------
 
-(function getChangedLines (result)
-  ;; FIXME: We can no longer assume that no lines are added/removed
-  ;;        because of Newline Mode.
-  (var changedLines [])
-  (forindex i 0 result.lines.length
-    (when (!= result.lines[i] result.origLines[i])
-      (changedLines.push
-        {lineNo: i,
-         line: result.lines[i]})))
-  changedLines)
-
 (function publicResult (result)
   (if !result.success
     {text: result.origText,
@@ -804,12 +793,10 @@
     (do
       (var lineEnding (getLineEnding result.origText))
       (var text (result.lines.join lineEnding))
-      (var changedLines (getChangedLines result))
       {text: text,
        cursorLine: result.cursorLine,
        cursorX: result.cursorX,
        success: true,
-       changedLines: changedLines,
        tabStops: result.tabStops})))
 
 (function indentMode (text options)
