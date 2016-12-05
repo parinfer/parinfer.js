@@ -80,13 +80,16 @@
 
       origText text            ;; [string] - original text
       origCursorX SENTINEL_NULL
-      origLines                ;; [string array] - original lines
+      inputLines               ;; [string array] - input lines that we process line-by-line, char-by-char
       (text.split LINE_ENDING_REGEX)
 
       lines []                 ;; [string array] - resulting lines (with corrected parens or indentation)
       lineNo -1                ;; [integer] - line number we are processing
       ch ""                    ;; [string] - character we are processing (can be changed to indicate a replacement)
       x 0                      ;; [integer] - x position of the current character (ch)
+
+      inputLineNo -1
+      inputX 0
 
       parenStack []            ;; We track where we are in the Lisp tree by keeping a stack (array) of open-parens.
                                ;; Stack elements are objects containing keys {ch, x, lineNo, indentDelta}
@@ -162,7 +165,7 @@
 
   ;; auto-calculate cursorDx when pressedEnter is true
   (when result.pressedEnter
-    (var prevCursorLine result.origLines[result.cursorLine-1])
+    (var prevCursorLine result.inputLines[result.cursorLine-1])
     (set result.cursorDx (- result.cursorX prevCursorLine.length)))
 
   result)
@@ -252,9 +255,6 @@
 
 (function insertWithinLine (result lineNo idx insert)
   (replaceWithinLine result lineNo idx idx insert))
-
-(function insertLineAt (result lineNo line)
-  (result.lines.splice lineNo 0 line))
 
 (function initLine (result line)
   (set result.x 0)
@@ -523,16 +523,19 @@
 ;; Indentation functions
 ;;------------------------------------------------------------------------------
 
+;; precondition: we are at indentation point
 (function splitLineForStability (result)
   (when (isCloseParen result.ch)
     (var line result.lines[result.lineNo])
-    (var i (line.search NOT_SPACE_OR_CLOSE_PAREN))
-    (when (&& (!= i -1) (!= line[i] ";"))
-      (var lineA (line.substring 0 i))
-      (var lineB (line.substring i))
-      (set result.lines[result.lineNo] lineA)
-      (insertLineAt result (+ result.lineNo 1) lineB)
-      (set result.nextIndentDelta (+ result.indentDelta -i)))))
+    (var x (line.search NOT_SPACE_OR_CLOSE_PAREN))
+    (when (&& (!= x -1) (!= line[x] ";"))
+      (set result.lines[result.lineNo] (line.substring 0 x))
+      (set result.nextIndentDelta (+ result.indentDelta -x))
+
+      (var inputLine result.inputLines[result.inputLineNo])
+      (var inputX (inputLine.search NOT_SPACE_OR_CLOSE_PAREN))
+      (set result.inputLines[result.inputLineNo] (inputLine.substring 0 inputX))
+      (result.inputLines.splice (+ result.inputLineNo 1) 0 (inputLine.substring inputX)))))
 
 (function correctIndent (result)
   (var origIndent result.x)
@@ -663,15 +666,19 @@
 
   (commitChar result origCh))
 
-(function processLine (result line)
-  (initLine result line)
+(function processLine (result lineNo)
+  (initLine result result.inputLines[lineNo])
   (initIndent result)
 
   (setTabStops result)
 
-  (var chars (str line NEWLINE))
-  (forindex i 0 chars.length
-    (processChar result chars[i]))
+  ;; NOTE: inputLines may be mutated inside the loop (i.e. when line-splitting occurs),
+  ;; so we cannot use an aliased `line` reference since it may get stale.
+  (forindex x 0 result.inputLines[lineNo].length
+    (set result.inputX x)
+    (processChar result result.inputLines[lineNo][x]))
+
+  (processChar result NEWLINE)
 
   (var unmatchedX result.firstUnmatchedCloseParenX)
   (when (&& (!= unmatchedX SENTINEL_NULL)
@@ -711,8 +718,9 @@
 (function processText (text options mode)
   (var result (getInitialResult text options mode))
   (try
-    (foreach line result.origLines
-      (processLine result line))
+    (forindex i 0 result.inputLines.length
+      (set result.inputLineNo i)
+      (processLine result i))
     (finalizeResult result)
     (function (e)
       (processError result e)))
