@@ -710,6 +710,99 @@ rules of Indent Mode.
 
 _This operation happens at [`clampParenTrailToCursor`]._
 
+#### An extra rule
+
+Lines starting with a close-paren represent a common intermediate state that
+Indent Mode will not allow unless we append a special rule.  For example:
+
+```clj
+;; 1. Initial state
+(foo|) bar
+
+;; 2. User presses enter
+(foo
+  |) bar
+
+;; 3. Indent Mode processes as normal (bad)
+(foo
+  | bar)
+```
+
+The problem is that the user may expect to start typing at step 2 without
+realizing that step 3 had already changed the AST on them.  For example, if they
+typed `boo` at step 2, this is the expected vs actual outcome:
+
+```
+;; Expected
+(foo
+  boo|) bar
+
+;; Actual
+(foo
+  boo| bar)
+```
+
+The same type of problem can occur when backspacing on a line:
+
+```clj
+;; 1. Initial state
+(foo
+  boo|) bar
+
+;; 2. User deletes 'boo'
+(foo
+  |) bar
+
+;; 3. Indent Mode processes as normal (bad)
+(foo
+  | bar)
+```
+
+To allow the expected outcome, we need two new rules for Indent Mode.  The first
+allows us to temporarily stay at step 2 to allow normal operations to proceed without
+unexpected changes to the AST.
+
+```clj
+;; input
+(foo
+  |) bar
+   ^ cursor allows indentation point to be a close-paren
+
+;; output
+(foo
+  |) bar
+```
+
+The second rule allows us to prevent step 3 from occurring even if we move the
+cursor before typing anything at step 2.  (More justification is needed.)
+
+```clj
+;; input
+(foo
+  ) bar
+; ^ close-parens at indentation points cause a merging with previous non-empty line
+
+;; output
+(foo) bar
+          ; <-- blank line
+```
+
+For housekeeping, we will not remove an unmatched close-paren at the start of a line.
+This will just suspend Indent Mode, allowing you to dedent a line starting
+with a close-paren without the close-paren disappearing due to it becoming unmatched.
+
+```clj
+;; input
+   (foo)
+ |} bar
+  ^ unmatched close-paren at start of line
+
+;; output
+   (foo)
+ |} bar
+  ^ error to suspend indent mode
+```
+
 ### The Cursor in Paren Mode
 
 Paren Mode must also relax its rules so that it doesn't get in the way of
