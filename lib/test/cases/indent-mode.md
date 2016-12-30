@@ -661,6 +661,76 @@ This is expected behavior, but the common path to this state (i.e. pressing
 enter at `(let [a 1|] b)`) is handled using an explicit action external to
 Indent Mode.
 
+## Cursor Behind Leading Close-Parens
+
+Leading close-parens are allowed when preceded by a cursor.
+
+```in
+(foo [a b
+      |] bar)
+```
+
+```out
+(foo [a b
+      |] bar)
+```
+
+Leading close-parens are not allowed under other circumstances.  Rather than
+outright removing them or reindenting the line like Paren Mode, we join the
+line to the previous line.  This feels like a way of undoing the line split
+that may have caused the current state, and is similar to what happens for
+trailing close-parens on their own line.
+
+```in
+(foo [a b
+      ] bar)
+```
+
+```out
+(foo [a b] bar)
+
+```
+
+When typing a leading close-paren, the same line-join happens as in the previous
+case.
+
+```in
+(foo [a b
+      ]| bar)
+```
+
+```out
+(foo [a b]| bar)
+
+```
+
+Unmatched leading close-parens are removed just as unmatched trailing close-parens
+are.  They both belong to the class of inferred close-parens and are thus removable
+when unmatched.
+
+```in
+(foo [a b
+  ] bar)
+```
+
+```out
+(foo [a b]
+   bar)
+```
+
+To prevent the previous case from normally happening, say from backspacing or
+dedenting, we use Paren Mode to keep it at the valid indentation threshold.
+
+```in
+(foo [a b
+  |] bar)
+```
+
+```out
+(foo [a b
+      |] bar)
+```
+
 ## Cursor Shifting
 
 Commenting an inferred close-paren
@@ -748,7 +818,7 @@ use them to create tab stops for smart indentation snapping.
 
 ## Pressing Enter
 
-Minimally indenting a new line:
+Minimally indenting a new line (two spaces for open-paren when possible).
 
 ```in
 (foo
@@ -758,38 +828,59 @@ Minimally indenting a new line:
 
 ```out
 (foo)
- |
+  |
 ```
 
-> 1. pressing enter should not alter the AST
-> 2. pressing enter should not alter the position of the cursor in the AST
+One space for open-paren when not possible:
 
 ```in
-(foo [a b
-|] bar)
+((foo)
+|)
 ^ pressedEnter
 ```
 
 ```out
-(foo [a b]
-      |
- bar)
+((foo))
+ |
+```
+
+One space for square or curly bracket:
+
+```in
+{:foo
+|}
+^ pressedEnter
+```
+
+```out
+{:foo}
+ |
+```
+
+```in
+[:foo
+|]
+^ pressedEnter
+```
+
+```out
+[:foo]
+ |
 ```
 
 Implied `cursorDx` value can preserve relative indentation:
 
 ```in
 (foo [a b
-|] (bar
+|(bar
 ^ pressedEnter
-             123)
+            123)
  baz)
 ```
 
 ```out
 (foo [a b]
-      |
- (bar
-   123)
+      |(bar
+         123)
  baz)
 ```
