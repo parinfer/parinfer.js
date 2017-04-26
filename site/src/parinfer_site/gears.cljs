@@ -3,7 +3,8 @@
   (:require-macros
     [cljs.core.async.macros :refer [go go-loop]])
   (:require
-    [cljs.core.async :refer [<! timeout chan alts! close!]]))
+    [cljs.core.async :refer [<! timeout chan alts! close!]]
+    goog.Uri))
 
 (def default-options
   {:radius 16
@@ -155,4 +156,8 @@
     (doseq [g gear-objs]
       (.push gear-array g))
 
-    (animate-gears! svg selector gear-map gear-array anim-frames)))
+    ;; I think gears are always animating even when offscreen.
+    ;; The "?nogears" query string is a quick fix to disable it if
+    ;; the CPU is choking on some people's machines.
+    (when-not (= "nogears" (.getQuery (goog.Uri. js/document.location)))
+      (animate-gears! svg selector gear-map gear-array anim-frames))))
