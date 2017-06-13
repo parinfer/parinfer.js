@@ -2,11 +2,10 @@
 
 ## Sync dependent files with each other:
 ## - parinfer.js symbols => design.md
-## - package.json version => parinfer.js and parinfer.lisp
+## - package.json version => parinfer.js
 
 jsfile=parinfer.js
 docfile=doc/design.md
-lispfile=lisp/parinfer.lisp
 
 ##----------------------------------------------------------------------------
 ## Doc Symbol sync
@@ -40,10 +39,8 @@ version=$(perl -n -e'/"version": "(.+)"/ && print "$1"' package.json)
 # Sync version to code files.
 sed -i.bak "s|^// Parinfer .*|// Parinfer $version|" $jsfile
 sed -i.bak "s|^  version: .*|  version: \"$version\",|" $jsfile
-sed -i.bak "s|^  {version: .*|  {version: \"$version\",|" $lispfile
 
 rm ${jsfile}.bak
-rm ${lispfile}.bak
 
-echo "Updated $jsfile and $lispfile with package.json version $version"
+echo "Updated $jsfile with package.json version $version"
 echo

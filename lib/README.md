@@ -23,7 +23,6 @@ comprehensive test suite to help ensure consistent behavior.
 | implemented in | link                 | relevant editor          |
 |:---------------|:---------------------|:-------------------------|
 | JavaScript     | parinfer.js (here)   | Atom, VSCode, LightTable |
-| LispyScript    | parinfer.lisp (here) | 〃                       |
 | Python         | [parinfer.py]        | Sublime Text             |
 | Kotlin (JVM)   | [parinfer-jvm]       | Cursive IDE, Nightcode   |
 | Emacs Lisp     | [parinfer-elisp]     | Emacs                    |
@@ -146,11 +145,6 @@ or chat with us on [clojurians slack] at `#parinfer`.  I'll answer questions as 
 
 __Code__: [`parinfer.js`] is implemented in ECMAScript 5 for easy speed and portability. Also:
 
-- Original version was in ClojureScript [here][old-clojure].
-- Currently maintaining [`parinfer.lisp`] in LispyScript, compiling to JS comparable
-  in size and performance to direct JS-- about as close as I can get to using
-  Parinfer while coding Parinfer.
-
 __Documentation__: Design and implementation is documented in [`design.md`].
 
 __Testing__: See [`test/cases/`] directory for testing details.  Or just run the following:
@@ -166,10 +160,7 @@ __Performance__: To run a performance stress test:
 node test/perf.js
 ```
 
-[old-clojure]:https://github.com/shaunlebron/parinfer/tree/clojure/lib/src/parinfer
-
 <!-- file links need to be full path to make them work for the NPM readme -->
 [`parinfer.js`]:https://github.com/shaunlebron/parinfer/blob/master/lib/parinfer.js
 [`design.md`]:https://github.com/shaunlebron/parinfer/blob/master/lib/doc/design.md
-[`parinfer.lisp`]:https://github.com/shaunlebron/parinfer/blob/master/lib/lisp/parinfer.lisp
 [`test/cases/`]:https://github.com/shaunlebron/parinfer/tree/master/lib/test/cases

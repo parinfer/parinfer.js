@@ -1,5 +1,0 @@
-(foo [a b
-|] (bar
-^ pressedEnter
-             123)
- baz)
