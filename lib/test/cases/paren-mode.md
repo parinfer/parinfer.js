@@ -147,6 +147,30 @@ doesn't try to align siblings.
 
 ```in
 (defn foo
+[arg arg2
+bar
+```
+
+```out
+(defn foo
+[arg arg2
+^ unclosed-paren
+bar
+```
+
+## Unmatched close-parens
+
+```in
+(foo})
+```
+
+```out
+(foo})
+    ^ unmatched-close-paren
+```
+
+```in
+(defn foo
   [arg
   bar)
 ```
@@ -154,8 +178,8 @@ doesn't try to align siblings.
 ```out
 (defn foo
   [arg
-  ^ unclosed-paren
   bar)
+     ^ unmatched-close-paren
 ```
 
 ## Backslash cases

@@ -114,15 +114,14 @@ insert missing close-paren inside another when at end-of-line:
   x)
 ```
 
-close-paren _inside_ a line is unmatched:
+unmatched close-parens _inside_ a line are removed:
 
 ```in
 (foo [a (b] c)
 ```
 
 ```out
-(foo [a (b] c)
-          ^ unmatched-close-paren
+(foo [a (b c)])
 ```
 
 ## Strings

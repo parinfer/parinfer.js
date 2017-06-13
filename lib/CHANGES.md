@@ -1,6 +1,9 @@
 ## 3.0.0
 
-- use test-case annotations in input/output using `testIndentMode`/`testParenMode`
+- enhancement: use test-case annotations in input/output using `testIndentMode`/`testParenMode`
+- fix: error locations reported in input coords, not output coords
+- fix: throw error when unmatched close-paren found in Paren Mode
+- change: unmatched close-parens are removed in indent mode (undoes 2.0.0 behavior)
 
 ## 2.0.0
 
