@@ -1,3 +1,7 @@
+## 3.0.0
+
+- ...
+
 ## 2.0.0
 
 - do not remove unmatched close parens indiscriminately (see [relevant docs](doc/design.md#unmatched-close-parens))
