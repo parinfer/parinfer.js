@@ -15,10 +15,6 @@ something that you can try:
 1. __Update the cursor__: Parinfer may have to shift your cursor around since
    some parts of a line may be added/removed/replaced.  Move your cursor to
    the position at `cursorX`.
-1. __Signal when <kbd>Enter</kbd> is pressed__: Set `pressedEnter: true` when
-   you press enter so Parinfer can help you with indenting new lines.  It will
-   also occasionally split the current line into two separate ones to prevent
-   the <kbd>Enter</kbd> key from ever changing your AST in Indent Mode.
 1. __When the editor opens a file__ you must first pass their content to
   `parenMode` and replace its contents with the result.  This ensures
   indentation of a file is correct before using with Indent Mode.
