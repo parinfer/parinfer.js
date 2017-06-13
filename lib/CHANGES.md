@@ -1,6 +1,6 @@
 ## 3.0.0
 
-- ...
+- use test-case annotations in input/output using `testIndentMode`/`testParenMode`
 
 ## 2.0.0
 
