@@ -627,6 +627,58 @@ AST breakage.
       |] (+ a 2))
 ```
 
+Moving cursor to the right progressively moves leading close-parens behind it
+to their normal positions:
+
+```in
+(let [a 1
+      ]|)
+```
+
+```out
+(let [a 1]
+     |)
+```
+
+But even when exiting to Paren Mode we still want to remove any unmatched
+close-parens.
+
+```in
+(foo
+  }|)
+```
+
+```out
+(foo
+  |)
+```
+
+And if we paste in an unmatched close-paren, it should be removed instead of
+having Paren Mode throw the usual error.
+
+```in
+(foo
+  ) foo} bar|
+```
+
+```out
+(foo)
+foo bar|
+```
+
+But we cannot currently recover from pasting some open-parens:
+
+```in
+(foo
+  ) (bar|
+```
+
+```out
+(foo
+  ) (bar|
+    ^ unclosed-paren
+```
+
 ## Cursor Shifting
 
 Commenting an inferred close-paren

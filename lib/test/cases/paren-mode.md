@@ -170,6 +170,17 @@ bar
 ```
 
 ```in
+(foo
+  })
+```
+
+```out
+(foo
+  })
+  ^ unmatched-close-paren
+```
+
+```in
 (defn foo
   [arg
   bar)
