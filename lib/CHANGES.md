@@ -4,6 +4,10 @@
 - fix: error locations reported in input coords, not output coords
 - fix: throw error when unmatched close-paren found in Paren Mode
 - change: unmatched close-parens are removed in indent mode (undoes 2.0.0 behavior)
+- fix: exit Indent Mode to Paren Mode when leading close-parens found, to prevent edge cases [#126]
+- change: remove `previewCursorScope` option since it interfered with [#126]
+
+[#126]:https://github.com/shaunlebron/parinfer/issues/126
 
 ## 2.0.0
 

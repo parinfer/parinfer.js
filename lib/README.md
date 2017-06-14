@@ -20,13 +20,13 @@ implementation to the languages required by the plugin
 APIs of most major text editors.  All language ports pass the same
 comprehensive test suite to help ensure consistent behavior.
 
-| implemented in | link                 | relevant editor          |
-|:---------------|:---------------------|:-------------------------|
-| JavaScript     | parinfer.js (here)   | Atom, VSCode, LightTable |
-| Python         | [parinfer.py]        | Sublime Text             |
-| Kotlin (JVM)   | [parinfer-jvm]       | Cursive IDE, Nightcode   |
-| Emacs Lisp     | [parinfer-elisp]     | Emacs                    |
-| Vim Script     | [parinfer-viml]      | Vim                      |
+| implemented in | link               | relevant editor          |
+|:---------------|:-------------------|:-------------------------|
+| JavaScript     | parinfer.js (here) | Atom, VSCode, LightTable |
+| Python         | [parinfer.py]      | Sublime Text             |
+| Kotlin (JVM)   | [parinfer-jvm]     | Cursive IDE, Nightcode   |
+| Emacs Lisp     | [parinfer-elisp]   | Emacs                    |
+| Vim Script     | [parinfer-viml]    | Vim                      |
 
 _<strong>[Open an issue]</strong> if you would like Parinfer ported to another language for
 use in an editor not listed above._
@@ -100,11 +100,9 @@ Arguments:
   - `cursorLine` - zero-based line number of the cursor
   - `cursorX` - zero-based x-position of the cursor
   - `cursorDx` - (Paren Mode only) indicates the amount the cursor moved horizontally if something was inserted or deleted in order to help preserve relative indentation of child expressions ([see docs][cursorDx]).
-  - `previewCursorScope` - (Indent Mode only) when set to true, shows the cursor's scope on an empty line by inserting close-parens after it ([see docs][previewCursorScope]).
 
 <!-- file links need to be full path to make them work for the NPM readme -->
 [cursorDx]:https://github.com/shaunlebron/parinfer/blob/master/lib/doc/design.md#preserving-relative-indentation-while-typing
-[previewCursorScope]:https://github.com/shaunlebron/parinfer/blob/master/lib/doc/design.md#seeing-cursor-scope-in-indent-mode
 
 Returns an object with the following properties:
 

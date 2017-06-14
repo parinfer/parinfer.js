@@ -556,42 +556,17 @@ If the cursor is in a comment after such a close-paren, we can safely move it:
   ret)
 ```
 
-## Cursor Behind Standalone Close-Parens
+## Leading Close-Parens
 
-It is common to press enter when the cursor is the left of a close-paren.
-Since a line cannot start with a close-paren, they are moved back to where
-they were.
+Leading close-parens can cause many problems that can be fixed by paren mode,
+so we exit to paren mode when they are detected.
 
-```in
-(let [a 1
-      |])
-```
-
-```out
-(let [a 1])
-      |
-```
-
-The close-parens will move back once you start typing something:
-
-```in
-(let [a 1])
-      b|
-```
-
-```out
-(let [a 1
-      b|])
-```
-
-Some may prefer to allow the parentheses to stay after the cursor even before
-typing.  Thus, you can enable a `previewCursorScope` option that will allow you
-to preview where the Paren Trail would be after inserting text at the cursor.
+For example, it is convenient to keep trailing parens in front of the cursor
+after pressing enter or after deleting everything behind them:
 
 ```in
 (let [a 1
       |])
-      ^ previewCursorScope
 ```
 
 ```out
@@ -599,66 +574,58 @@ to preview where the Paren Trail would be after inserting text at the cursor.
       |])
 ```
 
-If you place the cursor on an empty line, `previewCursorScope` will allow you
-to see where the paren trail will go, revealing the cursor's current scope.
+Moving the cursor away:
 
 ```in
+(let [a 1
+      ]); <-- spaces
+```
+
+```out
 (let [a 1])
-  |
-  ^ previewCursorScope
+      ; <-- spaces
 ```
 
-```out
-(let [a 1]
-  |)
-```
-
-Moving the cursor back will adjust the scope.
-
-```in
-(let [a 1]
- | ); <-- space
- ^ previewCursorScope
-```
-
-```out
-(let [a 1]
- |) ; <-- space
-```
-
-The following will not preview cursor scope, because doing so
-will change the AST.
-
-```in
-(let [a 1]
-|
-^ previewCursorScope
-  (+ a 2))
-```
-
-```out
-(let [a 1]
-|
-  (+ a 2))
-```
-
-This also does not mean we can hold all leading close-parens
-in place.  The following example represents an unsupported case:
+But we also need safety from inadvertent AST breakage.  For example,
+Indent Mode should allow this intermediate state:
 
 ```in
 (let [a 1
-      |] b)
-      ^ previewCursorScope
+      |] (+ a 2))
 ```
 
 ```out
 (let [a 1
-      | b])
+      |] (+ a 2))
 ```
 
-This is expected behavior, but the common path to this state (i.e. pressing
-enter at `(let [a 1|] b)`) is handled using an explicit action external to
-Indent Mode.
+Moving the cursor away will cause Indent Mode to still detect the leading
+close-paren, exit to Paren Mode, then fix the spacing to prevent inadvertent
+breakage.
+
+```in
+(let [a 1
+      ] (+ a 2))
+```
+
+```out
+(let [a 1]
+     (+ a 2))
+```
+
+To prevent weird things, indentation needs to be locked to respect
+the leading close-paren.  Exiting to Paren Mode allows this and prevents further
+AST breakage.
+
+```in
+(let [a 1
+  |] (+ a 2))
+```
+
+```out
+(let [a 1
+      |] (+ a 2))
+```
 
 ## Cursor Shifting
 
