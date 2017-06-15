@@ -741,7 +741,7 @@ use them to create tab stops for smart indentation snapping.
 
 ```out
 (let [a {:foo 1}
-^    ^  ^           tabStops
+^    ^  ^ tabStops
       |
       bar [1 2 3]]
   bar)
@@ -757,9 +757,9 @@ use them to create tab stops for smart indentation snapping.
 
 ```out
 (let [a {:foo 1}
-^    ^                tabStops
+^    ^ tabStops
       bar [1 2 3]]
-          ^           tabStop
+          ^ tabStop
   |
   bar)
 ```
