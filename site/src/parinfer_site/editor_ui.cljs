@@ -35,14 +35,6 @@
     in that it respects and preserves your chosen indentation without
     configuration, as long as it falls within standard thresholds."))
 
-(def cursor-scope-caption
-  (list
-    [:em "previewCursorScope"]
-    "This is an option for Indent Mode.  When your cursor is on an empty line,
-    parens will temporarily be inserted after the cursor to let you know where
-    (structurally) your text will be inserted.  If your cursor leaves an empty
-    line before typing something, the parens will be returned."))
-
 (def cursor-dx-caption
   (list
     [:em "cursorDx:"]
@@ -99,19 +91,6 @@
           [:option {:value "indent-mode"} "Indent Mode"]
           [:option {:value "paren-mode"} "Paren Mode"]]
 
-         (when (= (:mode editor) :indent-mode)
-           (let [path [:options :preview-cursor-scope]]
-             [:label.user-option
-              {:on-mouse-over (fn [e] (om/update! editor :help-caption cursor-scope-caption))
-               :on-mouse-out (fn [e] (om/update! editor :help-caption ""))}
-              [:input
-               {:type "checkbox"
-                :checked (get-in editor path)
-                :on-change (fn [e]
-                             (om/update! editor path (.. e -target -checked))
-                             (refresh! (:cm editor)))}]
-              "previewCursorScope"]))
-
          (when (= (:mode editor) :paren-mode)
            (let [cursor-dx (or (:cursor-dx (:prev-options editor)) 0)]
              (list
@@ -130,7 +109,7 @@
 
 (defn prevent-backspace-navigation!
   "Since the cursor is always showing in the text editor because
-  it's useful to see when toggling 'previewCursorScope', we disable the
+  it's useful to see when cursor position is significant, we disable the
   backspace key to prevent it from making the browser go back to the previous
   page."
   []
