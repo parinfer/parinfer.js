@@ -6,13 +6,15 @@ text (with optional cursor), and expected output text. For readability, we
 specify these things in markdown:
 
 > description of the test...
-> 
+>
 > ```in
-> input text
+> input line 1
+> input line 2
 > ```
-> 
+>
 > ```out
-> expected output text
+> output line 1
+> output line 2
 > ```
 
 It is converted to the following data:
@@ -21,15 +23,11 @@ It is converted to the following data:
 {
   "in": {
     "fileLineNo": 2,
-    "lines": [
-      "input text"
-    ]
+    "text": "input line 1\ninput line 2"
   },
   "out": {
-    "fileLineNo": 6,
-    "lines": [
-      "expected output text"
-    ]
+    "fileLineNo": 7,
+    "text": "output line 1\noutput line 2"
   }
 }
 ```
@@ -46,6 +44,11 @@ everytime it runs, but you can build it directly here:
 node build.js
 ```
 
+## Annotations
+
+The following annotations are used to represent input options and output
+metadata.
+
 ## Cursor
 
 A pipe character `|` represents the cursor.
@@ -57,16 +60,6 @@ A pipe character `|` represents the cursor.
 > ```out
 > (def foo|)
 > ```
-
-The pipe character is removed from the input and output text, but its information
-is stored in its input or output data:
-
-```json
-"cursor": {
-  "cursorX": 8,
-  "cursorLine": 0
-}
-```
 
 ## Cursor Dx
 
@@ -87,14 +80,6 @@ deleted or added behind the cursor that resulted in the current state.
 >    bar)
 > ```
 
-```json
-"cursor": {
-  "cursorX": 0,
-  "cursorLine": 0,
-  "cursorDx": -3
-}
-```
-
 ## Expected Error
 
 An output block can contain an error line, with a caret `^` and the name
@@ -106,16 +91,25 @@ of the error.  The caret is positioned under the offending character.
 >
 > ```out
 > (def foo "bar
->          ^ unclosed-quote
+>          ^ error: unclosed-quote
 > ```
 
-The error line is removed from the output text, but its information is stored
-in the output data:
+## Tab Stops
 
-```json
-"error": {
-  "name": "unclosed-quote",
-  "lineNo": 1,
-  "x": 9
-}
-```
+An output block can contain a tabStops line before the cursor line. Each caret
+is positioned at the position of its associated open-paren.
+
+> ```in
+> (let [a {:foo 1}
+>       bar [1 2 3]]
+>   |
+>   bar)
+> ```
+>
+> ```out
+> (let [a {:foo 1}
+>       bar [1 2 3]]
+> ^    ^    ^ tabStops
+>   |
+>   bar)
+> ```
