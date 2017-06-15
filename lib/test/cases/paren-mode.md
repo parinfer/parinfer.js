@@ -142,7 +142,7 @@ doesn't try to align siblings.
 
 ```out
 (foo
-^ unclosed-paren
+^ error: unclosed-paren
 ```
 
 ```in
@@ -154,7 +154,7 @@ bar
 ```out
 (defn foo
 [arg arg2
-^ unclosed-paren
+^ error: unclosed-paren
 bar
 ```
 
@@ -166,7 +166,7 @@ bar
 
 ```out
 (foo})
-    ^ unmatched-close-paren
+    ^ error: unmatched-close-paren
 ```
 
 ```in
@@ -177,7 +177,7 @@ bar
 ```out
 (foo
   })
-  ^ unmatched-close-paren
+  ^ error: unmatched-close-paren
 ```
 
 ```in
@@ -190,7 +190,7 @@ bar
 (defn foo
   [arg
   bar)
-     ^ unmatched-close-paren
+     ^ error: unmatched-close-paren
 ```
 
 ## Backslash cases
@@ -226,7 +226,7 @@ c)
 
 ```out
 (foo [a b]\
-          ^ eol-backslash
+          ^ error: eol-backslash
 c)
 ```
 
@@ -241,7 +241,7 @@ c)
 ```out
 (def foo
   "hello
-  ^ unclosed-quote
+  ^ error: unclosed-quote
   bar)
 ```
 
@@ -258,7 +258,7 @@ ret)
 ```out
 (def foo [a b]
   ; "my string
-    ^ quote-danger
+    ^ error: quote-danger
 ret)
 ```
 

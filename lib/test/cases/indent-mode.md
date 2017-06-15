@@ -134,7 +134,7 @@ No close-parens are inserted when a string is unclosed.
 
 ```out
 (def foo "as
-         ^ unclosed-quote
+         ^ error: unclosed-quote
 ```
 
 even if close-parens are quoted out, do not do anything.
@@ -145,7 +145,7 @@ even if close-parens are quoted out, do not do anything.
 
 ```out
 (defn foo [a "])
-             ^ unclosed-quote
+             ^ error: unclosed-quote
 ```
 
 Multiline strings are supported:
@@ -230,7 +230,7 @@ out, causing Parinfer to treat its contents as code).
 
 ```out
 "|"foo"
-      ^ unclosed-quote
+      ^ error: unclosed-quote
 ```
 
 Another case:
@@ -247,7 +247,7 @@ Another case:
   "|
   "(a b)
       c")
-       ^ unclosed-quote
+       ^ error: unclosed-quote
 ```
 
 ## Unbalanced Quotes in Comments
@@ -269,7 +269,7 @@ odd number of quotes (one):
 (for [col columns]
   "|
   [:div.td {:style "max-width: 500px;"}])
-                                     ^ quote-danger
+                                     ^ error: quote-danger
 ```
 
 But a comment can contain an odd number of quotes if it is in a contiguous group of comments
@@ -372,7 +372,7 @@ Hanging backslash at end of line is invalid and causes processing to be abandone
 
 ```out
 (foo [a b\
-         ^ eol-backslash
+         ^ error: eol-backslash
   c)
 ```
 
@@ -676,7 +676,7 @@ But we cannot currently recover from pasting some open-parens:
 ```out
 (foo
   ) (bar|
-    ^ unclosed-paren
+    ^ error: unclosed-paren
 ```
 
 ## Cursor Shifting
@@ -757,9 +757,8 @@ use them to create tab stops for smart indentation snapping.
 
 ```out
 (let [a {:foo 1}
-^    ^ tabStops
       bar [1 2 3]]
-          ^ tabStop
+^    ^    ^ tabStops
   |
   bar)
 ```

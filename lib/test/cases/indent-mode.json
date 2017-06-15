@@ -2,1239 +2,561 @@
   {
     "in": {
       "fileLineNo": 6,
-      "lines": [
-        "(defn foo",
-        "  [arg",
-        "  ret"
-      ],
-      "cursor": null
+      "text": "(defn foo\n  [arg\n  ret"
     },
     "out": {
       "fileLineNo": 12,
-      "lines": [
-        "(defn foo",
-        "  [arg]",
-        "  ret)"
-      ],
-      "cursor": null
+      "text": "(defn foo\n  [arg]\n  ret)"
     }
   },
   {
     "in": {
       "fileLineNo": 20,
-      "lines": [
-        "(defn foo",
-        "  [arg",
-        "   ret"
-      ],
-      "cursor": null
+      "text": "(defn foo\n  [arg\n   ret"
     },
     "out": {
       "fileLineNo": 26,
-      "lines": [
-        "(defn foo",
-        "  [arg",
-        "   ret])"
-      ],
-      "cursor": null
+      "text": "(defn foo\n  [arg\n   ret])"
     }
   },
   {
     "in": {
       "fileLineNo": 34,
-      "lines": [
-        "(defn foo",
-        "[arg",
-        "   ret"
-      ],
-      "cursor": null
+      "text": "(defn foo\n[arg\n   ret"
     },
     "out": {
       "fileLineNo": 40,
-      "lines": [
-        "(defn foo)",
-        "[arg",
-        "   ret]"
-      ],
-      "cursor": null
+      "text": "(defn foo)\n[arg\n   ret]"
     }
   },
   {
     "in": {
       "fileLineNo": 48,
-      "lines": [
-        "(defn foo",
-        "[arg",
-        "ret"
-      ],
-      "cursor": null
+      "text": "(defn foo\n[arg\nret"
     },
     "out": {
       "fileLineNo": 54,
-      "lines": [
-        "(defn foo)",
-        "[arg]",
-        "ret"
-      ],
-      "cursor": null
+      "text": "(defn foo)\n[arg]\nret"
     }
   },
   {
     "in": {
       "fileLineNo": 62,
-      "lines": [
-        "(defn foo",
-        "  [arg",
-        "  ret",
-        "",
-        "(defn foo",
-        "  [arg",
-        "  ret"
-      ],
-      "cursor": null
+      "text": "(defn foo\n  [arg\n  ret\n\n(defn foo\n  [arg\n  ret"
     },
     "out": {
       "fileLineNo": 72,
-      "lines": [
-        "(defn foo",
-        "  [arg]",
-        "  ret)",
-        "",
-        "(defn foo",
-        "  [arg]",
-        "  ret)"
-      ],
-      "cursor": null
+      "text": "(defn foo\n  [arg]\n  ret)\n\n(defn foo\n  [arg]\n  ret)"
     }
   },
   {
     "in": {
       "fileLineNo": 86,
-      "lines": [
-        "bar)"
-      ],
-      "cursor": null
+      "text": "bar)"
     },
     "out": {
       "fileLineNo": 90,
-      "lines": [
-        "bar"
-      ],
-      "cursor": null
+      "text": "bar"
     }
   },
   {
     "in": {
       "fileLineNo": 96,
-      "lines": [
-        "(def foo [a b]]"
-      ],
-      "cursor": null
+      "text": "(def foo [a b]]"
     },
     "out": {
       "fileLineNo": 100,
-      "lines": [
-        "(def foo [a b])"
-      ],
-      "cursor": null
+      "text": "(def foo [a b])"
     }
   },
   {
     "in": {
       "fileLineNo": 106,
-      "lines": [
-        "(let [x {:foo 1 :bar 2]",
-        "  x)"
-      ],
-      "cursor": null
+      "text": "(let [x {:foo 1 :bar 2]\n  x)"
     },
     "out": {
       "fileLineNo": 111,
-      "lines": [
-        "(let [x {:foo 1 :bar 2}]",
-        "  x)"
-      ],
-      "cursor": null
+      "text": "(let [x {:foo 1 :bar 2}]\n  x)"
     }
   },
   {
     "in": {
       "fileLineNo": 118,
-      "lines": [
-        "(foo [a (b] c)"
-      ],
-      "cursor": null
+      "text": "(foo [a (b] c)"
     },
     "out": {
       "fileLineNo": 122,
-      "lines": [
-        "(foo [a (b c)])"
-      ],
-      "cursor": null
+      "text": "(foo [a (b c)])"
     }
   },
   {
     "in": {
       "fileLineNo": 130,
-      "lines": [
-        "(def foo \"as"
-      ],
-      "cursor": null
+      "text": "(def foo \"as"
     },
     "out": {
       "fileLineNo": 134,
-      "lines": [
-        "(def foo \"as"
-      ],
-      "cursor": null,
-      "error": {
-        "name": "unclosed-quote",
-        "lineNo": 0,
-        "x": 9
-      }
+      "text": "(def foo \"as\n         ^ error: unclosed-quote"
     }
   },
   {
     "in": {
       "fileLineNo": 141,
-      "lines": [
-        "(defn foo [a \"])"
-      ],
-      "cursor": null
+      "text": "(defn foo [a \"])"
     },
     "out": {
       "fileLineNo": 145,
-      "lines": [
-        "(defn foo [a \"])"
-      ],
-      "cursor": null,
-      "error": {
-        "name": "unclosed-quote",
-        "lineNo": 0,
-        "x": 13
-      }
+      "text": "(defn foo [a \"])\n             ^ error: unclosed-quote"
     }
   },
   {
     "in": {
       "fileLineNo": 152,
-      "lines": [
-        "(defn foo",
-        "  \"This is docstring.",
-        "  Line 2 here.\"",
-        "  ret"
-      ],
-      "cursor": null
+      "text": "(defn foo\n  \"This is docstring.\n  Line 2 here.\"\n  ret"
     },
     "out": {
       "fileLineNo": 159,
-      "lines": [
-        "(defn foo",
-        "  \"This is docstring.",
-        "  Line 2 here.\"",
-        "  ret)"
-      ],
-      "cursor": null
+      "text": "(defn foo\n  \"This is docstring.\n  Line 2 here.\"\n  ret)"
     }
   },
   {
     "in": {
       "fileLineNo": 168,
-      "lines": [
-        "(let [a \"Hello",
-        "World\"",
-        "      b 2",
-        "  ret"
-      ],
-      "cursor": null
+      "text": "(let [a \"Hello\nWorld\"\n      b 2\n  ret"
     },
     "out": {
       "fileLineNo": 175,
-      "lines": [
-        "(let [a \"Hello",
-        "World\"",
-        "      b 2]",
-        "  ret)"
-      ],
-      "cursor": null
+      "text": "(let [a \"Hello\nWorld\"\n      b 2]\n  ret)"
     }
   },
   {
     "in": {
       "fileLineNo": 184,
-      "lines": [
-        "(let [a \"])\"",
-        "      b 2"
-      ],
-      "cursor": null
+      "text": "(let [a \"])\"\n      b 2"
     },
     "out": {
       "fileLineNo": 189,
-      "lines": [
-        "(let [a \"])\"",
-        "      b 2])"
-      ],
-      "cursor": null
+      "text": "(let [a \"])\"\n      b 2])"
     }
   },
   {
     "in": {
       "fileLineNo": 196,
-      "lines": [
-        "(def foo \"\\\"\""
-      ],
-      "cursor": null
+      "text": "(def foo \"\\\"\""
     },
     "out": {
       "fileLineNo": 200,
-      "lines": [
-        "(def foo \"\\\"\")"
-      ],
-      "cursor": null
+      "text": "(def foo \"\\\"\")"
     }
   },
   {
     "in": {
       "fileLineNo": 207,
-      "lines": [
-        "()\"",
-        "\""
-      ],
-      "cursor": null
+      "text": "()\"\n\""
     },
     "out": {
       "fileLineNo": 212,
-      "lines": [
-        "()\"",
-        "\""
-      ],
-      "cursor": null
+      "text": "()\"\n\""
     }
   },
   {
     "in": {
       "fileLineNo": 226,
-      "lines": [
-        "\"\"foo\""
-      ],
-      "cursor": {
-        "cursorX": 1,
-        "cursorLine": 0
-      }
+      "text": "\"|\"foo\""
     },
     "out": {
       "fileLineNo": 230,
-      "lines": [
-        "\"\"foo\""
-      ],
-      "cursor": {
-        "cursorX": 1,
-        "cursorLine": 0
-      },
-      "error": {
-        "name": "unclosed-quote",
-        "lineNo": 0,
-        "x": 5
-      }
+      "text": "\"|\"foo\"\n      ^ error: unclosed-quote"
     }
   },
   {
     "in": {
       "fileLineNo": 237,
-      "lines": [
-        "(def foo",
-        "  \"",
-        "  \"(a b)",
-        "      c\")"
-      ],
-      "cursor": {
-        "cursorX": 3,
-        "cursorLine": 1
-      }
+      "text": "(def foo\n  \"|\n  \"(a b)\n      c\")"
     },
     "out": {
       "fileLineNo": 244,
-      "lines": [
-        "(def foo",
-        "  \"",
-        "  \"(a b)",
-        "      c\")"
-      ],
-      "cursor": {
-        "cursorX": 3,
-        "cursorLine": 1
-      },
-      "error": {
-        "name": "unclosed-quote",
-        "lineNo": 3,
-        "x": 7
-      }
+      "text": "(def foo\n  \"|\n  \"(a b)\n      c\")\n       ^ error: unclosed-quote"
     }
   },
   {
     "in": {
       "fileLineNo": 261,
-      "lines": [
-        "(for [col columns]",
-        "  \"",
-        "  [:div.td {:style \"max-width: 500px;\"}])"
-      ],
-      "cursor": {
-        "cursorX": 3,
-        "cursorLine": 1
-      }
+      "text": "(for [col columns]\n  \"|\n  [:div.td {:style \"max-width: 500px;\"}])"
     },
     "out": {
       "fileLineNo": 267,
-      "lines": [
-        "(for [col columns]",
-        "  \"",
-        "  [:div.td {:style \"max-width: 500px;\"}])"
-      ],
-      "cursor": {
-        "cursorX": 3,
-        "cursorLine": 1
-      },
-      "error": {
-        "name": "quote-danger",
-        "lineNo": 2,
-        "x": 37
-      }
+      "text": "(for [col columns]\n  \"|\n  [:div.td {:style \"max-width: 500px;\"}])\n                                     ^ error: quote-danger"
     }
   },
   {
     "in": {
       "fileLineNo": 278,
-      "lines": [
-        "(def foo [a b]",
-        "  ; \"my multiline",
-        "  ; docstring.\"",
-        "ret)"
-      ],
-      "cursor": null
+      "text": "(def foo [a b]\n  ; \"my multiline\n  ; docstring.\"\nret)"
     },
     "out": {
       "fileLineNo": 285,
-      "lines": [
-        "(def foo [a b])",
-        "  ; \"my multiline",
-        "  ; docstring.\"",
-        "ret"
-      ],
-      "cursor": null
+      "text": "(def foo [a b])\n  ; \"my multiline\n  ; docstring.\"\nret"
     }
   },
   {
     "in": {
       "fileLineNo": 294,
-      "lines": [
-        "(def foo [a b]",
-        "  ; \"\"\\\"",
-        "ret)"
-      ],
-      "cursor": null
+      "text": "(def foo [a b]\n  ; \"\"\\\"\nret)"
     },
     "out": {
       "fileLineNo": 300,
-      "lines": [
-        "(def foo [a b])",
-        "  ; \"\"\\\"",
-        "ret"
-      ],
-      "cursor": null
+      "text": "(def foo [a b])\n  ; \"\"\\\"\nret"
     }
   },
   {
     "in": {
       "fileLineNo": 310,
-      "lines": [
-        "(defn foo [a b",
-        "  \\[",
-        "  ret"
-      ],
-      "cursor": null
+      "text": "(defn foo [a b\n  \\[\n  ret"
     },
     "out": {
       "fileLineNo": 316,
-      "lines": [
-        "(defn foo [a b]",
-        "  \\[",
-        "  ret)"
-      ],
-      "cursor": null
+      "text": "(defn foo [a b]\n  \\[\n  ret)"
     }
   },
   {
     "in": {
       "fileLineNo": 322,
-      "lines": [
-        "(defn foo [a b]",
-        "  ret\\)"
-      ],
-      "cursor": null
+      "text": "(defn foo [a b]\n  ret\\)"
     },
     "out": {
       "fileLineNo": 327,
-      "lines": [
-        "(defn foo [a b]",
-        "  ret\\))"
-      ],
-      "cursor": null
+      "text": "(defn foo [a b]\n  ret\\))"
     }
   },
   {
     "in": {
       "fileLineNo": 332,
-      "lines": [
-        "{:tag-open \\[ :tag-close \\]}",
-        "{:tag-open \\[ :tag-close \\]}"
-      ],
-      "cursor": null
+      "text": "{:tag-open \\[ :tag-close \\]}\n{:tag-open \\[ :tag-close \\]}"
     },
     "out": {
       "fileLineNo": 337,
-      "lines": [
-        "{:tag-open \\[ :tag-close \\]}",
-        "{:tag-open \\[ :tag-close \\]}"
-      ],
-      "cursor": null
+      "text": "{:tag-open \\[ :tag-close \\]}\n{:tag-open \\[ :tag-close \\]}"
     }
   },
   {
     "in": {
       "fileLineNo": 345,
-      "lines": [
-        "(def foo \\;"
-      ],
-      "cursor": null
+      "text": "(def foo \\;"
     },
     "out": {
       "fileLineNo": 349,
-      "lines": [
-        "(def foo \\;)"
-      ],
-      "cursor": null
+      "text": "(def foo \\;)"
     }
   },
   {
     "in": {
       "fileLineNo": 355,
-      "lines": [
-        "(def foo \\,",
-        "(def bar \\ ; <-- space"
-      ],
-      "cursor": null
+      "text": "(def foo \\,\n(def bar \\ ; <-- space"
     },
     "out": {
       "fileLineNo": 360,
-      "lines": [
-        "(def foo \\,)",
-        "(def bar \\ ); <-- space"
-      ],
-      "cursor": null
+      "text": "(def foo \\,)\n(def bar \\ ); <-- space"
     }
   },
   {
     "in": {
       "fileLineNo": 367,
-      "lines": [
-        "(foo [a b\\",
-        "  c)"
-      ],
-      "cursor": null
+      "text": "(foo [a b\\\n  c)"
     },
     "out": {
       "fileLineNo": 372,
-      "lines": [
-        "(foo [a b\\",
-        "  c)"
-      ],
-      "cursor": null,
-      "error": {
-        "name": "eol-backslash",
-        "lineNo": 0,
-        "x": 9
-      }
+      "text": "(foo [a b\\\n         ^ error: eol-backslash\n  c)"
     }
   },
   {
     "in": {
       "fileLineNo": 383,
-      "lines": [
-        "(def foo ;)"
-      ],
-      "cursor": null
+      "text": "(def foo ;)"
     },
     "out": {
       "fileLineNo": 387,
-      "lines": [
-        "(def foo) ;)"
-      ],
-      "cursor": null
+      "text": "(def foo) ;)"
     }
   },
   {
     "in": {
       "fileLineNo": 394,
-      "lines": [
-        "(let [a 1",
-        "      b 2",
-        "      c {:foo 1",
-        "         ;; :bar 2}]",
-        "  ret)"
-      ],
-      "cursor": null
+      "text": "(let [a 1\n      b 2\n      c {:foo 1\n         ;; :bar 2}]\n  ret)"
     },
     "out": {
       "fileLineNo": 402,
-      "lines": [
-        "(let [a 1",
-        "      b 2",
-        "      c {:foo 1}]",
-        "         ;; :bar 2}]",
-        "  ret)"
-      ],
-      "cursor": null
+      "text": "(let [a 1\n      b 2\n      c {:foo 1}]\n         ;; :bar 2}]\n  ret)"
     }
   },
   {
     "in": {
       "fileLineNo": 412,
-      "lines": [
-        "(let [a 1 ;; a comment",
-        "  ret)"
-      ],
-      "cursor": null
+      "text": "(let [a 1 ;; a comment\n  ret)"
     },
     "out": {
       "fileLineNo": 417,
-      "lines": [
-        "(let [a 1] ;; a comment",
-        "  ret)"
-      ],
-      "cursor": null
+      "text": "(let [a 1] ;; a comment\n  ret)"
     }
   },
   {
     "in": {
       "fileLineNo": 424,
-      "lines": [
-        "; hello \\n world"
-      ],
-      "cursor": null
+      "text": "; hello \\n world"
     },
     "out": {
       "fileLineNo": 428,
-      "lines": [
-        "; hello \\n world"
-      ],
-      "cursor": null
+      "text": "; hello \\n world"
     }
   },
   {
     "in": {
       "fileLineNo": 441,
-      "lines": [
-        "(def b )"
-      ],
-      "cursor": {
-        "cursorX": 7,
-        "cursorLine": 0
-      }
+      "text": "(def b |)"
     },
     "out": {
       "fileLineNo": 445,
-      "lines": [
-        "(def b )"
-      ],
-      "cursor": {
-        "cursorX": 7,
-        "cursorLine": 0
-      }
+      "text": "(def b |)"
     }
   },
   {
     "in": {
       "fileLineNo": 451,
-      "lines": [
-        "(def b )"
-      ],
-      "cursor": null
+      "text": "(def b )"
     },
     "out": {
       "fileLineNo": 455,
-      "lines": [
-        "(def b)"
-      ],
-      "cursor": null
+      "text": "(def b)"
     }
   },
   {
     "in": {
       "fileLineNo": 461,
-      "lines": [
-        "(def b [[c d] ])"
-      ],
-      "cursor": {
-        "cursorX": 14,
-        "cursorLine": 0
-      }
+      "text": "(def b [[c d] |])"
     },
     "out": {
       "fileLineNo": 465,
-      "lines": [
-        "(def b [[c d] ])"
-      ],
-      "cursor": {
-        "cursorX": 14,
-        "cursorLine": 0
-      }
+      "text": "(def b [[c d] |])"
     }
   },
   {
     "in": {
       "fileLineNo": 471,
-      "lines": [
-        "(def b [[c d] ])"
-      ],
-      "cursor": null
+      "text": "(def b [[c d] ])"
     },
     "out": {
       "fileLineNo": 475,
-      "lines": [
-        "(def b [[c d]])"
-      ],
-      "cursor": null
+      "text": "(def b [[c d]])"
     }
   },
   {
     "in": {
       "fileLineNo": 482,
-      "lines": [
-        "(def b [[c d] ])"
-      ],
-      "cursor": {
-        "cursorX": 5,
-        "cursorLine": 0
-      }
+      "text": "(def |b [[c d] ])"
     },
     "out": {
       "fileLineNo": 486,
-      "lines": [
-        "(def b [[c d]])"
-      ],
-      "cursor": {
-        "cursorX": 5,
-        "cursorLine": 0
-      }
+      "text": "(def |b [[c d]])"
     }
   },
   {
     "in": {
       "fileLineNo": 498,
-      "lines": [
-        "(let [a 1])",
-        "  ret)"
-      ],
-      "cursor": null
+      "text": "(let [a 1])\n  ret)"
     },
     "out": {
       "fileLineNo": 503,
-      "lines": [
-        "(let [a 1]",
-        "  ret)"
-      ],
-      "cursor": null
+      "text": "(let [a 1]\n  ret)"
     }
   },
   {
     "in": {
       "fileLineNo": 510,
-      "lines": [
-        "(let [a 1])",
-        "  ret)"
-      ],
-      "cursor": {
-        "cursorX": 11,
-        "cursorLine": 0
-      }
+      "text": "(let [a 1])|\n  ret)"
     },
     "out": {
       "fileLineNo": 515,
-      "lines": [
-        "(let [a 1])",
-        "  ret"
-      ],
-      "cursor": {
-        "cursorX": 11,
-        "cursorLine": 0
-      }
+      "text": "(let [a 1])|\n  ret"
     }
   },
   {
     "in": {
       "fileLineNo": 523,
-      "lines": [
-        "(let [a 1]) 2",
-        "  ret"
-      ],
-      "cursor": null
+      "text": "(let [a 1]) 2\n  ret"
     },
     "out": {
       "fileLineNo": 528,
-      "lines": [
-        "(let [a 1]) 2",
-        "  ret"
-      ],
-      "cursor": null
+      "text": "(let [a 1]) 2\n  ret"
     }
   },
   {
     "in": {
       "fileLineNo": 536,
-      "lines": [
-        "(let [a 1])",
-        "  ret)"
-      ],
-      "cursor": {
-        "cursorX": 10,
-        "cursorLine": 0
-      }
+      "text": "(let [a 1]|)\n  ret)"
     },
     "out": {
       "fileLineNo": 541,
-      "lines": [
-        "(let [a 1]",
-        "  ret)"
-      ],
-      "cursor": {
-        "cursorX": 10,
-        "cursorLine": 0
-      }
+      "text": "(let [a 1]|\n  ret)"
     }
   },
   {
     "in": {
       "fileLineNo": 548,
-      "lines": [
-        "(let [a 1]) ;",
-        "  ret"
-      ],
-      "cursor": {
-        "cursorX": 13,
-        "cursorLine": 0
-      }
+      "text": "(let [a 1]) ;|\n  ret"
     },
     "out": {
       "fileLineNo": 553,
-      "lines": [
-        "(let [a 1] ;",
-        "  ret)"
-      ],
-      "cursor": {
-        "cursorX": 12,
-        "cursorLine": 0
-      }
+      "text": "(let [a 1] ;|\n  ret)"
     }
   },
   {
     "in": {
       "fileLineNo": 566,
-      "lines": [
-        "(let [a 1",
-        "      ])"
-      ],
-      "cursor": {
-        "cursorX": 6,
-        "cursorLine": 1
-      }
+      "text": "(let [a 1\n      |])"
     },
     "out": {
       "fileLineNo": 571,
-      "lines": [
-        "(let [a 1",
-        "      ])"
-      ],
-      "cursor": {
-        "cursorX": 6,
-        "cursorLine": 1
-      }
+      "text": "(let [a 1\n      |])"
     }
   },
   {
     "in": {
       "fileLineNo": 578,
-      "lines": [
-        "(let [a 1",
-        "      ]); <-- spaces"
-      ],
-      "cursor": null
+      "text": "(let [a 1\n      ]); <-- spaces"
     },
     "out": {
       "fileLineNo": 583,
-      "lines": [
-        "(let [a 1])",
-        "      ; <-- spaces"
-      ],
-      "cursor": null
+      "text": "(let [a 1])\n      ; <-- spaces"
     }
   },
   {
     "in": {
       "fileLineNo": 591,
-      "lines": [
-        "(let [a 1",
-        "      ] (+ a 2))"
-      ],
-      "cursor": {
-        "cursorX": 6,
-        "cursorLine": 1
-      }
+      "text": "(let [a 1\n      |] (+ a 2))"
     },
     "out": {
       "fileLineNo": 596,
-      "lines": [
-        "(let [a 1",
-        "      ] (+ a 2))"
-      ],
-      "cursor": {
-        "cursorX": 6,
-        "cursorLine": 1
-      }
+      "text": "(let [a 1\n      |] (+ a 2))"
     }
   },
   {
     "in": {
       "fileLineNo": 605,
-      "lines": [
-        "(let [a 1",
-        "      ] (+ a 2))"
-      ],
-      "cursor": null
+      "text": "(let [a 1\n      ] (+ a 2))"
     },
     "out": {
       "fileLineNo": 610,
-      "lines": [
-        "(let [a 1]",
-        "     (+ a 2))"
-      ],
-      "cursor": null
+      "text": "(let [a 1]\n     (+ a 2))"
     }
   },
   {
     "in": {
       "fileLineNo": 619,
-      "lines": [
-        "(let [a 1",
-        "  ] (+ a 2))"
-      ],
-      "cursor": {
-        "cursorX": 2,
-        "cursorLine": 1
-      }
+      "text": "(let [a 1\n  |] (+ a 2))"
     },
     "out": {
       "fileLineNo": 624,
-      "lines": [
-        "(let [a 1",
-        "      ] (+ a 2))"
-      ],
-      "cursor": {
-        "cursorX": 6,
-        "cursorLine": 1
-      }
+      "text": "(let [a 1\n      |] (+ a 2))"
     }
   },
   {
     "in": {
       "fileLineNo": 632,
-      "lines": [
-        "(let [a 1",
-        "      ])"
-      ],
-      "cursor": {
-        "cursorX": 7,
-        "cursorLine": 1
-      }
+      "text": "(let [a 1\n      ]|)"
     },
     "out": {
       "fileLineNo": 637,
-      "lines": [
-        "(let [a 1]",
-        "     )"
-      ],
-      "cursor": {
-        "cursorX": 5,
-        "cursorLine": 1
-      }
+      "text": "(let [a 1]\n     |)"
     }
   },
   {
     "in": {
       "fileLineNo": 645,
-      "lines": [
-        "(foo",
-        "  })"
-      ],
-      "cursor": {
-        "cursorX": 3,
-        "cursorLine": 1
-      }
+      "text": "(foo\n  }|)"
     },
     "out": {
       "fileLineNo": 650,
-      "lines": [
-        "(foo",
-        "  )"
-      ],
-      "cursor": {
-        "cursorX": 2,
-        "cursorLine": 1
-      }
+      "text": "(foo\n  |)"
     }
   },
   {
     "in": {
       "fileLineNo": 658,
-      "lines": [
-        "(foo",
-        "  ) foo} bar"
-      ],
-      "cursor": {
-        "cursorX": 12,
-        "cursorLine": 1
-      }
+      "text": "(foo\n  ) foo} bar|"
     },
     "out": {
       "fileLineNo": 663,
-      "lines": [
-        "(foo)",
-        "foo bar"
-      ],
-      "cursor": {
-        "cursorX": 7,
-        "cursorLine": 1
-      }
+      "text": "(foo)\nfoo bar|"
     }
   },
   {
     "in": {
       "fileLineNo": 670,
-      "lines": [
-        "(foo",
-        "  ) (bar"
-      ],
-      "cursor": {
-        "cursorX": 8,
-        "cursorLine": 1
-      }
+      "text": "(foo\n  ) (bar|"
     },
     "out": {
       "fileLineNo": 675,
-      "lines": [
-        "(foo",
-        "  ) (bar"
-      ],
-      "cursor": {
-        "cursorX": 8,
-        "cursorLine": 1
-      },
-      "error": {
-        "name": "unclosed-paren",
-        "lineNo": 1,
-        "x": 4
-      }
+      "text": "(foo\n  ) (bar|\n    ^ error: unclosed-paren"
     }
   },
   {
     "in": {
       "fileLineNo": 685,
-      "lines": [
-        "(foo bar ;)"
-      ],
-      "cursor": {
-        "cursorX": 10,
-        "cursorLine": 0
-      }
+      "text": "(foo bar ;|)"
     },
     "out": {
       "fileLineNo": 689,
-      "lines": [
-        "(foo bar) ;)"
-      ],
-      "cursor": {
-        "cursorX": 11,
-        "cursorLine": 0
-      }
+      "text": "(foo bar) ;|)"
     }
   },
   {
     "in": {
       "fileLineNo": 695,
-      "lines": [
-        "(let [x 1",
-        "      y 2;])"
-      ],
-      "cursor": {
-        "cursorX": 10,
-        "cursorLine": 1
-      }
+      "text": "(let [x 1\n      y 2;|])"
     },
     "out": {
       "fileLineNo": 700,
-      "lines": [
-        "(let [x 1",
-        "      y 2]);])"
-      ],
-      "cursor": {
-        "cursorX": 12,
-        "cursorLine": 1
-      }
+      "text": "(let [x 1\n      y 2]);|])"
     }
   },
   {
     "in": {
       "fileLineNo": 707,
-      "lines": [
-        "("
-      ],
-      "cursor": {
-        "cursorX": 1,
-        "cursorLine": 0
-      }
+      "text": "(|"
     },
     "out": {
       "fileLineNo": 711,
-      "lines": [
-        "()"
-      ],
-      "cursor": {
-        "cursorX": 1,
-        "cursorLine": 0
-      }
+      "text": "(|)"
     }
   },
   {
     "in": {
       "fileLineNo": 721,
-      "lines": [
-        "(def x [1 2 3])",
-        "(def y 2)",
-        ""
-      ],
-      "cursor": {
-        "cursorX": 0,
-        "cursorLine": 2
-      }
+      "text": "(def x [1 2 3])\n(def y 2)\n|"
     },
     "out": {
       "fileLineNo": 727,
-      "lines": [
-        "(def x [1 2 3])",
-        "(def y 2)",
-        ""
-      ],
-      "cursor": {
-        "cursorX": 0,
-        "cursorLine": 2
-      },
-      "tabStops": [
-        {
-          "ch": "(",
-          "x": 0,
-          "lineNo": 1
-        }
-      ]
+      "text": "(def x [1 2 3])\n(def y 2)\n^ tabStop\n|"
     }
   },
   {
     "in": {
       "fileLineNo": 734,
-      "lines": [
-        "(let [a {:foo 1}",
-        "      ",
-        "      bar [1 2 3]]",
-        "  bar)"
-      ],
-      "cursor": {
-        "cursorX": 6,
-        "cursorLine": 1
-      }
+      "text": "(let [a {:foo 1}\n      |\n      bar [1 2 3]]\n  bar)"
     },
     "out": {
       "fileLineNo": 741,
-      "lines": [
-        "(let [a {:foo 1}",
-        "      ",
-        "      bar [1 2 3]]",
-        "  bar)"
-      ],
-      "cursor": {
-        "cursorX": 6,
-        "cursorLine": 1
-      },
-      "tabStops": [
-        {
-          "ch": "(",
-          "x": 0,
-          "lineNo": 0
-        },
-        {
-          "ch": "[",
-          "x": 5,
-          "lineNo": 0
-        },
-        {
-          "ch": "{",
-          "x": 8,
-          "lineNo": 0
-        }
-      ]
+      "text": "(let [a {:foo 1}\n^    ^  ^ tabStops\n      |\n      bar [1 2 3]]\n  bar)"
     }
   },
   {
     "in": {
       "fileLineNo": 750,
-      "lines": [
-        "(let [a {:foo 1}",
-        "      bar [1 2 3]]",
-        "  ",
-        "  bar)"
-      ],
-      "cursor": {
-        "cursorX": 2,
-        "cursorLine": 2
-      }
+      "text": "(let [a {:foo 1}\n      bar [1 2 3]]\n  |\n  bar)"
     },
     "out": {
       "fileLineNo": 757,
-      "lines": [
-        "(let [a {:foo 1}",
-        "      bar [1 2 3]]",
-        "  ",
-        "  bar)"
-      ],
-      "cursor": {
-        "cursorX": 2,
-        "cursorLine": 2
-      },
-      "tabStops": [
-        {
-          "ch": "(",
-          "x": 0,
-          "lineNo": 0
-        },
-        {
-          "ch": "[",
-          "x": 5,
-          "lineNo": 0
-        },
-        {
-          "ch": "[",
-          "x": 10,
-          "lineNo": 1
-        }
-      ]
+      "text": "(let [a {:foo 1}\n      bar [1 2 3]]\n^    ^    ^ tabStops\n  |\n  bar)"
     }
   }
 ]
