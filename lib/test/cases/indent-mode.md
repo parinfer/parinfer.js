@@ -679,6 +679,112 @@ But we cannot currently recover from pasting some open-parens:
     ^ error: unclosed-paren
 ```
 
+## Infer parens behind unmatched
+
+Inserting an open-paren should insert themselves
+
+```in
+(foo [bar (|...] baz)
+```
+
+```out
+(foo [bar (|...)] baz)
+```
+
+```in
+(foo [bar (]| baz)])
+```
+
+```out
+(foo [bar (| baz)])
+```
+
+```in
+[... (foo [bar ]| baz]  ...)]
+```
+
+```out
+[... (foo [bar ]| baz  ...)]
+```
+
+```in
+(a (b (c))| d) e)
+```
+
+```out
+(a (b (c))| d) e
+```
+
+```in
+{a [b (c)]| d] e}
+```
+
+```out
+{a [b (c)]| d e}
+```
+
+```in
+(foo
+  bar)| baz) qux
+```
+
+```out
+(foo
+  bar)| baz qux
+```
+
+```in
+(foo
+  [bar
+   bar)| baz
+   bar])
+```
+
+```out
+(foo
+  [bar
+   bar| baz
+   bar])
+```
+
+```in
+(foo
+  [bar
+|bar) baz
+```
+
+```out
+(foo
+  [bar])
+|bar baz
+```
+
+
+```in
+(foo
+ [bar]
+  |bar) baz
+```
+
+```out
+(foo
+ [bar
+  |bar baz])
+```
+
+
+```in
+(foo
+ [bar
+ |bar]) baz
+```
+
+```out
+(foo
+ [bar]
+ |bar) baz
+```
+
 ## Cursor Shifting
 
 Commenting an inferred close-paren
