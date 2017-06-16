@@ -51,7 +51,7 @@ var BACKSLASH = '\\',
 
 var LINE_ENDING_REGEX = /\r?\n/;
 
-var PARENS = {
+var MATCH_PAREN = {
   "{": "}",
   "}": "{",
   "[": "]",
@@ -122,6 +122,7 @@ function getInitialResult(text, options, mode) {
     parenStack: [],            // We track where we are in the Lisp tree by keeping a stack (array) of open-parens.
                                // Stack elements are objects containing keys {ch, x, lineNo, indentDelta}
                                // whose values are the same as those described here in this result structure.
+    prevParen: SENTINEL_NULL,
 
     tabStops: [],              // In Indent Mode, it is useful for editors to snap a line's indentation
                                // to certain critical points.  Thus, we have a `tabStops` array of objects containing
@@ -172,7 +173,8 @@ function getInitialResult(text, options, mode) {
   if (options) {
     if (isInteger(options.cursorX))            { result.cursorX            = options.cursorX;
                                                  result.origCursorX        = options.cursorX; }
-    if (isInteger(options.cursorLine))         { result.cursorLine         = options.cursorLine; }
+    if (isInteger(options.cursorLine))         { result.cursorLine         = options.cursorLine;
+                                                 result.origCursorLine     = options.cursorLine; }
     if (isInteger(options.cursorDx))           { result.cursorDx           = options.cursorDx; }
     if (isBoolean(options.cameFromIndentMode)) { result.cameFromIndentMode = options.cameFromIndentMode; }
   }
@@ -298,6 +300,7 @@ function initLine(result, line) {
   result.commentX = SENTINEL_NULL;
   result.indentDelta = result.nextIndentDelta;
   result.nextIndentDelta = 0;
+  result.prevParen = SENTINEL_NULL;
 }
 
 // if the current character has changed, commit its change to the current line.
@@ -330,6 +333,14 @@ function peek(array) {
   return array[array.length - 1];
 }
 
+function peekn(array, index) {
+  var i = array.length - index;
+  if (i < 0 || i >= array.length) {
+    return SENTINEL_NULL;
+  }
+  return array[i];
+}
+
 //------------------------------------------------------------------------------
 // Character functions
 //------------------------------------------------------------------------------
@@ -338,7 +349,7 @@ function isValidCloseParen(parenStack, ch) {
   if (parenStack.length === 0) {
     return false;
   }
-  return peek(parenStack).ch === PARENS[ch];
+  return peek(parenStack).ch === MATCH_PAREN[ch];
 }
 
 function onOpenParen(result) {
@@ -352,6 +363,7 @@ function onOpenParen(result) {
       ch: result.ch,
       indentDelta: result.indentDelta
     });
+    result.prevParen = result.ch;
   }
 }
 
@@ -361,13 +373,39 @@ function onMatchedCloseParen(result) {
   result.parenTrail.openers.push(opener);
   result.maxIndent = opener.x;
   result.parenStack.pop();
+  result.prevParen = result.ch;
+}
+
+function tryInferOnUnmatchedCloseParen(result) {
+  var ch = result.ch;
+  if (
+    isOpenParen(result.prevParen) &&
+    result.parenStack.length >= 2 &&
+    peekn(result.parenStack, 2).ch === MATCH_PAREN[ch]
+  ) {
+    var inferCh = MATCH_PAREN[peek(result.parenStack).ch];
+    result.ch = inferCh; onMatchedCloseParen(result);
+    result.ch = ch;      onMatchedCloseParen(result);
+    result.ch = inferCh + ch;
+  } else {
+    result.ch = "";
+  }
 }
 
 function onUnmatchedCloseParen(result) {
   if (result.mode === PAREN_MODE && !result.cameFromIndentMode) {
     throw error(result, ERROR_UNMATCHED_CLOSE_PAREN, result.inputLineNo, result.inputX);
   }
-  result.ch = "";
+  var tryInfer = (
+    result.mode === INDENT_MODE &&
+    result.cursorLine === result.lineNo &&
+    result.cursorX <= result.x
+  );
+  if (tryInfer) {
+    tryInferOnUnmatchedCloseParen(result);
+  } else {
+    result.ch = "";
+  }
 }
 
 function onCloseParen(result) {
@@ -406,12 +444,12 @@ function onQuote(result) {
   else if (result.isInComment) {
     result.quoteDanger = !result.quoteDanger;
     if (result.quoteDanger) {
-      cacheErrorPos(result, ERROR_QUOTE_DANGER, result.lineNo, result.x);
+      cacheErrorPos(result, ERROR_QUOTE_DANGER, result.inputLineNo, result.inputX);
     }
   }
   else {
     result.isInStr = true;
-    cacheErrorPos(result, ERROR_UNCLOSED_QUOTE, result.lineNo, result.x);
+    cacheErrorPos(result, ERROR_UNCLOSED_QUOTE, result.inputLineNo, result.inputX);
   }
 }
 
@@ -432,7 +470,8 @@ function afterBackslash(result) {
 
 function onChar(result) {
   var ch = result.ch;
-  if (result.isEscaping)        { afterBackslash(result); }
+  var escaped = result.isEscaping;
+  if (escaped)                  { afterBackslash(result); }
   else if (isOpenParen(ch))     { onOpenParen(result); }
   else if (isCloseParen(ch))    { onCloseParen(result); }
   else if (ch === DOUBLE_QUOTE) { onQuote(result); }
@@ -442,6 +481,13 @@ function onChar(result) {
   else if (ch === NEWLINE)      { onNewline(result); }
 
   result.isInCode = !result.isInComment && !result.isInStr;
+
+  ch = result.ch;
+  var blank = ch === "" || ch === BLANK_SPACE || ch === DOUBLE_SPACE;
+  var trailable = !blank && !isCloseParen(ch[0]);
+  if (result.isInCode && (escaped || trailable)) {
+    resetParenTrail(result, result.lineNo, result.x+ch.length);
+  }
 }
 
 //------------------------------------------------------------------------------
@@ -491,27 +537,6 @@ function resetParenTrail(result, lineNo, x) {
   result.parenTrail.endX = x;
   result.parenTrail.openers = [];
   result.maxIndent = SENTINEL_NULL;
-}
-
-// update the head of the paren trail as we scan each character.
-// NOTE: `onMatchedCloseParen` modifies the endX
-function updateParenTrailBounds(result) {
-  var line = result.lines[result.lineNo];
-  var prevCh = SENTINEL_NULL;
-  if (result.x > 0) { prevCh = line[result.x - 1]; }
-  var ch = result.ch;
-
-  var shouldReset = (                               // In order to reset, the current character...
-    result.isInCode &&                              // - cannot be inside a string or comment
-    (!isCloseParen(ch) || prevCh === BACKSLASH) &&  // - cannot be a close-paren, unless escaped
-    ch !== "" &&                                    // - cannot be an erased character
-    (ch !== BLANK_SPACE || prevCh === BACKSLASH) && // - cannot be a space, unless escaped
-    ch != DOUBLE_SPACE                              // - cannot be a double-space (converted tab)
-  );
-
-  if (shouldReset) {
-    resetParenTrail(result, result.lineNo, result.x+1);
-  }
 }
 
 // INDENT MODE: allow the cursor to clamp the paren trail
@@ -566,14 +591,16 @@ function correctParenTrail(result, indentX) {
     var opener = peek(result.parenStack);
     if (opener.x >= indentX) {
       result.parenStack.pop();
-      parens += PARENS[opener.ch];
+      parens += MATCH_PAREN[opener.ch];
     }
     else {
       break;
     }
   }
 
-  replaceWithinLine(result, result.parenTrail.lineNo, result.parenTrail.startX, result.parenTrail.endX, parens);
+  if (result.parenTrail.lineNo !== SENTINEL_NULL) {
+    replaceWithinLine(result, result.parenTrail.lineNo, result.parenTrail.startX, result.parenTrail.endX, parens);
+  }
 }
 
 // PAREN MODE: remove spaces from the paren trail
@@ -608,7 +635,7 @@ function cleanParenTrail(result) {
 // PAREN MODE: append a valid close-paren to the end of the paren trail
 function appendParenTrail(result) {
   var opener = result.parenStack.pop();
-  var closeCh = PARENS[opener.ch];
+  var closeCh = MATCH_PAREN[opener.ch];
 
   result.maxIndent = opener.x;
   insertWithinLine(result, result.parenTrail.lineNo, result.parenTrail.endX, closeCh);
@@ -769,7 +796,6 @@ function processChar(result, ch) {
   }
   else {
     onChar(result);
-    updateParenTrailBounds(result);
   }
 
   commitChar(result, origCh);
@@ -853,7 +879,7 @@ function test_error(lineNo, msg) {
 }
 
 function test_parseCaretLine(options, lineNo, line) {
-  var cursorDxMatch           = /^\s*\^\s*cursorDx (-?\d+)\s*$/.test(line);
+  var cursorDxMatch = line.match(/^\s*\^\s*cursorDx (-?\d+)\s*$/);
   var hasMatch = cursorDxMatch;
   if (hasMatch) {
     var x = line.indexOf("^");
@@ -903,18 +929,41 @@ function test_parse(text) {
   };
 }
 
-function test_format(result) {
+function test_errorLine(result) {
+  // shift x position back if previous line has cursor before our error caret
+  var x = result.error.x;
+  if (result.cursorLine === result.error.lineNo &&
+      result.cursorX < x) {
+    x++;
+  }
+  return repeatString(" ", x) + "^ error: " + result.error.name;
+}
+
+function test_tabStopLine(tabStops) {
+  var i,x;
+  var lastX = -1;
+  var line = "";
+  for (i=0; i < tabStops.length; i++) {
+    x = tabStops[i].x;
+    line += repeatString(" ", x-lastX-1) + "^";
+    lastX = x;
+  }
+  line += " tabStop" + (tabStops.length > 1 ? "s" :"");
+  return line;
+}
+
+function test_format(result, printOptions) {
+  printOptions = printOptions || {};
   var lines = result.text.split(LINE_ENDING_REGEX);
   if (result.cursorX !== SENTINEL_NULL) {
     var line = lines[result.cursorLine];
     lines[result.cursorLine] = replaceWithinString(line, result.cursorX, result.cursorX, "|");
   }
   if (result.error) {
-    lines.splice(
-      result.error.lineNo+1,
-      0,
-      repeatString(" ", result.error.x) + "^ " + result.error.name
-    );
+    lines.splice(result.error.lineNo+1, 0, test_errorLine(result));
+  }
+  else if (printOptions.tabStops && result.tabStops.length > 0) {
+    lines.splice(result.cursorLine, 0, test_tabStopLine(result.tabStops));
   }
   return lines.join("\n");
 }
@@ -928,6 +977,7 @@ function publicResult(result) {
     return {
       text: result.origText,
       cursorX: result.origCursorX,
+      cursorLine: result.origCursorLine,
       success: false,
       error: result.error
     };
@@ -954,16 +1004,16 @@ function parenMode(text, options) {
 }
 
 
-function testIndentMode(text) {
+function testIndentMode(text, printOptions) {
   var parsed = test_parse(text);
   var result = indentMode(parsed.text, parsed.options);
-  console.log(test_format(result));
+  return test_format(result, printOptions);
 }
 
-function testParenMode(text) {
+function testParenMode(text, printOptions) {
   var parsed = test_parse(text);
   var result = parenMode(parsed.text, parsed.options);
-  console.log(test_format(result));
+  return test_format(result, printOptions);
 }
 
 var API = {
