@@ -15,12 +15,33 @@ something that you can try:
 1. __Update the cursor__: Parinfer may have to shift your cursor around since
    some parts of a line may be added/removed/replaced.  Move your cursor to
    the position at `cursorX`.
+1. __Highlight any errors__: Parinfer cannot infer how to fix all parens, so
+   get the returned `error` object and use it to highlight any offending characters,
+   so the user can resolve them to resume inference.
 1. __When the editor opens a file__ you must first pass their content to
   `parenMode` and replace its contents with the result.  This ensures
   indentation of a file is correct before using with Indent Mode.
-1. __Use Tab Stops__ to allow the user to quickly indent/dedent lines to
-   important points in Indent Mode.  When the user presses <kbd>Tab</kbd> or
-   <kbd>Shift</kbd>+<kbd>Tab</kbd>, do the following:
+1. __Allow mode toggling__ by using some hotkeys.  For example:
+  - <kbd>Ctrl</kbd>+<kbd>(</kbd> to toggle between Indent Mode and Paren Mode
+  - <kbd>Ctrl</kbd>+<kbd>)</kbd> to turn Parinfer off
+1. __Supply extra info to Paren Mode__ to allow it to preserve relative indentaiton
+   as you type.  If your editor can notify you of the _type_ of change the user
+   just performed, such as the portion of text that was inserted, deleted, or removed,
+   then you can calculate a `cursorDx` value from it, allowing Paren Mode
+   to keep expressions well-formatted. (TODO, explain how to compute this)
+1. __For better performance__ on larger files, you can limit the call frequency
+  of `indentMode` and `parenMode` by waiting for the user to stop typing after
+  some interval, or by [debouncing] the function.
+
+[debouncing]:https://davidwalsh.name/javascript-debounce-function
+
+## WIP: tab stops
+
+
+ __Use Tab Stops__ to allow the user to quickly indent/dedent lines to
+ important points in Indent Mode.  When the user presses <kbd>Tab</kbd> or
+ <kbd>Shift</kbd>+<kbd>Tab</kbd>, do the following:
+
    1. Prevent <kbd>Tab</kbd> from doing its normal space insertion, or just
       remove them prior to the next step.
    1. Run Indent Mode on the text, passing the cursor in as normal. BUT, if you
@@ -42,20 +63,6 @@ something that you can try:
        subsequent lines by the same delta applied to the first.
      - If no tab stop is available in the direction you're indenting, just use
        two spaces as normal.
-
-1. __Allow mode toggling__ by using some hotkeys.  For example:
-  - <kbd>Ctrl</kbd>+<kbd>(</kbd> to toggle between Indent Mode and Paren Mode
-  - <kbd>Ctrl</kbd>+<kbd>)</kbd> to turn Parinfer off
-1. __Supply extra info to Paren Mode__ to allow it to preserve relative indentaiton
-   as you type.  If your editor can notify you of the _type_ of change the user
-   just performed, such as the portion of text that was inserted, deleted, or removed,
-   then you can calculate a `cursorDx` value from it, allowing Paren Mode
-   to keep expressions well-formatted. (TODO, explain how to compute this)
-1. __For better performance__ on larger files, you can limit the call frequency
-  of `indentMode` and `parenMode` by waiting for the user to stop typing after
-  some interval, or by [debouncing] the function.
-
-[debouncing]:https://davidwalsh.name/javascript-debounce-function
 
 ## Add Parinfer to a REPL
 
