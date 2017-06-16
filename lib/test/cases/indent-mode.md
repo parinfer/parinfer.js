@@ -117,11 +117,12 @@ insert missing close-paren inside another when at end-of-line:
 unmatched close-parens _inside_ a line are removed:
 
 ```in
-(foo [a (b] c)
+(foo [a (|b] c)
 ```
 
 ```out
-(foo [a (b c)])
+(foo [a (|b] c)
+           ^ error: unmatched-close-paren
 ```
 
 ## Strings
@@ -640,8 +641,7 @@ to their normal positions:
      |)
 ```
 
-But even when exiting to Paren Mode we still want to remove any unmatched
-close-parens.
+When in Paren Mode we must abide by its rules to stay balanced.
 
 ```in
 (foo
@@ -650,11 +650,11 @@ close-parens.
 
 ```out
 (foo
-  |)
+  }|)
+  ^ error: unmatched-close-paren
 ```
 
-And if we paste in an unmatched close-paren, it should be removed instead of
-having Paren Mode throw the usual error.
+Likewise:
 
 ```in
 (foo
@@ -662,11 +662,10 @@ having Paren Mode throw the usual error.
 ```
 
 ```out
-(foo)
-foo bar|
+(foo
+  ) foo} bar|
+       ^ error: unmatched-close-paren
 ```
-
-But we cannot currently recover from pasting some open-parens:
 
 ```in
 (foo
@@ -679,33 +678,61 @@ But we cannot currently recover from pasting some open-parens:
     ^ error: unclosed-paren
 ```
 
-## Infer parens behind unmatched
+## Unmatched close-parens
 
-Inserting an open-paren should insert themselves
+I've tried some inference algorithms to resolve unmatched close-parens (see
+[#131]), but they didn't work out due to reasons stated in the issue.  The
+following cases demonstrate many edge cases that would have to be resolved if
+ever approached again.
+
+[#131]:https://github.com/shaunlebron/parinfer/issues/131
+
+Inserting a `(` inside a nested vector:
 
 ```in
 (foo [bar (|...] baz)
 ```
 
 ```out
-(foo [bar (|...)] baz)
+(foo [bar (|...] baz)
+               ^ error: unmatched-close-paren
 ```
+
+Inserting a `]` inside a nested list:
 
 ```in
 (foo [bar (]| baz)])
 ```
 
 ```out
-(foo [bar (| baz)])
+(foo [bar (]| baz)])
+           ^ error: unmatched-close-paren
 ```
+
+Inserting a `]` ahead of another inside a list (maybe to "barf" the end of the
+vector).
 
 ```in
 [... (foo [bar ]| baz]  ...)]
 ```
 
 ```out
-[... (foo [bar ]| baz  ...)]
+[... (foo [bar ]| baz]  ...)]
+                     ^ error: unmatched-close-paren
 ```
+
+Suppose you just backspaced a `[` below:
+
+```in
+(let [{:keys |foo bar]} my-map])
+```
+
+```out
+(let [{:keys |foo bar]} my-map])
+                     ^ error: unmatched-close-paren
+```
+
+Inserting a matched `)` inside nested expressions sometimes works out:
 
 ```in
 (a (b (c))| d) e)
@@ -715,6 +742,8 @@ Inserting an open-paren should insert themselves
 (a (b (c))| d) e
 ```
 
+Inserting a matched `(` inside nested expressions sometimes works out too:
+
 ```in
 (a (b (c(|) d) e)
 ```
@@ -723,29 +752,19 @@ Inserting an open-paren should insert themselves
 (a (b (c(|) d) e))
 ```
 
-```in
-{a [b (c)]| d] e}
-```
-
-```out
-{a [b (c)]| d e}
-```
-
-```in
-(a [b (c)|) d] e)
-```
-
-```out
-(a [b (c)| d] e)
-```
+But all it takes is one different kind of a paren to keep it from working:
 
 ```in
 (f [x (a (b c(|) d) y] g)
 ```
 
 ```out
-(f [x (a (b c(|) d) y g)])
+(f [x (a (b c(|) d) y] g)
+                     ^ error: unmatched-close-paren
 ```
+
+Unmatched close-parens on indented lines present similar issues.
+For example, inserting a `)` below:
 
 ```in
 (foo
@@ -754,7 +773,8 @@ Inserting an open-paren should insert themselves
 
 ```out
 (foo
-  bar)| baz qux
+  bar)| baz) qux
+           ^ error: unmatched-close-paren
 ```
 
 ```in
@@ -767,22 +787,28 @@ Inserting an open-paren should insert themselves
 ```out
 (foo
   [bar
-   bar| baz
+   bar)| baz
+      ^ error: unmatched-close-paren
    bar])
 ```
 
+Or when dedenting a line makes an inner close-paren unmatched:
+
 ```in
 (foo
-  [bar
+  [bar]
 |bar) baz
 ```
 
 ```out
 (foo
-  [bar])
-|bar baz
+  [bar]
+|bar) baz
+    ^ error: unmatched-close-paren
 ```
 
+In the same example, a different similar problem emerges when indenting a line
+makes the same inner close-paren unmatched:
 
 ```in
 (foo
@@ -792,21 +818,24 @@ Inserting an open-paren should insert themselves
 
 ```out
 (foo
- [bar
-  |bar baz])
+ [bar]
+  |bar) baz
+      ^ error: unmatched-close-paren
 ```
 
+The same problem demonstrated for another dedenting example:
 
 ```in
 (foo
  [bar
- |bar]) baz
+ bar]) baz
 ```
 
 ```out
 (foo
- [bar]
- |bar) baz
+ [bar
+ bar]) baz
+    ^ error: unmatched-close-paren
 ```
 
 ## Cursor Shifting

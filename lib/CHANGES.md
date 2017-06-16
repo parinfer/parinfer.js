@@ -1,11 +1,10 @@
-## 3.0.0
+## 2.1.0
 
 - fix: error locations reported in input coords, not output coords
 - fix: throw error when unmatched close-paren found in Paren Mode
 - fix: don't let Indent Mode crash when processing text without code
 - fix: when leading close-parens found in Indent Mode, exit to Paren Mode to prevent strange behavior [#126]
 - change: remove `previewCursorScope` option since it interfered with [#126]
-- change: unmatched close-parens are removed in indent mode (undoes 2.0.0 behavior)
 - enhancement: allow test-case annotations in input/output using `testIndentMode`/`testParenMode`
 
 [#126]:https://github.com/shaunlebron/parinfer/issues/126
