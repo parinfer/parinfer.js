@@ -542,120 +542,150 @@
   {
     "in": {
       "fileLineNo": 717,
-      "text": "{a [b (c)]| d] e}"
+      "text": "(a (b (c(|) d) e)"
     },
     "out": {
       "fileLineNo": 721,
-      "text": "{a [b (c)]| d e}"
+      "text": "(a (b (c(|) d) e))"
     }
   },
   {
     "in": {
       "fileLineNo": 725,
-      "text": "(foo\n  bar)| baz) qux"
+      "text": "{a [b (c)]| d] e}"
     },
     "out": {
-      "fileLineNo": 730,
-      "text": "(foo\n  bar)| baz qux"
+      "fileLineNo": 729,
+      "text": "{a [b (c)]| d e}"
     }
   },
   {
     "in": {
-      "fileLineNo": 735,
-      "text": "(foo\n  [bar\n   bar)| baz\n   bar])"
+      "fileLineNo": 733,
+      "text": "(a [b (c)|) d] e)"
     },
     "out": {
-      "fileLineNo": 742,
-      "text": "(foo\n  [bar\n   bar| baz\n   bar])"
+      "fileLineNo": 737,
+      "text": "(a [b (c)| d] e)"
+    }
+  },
+  {
+    "in": {
+      "fileLineNo": 741,
+      "text": "(f [x (a (b c(|) d) y] g)"
+    },
+    "out": {
+      "fileLineNo": 745,
+      "text": "(f [x (a (b c(|) d) y g)])"
     }
   },
   {
     "in": {
       "fileLineNo": 749,
+      "text": "(foo\n  bar)| baz) qux"
+    },
+    "out": {
+      "fileLineNo": 754,
+      "text": "(foo\n  bar)| baz qux"
+    }
+  },
+  {
+    "in": {
+      "fileLineNo": 759,
+      "text": "(foo\n  [bar\n   bar)| baz\n   bar])"
+    },
+    "out": {
+      "fileLineNo": 766,
+      "text": "(foo\n  [bar\n   bar| baz\n   bar])"
+    }
+  },
+  {
+    "in": {
+      "fileLineNo": 773,
       "text": "(foo\n  [bar\n|bar) baz"
     },
     "out": {
-      "fileLineNo": 755,
+      "fileLineNo": 779,
       "text": "(foo\n  [bar])\n|bar baz"
     }
   },
   {
     "in": {
-      "fileLineNo": 762,
+      "fileLineNo": 786,
       "text": "(foo\n [bar]\n  |bar) baz"
     },
     "out": {
-      "fileLineNo": 768,
+      "fileLineNo": 792,
       "text": "(foo\n [bar\n  |bar baz])"
     }
   },
   {
     "in": {
-      "fileLineNo": 775,
+      "fileLineNo": 799,
       "text": "(foo\n [bar\n |bar]) baz"
     },
     "out": {
-      "fileLineNo": 781,
+      "fileLineNo": 805,
       "text": "(foo\n [bar]\n |bar) baz"
     }
   },
   {
     "in": {
-      "fileLineNo": 791,
+      "fileLineNo": 815,
       "text": "(foo bar ;|)"
     },
     "out": {
-      "fileLineNo": 795,
+      "fileLineNo": 819,
       "text": "(foo bar) ;|)"
     }
   },
   {
     "in": {
-      "fileLineNo": 801,
+      "fileLineNo": 825,
       "text": "(let [x 1\n      y 2;|])"
     },
     "out": {
-      "fileLineNo": 806,
+      "fileLineNo": 830,
       "text": "(let [x 1\n      y 2]);|])"
     }
   },
   {
     "in": {
-      "fileLineNo": 813,
+      "fileLineNo": 837,
       "text": "(|"
     },
     "out": {
-      "fileLineNo": 817,
+      "fileLineNo": 841,
       "text": "(|)"
     }
   },
   {
     "in": {
-      "fileLineNo": 827,
+      "fileLineNo": 851,
       "text": "(def x [1 2 3])\n(def y 2)\n|"
     },
     "out": {
-      "fileLineNo": 833,
+      "fileLineNo": 857,
       "text": "(def x [1 2 3])\n(def y 2)\n^ tabStop\n|"
     }
   },
   {
     "in": {
-      "fileLineNo": 840,
+      "fileLineNo": 864,
       "text": "(let [a {:foo 1}\n      |\n      bar [1 2 3]]\n  bar)"
     },
     "out": {
-      "fileLineNo": 847,
+      "fileLineNo": 871,
       "text": "(let [a {:foo 1}\n^    ^  ^ tabStops\n      |\n      bar [1 2 3]]\n  bar)"
     }
   },
   {
     "in": {
-      "fileLineNo": 856,
+      "fileLineNo": 880,
       "text": "(let [a {:foo 1}\n      bar [1 2 3]]\n  |\n  bar)"
     },
     "out": {
-      "fileLineNo": 863,
+      "fileLineNo": 887,
       "text": "(let [a {:foo 1}\n      bar [1 2 3]]\n^    ^    ^ tabStops\n  |\n  bar)"
     }
   }

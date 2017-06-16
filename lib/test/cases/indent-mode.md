@@ -716,11 +716,35 @@ Inserting an open-paren should insert themselves
 ```
 
 ```in
+(a (b (c(|) d) e)
+```
+
+```out
+(a (b (c(|) d) e))
+```
+
+```in
 {a [b (c)]| d] e}
 ```
 
 ```out
 {a [b (c)]| d e}
+```
+
+```in
+(a [b (c)|) d] e)
+```
+
+```out
+(a [b (c)| d] e)
+```
+
+```in
+(f [x (a (b c(|) d) y] g)
+```
+
+```out
+(f [x (a (b c(|) d) y g)])
 ```
 
 ```in
