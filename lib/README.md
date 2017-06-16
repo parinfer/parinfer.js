@@ -1,3 +1,7 @@
+> __Want to use Parinfer on a team?__ Introduce [Parlinter] as your project's linter!
+
+[Parlinter]:https://github.com/shaunlebron/parlinter
+
 # Parinfer Lib [![Travis](https://travis-ci.org/shaunlebron/parinfer.svg?branch=master)](https://travis-ci.org/shaunlebron/parinfer)
 
 This is the canonical implementation of [Parinfer]'s core transformation

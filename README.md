@@ -1,3 +1,7 @@
+> __Want to use Parinfer on a team?__ Introduce [Parlinter] as your project's linter!
+
+[Parlinter]:https://github.com/shaunlebron/parlinter
+
 # Parinfer
 
 _parentheses inference for Lisp_
