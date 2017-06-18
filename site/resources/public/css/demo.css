@@ -254,3 +254,7 @@ span.calc-option {
 .CodeMirror-focused {
   border-color: #CCC;
 }
+
+.error {
+  background: #FFBEBE;
+}

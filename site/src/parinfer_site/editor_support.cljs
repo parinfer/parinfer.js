@@ -56,6 +56,22 @@
     {:line-no [start-line end-line]
      :new-line lines}))
 
+(defn mark-error! [cm {:keys [error]}]
+  (let [clear-marks! (fn [cm]
+                       (doseq [m (.getAllMarks cm)]
+                         (.clear m)))
+
+        add-mark! (fn [cm line-no x class-name]
+                    (let [from #js {:line line-no :ch x}
+                          to #js {:line line-no :ch (+ x 1)}
+                          opts #js {:className class-name}]
+                      (.markText cm from to opts)))]
+    ;; currently assuming no other marks
+    (clear-marks! cm)
+    (when error
+      (add-mark! cm (:line-no error) (:x error) "error"))))
+
+
 (defn fix-text!
   "Correctly format the text from the given editor."
   [cm & {:keys [change use-cache?]
@@ -97,6 +113,7 @@
 
     ;; update the text
     (swap! state assoc-in [key- :text] new-text)
+    (mark-error! cm result)
 
     ;; restore the selection, cursor, and scroll
     ;; since these are reset when overwriting codemirror's value.
