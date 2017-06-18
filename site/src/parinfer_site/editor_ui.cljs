@@ -48,6 +48,9 @@
   {:indent-mode indent-caption
    :paren-mode paren-caption})
 
+(defn major-version []
+  (aget js/window "parinfer" "version" "0"))
+
 (defn editor-header
   [editor]
   (reify
@@ -55,7 +58,7 @@
     (render [_]
       (html
         [:div
-         [:h1 "Par" [:em "infer"]]
+         [:h1 "Par" [:em "infer"] [:em (str " v" (major-version))]]
          [:div.subtitle
           {:style {:opacity 0.5
                    :display "inline-block"
