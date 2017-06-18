@@ -107,7 +107,6 @@
   (create-editor! "code-barf" :barf)
   (create-editor! "code-slurp" :slurp)
   (create-editor! "code-string" :string)
-  (create-editor! "code-enter" :enter)
 
 
   (let [opts {:readOnly true}]
@@ -165,7 +164,6 @@
    :string vcr-data/string
    :warn-bad vcr-data/warn-bad
    :warn-good vcr-data/warn-good
-   :enter vcr-data/enter
 
    :paren-tune vcr-data/paren-tune
    :paren-frac vcr-data/paren-frac
