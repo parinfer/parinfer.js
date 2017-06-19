@@ -1,3 +1,7 @@
+## 2.2.0
+
+- returned `error.extra` for accessing location of open-paren opposite to the `unmatched-close-paren` error
+
 ## 2.1.0
 
 - fix: error locations reported in input coords, not output coords
