@@ -1,5 +1,5 @@
 //
-// Parinfer 2.1.0
+// Parinfer 2.2.0
 //
 // Copyright 2015-2016 © Shaun LeBron
 // MIT License
@@ -138,8 +138,6 @@ function getInitialResult(text, options, mode) {
     isInComment: false,        // [boolean] - indicates if we are currently inside a comment
     commentX: SENTINEL_NULL,   // [integer] - x position of the start of comment on current line (if any)
 
-    firstUnmatchedCloseParenX: SENTINEL_NULL, // [integer] - x position of the first unmatched close paren of a line (if any)
-
     quoteDanger: false,        // [boolean] - indicates if quotes are imbalanced inside of a comment (dangerous)
     trackingIndent: false,     // [boolean] - are we looking for the indentation point of the current line?
     skipChar: false,           // [boolean] - should we skip the processing of the current character?
@@ -154,7 +152,12 @@ function getInitialResult(text, options, mode) {
       name: SENTINEL_NULL,     // [string] - Parinfer's unique name for this error
       message: SENTINEL_NULL,  // [string] - error message to display
       lineNo: SENTINEL_NULL,   // [integer] - line number of error
-      x: SENTINEL_NULL         // [integer] - start x position of error
+      x: SENTINEL_NULL,        // [integer] - start x position of error
+      extra: {
+        name: SENTINEL_NULL,
+        lineNo: SENTINEL_NULL,
+        x: SENTINEL_NULL
+      }
     },
     errorPosCache: {}          // [object] - maps error name to a potential error position
   };
@@ -186,35 +189,52 @@ var ERROR_EOL_BACKSLASH = "eol-backslash";
 var ERROR_UNCLOSED_QUOTE = "unclosed-quote";
 var ERROR_UNCLOSED_PAREN = "unclosed-paren";
 var ERROR_UNMATCHED_CLOSE_PAREN = "unmatched-close-paren";
+var ERROR_UNMATCHED_OPEN_PAREN = "unmatched-open-paren";
 var ERROR_UNHANDLED = "unhandled";
 
 var errorMessages = {};
 errorMessages[ERROR_QUOTE_DANGER] = "Quotes must balanced inside comment blocks.";
 errorMessages[ERROR_EOL_BACKSLASH] = "Line cannot end in a hanging backslash.";
 errorMessages[ERROR_UNCLOSED_QUOTE] = "String is missing a closing quote.";
-errorMessages[ERROR_UNCLOSED_PAREN] = "Unmatched open-paren.";
+errorMessages[ERROR_UNCLOSED_PAREN] = "Unclosed open-paren.";
 errorMessages[ERROR_UNMATCHED_CLOSE_PAREN] = "Unmatched close-paren.";
+errorMessages[ERROR_UNMATCHED_OPEN_PAREN] = "Unmatched open-paren.";
 errorMessages[ERROR_UNHANDLED] = "Unhandled error.";
 
-function cacheErrorPos(result, errorName, lineNo, x) {
-  result.errorPosCache[errorName] = { lineNo: lineNo, x: x };
+function cacheErrorPos(result, errorName) {
+  result.errorPosCache[errorName] = {
+    lineNo: result.lineNo,
+    x: result.x,
+    inputLineNo: result.inputLineNo,
+    inputX: result.inputX
+  };
 }
 
-function error(result, errorName, lineNo, x) {
-  if (lineNo === SENTINEL_NULL) {
-    lineNo = result.errorPosCache[errorName].lineNo;
-  }
-  if (x === SENTINEL_NULL) {
-    x = result.errorPosCache[errorName].x;
-  }
-
-  return {
+function error(result, name) {
+  var cache = result.errorPosCache[name];
+  var e = {
     parinferError: true,
-    name: errorName,
-    message: errorMessages[errorName],
-    lineNo: lineNo,
-    x: x
+    name: name,
+    message: errorMessages[name],
+    lineNo: cache ? cache.inputLineNo : result.inputLineNo,
+    x: cache ? cache.inputX : result.inputX
   };
+  var opener = peek(result.parenStack);
+
+  if (name === ERROR_UNMATCHED_CLOSE_PAREN) {
+    if (opener !== SENTINEL_NULL) {
+      e.extra = {
+        name: ERROR_UNMATCHED_OPEN_PAREN,
+        lineNo: opener.inputLineNo,
+        x: opener.inputX
+      };
+    }
+  }
+  else if (name === ERROR_UNCLOSED_PAREN) {
+    e.lineNo = opener.inputLineNo;
+    e.x = opener.inputX;
+  }
+  return e;
 }
 
 //------------------------------------------------------------------------------
@@ -294,7 +314,7 @@ function initLine(result, line) {
   result.commentX = SENTINEL_NULL;
   result.indentDelta = result.nextIndentDelta;
   result.nextIndentDelta = 0;
-  result.firstUnmatchedCloseParenX = SENTINEL_NULL;
+  delete result.errorPosCache[ERROR_UNMATCHED_CLOSE_PAREN];
 }
 
 // if the current character has changed, commit its change to the current line.
@@ -362,12 +382,12 @@ function onMatchedCloseParen(result) {
 
 function onUnmatchedCloseParen(result) {
   if (result.mode === PAREN_MODE) {
-    throw error(result, ERROR_UNMATCHED_CLOSE_PAREN, result.inputLineNo, result.inputX);
+    throw error(result, ERROR_UNMATCHED_CLOSE_PAREN);
   }
-  if (result.firstUnmatchedCloseParenX === SENTINEL_NULL) {
-    result.firstUnmatchedCloseParenX = result.x;
-    result.parenTrail.endX = result.x + 1;
+  if (!result.errorPosCache[ERROR_UNMATCHED_CLOSE_PAREN]) {
+    cacheErrorPos(result, ERROR_UNMATCHED_CLOSE_PAREN);
   }
+  result.parenTrail.endX = result.x + 1;
 }
 
 function onCloseParen(result) {
@@ -406,12 +426,12 @@ function onQuote(result) {
   else if (result.isInComment) {
     result.quoteDanger = !result.quoteDanger;
     if (result.quoteDanger) {
-      cacheErrorPos(result, ERROR_QUOTE_DANGER, result.inputLineNo, result.inputX);
+      cacheErrorPos(result, ERROR_QUOTE_DANGER);
     }
   }
   else {
     result.isInStr = true;
-    cacheErrorPos(result, ERROR_UNCLOSED_QUOTE, result.inputLineNo, result.inputX);
+    cacheErrorPos(result, ERROR_UNCLOSED_QUOTE);
   }
 }
 
@@ -424,7 +444,7 @@ function afterBackslash(result) {
 
   if (result.ch === NEWLINE) {
     if (result.isInCode) {
-      throw error(result, ERROR_EOL_BACKSLASH, result.inputLineNo, result.inputX);
+      throw error(result, ERROR_EOL_BACKSLASH);
     }
     onNewline(result);
   }
@@ -613,6 +633,13 @@ function invalidateParenTrail(result) {
   };
 }
 
+function checkUnmatchedOutsideParenTrail(result) {
+  var cache = result.errorPosCache[ERROR_UNMATCHED_CLOSE_PAREN];
+  if (cache && cache.x < result.parenTrail.startX) {
+    throw error(result, ERROR_UNMATCHED_CLOSE_PAREN);
+  }
+}
+
 function finishNewParenTrail(result) {
   if (result.isInStr) {
     invalidateParenTrail(result);
@@ -658,7 +685,7 @@ function onIndent(result) {
   result.trackingIndent = false;
 
   if (result.quoteDanger) {
-    throw error(result, ERROR_QUOTE_DANGER, SENTINEL_NULL, SENTINEL_NULL);
+    throw error(result, ERROR_QUOTE_DANGER);
   }
 
   if (result.mode === INDENT_MODE) {
@@ -675,17 +702,15 @@ function onLeadingCloseParen(result) {
     throw {indentModeLeadingCloseParen: true};
   }
   if (result.mode === PAREN_MODE) {
-    if (isValidCloseParen(result.parenStack, result.ch)) {
-      if (isCursorOnLeft(result)) {
-        result.skipChar = false;
-        onIndent(result);
-      }
-      else {
-        appendParenTrail(result);
-      }
+    if (!isValidCloseParen(result.parenStack, result.ch)) {
+      throw error(result, ERROR_UNMATCHED_CLOSE_PAREN);
+    }
+    if (isCursorOnLeft(result)) {
+      result.skipChar = false;
+      onIndent(result);
     }
     else {
-      throw error(result, ERROR_UNMATCHED_CLOSE_PAREN, result.inputLineNo, result.inputX);
+      appendParenTrail(result);
     }
   }
 }
@@ -775,10 +800,7 @@ function processLine(result, lineNo) {
   }
   processChar(result, NEWLINE);
 
-  var unmatchedX = result.firstUnmatchedCloseParenX;
-  if (unmatchedX !== SENTINEL_NULL && unmatchedX < result.parenTrail.startX) {
-    throw error(result, ERROR_UNMATCHED_CLOSE_PAREN, result.lineNo, unmatchedX);
-  }
+  checkUnmatchedOutsideParenTrail(result);
 
   if (result.lineNo === result.parenTrail.lineNo) {
     finishNewParenTrail(result);
@@ -786,13 +808,12 @@ function processLine(result, lineNo) {
 }
 
 function finalizeResult(result) {
-  if (result.quoteDanger) { throw error(result, ERROR_QUOTE_DANGER, SENTINEL_NULL, SENTINEL_NULL); }
-  if (result.isInStr)     { throw error(result, ERROR_UNCLOSED_QUOTE, SENTINEL_NULL, SENTINEL_NULL); }
+  if (result.quoteDanger) { throw error(result, ERROR_QUOTE_DANGER); }
+  if (result.isInStr)     { throw error(result, ERROR_UNCLOSED_QUOTE); }
 
   if (result.parenStack.length !== 0) {
     if (result.mode === PAREN_MODE) {
-      var opener = peek(result.parenStack);
-      throw error(result, ERROR_UNCLOSED_PAREN, opener.inputLineNo, opener.inputX);
+      throw error(result, ERROR_UNCLOSED_PAREN);
     }
   }
   if (result.mode === INDENT_MODE) {
@@ -982,7 +1003,7 @@ function testParenMode(text, printOptions) {
 }
 
 var API = {
-  version: "2.1.0",
+  version: "2.2.0",
   indentMode: indentMode,
   parenMode: parenMode,
   testIndentMode: testIndentMode,
