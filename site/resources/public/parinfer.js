@@ -398,7 +398,7 @@ function onUnmatchedCloseParen(result) {
       e.inputX = opener.inputX;
     }
   }
-  result.parenTrail.endX = result.x + 1;
+  result.ch = "";
 }
 
 function onCloseParen(result) {
