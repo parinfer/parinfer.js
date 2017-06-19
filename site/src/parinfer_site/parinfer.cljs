@@ -9,7 +9,11 @@
     {:name (aget e "name")
      :message (aget e "message")
      :line-no (aget e "lineNo")
-     :x (aget e "x")}))
+     :x (aget e "x")
+     :extra (when-let [extra (aget e "extra")]
+              {:name (aget extra "name")
+               :line-no (aget extra "lineNo")
+               :x (aget extra "x")})}))
 
 (defn- convert-result [result]
   {:text (aget result "text")

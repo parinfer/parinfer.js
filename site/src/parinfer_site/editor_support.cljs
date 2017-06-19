@@ -69,8 +69,9 @@
     ;; currently assuming no other marks
     (clear-marks! cm)
     (when error
-      (add-mark! cm (:line-no error) (:x error) "error"))))
-
+      (add-mark! cm (:line-no error) (:x error) "error")
+      (when-let [extra (:extra error)]
+        (add-mark! cm (:line-no extra) (:x extra) "error")))))
 
 (defn fix-text!
   "Correctly format the text from the given editor."
