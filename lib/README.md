@@ -9,10 +9,10 @@ functions. Though it is written in JavaScript, it is ported and synchronized to
 other languages to reach most major text editors.
 
 - [Parinfer Demo Editor](http://shaunlebron.github.io/parinfer/demo) - Try it out online.
-- [Parinfer Design and Implementation][design.md] - Read for deep knowledge on inner workings.
+- [Parinfer Code Documentation][code.md] - Read for deep knowledge on inner workings.
 
 <!-- file links need to be full path to make them work for the NPM readme -->
-[design.md]:https://github.com/shaunlebron/parinfer/blob/master/lib/doc/design.md
+[code.md]:https://github.com/shaunlebron/parinfer/blob/master/lib/doc/code.md
 
 [Parinfer]:http://shaunlebron.github.io/parinfer/
 
@@ -106,7 +106,7 @@ Arguments:
   - `cursorDx` - (Paren Mode only) indicates the amount the cursor moved horizontally if something was inserted or deleted in order to help preserve relative indentation of child expressions ([see docs][cursorDx]).
 
 <!-- file links need to be full path to make them work for the NPM readme -->
-[cursorDx]:https://github.com/shaunlebron/parinfer/blob/master/lib/doc/design.md#preserving-relative-indentation-while-typing
+[cursorDx]:https://github.com/shaunlebron/parinfer/blob/master/lib/doc/code.md#preserving-relative-indentation-while-typing
 
 Returns an object with the following properties:
 
@@ -148,7 +148,7 @@ or chat with us on [clojurians slack] at `#parinfer`.  I'll answer questions as 
 
 __Code__: [`parinfer.js`] is implemented in ECMAScript 5 for easy speed and portability. Also:
 
-__Documentation__: Design and implementation is documented in [`design.md`].
+__Documentation__: Code is documented in [`code.md`].
 
 __Testing__: See [`test/cases/`] directory for testing details.  Or just run the following:
 
@@ -165,5 +165,5 @@ node test/perf.js
 
 <!-- file links need to be full path to make them work for the NPM readme -->
 [`parinfer.js`]:https://github.com/shaunlebron/parinfer/blob/master/lib/parinfer.js
-[`design.md`]:https://github.com/shaunlebron/parinfer/blob/master/lib/doc/design.md
+[`code.md`]:https://github.com/shaunlebron/parinfer/blob/master/lib/doc/code.md
 [`test/cases/`]:https://github.com/shaunlebron/parinfer/tree/master/lib/test/cases

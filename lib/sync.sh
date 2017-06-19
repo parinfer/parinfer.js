@@ -1,11 +1,11 @@
 #!/bin/sh
 
 ## Sync dependent files with each other:
-## - parinfer.js symbols => design.md
+## - parinfer.js symbols => code.md
 ## - package.json version => parinfer.js
 
 jsfile=parinfer.js
-docfile=doc/design.md
+docfile=doc/code.md
 
 ##----------------------------------------------------------------------------
 ## Doc Symbol sync

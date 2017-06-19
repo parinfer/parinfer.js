@@ -19,7 +19,7 @@
 
 ## 2.0.0
 
-- do not remove unmatched close parens indiscriminately (see [relevant docs](doc/design.md#unmatched-close-parens))
+- do not remove unmatched close parens indiscriminately (see [relevant docs](doc/code.md#unmatched-close-parens))
 
 ## 1.8.2
 
