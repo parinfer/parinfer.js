@@ -411,271 +411,291 @@
   },
   {
     "in": {
-      "fileLineNo": 567,
+      "fileLineNo": 561,
+      "text": "(foo)}}}}|"
+    },
+    "out": {
+      "fileLineNo": 565,
+      "text": "(foo)|"
+    }
+  },
+  {
+    "in": {
+      "fileLineNo": 569,
+      "text": "(foo}}}}|)"
+    },
+    "out": {
+      "fileLineNo": 573,
+      "text": "(foo|)"
+    }
+  },
+  {
+    "in": {
+      "fileLineNo": 585,
       "text": "(let [a 1\n      |])"
     },
     "out": {
-      "fileLineNo": 572,
+      "fileLineNo": 590,
       "text": "(let [a 1\n      |])"
     }
   },
   {
     "in": {
-      "fileLineNo": 579,
+      "fileLineNo": 597,
       "text": "(let [a 1\n      ]); <-- spaces"
     },
     "out": {
-      "fileLineNo": 584,
+      "fileLineNo": 602,
       "text": "(let [a 1])\n      ; <-- spaces"
     }
   },
   {
     "in": {
-      "fileLineNo": 592,
+      "fileLineNo": 610,
       "text": "(let [a 1\n      |] (+ a 2))"
     },
     "out": {
-      "fileLineNo": 597,
+      "fileLineNo": 615,
       "text": "(let [a 1\n      |] (+ a 2))"
     }
   },
   {
     "in": {
-      "fileLineNo": 606,
+      "fileLineNo": 624,
       "text": "(let [a 1\n      ] (+ a 2))"
     },
     "out": {
-      "fileLineNo": 611,
+      "fileLineNo": 629,
       "text": "(let [a 1]\n     (+ a 2))"
     }
   },
   {
     "in": {
-      "fileLineNo": 620,
+      "fileLineNo": 638,
       "text": "(let [a 1\n  |] (+ a 2))"
     },
     "out": {
-      "fileLineNo": 625,
+      "fileLineNo": 643,
       "text": "(let [a 1\n      |] (+ a 2))"
     }
   },
   {
     "in": {
-      "fileLineNo": 633,
+      "fileLineNo": 651,
       "text": "(let [a 1\n      ]|)"
     },
     "out": {
-      "fileLineNo": 638,
+      "fileLineNo": 656,
       "text": "(let [a 1]\n     |)"
     }
   },
   {
     "in": {
-      "fileLineNo": 645,
+      "fileLineNo": 663,
       "text": "(foo\n  }|)"
     },
     "out": {
-      "fileLineNo": 650,
+      "fileLineNo": 668,
       "text": "(foo\n  }|)\n  ^ error: unmatched-close-paren"
     }
   },
   {
     "in": {
-      "fileLineNo": 658,
+      "fileLineNo": 676,
       "text": "(foo\n  ) foo} bar|"
     },
     "out": {
-      "fileLineNo": 663,
+      "fileLineNo": 681,
       "text": "(foo\n  ) foo} bar|\n       ^ error: unmatched-close-paren"
     }
   },
   {
     "in": {
-      "fileLineNo": 669,
+      "fileLineNo": 687,
       "text": "(foo\n  ) (bar|"
     },
     "out": {
-      "fileLineNo": 674,
+      "fileLineNo": 692,
       "text": "(foo\n  ) (bar|\n    ^ error: unclosed-paren"
     }
   },
   {
     "in": {
-      "fileLineNo": 691,
+      "fileLineNo": 709,
       "text": "(foo [bar (|...] baz)"
     },
     "out": {
-      "fileLineNo": 695,
+      "fileLineNo": 713,
       "text": "(foo [bar (|...] baz)\n               ^ error: unmatched-close-paren"
     }
   },
   {
     "in": {
-      "fileLineNo": 702,
+      "fileLineNo": 720,
       "text": "(foo [bar (]| baz)])"
     },
     "out": {
-      "fileLineNo": 706,
+      "fileLineNo": 724,
       "text": "(foo [bar (]| baz)])\n           ^ error: unmatched-close-paren"
     }
   },
   {
     "in": {
-      "fileLineNo": 714,
+      "fileLineNo": 732,
       "text": "[... (foo [bar ]| baz]  ...)]"
     },
     "out": {
-      "fileLineNo": 718,
+      "fileLineNo": 736,
       "text": "[... (foo [bar ]| baz]  ...)]\n                     ^ error: unmatched-close-paren"
     }
   },
   {
     "in": {
-      "fileLineNo": 725,
+      "fileLineNo": 743,
       "text": "(let [{:keys |foo bar]} my-map])"
     },
     "out": {
-      "fileLineNo": 729,
+      "fileLineNo": 747,
       "text": "(let [{:keys |foo bar]} my-map])\n                     ^ error: unmatched-close-paren"
     }
   },
   {
     "in": {
-      "fileLineNo": 736,
+      "fileLineNo": 754,
       "text": "(a (b (c))| d) e)"
     },
     "out": {
-      "fileLineNo": 740,
+      "fileLineNo": 758,
       "text": "(a (b (c))| d) e"
     }
   },
   {
     "in": {
-      "fileLineNo": 746,
+      "fileLineNo": 764,
       "text": "(a (b (c(|) d) e)"
     },
     "out": {
-      "fileLineNo": 750,
+      "fileLineNo": 768,
       "text": "(a (b (c(|) d) e))"
     }
   },
   {
     "in": {
-      "fileLineNo": 756,
+      "fileLineNo": 774,
       "text": "(f [x (a (b c(|) d) y] g)"
     },
     "out": {
-      "fileLineNo": 760,
+      "fileLineNo": 778,
       "text": "(f [x (a (b c(|) d) y] g)\n                     ^ error: unmatched-close-paren"
     }
   },
   {
     "in": {
-      "fileLineNo": 768,
+      "fileLineNo": 786,
       "text": "(foo\n  bar)| baz) qux"
     },
     "out": {
-      "fileLineNo": 773,
+      "fileLineNo": 791,
       "text": "(foo\n  bar)| baz) qux\n           ^ error: unmatched-close-paren"
     }
   },
   {
     "in": {
-      "fileLineNo": 779,
+      "fileLineNo": 797,
       "text": "(foo\n  [bar\n   bar)| baz\n   bar])"
     },
     "out": {
-      "fileLineNo": 786,
+      "fileLineNo": 804,
       "text": "(foo\n  [bar\n   bar)| baz\n      ^ error: unmatched-close-paren\n   bar])"
     }
   },
   {
     "in": {
-      "fileLineNo": 796,
+      "fileLineNo": 814,
       "text": "(foo\n  [bar]\n|bar) baz"
     },
     "out": {
-      "fileLineNo": 802,
+      "fileLineNo": 820,
       "text": "(foo\n  [bar]\n|bar) baz\n    ^ error: unmatched-close-paren"
     }
   },
   {
     "in": {
-      "fileLineNo": 812,
+      "fileLineNo": 830,
       "text": "(foo\n [bar]\n  |bar) baz"
     },
     "out": {
-      "fileLineNo": 818,
+      "fileLineNo": 836,
       "text": "(foo\n [bar]\n  |bar) baz\n      ^ error: unmatched-close-paren"
     }
   },
   {
     "in": {
-      "fileLineNo": 827,
+      "fileLineNo": 845,
       "text": "(foo\n [bar\n bar]) baz"
     },
     "out": {
-      "fileLineNo": 833,
+      "fileLineNo": 851,
       "text": "(foo\n [bar\n bar]) baz\n    ^ error: unmatched-close-paren"
     }
   },
   {
     "in": {
-      "fileLineNo": 844,
+      "fileLineNo": 862,
       "text": "(foo bar ;|)"
     },
     "out": {
-      "fileLineNo": 848,
+      "fileLineNo": 866,
       "text": "(foo bar) ;|)"
     }
   },
   {
     "in": {
-      "fileLineNo": 854,
+      "fileLineNo": 872,
       "text": "(let [x 1\n      y 2;|])"
     },
     "out": {
-      "fileLineNo": 859,
+      "fileLineNo": 877,
       "text": "(let [x 1\n      y 2]);|])"
     }
   },
   {
     "in": {
-      "fileLineNo": 866,
+      "fileLineNo": 884,
       "text": "(|"
     },
     "out": {
-      "fileLineNo": 870,
+      "fileLineNo": 888,
       "text": "(|)"
     }
   },
   {
     "in": {
-      "fileLineNo": 880,
+      "fileLineNo": 898,
       "text": "(def x [1 2 3])\n(def y 2)\n|"
     },
     "out": {
-      "fileLineNo": 886,
+      "fileLineNo": 904,
       "text": "(def x [1 2 3])\n(def y 2)\n^ tabStop\n|"
     }
   },
   {
     "in": {
-      "fileLineNo": 893,
+      "fileLineNo": 911,
       "text": "(let [a {:foo 1}\n      |\n      bar [1 2 3]]\n  bar)"
     },
     "out": {
-      "fileLineNo": 900,
+      "fileLineNo": 918,
       "text": "(let [a {:foo 1}\n^    ^  ^ tabStops\n      |\n      bar [1 2 3]]\n  bar)"
     }
   },
   {
     "in": {
-      "fileLineNo": 909,
+      "fileLineNo": 927,
       "text": "(let [a {:foo 1}\n      bar [1 2 3]]\n  |\n  bar)"
     },
     "out": {
-      "fileLineNo": 916,
+      "fileLineNo": 934,
       "text": "(let [a {:foo 1}\n      bar [1 2 3]]\n^    ^    ^ tabStops\n  |\n  bar)"
     }
   }

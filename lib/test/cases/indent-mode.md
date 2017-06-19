@@ -557,6 +557,24 @@ If the cursor is in a comment after such a close-paren, we can safely move it:
   ret)
 ```
 
+The cursor should not keep unmatched close-parens in the trail:
+
+```in
+(foo)}}}}|
+```
+
+```out
+(foo)|
+```
+
+```in
+(foo}}}}|)
+```
+
+```out
+(foo|)
+```
+
 ## Leading Close-Parens
 
 Leading close-parens can cause many problems that can be fixed by paren mode,
