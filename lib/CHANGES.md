@@ -1,3 +1,7 @@
+## 2.2.1
+
+- fix: don't allow unmatched close-parens to be held by the cursor in the paren trail
+
 ## 2.2.0
 
 - enhancement: when `unmatched-close-paren` error, return `error.extra` for open-paren location

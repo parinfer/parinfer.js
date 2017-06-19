@@ -1,6 +1,6 @@
 {
   "name": "parinfer",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "a simpler way to write Lisp",
   "main": "parinfer.js",
   "scripts": {
