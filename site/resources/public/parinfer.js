@@ -1,5 +1,5 @@
 //
-// Parinfer 2.2.0
+// Parinfer 2.2.1
 //
 // Copyright 2015-2016 © Shaun LeBron
 // MIT License
@@ -7,7 +7,8 @@
 // Home Page: http://shaunlebron.github.io/parinfer/
 // GitHub: https://github.com/shaunlebron/parinfer
 //
-// For DOCUMENTATION on this file, please see `doc/design.md`
+// For DOCUMENTATION on this file, please see `doc/code.md`.
+// Use `sync.sh` to keep the function/var links in `doc/code.md` accurate.
 //
 
 //------------------------------------------------------------------------------
@@ -1014,7 +1015,7 @@ function testParenMode(text, printOptions) {
 }
 
 var API = {
-  version: "2.2.0",
+  version: "2.2.1",
   indentMode: indentMode,
   parenMode: parenMode,
   testIndentMode: testIndentMode,
