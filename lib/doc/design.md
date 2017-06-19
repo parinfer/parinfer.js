@@ -17,14 +17,12 @@ simpler form first.
 Thus, we cover the design and implementation of Parinfer in two parts:
 
 [Parinfer's home page]:http://shaunlebron.github.io/parinfer/
-[`parinfer.js`]:../parinfer.js
-
---
 
 [<strong>Part 1</strong>](#part-1---parinfer-for-a-static-file) - _Parinfer for a Static File_
 
 - [Processing the Text](#processing-the-text)
 - [Finding Parens](#finding-parens)
+- [Errors](#errors)
 - [Cleaning](#cleaning)
   - [Tab Characters](#tab-characters)
   - [Unmatched Close Parens](#unmatched-close-parens)
@@ -37,8 +35,6 @@ Thus, we cover the design and implementation of Parinfer in two parts:
 - [Subtleties](#subtleties)
   - [Absorbing Paren Trails](#absorbing-paren-trails)
   - [Preserving Relative Indentation](#preserving-relative-indentation)
-
---
 
 [<strong>Part 2</strong>](#part-2---parinfer-for-live-editing) - _Parinfer for Live-Editing_
 
@@ -55,8 +51,6 @@ Thus, we cover the design and implementation of Parinfer in two parts:
   - [Speed](#speed)
   - [Slower Languages](#slower-languages)
 
---
-
  <table>
 <tr>
 <td>
@@ -70,8 +64,7 @@ implementation and narrative.
 </tr>
 </table>
 
-
---
+[`parinfer.js`]:../parinfer.js
 
 # Part 1 - Parinfer for a Static File
 
@@ -105,6 +98,16 @@ That way, it is clear which functions are doing so from their signature.
 The processing functions above behave differently depending on the mode set
 at [`result.mode`].
 
+We store the original input lines separately and build the output as modified
+copies of those lines.  We also track our current position in both the input and
+output lines—returning errors in input coordinates since errors cause the
+original text to not be processed.
+
+|                  | input                                     | output                          |
+|:-----------------|:------------------------------------------|:--------------------------------|
+| text             | [`result.inputLines`]                     | [`result.lines`]                |
+| current position | [`result.inputLineNo`], [`result.inputX`] | [`result.lineNo`], [`result.x`] |
+
 ## Finding Parens
 
 Parinfer needs to know where the parens are, but it must ignore those found
@@ -137,6 +140,31 @@ encountered.  That is, it dispatches to operations which modify our boolean
 flags and paren stack.  It is also a convenient place to do some of the
 transformations we will discuss next.
 
+## Errors
+
+When errors are encountered that prevent us from completing our processing, we
+`throw` an error object created by our [`error`] function, passing one of the
+following enumerated error types.
+
+- [`ERROR_UNCLOSED_QUOTE`] - a string was not closed
+- [`ERROR_UNMATCHED_CLOSE_PAREN`]
+  - [`ERROR_UNMATCHED_OPEN_PAREN`], what the close-paren was expected to match, if any
+- [`ERROR_UNCLOSED_PAREN`] - open-paren not closed (if mismatched, the above error would be thrown instead)
+- [`ERROR_QUOTE_DANGER`] - see section on [Dangerous Quotes](#dangerous-quotes)
+- [`ERROR_EOL_BACKSLASH`] - ending a line with a `\` is not likely valid in lisp
+- [`ERROR_UNHANDLED`] - any unhandled exception is given this error type
+
+Errors are caught at [`processText`], normalized by [`processError`], and returned
+to the user in [`publicResult`].
+
+Returning the error position is straightforward when it's at the processor's
+current input position.  But sometimes we may not know that a token is invalid
+until encountering the end of a line or end of the file, for example. Thus, we
+use the [`cacheErrorPos`] function if a token is _potentially_ invalid. It
+stores the current input position for the given error type, which is eventually
+used by the [`error`] function if called at a later time with the same error
+type.
+
 ## Cleaning
 
 Parinfer will remove or replace some characters as a necessary step toward the
@@ -163,6 +191,7 @@ wait for resolution before resuming inference.
 See [#131] for context summary.  If you wish to solve this problem, you can adjust
 the expected outcomes for these [test cases] to test your implementation.
 
+[#131]:https://github.com/shaunlebron/parinfer/issues/131
 [test cases]:https://github.com/shaunlebron/parinfer/blob/master/lib/test/cases/indent-mode.md#unmatched-close-parens
 
 _This detection happens at [`onUnmatchedCloseParen`] and [`onLeadingCloseParen`]._
@@ -962,8 +991,6 @@ string insertion, we have corrupted a comment:
 
 #### Risk Management
 
---
-
 ##### The Root Cause
 
 The astute observer may have also realized that the problems occurred either
@@ -992,8 +1019,6 @@ of dangerous quotes inside comments.
 > of this problem is enabled by a perfect storm of unbalanced, non-directional
 > quotes and their ability to be temporarily balanced when accidentally thrust
 > into or out of comments.
-
---
 
 ##### Prevention
 
@@ -1030,8 +1055,6 @@ comment.  This happens in [`onQuote`], and we check if an error should be
 reported at [`onIndent`] since that moment signifies that no contiguous
 comments follow.
 
---
-
 ### Incremental Processing
 
 You may be wondering why we have to process the whole file again after only a
@@ -1057,12 +1080,11 @@ There is a pending feature here: [#91](https://github.com/shaunlebron/parinfer/i
 
 ## Questions?
 
-I appreciate feedback! If I left something out, got something wrong, or you
-just have questions or feedback, you can [email me] or use our [gitter
-chatroom].  I'll answer questions as soon as I can.
+I appreciate feedback! If I left something out, got something wrong, or you just
+have questions or feedback, you can [email me].  I'll answer questions as soon
+as I can.
 
 [email me]:shaunewilliams@gmail.com
-[gitter chatroom]:https://gitter.im/shaunlebron/parinfer
 
 <!-- END OF DOC: All content below is overwritten by `sync.sh` -->
 [`SENTINEL_NULL`]:../parinfer.js#L39
