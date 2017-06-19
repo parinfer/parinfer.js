@@ -1,6 +1,6 @@
 ## 2.2.0
 
-- returned `error.extra` for accessing location of open-paren opposite to the `unmatched-close-paren` error
+- enhancement: when `unmatched-close-paren` error, return `error.extra` for open-paren location
 
 ## 2.1.0
 
