@@ -124,6 +124,7 @@ Returns an object with the following properties:
   - `message` is a message describing the error
   - `lineNo` is a zero-based line number where the error occurred
   - `x` is a zero-based column where the error occurred
+  - `extra` has lineNo and x of open-paren for `unmatched-close-paren`
 - `tabStops` is an array of objects representing [Tab stops], which is
   populated in Indent Mode if a cursor position is supplied. We identify tab
   stops at relevant open-parens, and supply the following extra information so
