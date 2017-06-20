@@ -6,6 +6,11 @@
   "scripts": {
     "test": "eslint parinfer.js && mocha"
   },
+  "files": [
+    "parinfer.js",
+    "README.md",
+    "CHANGES.md"
+  ],
   "eslintConfig": {
     "extends": [
       "defaults"
