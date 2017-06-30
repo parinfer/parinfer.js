@@ -1,3 +1,7 @@
+## 2.3.1
+
+- fix: prevent `testParenMode` and `testIndentMode` from failing when `partialResult` is enabled and cursor line never reached
+
 ## 2.3.0
 
 - enhancement: `partialResult` option allows partially processed text/cursor to be returned on error [#124](https://github.com/shaunlebron/parinfer/issues/124)

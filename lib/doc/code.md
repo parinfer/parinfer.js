@@ -1091,7 +1091,7 @@ as I can.
 [`ERROR_UNMATCHED_OPEN_PAREN`]:../parinfer.js#L201
 [`ERROR_UNHANDLED`]:../parinfer.js#L202
 [`errorMessages`]:../parinfer.js#L204
-[`API`]:../parinfer.js#L1034
+[`API`]:../parinfer.js#L1041
 [`isBoolean`]:../parinfer.js#L64
 [`isInteger`]:../parinfer.js#L68
 [`isOpenParen`]:../parinfer.js#L74
@@ -1154,11 +1154,11 @@ as I can.
 [`test_errorLine`]:../parinfer.js#L942
 [`test_tabStopLine`]:../parinfer.js#L952
 [`test_format`]:../parinfer.js#L965
-[`publicResult`]:../parinfer.js#L984
-[`indentMode`]:../parinfer.js#L1006
-[`parenMode`]:../parinfer.js#L1011
-[`testIndentMode`]:../parinfer.js#L1017
-[`testParenMode`]:../parinfer.js#L1024
+[`publicResult`]:../parinfer.js#L991
+[`indentMode`]:../parinfer.js#L1013
+[`parenMode`]:../parinfer.js#L1018
+[`testIndentMode`]:../parinfer.js#L1024
+[`testParenMode`]:../parinfer.js#L1031
 [`result.mode`]:../parinfer.js#L108
 [`result.origText`]:../parinfer.js#L110
 [`result.inputLines`]:../parinfer.js#L114
