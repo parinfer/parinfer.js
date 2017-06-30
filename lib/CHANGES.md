@@ -1,3 +1,7 @@
+## 2.3.0
+
+- enhancement: `partialResult` option allows partially processed text/cursor to be returned on error [#124](https://github.com/shaunlebron/parinfer/issues/124)
+
 ## 2.2.1
 
 - fix: don't allow unmatched close-parens to be held by the cursor in the paren trail

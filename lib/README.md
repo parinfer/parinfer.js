@@ -104,6 +104,7 @@ Arguments:
   - `cursorLine` - zero-based line number of the cursor
   - `cursorX` - zero-based x-position of the cursor
   - `cursorDx` - (Paren Mode only) indicates the amount the cursor moved horizontally if something was inserted or deleted in order to help preserve relative indentation of child expressions ([see docs][cursorDx]).
+  - `partialResult` - return partially processed text/cursor if an error occurs (defaults to false)
 
 <!-- file links need to be full path to make them work for the NPM readme -->
 [cursorDx]:https://github.com/shaunlebron/parinfer/blob/master/lib/doc/code.md#preserving-relative-indentation-while-typing
@@ -111,8 +112,8 @@ Arguments:
 Returns an object with the following properties:
 
 - `success` is a boolean indicating if the input was properly formatted enough to create a valid result
-- `text` is the full text output (this is just the original text if `success` is false)
-- `cursorX` is the new x-position of the cursor (since parinfer may shift it around)
+- `text` is the full text output (if `success` is false, returns original text unless `partialResult` is enabled)
+- `cursorX`/`cursorLine` is the new position of the cursor (since parinfer may shift it around)
 - `error` is an object populated if `success` is false:
   - `name` is the name of the error, which will be any of the following:
     - `"quote-danger"`
