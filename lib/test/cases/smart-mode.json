@@ -1,0 +1,72 @@
+[
+  {
+    "in": {
+      "fileLineNo": 4,
+      "text": "(foo\n  {:a 1\n   :b 2})\n---"
+    },
+    "out": {
+      "fileLineNo": 11,
+      "text": "(foo\n  {:a 1})\n:b 2"
+    }
+  },
+  {
+    "in": {
+      "fileLineNo": 19,
+      "text": "(foo\n    {:a 1\n  ++\n   :b 2})"
+    },
+    "out": {
+      "fileLineNo": 26,
+      "text": "(foo\n    {:a 1\n     :b 2})"
+    }
+  },
+  {
+    "in": {
+      "fileLineNo": 32,
+      "text": "(foo\n    {:a 1\n  --\n     :b 2})"
+    },
+    "out": {
+      "fileLineNo": 39,
+      "text": "(foo\n  {:a 1\n   :b 2})"
+    }
+  },
+  {
+    "in": {
+      "fileLineNo": 45,
+      "text": "(foo {:a 1\n  --\n      :b 2})"
+    },
+    "out": {
+      "fileLineNo": 51,
+      "text": "(f {:a 1\n    :b 2})"
+    }
+  },
+  {
+    "in": {
+      "fileLineNo": 58,
+      "text": "(foo\n  {:a 1\n--\n   :b 2})"
+    },
+    "out": {
+      "fileLineNo": 65,
+      "text": "(foo)\n{:a 1\n :b 2}"
+    }
+  },
+  {
+    "in": {
+      "fileLineNo": 71,
+      "text": "(foo)\n  {:a 1\n++\n:b 2}"
+    },
+    "out": {
+      "fileLineNo": 78,
+      "text": "(foo\n  {:a 1\n   :b 2})"
+    }
+  },
+  {
+    "in": {
+      "fileLineNo": 86,
+      "text": "(a (b[) c) (d) e)\n     +"
+    },
+    "out": {
+      "fileLineNo": 91,
+      "text": "(a (b[]) c) (d) e)"
+    }
+  }
+]

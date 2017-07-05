@@ -113,3 +113,20 @@ is positioned at the position of its associated open-paren.
 >   |
 >   bar)
 > ```
+
+## Change Diff
+
+Smart mode requires information about the previous change in order to be smart.
+Thus, an input block can have lines containing plus/minus symbols, indicating
+that the characters above it have been added or removed.  `-` should come before `+`.
+
+> ```in
+> (defn foobar []
+>       ---+++
+>   nil)
+> ```
+>
+> ```out
+> (defn bar []
+>   nil)
+> ```
