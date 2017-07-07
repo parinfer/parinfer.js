@@ -1,3 +1,8 @@
+## 2.4.0
+
+- experiment: allow `cursorDx` option in Indent Mode to prevent switching to Paren Mode for most cases (see [#84](https://github.com/shaunlebron/parinfer/issues/86))
+  - thanks to [@rgdelato](https://github.com/rgdelato)!
+
 ## 2.3.1
 
 - fix: prevent `testParenMode` and `testIndentMode` from failing when `partialResult` is enabled and cursor line never reached

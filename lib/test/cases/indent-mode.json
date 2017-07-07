@@ -698,5 +698,65 @@
       "fileLineNo": 934,
       "text": "(let [a {:foo 1}\n      bar [1 2 3]]\n^    ^    ^ tabStops\n  |\n  bar)"
     }
+  },
+  {
+    "in": {
+      "fileLineNo": 946,
+      "text": "(foo\n|{:a 1\n^ cursorDx -2\n   :b 2})"
+    },
+    "out": {
+      "fileLineNo": 953,
+      "text": "(foo)\n|{:a 1\n :b 2}"
+    }
+  },
+  {
+    "in": {
+      "fileLineNo": 961,
+      "text": "(foo)\n  |{:a 1\n  ^ cursorDx 2\n :b 2}"
+    },
+    "out": {
+      "fileLineNo": 968,
+      "text": "(foo\n  |{:a 1\n   :b 2})"
+    }
+  },
+  {
+    "in": {
+      "fileLineNo": 976,
+      "text": "(let |[foo 1\n     ^ cursorDx -4\n           bar 2\n           baz 3])"
+    },
+    "out": {
+      "fileLineNo": 983,
+      "text": "(let |[foo 1\n       bar 2\n       baz 3])"
+    }
+  },
+  {
+    "in": {
+      "fileLineNo": 989,
+      "text": "|(def foo\n^ cursorDx -3\n      bar)"
+    },
+    "out": {
+      "fileLineNo": 995,
+      "text": "|(def foo\n   bar)"
+    }
+  },
+  {
+    "in": {
+      "fileLineNo": 1002,
+      "text": "(def foo |(bar\n         ^ cursorDx 5\n       4 5 6\n       7 8 9)"
+    },
+    "out": {
+      "fileLineNo": 1009,
+      "text": "(def foo |(bar\n            4 5 6\n            7 8 9))"
+    }
+  },
+  {
+    "in": {
+      "fileLineNo": 1017,
+      "text": "(foo\n  {:a 1\n|:b 2})\n^ cursorDx -3"
+    },
+    "out": {
+      "fileLineNo": 1024,
+      "text": "(foo\n  {:a 1})\n|:b 2"
+    }
   }
 ]

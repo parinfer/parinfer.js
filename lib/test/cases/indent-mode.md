@@ -939,3 +939,94 @@ use them to create tab stops for smart indentation snapping.
   |
   bar)
 ```
+
+## CursorDx (experimental)
+
+`cursorDx` was originally intended only for Paren Mode, but we have added
+experimental support for it to Indent Mode as well.
+
+Dedent multi-line expression to leave its parent:
+
+```in
+(foo
+|{:a 1
+^ cursorDx -2
+   :b 2})
+```
+
+```out
+(foo)
+|{:a 1
+ :b 2}
+```
+
+Indent multi-line expression to enter new parent:
+
+```in
+(foo)
+  |{:a 1
+  ^ cursorDx 2
+ :b 2}
+```
+
+```out
+(foo
+  |{:a 1
+   :b 2})
+```
+
+When backspacing, preserve the indentation of the child lines.
+
+```in
+(let |[foo 1
+     ^ cursorDx -4
+           bar 2
+           baz 3])
+```
+
+```out
+(let |[foo 1
+       bar 2
+       baz 3])
+```
+
+```in
+|(def foo
+^ cursorDx -3
+      bar)
+```
+
+```out
+|(def foo
+   bar)
+```
+
+When typing before an open-paren, preserve the indentation of the child lines.
+
+```in
+(def foo |(bar
+         ^ cursorDx 5
+       4 5 6
+       7 8 9)
+```
+
+```out
+(def foo |(bar
+            4 5 6
+            7 8 9))
+```
+
+Dedenting last line should work as normal:
+
+```in
+(foo
+  {:a 1
+|:b 2})
+^ cursorDx -3
+```
+
+```out
+(foo
+  {:a 1})
+|:b 2
+```
