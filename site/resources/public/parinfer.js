@@ -1,5 +1,5 @@
 //
-// Parinfer 2.2.1
+// Parinfer 2.4.0
 //
 // Copyright 2015-2016 © Shaun LeBron
 // MIT License
@@ -61,6 +61,10 @@ var MATCH_PAREN = {
   ")": "("
 };
 
+function isBoolean(x) {
+  return typeof x === 'boolean';
+}
+
 function isInteger(x) {
   return typeof x === 'number' &&
          isFinite(x) &&
@@ -84,7 +88,8 @@ function parseOptions(options) {
   return {
     cursorX: options.cursorX,
     cursorLine: options.cursorLine,
-    cursorDx: options.cursorDx
+    cursorDx: options.cursorDx,
+    partialResult: options.partialResult
   };
 }
 
@@ -104,6 +109,7 @@ function getInitialResult(text, options, mode) {
 
     origText: text,            // [string] - original text
     origCursorX: SENTINEL_NULL,
+    origCursorLine: SENTINEL_NULL,
 
     inputLines:                // [string array] - input lines that we process line-by-line, char-by-char
       text.split(LINE_ENDING_REGEX),
@@ -143,11 +149,11 @@ function getInitialResult(text, options, mode) {
     trackingIndent: false,     // [boolean] - are we looking for the indentation point of the current line?
     skipChar: false,           // [boolean] - should we skip the processing of the current character?
     success: false,            // [boolean] - was the input properly formatted enough to create a valid result?
+    partialResult: false,      // [boolean] - should we return a partial result when an error occurs?
 
     maxIndent: SENTINEL_NULL,  // [integer] - maximum allowed indentation of subsequent lines in Paren Mode
     indentDelta: 0,            // [integer] - how far indentation was shifted by Paren Mode
                                //  (preserves relative indentation of nested expressions)
-    nextIndentDelta: 0,        // [integer] - allows a previous line to set indentDelta of next line
 
     error: {                   // if 'success' is false, return this error to the user
       name: SENTINEL_NULL,     // [string] - Parinfer's unique name for this error
@@ -175,6 +181,7 @@ function getInitialResult(text, options, mode) {
     if (isInteger(options.cursorLine))         { result.cursorLine         = options.cursorLine;
                                                  result.origCursorLine     = options.cursorLine; }
     if (isInteger(options.cursorDx))           { result.cursorDx           = options.cursorDx; }
+    if (isBoolean(options.partialResult))      { result.partialResult      = options.partialResult; }
   }
 
   return result;
@@ -215,12 +222,16 @@ function cacheErrorPos(result, errorName) {
 
 function error(result, name) {
   var cache = result.errorPosCache[name];
+
+  var keyLineNo = result.partialResult ? 'lineNo' : 'inputLineNo';
+  var keyX = result.partialResult ? 'x' : 'inputX';
+
   var e = {
     parinferError: true,
     name: name,
     message: errorMessages[name],
-    lineNo: cache ? cache.inputLineNo : result.inputLineNo,
-    x: cache ? cache.inputX : result.inputX
+    lineNo: cache ? cache[keyLineNo] : result[keyLineNo],
+    x: cache ? cache[keyX] : result[keyX]
   };
   var opener = peek(result.parenStack);
 
@@ -230,14 +241,14 @@ function error(result, name) {
     if (cache || opener !== SENTINEL_NULL) {
       e.extra = {
         name: ERROR_UNMATCHED_OPEN_PAREN,
-        lineNo: cache ? cache.inputLineNo : opener.inputLineNo,
-        x: cache ? cache.inputX : opener.inputX
+        lineNo: cache ? cache[keyLineNo] : opener[keyLineNo],
+        x: cache ? cache[keyX] : opener[keyX]
       };
     }
   }
   else if (name === ERROR_UNCLOSED_PAREN) {
-    e.lineNo = opener.inputLineNo;
-    e.x = opener.inputX;
+    e.lineNo = opener[keyLineNo];
+    e.x = opener[keyX];
   }
   return e;
 }
@@ -317,8 +328,7 @@ function initLine(result, line) {
 
   // reset line-specific state
   result.commentX = SENTINEL_NULL;
-  result.indentDelta = result.nextIndentDelta;
-  result.nextIndentDelta = 0;
+  result.indentDelta = 0;
   delete result.errorPosCache[ERROR_UNMATCHED_CLOSE_PAREN];
   delete result.errorPosCache[ERROR_UNMATCHED_OPEN_PAREN];
 }
@@ -583,7 +593,7 @@ function correctParenTrail(result, indentX) {
 
   while (result.parenStack.length > 0) {
     var opener = peek(result.parenStack);
-    if (opener.x >= indentX) {
+    if (opener.x - opener.indentDelta >= indentX) {
       result.parenStack.pop();
       parens += MATCH_PAREN[opener.ch];
     }
@@ -671,6 +681,15 @@ function finishNewParenTrail(result) {
 // Indentation functions
 //------------------------------------------------------------------------------
 
+function changeIndent(result, delta) {
+  var origIndent = result.x;
+  var newIndent = origIndent + delta;
+  var indentStr = repeatString(BLANK_SPACE, newIndent);
+  replaceWithinLine(result, result.lineNo, 0, origIndent, indentStr);
+  result.x = newIndent;
+  result.indentDelta += delta;
+}
+
 function correctIndent(result) {
   var origIndent = result.x;
   var newIndent = origIndent;
@@ -686,10 +705,7 @@ function correctIndent(result) {
   newIndent = clamp(newIndent, minIndent, maxIndent);
 
   if (newIndent !== origIndent) {
-    var indentStr = repeatString(BLANK_SPACE, newIndent);
-    replaceWithinLine(result, result.lineNo, 0, origIndent, indentStr);
-    result.x = newIndent;
-    result.indentDelta += (newIndent - origIndent);
+    changeIndent(result, newIndent - origIndent);
   }
 }
 
@@ -702,6 +718,12 @@ function onIndent(result) {
 
   if (result.mode === INDENT_MODE) {
     correctParenTrail(result, result.x);
+
+    var opener = peek(result.parenStack);
+    var delta = (opener !== SENTINEL_NULL ? opener.indentDelta : 0);
+    if (delta !== 0) {
+      changeIndent(result, delta);
+    }
   }
   else if (result.mode === PAREN_MODE) {
     correctIndent(result);
@@ -781,9 +803,7 @@ function processChar(result, ch) {
   result.ch = ch;
   result.skipChar = false;
 
-  if (result.mode === PAREN_MODE) {
-    handleCursorDelta(result);
-  }
+  handleCursorDelta(result);
 
   if (result.trackingIndent) {
     checkIndent(result);
@@ -876,13 +896,13 @@ function test_error(lineNo, msg) {
   throw "test parse error at line " + lineNo + ": " + msg;
 }
 
-function test_parseCaretLine(options, lineNo, line) {
-  var cursorDxMatch = line.match(/^\s*\^\s*cursorDx (-?\d+)\s*$/);
+function test_parseCaretLine(options, inputLineNo, input) {
+  var cursorDxMatch = input.match(/^\s*\^\s*cursorDx (-?\d+)\s*$/);
   var hasMatch = cursorDxMatch;
   if (hasMatch) {
-    var x = line.indexOf("^");
+    var x = input.indexOf("^");
     if (x != options.cursorX) {
-      test_error(lineNo, "the ^ annotation does not point to a cursor.");
+      test_error(inputLineNo, "the ^ annotation does not point to a cursor.");
     }
     if (cursorDxMatch) {
       options.cursorDx = parseInt(cursorDxMatch[1], 10);
@@ -891,38 +911,166 @@ function test_parseCaretLine(options, lineNo, line) {
   return hasMatch;
 }
 
-function test_parseCursorFromLine(options, lineNo, line) {
-  var cursorX = line.indexOf("|");
+function test_parseCursorFromLine(options, inputLineNo, outputLineNo, input) {
+  var cursorX = input.indexOf("|");
   if (cursorX !== -1) {
     if (options.cursorX) {
-      test_error(lineNo, "only one cursor allowed.  cursor already found at line", options.cursorLine);
+      test_error(inputLineNo, "only one cursor allowed.  cursor already found at line", options.cursorLine);
     }
-    var lineClean = line.split("|").join("");
-    if (lineClean.length < line.length - 1) {
-      test_error(lineNo, "only one cursor allowed");
+    var clean = input.split("|").join("");
+    if (clean.length < input.length - 1) {
+      test_error(inputLineNo, "only one cursor allowed");
     }
-    line = lineClean;
+    input = clean;
     options.cursorX = cursorX;
-    options.cursorLine = lineNo;
+    options.cursorLine = outputLineNo;
   }
-  return line;
+  return input;
+}
+
+function test_initialDiffState() {
+  var diff = {
+    code: null,           // the code that the diff line is annotating
+    codeLineNo: null,
+    prevCode: null,       // the code that the previous diff line annotated
+    prevCodeLineNo: null,
+    prevNewlineChar: '',  // the previous diff line's newline annotation ('', '-', or '+')
+    merge: null,          // the code should be merged with the next code line?
+    mergeOffset: 0        // code growth after merge
+  };
+  return diff;
+}
+
+function test_checkDiffLine(inputLineNo, input, diff) {
+  // lines with only -/+ chars are considered diff lines.
+  var looseMatch = input.match(/^\s*[-+]+[-+\s]*$/);
+  if (!looseMatch) {
+    return;
+  }
+  var match = input.match(/^((\s*)(-*)(\+*))\s*$/);
+  if (!match) {
+    test_error(inputLineNo, " diff chars must be adjacent with '-'s before '+'s.");
+  }
+  var x = match[2].length;
+  if (!diff.code) {
+    test_error(inputLineNo, " diff lines must be directly below a code line");
+  }
+  if (diff.prevCode) {
+    if (diff.prevCodeLineNo !== diff.codeLineNo &&  // happens when lines are merged
+        diff.prevCodeLineNo+1 !== diff.codeLineNo) {
+      test_error(inputLineNo, " multiple diff lines are currently not supported unless they are adjacent");
+    }
+    if (diff.prevNewlineChar === '') {
+      test_error(inputLineNo, "the newline char of the previous line must have a diff char to connect it to this diff line");
+    }
+    if (x !== 0) {
+      test_error(inputLineNo, "diff line must start with a diff char to connect to previous diff line");
+    }
+    if (diff.prevNewlineChar === '+' && input[0] === '-') {
+      test_error(inputLineNo, "diff line starts with '-', which cannot come after '+' which previous diff line ends with");
+    }
+  }
+  if (match[1].length > diff.code.length+1) {
+    test_error(inputLineNo, "diff line can only extend one character past the previous line length (to annotate the 'newline' char)");
+  }
+  return {
+    x: match[2].length + diff.mergeOffset,
+    oldLen: match[3].length,
+    newLen: match[4].length
+  };
+}
+
+function test_parseDiffLine(options, inputLineNo, input, diff) {
+  var check = test_checkDiffLine(inputLineNo, input, diff);
+  if (!check) {
+    return;
+  }
+  var oldLen = check.oldLen;
+  var newLen = check.newLen;
+
+  var x = check.x;
+  var oldX = x;
+  var newX = x+oldLen;
+  var len = oldLen + newLen;
+  var xEnd = x+len-1;
+
+  if (options.cursorLine === diff.codeLineNo) {
+    if (x <= options.cursorX && options.cursorX < x+len) {
+      test_error(inputLineNo, "cursor cannot be over a diff annotation");
+    } else if (options.cursorX < x) {
+      x--; oldX--; newX--;
+    } else {
+      options.cursorX -= oldLen;
+    }
+  }
+
+  var newlineChar = (diff.code.length === xEnd ? input.charAt(xEnd) : '');
+  var oldText = diff.code.substring(oldX, oldX+oldLen) + (newlineChar === '-' ? '\n' : '');
+  var newText = diff.code.substring(newX, newX+newLen) + (newlineChar === '+' ? '\n' : '');
+
+  if (!options.change) {
+    options.change = {position: {lineNo: diff.codeLineNo, x: x}, oldText: '', newText: ''};
+  }
+  options.change.oldText += oldText;
+  options.change.newText += newText;
+
+  diff.prevCode = diff.code;
+  diff.prevCodeLineNo = diff.codeLineNo;
+  diff.merge = newlineChar === '-';
+  diff.prevNewlineChar = newlineChar;
+
+  return replaceWithinString(diff.code, oldX, oldX+oldLen, '');
+}
+
+function test_handlePostDiffLine(options, inputLineNo, outputLineNo, outputLines, output, diff) {
+  var j = outputLineNo;
+  if (diff.merge) {
+    diff.mergeOffset = outputLines[j-1].length;
+    if (options.cursorLine === j) {
+      options.cursorLine = j-1;
+      options.cursorX += diff.mergeOffset;
+    }
+    outputLines[j-1] += output;
+  } else {
+    diff.mergeOffset = 0;
+    outputLines.push(output);
+  }
+  diff.merge = false;
+  diff.codeLineNo = outputLines.length-1;
+  diff.code = outputLines[diff.codeLineNo];
 }
 
 function test_parse(text) {
   var options = {};
-  var newLines = [];
-  var origLines = text.split(LINE_ENDING_REGEX);
-  var i;
-  for (i=0; i<origLines.length; i++) {
-    var line = origLines[i];
-    if (!test_parseCaretLine(options, i, line)) {
-      line = test_parseCursorFromLine(options, i, line);
-      newLines.push(line);
+  var inputLines = text.split(LINE_ENDING_REGEX);
+  var outputLines = [];
+
+  var i, j;          // input and output line numbers
+  var input, output; // input and output line text
+  var diff = test_initialDiffState();
+
+  for (i=0; i<inputLines.length; i++) {
+    input = inputLines[i];
+    j = outputLines.length;
+
+    if (test_parseCaretLine(options, i, input)) {
+      delete diff.code;
+      continue;
     }
+
+    output = test_parseDiffLine(options, i, input, diff);
+    if (output != null) {
+      outputLines[j-1] = output;
+      delete diff.code;
+      continue;
+    }
+
+    output = test_parseCursorFromLine(options, i, j, input);
+    test_handlePostDiffLine(options, i, j, outputLines, output, diff);
   }
-  var newText = newLines.join("\n");
+
   return {
-    text: newText,
+    text: outputLines.join("\n"),
     options: options
   };
 }
@@ -951,16 +1099,22 @@ function test_tabStopLine(tabStops) {
 }
 
 function test_format(result, printOptions) {
-  printOptions = printOptions || {};
   var lines = result.text.split(LINE_ENDING_REGEX);
-  if (result.cursorX !== SENTINEL_NULL) {
+  var hasCursor = (
+    result.cursorX !== SENTINEL_NULL &&
+    result.cursorLine !== SENTINEL_NULL &&
+
+    // could be false if `partialResult` is true and parinfer failed before reaching cursor line
+    result.cursorLine < lines.length
+  );
+  if (hasCursor) {
     var line = lines[result.cursorLine];
     lines[result.cursorLine] = replaceWithinString(line, result.cursorX, result.cursorX, "|");
   }
   if (result.error) {
     lines.splice(result.error.lineNo+1, 0, test_errorLine(result));
   }
-  else if (printOptions.tabStops && result.tabStops.length > 0) {
+  else if (hasCursor && printOptions.tabStops && result.tabStops.length > 0) {
     lines.splice(result.cursorLine, 0, test_tabStopLine(result.tabStops));
   }
   return lines.join("\n");
@@ -971,17 +1125,18 @@ function test_format(result, printOptions) {
 //------------------------------------------------------------------------------
 
 function publicResult(result) {
+  var lineEnding = getLineEnding(result.origText);
+
   if (!result.success) {
     return {
-      text: result.origText,
-      cursorX: result.origCursorX,
-      cursorLine: result.origCursorLine,
+      text: result.partialResult ? result.lines.join(lineEnding) : result.origText,
+      cursorX: result.partialResult ? result.cursorX : result.origCursorX,
+      cursorLine: result.partialResult ? result. cursorLine : result.origCursorLine,
       success: false,
       error: result.error
     };
   }
 
-  var lineEnding = getLineEnding(result.origText);
   return {
     text: result.lines.join(lineEnding),
     cursorX: result.cursorX,
@@ -1001,25 +1156,36 @@ function parenMode(text, options) {
   return publicResult(processText(text, options, PAREN_MODE));
 }
 
-
 function testIndentMode(text, printOptions) {
+  printOptions = printOptions || {};
   var parsed = test_parse(text);
   var result = indentMode(parsed.text, parsed.options);
   return test_format(result, printOptions);
 }
 
 function testParenMode(text, printOptions) {
+  printOptions = printOptions || {};
   var parsed = test_parse(text);
+  if (printOptions.partialResult) {
+    parsed.options.partialResult = true;
+  }
   var result = parenMode(parsed.text, parsed.options);
   return test_format(result, printOptions);
 }
 
+function testInput(text) {
+  var parsed = test_parse(text);
+  console.log(parsed.text);
+  console.log('options:', parsed.options);
+}
+
 var API = {
-  version: "2.2.1",
+  version: "2.4.0",
   indentMode: indentMode,
   parenMode: parenMode,
   testIndentMode: testIndentMode,
-  testParenMode: testParenMode
+  testParenMode: testParenMode,
+  testInput: testInput
 };
 
 return API;

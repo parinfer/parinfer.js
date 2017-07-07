@@ -38,7 +38,7 @@
 (def cursor-dx-caption
   (list
     [:em "cursorDx:"]
-    "In order for Paren Mode to function well, we must track how far the
+    "We must track how far the
     open-parens on the right side of the cursor have shifted after each edit.
     That way we can shift subsequent lines by the same amount to preserve
     relative indentation.  This cursorDx (delta x) value must be determined by
@@ -94,7 +94,7 @@
           [:option {:value "indent-mode"} "Indent Mode"]
           [:option {:value "paren-mode"} "Paren Mode"]]
 
-         (when (= (:mode editor) :paren-mode)
+         (when true
            (let [cursor-dx (or (:cursor-dx (:prev-options editor)) 0)]
              (list
                [:span
@@ -103,6 +103,7 @@
                  [:label.calc-option
                   "cursorDx=" cursor-dx]
                  [:span.calc-option " calculated when text is added or removed"]])))
+
          (let [{:keys [name message] :as error} (get-in editor [:result :error])]
            (when error
              [:div.status.error
