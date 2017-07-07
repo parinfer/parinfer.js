@@ -130,3 +130,30 @@ that the characters above it have been added or removed.  `-` should come before
 > (defn bar []
 >   nil)
 > ```
+
+Diffs must be contiguous, but can spread across lines.  Notice that we can
+annotate a newline char as inserted or removed, which keeps this multiline
+diff contiguous:
+
+> ```in
+> (defn foobar
+>          ---+
+>   []
+> +
+>   nil)
+> ```
+>
+> ```out
+> (defn foo
+>   []
+>   nil)
+> ```
+
+To clarify, the "after" state is created by removing the characters above "-".
+Similarly, you can create the "before" state by removing the characters above "+".
+For the above example:
+
+```
+(defn foobar []
+  nil)
+```
