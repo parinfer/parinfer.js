@@ -66,8 +66,8 @@ A pipe character `|` represents the cursor.
 An input block can contain a line, with `^ cursorDx` and a number.  The caret
 must be positioned under a cursor `|`.
 
-In Paren Mode, the cursorDx (i.e. delta x) represents the number of characters
-deleted or added behind the cursor that resulted in the current state.
+The cursorDx (i.e. delta x) represents the number of characters deleted or added
+behind the cursor that resulted in the current state.
 
 > ```in
 > |(def foo

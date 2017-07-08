@@ -103,7 +103,8 @@ Arguments:
 - `options` is an object with the following properties:
   - `cursorLine` - zero-based line number of the cursor
   - `cursorX` - zero-based x-position of the cursor
-  - `cursorDx` - (Paren Mode only) indicates the amount the cursor moved horizontally if something was inserted or deleted in order to help preserve relative indentation of child expressions ([see docs][cursorDx]).
+  - `cursorDx` - indicates the amount the cursor moved horizontally if something was inserted or deleted in order to help preserve relative indentation of child expressions ([see docs][cursorDx]).
+  - `forceBalance` - employ the aggressive paren-balancing rules from v1 (defaults to false)
   - `partialResult` - return partially processed text/cursor if an error occurs (defaults to false)
 
 <!-- file links need to be full path to make them work for the NPM readme -->
@@ -151,6 +152,12 @@ __Code__: [`parinfer.js`] is implemented in ECMAScript 5 for easy speed and port
 
 __Documentation__: Code is documented in [`code.md`].
 
+__Performance__: To run a performance stress test:
+
+```
+node test/perf.js
+```
+
 __Testing__: See [`test/cases/`] directory for testing details.  Or just run the following:
 
 ```
@@ -158,13 +165,20 @@ npm install
 npm test
 ```
 
-__Performance__: To run a performance stress test:
+__Sandbox__: See [`sandbox.js`] for examples on using Parinfer's [annotation syntax] as a
+fast, visual way to specify options and verify results.
 
-```
-node test/perf.js
+```js
+console.log(parinfer.testIndentMode("..."));
+console.log(parinfer.testParenMode("..."));
+
+// print out results of the annotation input parser (for debugging)
+parinfer.testInput("...");
 ```
 
 <!-- file links need to be full path to make them work for the NPM readme -->
 [`parinfer.js`]:https://github.com/shaunlebron/parinfer/blob/master/lib/parinfer.js
 [`code.md`]:https://github.com/shaunlebron/parinfer/blob/master/lib/doc/code.md
 [`test/cases/`]:https://github.com/shaunlebron/parinfer/tree/master/lib/test/cases
+[annotation syntax]:https://github.com/shaunlebron/parinfer/blob/master/lib/test/cases/README.md#annotations
+[`sandbox.js`]:https://github.com/shaunlebron/parinfer/blob/master/lib/sandbox.js

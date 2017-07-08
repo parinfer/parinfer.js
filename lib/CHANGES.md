@@ -1,3 +1,7 @@
+## 2.5.0
+
+- experiment: allow `forceBalance` option in Indent Mode to restore v1's aggressive balancing
+
 ## 2.4.0
 
 - experiment: allow `cursorDx` option in Indent Mode to prevent switching to Paren Mode for most cases (see [#84](https://github.com/shaunlebron/parinfer/issues/86))
