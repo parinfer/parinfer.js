@@ -44,6 +44,11 @@
     relative indentation.  This cursorDx (delta x) value must be determined by
     the editor and given to Parinfer."))
 
+(def force-balance-caption
+  (list
+    [:em "forceBalance:"]
+    "Employ v1's aggressive rules to ensure parens are always balanced."))
+
 (def mode->caption
   {:indent-mode indent-caption
    :paren-mode paren-caption})
@@ -94,15 +99,28 @@
           [:option {:value "indent-mode"} "Indent Mode"]
           [:option {:value "paren-mode"} "Paren Mode"]]
 
-         (when true
-           (let [cursor-dx (or (:cursor-dx (:prev-options editor)) 0)]
-             (list
-               [:span
-                 {:on-mouse-over (fn [e] (om/update! editor :help-caption cursor-dx-caption))
-                  :on-mouse-out (fn [e] (om/update! editor :help-caption ""))}
-                 [:label.calc-option
-                  "cursorDx=" cursor-dx]
-                 [:span.calc-option " calculated when text is added or removed"]])))
+         (when (= (:mode editor) :indent-mode)
+           (let [path [:options :force-balance]]
+             [:label.user-option
+              {:on-mouse-over (fn [e] (om/update! editor :help-caption force-balance-caption))
+               :on-mouse-out (fn [e] (om/update! editor :help-caption ""))}
+              [:input
+               {:type "checkbox"
+                :checked (get-in editor path)
+                :on-change (fn [e]
+                             (om/update! editor path (.. e -target -checked))
+                             (refresh! (:cm editor)))}]
+              "forceBalance"]))
+
+         (let [cursor-dx (or (:cursor-dx (:prev-options editor)) 0)]
+           (list
+             [:span
+               {:on-mouse-over (fn [e] (om/update! editor :help-caption cursor-dx-caption))
+                :on-mouse-out (fn [e] (om/update! editor :help-caption ""))
+                :style {:float "right"}}
+               [:label.calc-option
+                "cursorDx=" cursor-dx]
+               [:span.calc-option " calculated when text is added or removed"]]))
 
          (let [{:keys [name message] :as error} (get-in editor [:result :error])]
            (when error

@@ -1,5 +1,5 @@
 //
-// Parinfer 2.4.0
+// Parinfer 2.5.0
 //
 // Copyright 2015-2016 © Shaun LeBron
 // MIT License
@@ -89,7 +89,8 @@ function parseOptions(options) {
     cursorX: options.cursorX,
     cursorLine: options.cursorLine,
     cursorDx: options.cursorDx,
-    partialResult: options.partialResult
+    partialResult: options.partialResult,
+    forceBalance: options.forceBalance
   };
 }
 
@@ -150,6 +151,7 @@ function getInitialResult(text, options, mode) {
     skipChar: false,           // [boolean] - should we skip the processing of the current character?
     success: false,            // [boolean] - was the input properly formatted enough to create a valid result?
     partialResult: false,      // [boolean] - should we return a partial result when an error occurs?
+    forceBalance: false,       // [boolean] - should indent mode aggressively enforce paren balance?
 
     maxIndent: SENTINEL_NULL,  // [integer] - maximum allowed indentation of subsequent lines in Paren Mode
     indentDelta: 0,            // [integer] - how far indentation was shifted by Paren Mode
@@ -182,6 +184,7 @@ function getInitialResult(text, options, mode) {
                                                  result.origCursorLine     = options.cursorLine; }
     if (isInteger(options.cursorDx))           { result.cursorDx           = options.cursorDx; }
     if (isBoolean(options.partialResult))      { result.partialResult      = options.partialResult; }
+    if (isBoolean(options.forceBalance))       { result.forceBalance       = options.forceBalance; }
   }
 
   return result;
@@ -732,7 +735,7 @@ function onIndent(result) {
 
 function onLeadingCloseParen(result) {
   result.skipChar = true;
-  if (result.mode === INDENT_MODE) {
+  if (result.mode === INDENT_MODE && !result.forceBalance) {
     throw {indentModeLeadingCloseParen: true};
   }
   if (result.mode === PAREN_MODE) {
@@ -832,7 +835,9 @@ function processLine(result, lineNo) {
   }
   processChar(result, NEWLINE);
 
-  checkUnmatchedOutsideParenTrail(result);
+  if (!result.forceBalance) {
+    checkUnmatchedOutsideParenTrail(result);
+  }
 
   if (result.lineNo === result.parenTrail.lineNo) {
     finishNewParenTrail(result);
@@ -1180,7 +1185,7 @@ function testInput(text) {
 }
 
 var API = {
-  version: "2.4.0",
+  version: "2.5.0",
   indentMode: indentMode,
   parenMode: parenMode,
   testIndentMode: testIndentMode,
