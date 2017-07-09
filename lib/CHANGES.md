@@ -1,3 +1,7 @@
+## 2.5.1
+
+- fix: dedenting an open-paren with `cursorDx` in Indent Mode will properly adopt new child lines
+
 ## 2.5.0
 
 - experiment: allow `forceBalance` option in Indent Mode to restore v1's aggressive balancing

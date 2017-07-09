@@ -945,7 +945,7 @@ use them to create tab stops for smart indentation snapping.
 `cursorDx` was originally intended only for Paren Mode, but we have added
 experimental support for it to Indent Mode as well.
 
-Dedent multi-line expression to leave its parent:
+__Basic__: dedent multi-line expression to leave its parent:
 
 ```in
 (foo
@@ -960,7 +960,7 @@ Dedent multi-line expression to leave its parent:
  :b 2}
 ```
 
-Indent multi-line expression to enter new parent:
+__Basic__: indent multi-line expression to enter new parent:
 
 ```in
 (foo)
@@ -975,48 +975,7 @@ Indent multi-line expression to enter new parent:
    :b 2})
 ```
 
-When backspacing, preserve the indentation of the child lines.
-
-```in
-(let |[foo 1
-     ^ cursorDx -4
-           bar 2
-           baz 3])
-```
-
-```out
-(let |[foo 1
-       bar 2
-       baz 3])
-```
-
-```in
-|(def foo
-^ cursorDx -3
-      bar)
-```
-
-```out
-|(def foo
-   bar)
-```
-
-When typing before an open-paren, preserve the indentation of the child lines.
-
-```in
-(def foo |(bar
-         ^ cursorDx 5
-       4 5 6
-       7 8 9)
-```
-
-```out
-(def foo |(bar
-            4 5 6
-            7 8 9))
-```
-
-Dedenting last line should work as normal:
+__Basic__: dedenting last line should work as normal:
 
 ```in
 (foo
@@ -1029,4 +988,34 @@ Dedenting last line should work as normal:
 (foo
   {:a 1})
 |:b 2
+```
+
+Dedenting a collection will adopt a former sibling line below it:
+
+```in
+(defn foo
+|[a b]
+^ cursorDx -2
+  bar)
+```
+
+```out
+(defn foo)
+|[a b
+  bar]
+```
+
+But dedenting a top-level form should not cause a child to adopt a sibling:
+
+```in
+|(defn foo
+^ cursorDx -2
+    [a b]
+    bar)
+```
+
+```out
+|(defn foo
+  [a b]
+  bar)
 ```
