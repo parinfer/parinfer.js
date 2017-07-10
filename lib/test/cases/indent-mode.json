@@ -701,52 +701,52 @@
   },
   {
     "in": {
-      "fileLineNo": 949,
-      "text": "(foo\n|{:a 1\n^ cursorDx -2\n   :b 2})"
+      "fileLineNo": 946,
+      "text": "(foo\n  {:a 1\n--\n   :b 2})"
     },
     "out": {
-      "fileLineNo": 956,
-      "text": "(foo)\n|{:a 1\n :b 2}"
+      "fileLineNo": 953,
+      "text": "(foo)\n{:a 1\n :b 2}"
     }
   },
   {
     "in": {
-      "fileLineNo": 964,
-      "text": "(foo)\n  |{:a 1\n  ^ cursorDx 2\n :b 2}"
+      "fileLineNo": 961,
+      "text": "(foo)\n  {:a 1\n++\n :b 2}"
     },
     "out": {
-      "fileLineNo": 971,
-      "text": "(foo\n  |{:a 1\n   :b 2})"
+      "fileLineNo": 968,
+      "text": "(foo\n  {:a 1\n   :b 2})"
     }
   },
   {
     "in": {
-      "fileLineNo": 979,
-      "text": "(foo\n  {:a 1\n|:b 2})\n^ cursorDx -3"
+      "fileLineNo": 976,
+      "text": "(foo\n  {:a 1\n   :b 2})\n---"
     },
     "out": {
-      "fileLineNo": 986,
-      "text": "(foo\n  {:a 1})\n|:b 2"
+      "fileLineNo": 983,
+      "text": "(foo\n  {:a 1})\n:b 2"
     }
   },
   {
     "in": {
-      "fileLineNo": 994,
-      "text": "(defn foo\n|[a b]\n^ cursorDx -2\n  ; comment 1\n  bar)\n  ; comment 2"
+      "fileLineNo": 991,
+      "text": "(defn foo\n  [a b]\n--\n  ; comment 1\n  bar)\n  ; comment 2"
     },
     "out": {
-      "fileLineNo": 1003,
-      "text": "(defn foo)\n|[a b\n  ; comment 1\n  bar]\n  ; comment 2"
+      "fileLineNo": 1000,
+      "text": "(defn foo)\n[a b\n  ; comment 1\n  bar]\n  ; comment 2"
     }
   },
   {
     "in": {
-      "fileLineNo": 1013,
-      "text": "|(defn foo\n^ cursorDx -2\n    [a b]\n    ; comment 1\n    bar)\n    ; comment 2"
+      "fileLineNo": 1010,
+      "text": "  (defn foo\n--\n    [a b]\n    ; comment 1\n    bar)\n    ; comment 2"
     },
     "out": {
-      "fileLineNo": 1022,
-      "text": "|(defn foo\n  [a b]\n  ; comment 1\n  bar)\n  ; comment 2"
+      "fileLineNo": 1019,
+      "text": "(defn foo\n  [a b]\n  ; comment 1\n  bar)\n  ; comment 2"
     }
   }
 ]

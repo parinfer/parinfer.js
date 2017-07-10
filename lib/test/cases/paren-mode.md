@@ -360,13 +360,13 @@ Cursor pushed forward when a form is balanced and indented.
       7 8 9])|
 ```
 
-## CursorDx
+## Changes
 
 When backspacing, preserve the indentation of the child lines.
 
 ```in
-(let |[foo 1
-     ^ cursorDx -4
+(let     [foo 1
+     ----
            ; comment 1
            bar 2
            baz 3])
@@ -374,7 +374,7 @@ When backspacing, preserve the indentation of the child lines.
 ```
 
 ```out
-(let |[foo 1
+(let [foo 1
        ; comment 1
        bar 2
        baz 3])
@@ -382,15 +382,15 @@ When backspacing, preserve the indentation of the child lines.
 ```
 
 ```in
-|(def foo
-^ cursorDx -3
+   (def foo
+---
       ; comment 1
       bar)
       ; comment 2
 ```
 
 ```out
-|(def foo
+(def foo
    ; comment 1
    bar)
    ; comment 2
@@ -399,8 +399,8 @@ When backspacing, preserve the indentation of the child lines.
 When typing before an open-paren, preserve the indentation of the child lines.
 
 ```in
-(def foo |(bar
-         ^ cursorDx 5
+(def foo (bar
+    ++++
        4 5 6
        ; comment 1
        7 8 9))
@@ -408,9 +408,9 @@ When typing before an open-paren, preserve the indentation of the child lines.
 ```
 
 ```out
-(def foo |(bar
-            4 5 6
-            ; comment 1
-            7 8 9))
-            ; comment 2
+(def foo (bar
+           4 5 6
+           ; comment 1
+           7 8 9))
+           ; comment 2
 ```

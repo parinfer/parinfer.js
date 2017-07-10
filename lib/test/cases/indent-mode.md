@@ -940,23 +940,20 @@ use them to create tab stops for smart indentation snapping.
   bar)
 ```
 
-## CursorDx (experimental)
-
-`cursorDx` was originally intended only for Paren Mode, but we have added
-experimental support for it to Indent Mode as well.
+## Changes
 
 __Basic__: dedent multi-line expression to leave its parent:
 
 ```in
 (foo
-|{:a 1
-^ cursorDx -2
+  {:a 1
+--
    :b 2})
 ```
 
 ```out
 (foo)
-|{:a 1
+{:a 1
  :b 2}
 ```
 
@@ -964,14 +961,14 @@ __Basic__: indent multi-line expression to enter new parent:
 
 ```in
 (foo)
-  |{:a 1
-  ^ cursorDx 2
+  {:a 1
+++
  :b 2}
 ```
 
 ```out
 (foo
-  |{:a 1
+  {:a 1
    :b 2})
 ```
 
@@ -980,22 +977,22 @@ __Basic__: dedenting last line should work as normal:
 ```in
 (foo
   {:a 1
-|:b 2})
-^ cursorDx -3
+   :b 2})
+---
 ```
 
 ```out
 (foo
   {:a 1})
-|:b 2
+:b 2
 ```
 
 Dedenting a collection will adopt a former sibling line below it:
 
 ```in
 (defn foo
-|[a b]
-^ cursorDx -2
+  [a b]
+--
   ; comment 1
   bar)
   ; comment 2
@@ -1003,7 +1000,7 @@ Dedenting a collection will adopt a former sibling line below it:
 
 ```out
 (defn foo)
-|[a b
+[a b
   ; comment 1
   bar]
   ; comment 2
@@ -1012,8 +1009,8 @@ Dedenting a collection will adopt a former sibling line below it:
 But dedenting a top-level form should not cause a child to adopt a sibling:
 
 ```in
-|(defn foo
-^ cursorDx -2
+  (defn foo
+--
     [a b]
     ; comment 1
     bar)
@@ -1021,7 +1018,7 @@ But dedenting a top-level form should not cause a child to adopt a sibling:
 ```
 
 ```out
-|(defn foo
+(defn foo
   [a b]
   ; comment 1
   bar)
