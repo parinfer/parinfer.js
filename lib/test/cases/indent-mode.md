@@ -996,13 +996,17 @@ Dedenting a collection will adopt a former sibling line below it:
 (defn foo
 |[a b]
 ^ cursorDx -2
+  ; comment 1
   bar)
+  ; comment 2
 ```
 
 ```out
 (defn foo)
 |[a b
+  ; comment 1
   bar]
+  ; comment 2
 ```
 
 But dedenting a top-level form should not cause a child to adopt a sibling:
@@ -1011,11 +1015,15 @@ But dedenting a top-level form should not cause a child to adopt a sibling:
 |(defn foo
 ^ cursorDx -2
     [a b]
+    ; comment 1
     bar)
+    ; comment 2
 ```
 
 ```out
 |(defn foo
   [a b]
+  ; comment 1
   bar)
+  ; comment 2
 ```

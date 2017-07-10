@@ -272,31 +272,31 @@
   {
     "in": {
       "fileLineNo": 366,
-      "text": "(let |[foo 1\n     ^ cursorDx -4\n           bar 2\n           baz 3])"
+      "text": "(let |[foo 1\n     ^ cursorDx -4\n           ; comment 1\n           bar 2\n           baz 3])\n           ; comment 2"
     },
     "out": {
-      "fileLineNo": 373,
-      "text": "(let |[foo 1\n       bar 2\n       baz 3])"
+      "fileLineNo": 375,
+      "text": "(let |[foo 1\n       ; comment 1\n       bar 2\n       baz 3])\n       ; comment 2"
     }
   },
   {
     "in": {
-      "fileLineNo": 379,
-      "text": "|(def foo\n^ cursorDx -3\n      bar)"
+      "fileLineNo": 383,
+      "text": "|(def foo\n^ cursorDx -3\n      ; comment 1\n      bar)\n      ; comment 2"
     },
     "out": {
-      "fileLineNo": 385,
-      "text": "|(def foo\n   bar)"
+      "fileLineNo": 391,
+      "text": "|(def foo\n   ; comment 1\n   bar)\n   ; comment 2"
     }
   },
   {
     "in": {
-      "fileLineNo": 392,
-      "text": "(def foo |(bar\n         ^ cursorDx 5\n       4 5 6\n       7 8 9))"
+      "fileLineNo": 400,
+      "text": "(def foo |(bar\n         ^ cursorDx 5\n       4 5 6\n       ; comment 1\n       7 8 9))\n       ; comment 2"
     },
     "out": {
-      "fileLineNo": 399,
-      "text": "(def foo |(bar\n            4 5 6\n            7 8 9))"
+      "fileLineNo": 409,
+      "text": "(def foo |(bar\n            4 5 6\n            ; comment 1\n            7 8 9))\n            ; comment 2"
     }
   }
 ]

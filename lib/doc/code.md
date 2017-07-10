@@ -526,6 +526,17 @@ correction.  To allow for this to work for deeper expressions,
 [`result.indentDelta`] is accumulated and copied to the [`result.parenStack`].
 That way, a line must only check the `indentDelta` on top of the paren stack.
 
+Comments are also shifted based on their indentation. Note that both comments
+below will be indented if the first line is shifted.  The second comment is
+outside the function, but will be shifted regardless.
+
+```clj
+(defn foo []
+  ; comment 1
+  bar)
+  ; comment 2
+```
+
 _These operations happen at [`correctIndent`] and [`onOpenParen`]._
 
 ---
@@ -900,6 +911,20 @@ To make use of this information, the [`handleCursorDelta`] function adds
 [`result.cursorDx`] to [`result.indentDelta`] when it reaches the cursor, thereby
 preserving relative indentation of subsequent lines as expected.
 
+Comments are also shifted based on their indentation. Note that both comments
+below will be indented if the first line is shifted.  The second comment is
+outside the function, but will be shifted regardless.
+
+```clj
+(defn foo []
+  ; comment 1
+  bar)
+  ; comment 2
+```
+
+_This operation happens at [`checkIndent`], which  uses [`getParentOpenerIndex`]
+to find the open-paren that it should shift with._
+
 ### Dangerous Quotes
 
 Inserting a quote can sometimes cause a problem that is hard to track down.
@@ -1085,88 +1110,90 @@ as I can.
 [`BACKSLASH`]:../parinfer.js#L44
 [`LINE_ENDING_REGEX`]:../parinfer.js#L52
 [`MATCH_PAREN`]:../parinfer.js#L54
-[`ERROR_QUOTE_DANGER`]:../parinfer.js#L197
-[`ERROR_EOL_BACKSLASH`]:../parinfer.js#L198
-[`ERROR_UNCLOSED_QUOTE`]:../parinfer.js#L199
-[`ERROR_UNCLOSED_PAREN`]:../parinfer.js#L200
-[`ERROR_UNMATCHED_CLOSE_PAREN`]:../parinfer.js#L201
-[`ERROR_UNMATCHED_OPEN_PAREN`]:../parinfer.js#L202
-[`ERROR_UNHANDLED`]:../parinfer.js#L203
-[`errorMessages`]:../parinfer.js#L205
-[`API`]:../parinfer.js#L1196
+[`ERROR_QUOTE_DANGER`]:../parinfer.js#L201
+[`ERROR_EOL_BACKSLASH`]:../parinfer.js#L202
+[`ERROR_UNCLOSED_QUOTE`]:../parinfer.js#L203
+[`ERROR_UNCLOSED_PAREN`]:../parinfer.js#L204
+[`ERROR_UNMATCHED_CLOSE_PAREN`]:../parinfer.js#L205
+[`ERROR_UNMATCHED_OPEN_PAREN`]:../parinfer.js#L206
+[`ERROR_UNHANDLED`]:../parinfer.js#L207
+[`errorMessages`]:../parinfer.js#L209
+[`API`]:../parinfer.js#L1239
 [`isBoolean`]:../parinfer.js#L63
 [`isInteger`]:../parinfer.js#L67
 [`isOpenParen`]:../parinfer.js#L73
 [`isCloseParen`]:../parinfer.js#L77
 [`parseOptions`]:../parinfer.js#L85
 [`getInitialResult`]:../parinfer.js#L104
-[`cacheErrorPos`]:../parinfer.js#L214
-[`error`]:../parinfer.js#L225
-[`replaceWithinString`]:../parinfer.js#L262
-[`repeatString`]:../parinfer.js#L270
-[`getLineEnding`]:../parinfer.js#L279
-[`isCursorAffected`]:../parinfer.js#L293
-[`shiftCursorOnEdit`]:../parinfer.js#L301
-[`replaceWithinLine`]:../parinfer.js#L314
-[`insertWithinLine`]:../parinfer.js#L322
-[`initLine`]:../parinfer.js#L326
-[`commitChar`]:../parinfer.js#L339
-[`clamp`]:../parinfer.js#L351
-[`peek`]:../parinfer.js#L361
-[`isValidCloseParen`]:../parinfer.js#L369
-[`onOpenParen`]:../parinfer.js#L376
-[`onMatchedCloseParen`]:../parinfer.js#L390
-[`onUnmatchedCloseParen`]:../parinfer.js#L398
-[`onCloseParen`]:../parinfer.js#L414
-[`onTab`]:../parinfer.js#L425
-[`onSemicolon`]:../parinfer.js#L431
-[`onNewline`]:../parinfer.js#L438
-[`onQuote`]:../parinfer.js#L443
-[`onBackslash`]:../parinfer.js#L459
-[`afterBackslash`]:../parinfer.js#L463
-[`onChar`]:../parinfer.js#L474
-[`isCursorOnLeft`]:../parinfer.js#L500
-[`isCursorOnRight`]:../parinfer.js#L508
-[`isCursorInComment`]:../parinfer.js#L517
-[`handleCursorDelta`]:../parinfer.js#L521
-[`resetParenTrail`]:../parinfer.js#L537
-[`clampParenTrailToCursor`]:../parinfer.js#L546
-[`popParenTrail`]:../parinfer.js#L575
-[`correctParenTrail`]:../parinfer.js#L590
-[`cleanParenTrail`]:../parinfer.js#L623
-[`appendParenTrail`]:../parinfer.js#L652
-[`invalidateParenTrail`]:../parinfer.js#L661
-[`checkUnmatchedOutsideParenTrail`]:../parinfer.js#L670
-[`finishNewParenTrail`]:../parinfer.js#L677
-[`changeIndent`]:../parinfer.js#L696
-[`correctIndent`]:../parinfer.js#L705
-[`onIndent`]:../parinfer.js#L724
-[`onLeadingCloseParen`]:../parinfer.js#L745
-[`checkIndent`]:../parinfer.js#L764
-[`initIndent`]:../parinfer.js#L779
-[`setTabStops`]:../parinfer.js#L791
-[`processChar`]:../parinfer.js#L812
-[`processLine`]:../parinfer.js#L834
-[`finalizeResult`]:../parinfer.js#L856
-[`processError`]:../parinfer.js#L872
-[`processText`]:../parinfer.js#L884
-[`test_error`]:../parinfer.js#L909
-[`test_parseCaretLine`]:../parinfer.js#L913
-[`test_parseCursorFromLine`]:../parinfer.js#L928
-[`test_initialDiffState`]:../parinfer.js#L945
-[`test_checkDiffLine`]:../parinfer.js#L958
-[`test_parseDiffLine`]:../parinfer.js#L997
-[`test_handlePostDiffLine`]:../parinfer.js#L1039
-[`test_parse`]:../parinfer.js#L1057
-[`test_errorLine`]:../parinfer.js#L1092
-[`test_tabStopLine`]:../parinfer.js#L1102
-[`test_format`]:../parinfer.js#L1115
-[`publicResult`]:../parinfer.js#L1141
-[`indentMode`]:../parinfer.js#L1163
-[`parenMode`]:../parinfer.js#L1168
-[`testIndentMode`]:../parinfer.js#L1173
-[`testParenMode`]:../parinfer.js#L1180
-[`testInput`]:../parinfer.js#L1190
+[`cacheErrorPos`]:../parinfer.js#L218
+[`error`]:../parinfer.js#L229
+[`replaceWithinString`]:../parinfer.js#L266
+[`repeatString`]:../parinfer.js#L274
+[`getLineEnding`]:../parinfer.js#L283
+[`isCursorAffected`]:../parinfer.js#L297
+[`shiftCursorOnEdit`]:../parinfer.js#L305
+[`replaceWithinLine`]:../parinfer.js#L318
+[`insertWithinLine`]:../parinfer.js#L326
+[`initLine`]:../parinfer.js#L330
+[`commitChar`]:../parinfer.js#L343
+[`clamp`]:../parinfer.js#L355
+[`peek`]:../parinfer.js#L365
+[`isValidCloseParen`]:../parinfer.js#L373
+[`onOpenParen`]:../parinfer.js#L380
+[`onMatchedCloseParen`]:../parinfer.js#L394
+[`onUnmatchedCloseParen`]:../parinfer.js#L403
+[`onCloseParen`]:../parinfer.js#L419
+[`onTab`]:../parinfer.js#L430
+[`onSemicolon`]:../parinfer.js#L436
+[`onNewline`]:../parinfer.js#L443
+[`onQuote`]:../parinfer.js#L448
+[`onBackslash`]:../parinfer.js#L464
+[`afterBackslash`]:../parinfer.js#L468
+[`onChar`]:../parinfer.js#L479
+[`isCursorOnLeft`]:../parinfer.js#L505
+[`isCursorOnRight`]:../parinfer.js#L513
+[`isCursorInComment`]:../parinfer.js#L522
+[`handleCursorDelta`]:../parinfer.js#L526
+[`resetParenTrail`]:../parinfer.js#L542
+[`clampParenTrailToCursor`]:../parinfer.js#L551
+[`popParenTrail`]:../parinfer.js#L580
+[`getParentOpenerIndex`]:../parinfer.js#L594
+[`correctParenTrail`]:../parinfer.js#L621
+[`cleanParenTrail`]:../parinfer.js#L637
+[`appendParenTrail`]:../parinfer.js#L666
+[`invalidateParenTrail`]:../parinfer.js#L676
+[`checkUnmatchedOutsideParenTrail`]:../parinfer.js#L685
+[`finishNewParenTrail`]:../parinfer.js#L692
+[`changeIndent`]:../parinfer.js#L711
+[`correctIndent`]:../parinfer.js#L720
+[`onIndent`]:../parinfer.js#L739
+[`onLeadingCloseParen`]:../parinfer.js#L761
+[`shiftCommentLine`]:../parinfer.js#L780
+[`checkIndent`]:../parinfer.js#L806
+[`initIndent`]:../parinfer.js#L822
+[`setTabStops`]:../parinfer.js#L834
+[`processChar`]:../parinfer.js#L855
+[`processLine`]:../parinfer.js#L877
+[`finalizeResult`]:../parinfer.js#L899
+[`processError`]:../parinfer.js#L915
+[`processText`]:../parinfer.js#L927
+[`test_error`]:../parinfer.js#L952
+[`test_parseCaretLine`]:../parinfer.js#L956
+[`test_parseCursorFromLine`]:../parinfer.js#L971
+[`test_initialDiffState`]:../parinfer.js#L988
+[`test_checkDiffLine`]:../parinfer.js#L1001
+[`test_parseDiffLine`]:../parinfer.js#L1040
+[`test_handlePostDiffLine`]:../parinfer.js#L1082
+[`test_parse`]:../parinfer.js#L1100
+[`test_errorLine`]:../parinfer.js#L1135
+[`test_tabStopLine`]:../parinfer.js#L1145
+[`test_format`]:../parinfer.js#L1158
+[`publicResult`]:../parinfer.js#L1184
+[`indentMode`]:../parinfer.js#L1206
+[`parenMode`]:../parinfer.js#L1211
+[`testIndentMode`]:../parinfer.js#L1216
+[`testParenMode`]:../parinfer.js#L1223
+[`testInput`]:../parinfer.js#L1233
 [`result.mode`]:../parinfer.js#L108
 [`result.origText`]:../parinfer.js#L110
 [`result.inputLines`]:../parinfer.js#L114
@@ -1177,28 +1204,29 @@ as I can.
 [`result.ch`]:../parinfer.js#L121
 [`result.x`]:../parinfer.js#L122
 [`result.parenStack`]:../parinfer.js#L124
-[`result.tabStops`]:../parinfer.js#L127
-[`result.parenTrail`]:../parinfer.js#L131
-[`result.cursorX`]:../parinfer.js#L138
-[`result.cursorLine`]:../parinfer.js#L139
-[`result.cursorDx`]:../parinfer.js#L140
-[`result.isInCode`]:../parinfer.js#L142
-[`result.isEscaping`]:../parinfer.js#L143
-[`result.isInStr`]:../parinfer.js#L144
-[`result.isInComment`]:../parinfer.js#L145
-[`result.commentX`]:../parinfer.js#L146
-[`result.quoteDanger`]:../parinfer.js#L148
-[`result.trackingIndent`]:../parinfer.js#L149
-[`result.skipChar`]:../parinfer.js#L150
-[`result.success`]:../parinfer.js#L151
-[`result.partialResult`]:../parinfer.js#L152
-[`result.forceBalance`]:../parinfer.js#L153
-[`result.maxIndent`]:../parinfer.js#L155
-[`result.indentDelta`]:../parinfer.js#L156
-[`result.error`]:../parinfer.js#L159
-[`result.errorPosCache`]:../parinfer.js#L170
-[`result.code`]:../parinfer.js#L947
-[`result.prevCode`]:../parinfer.js#L949
-[`result.prevNewlineChar`]:../parinfer.js#L951
-[`result.merge`]:../parinfer.js#L952
-[`result.mergeOffset`]:../parinfer.js#L953
+[`result.discardStack`]:../parinfer.js#L128
+[`result.tabStops`]:../parinfer.js#L131
+[`result.parenTrail`]:../parinfer.js#L135
+[`result.cursorX`]:../parinfer.js#L142
+[`result.cursorLine`]:../parinfer.js#L143
+[`result.cursorDx`]:../parinfer.js#L144
+[`result.isInCode`]:../parinfer.js#L146
+[`result.isEscaping`]:../parinfer.js#L147
+[`result.isInStr`]:../parinfer.js#L148
+[`result.isInComment`]:../parinfer.js#L149
+[`result.commentX`]:../parinfer.js#L150
+[`result.quoteDanger`]:../parinfer.js#L152
+[`result.trackingIndent`]:../parinfer.js#L153
+[`result.skipChar`]:../parinfer.js#L154
+[`result.success`]:../parinfer.js#L155
+[`result.partialResult`]:../parinfer.js#L156
+[`result.forceBalance`]:../parinfer.js#L157
+[`result.maxIndent`]:../parinfer.js#L159
+[`result.indentDelta`]:../parinfer.js#L160
+[`result.error`]:../parinfer.js#L163
+[`result.errorPosCache`]:../parinfer.js#L174
+[`result.code`]:../parinfer.js#L990
+[`result.prevCode`]:../parinfer.js#L992
+[`result.prevNewlineChar`]:../parinfer.js#L994
+[`result.merge`]:../parinfer.js#L995
+[`result.mergeOffset`]:../parinfer.js#L996

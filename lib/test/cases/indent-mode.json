@@ -732,21 +732,21 @@
   {
     "in": {
       "fileLineNo": 994,
-      "text": "(defn foo\n|[a b]\n^ cursorDx -2\n  bar)"
+      "text": "(defn foo\n|[a b]\n^ cursorDx -2\n  ; comment 1\n  bar)\n  ; comment 2"
     },
     "out": {
-      "fileLineNo": 1001,
-      "text": "(defn foo)\n|[a b\n  bar]"
+      "fileLineNo": 1003,
+      "text": "(defn foo)\n|[a b\n  ; comment 1\n  bar]\n  ; comment 2"
     }
   },
   {
     "in": {
-      "fileLineNo": 1009,
-      "text": "|(defn foo\n^ cursorDx -2\n    [a b]\n    bar)"
+      "fileLineNo": 1013,
+      "text": "|(defn foo\n^ cursorDx -2\n    [a b]\n    ; comment 1\n    bar)\n    ; comment 2"
     },
     "out": {
-      "fileLineNo": 1016,
-      "text": "|(defn foo\n  [a b]\n  bar)"
+      "fileLineNo": 1022,
+      "text": "|(defn foo\n  [a b]\n  ; comment 1\n  bar)\n  ; comment 2"
     }
   }
 ]

@@ -1,3 +1,7 @@
+## 2.5.2
+
+- fix: comment lines are shifted when indented inside shifted collections (see end of [this section](doc/code.md#preserving-relative-indentation-while-typing))
+
 ## 2.5.1
 
 - fix: dedenting an open-paren with `cursorDx` in Indent Mode will properly adopt new child lines

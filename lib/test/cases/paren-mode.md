@@ -367,25 +367,33 @@ When backspacing, preserve the indentation of the child lines.
 ```in
 (let |[foo 1
      ^ cursorDx -4
+           ; comment 1
            bar 2
            baz 3])
+           ; comment 2
 ```
 
 ```out
 (let |[foo 1
+       ; comment 1
        bar 2
        baz 3])
+       ; comment 2
 ```
 
 ```in
 |(def foo
 ^ cursorDx -3
+      ; comment 1
       bar)
+      ; comment 2
 ```
 
 ```out
 |(def foo
+   ; comment 1
    bar)
+   ; comment 2
 ```
 
 When typing before an open-paren, preserve the indentation of the child lines.
@@ -394,11 +402,15 @@ When typing before an open-paren, preserve the indentation of the child lines.
 (def foo |(bar
          ^ cursorDx 5
        4 5 6
+       ; comment 1
        7 8 9))
+       ; comment 2
 ```
 
 ```out
 (def foo |(bar
             4 5 6
+            ; comment 1
             7 8 9))
+            ; comment 2
 ```
