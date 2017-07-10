@@ -1024,3 +1024,19 @@ But dedenting a top-level form should not cause a child to adopt a sibling:
   bar)
   ; comment 2
 ```
+
+__Multiple changes__:
+
+```in
+(my-fnfoo (if some-condition
+ -----+++
+         println) my-funfoo {:foo 1
+                  ------+++
+                          :bar 2})
+```
+
+```out
+(foo (if some-condition
+       println) foo {:foo 1
+                     :bar 2})
+```

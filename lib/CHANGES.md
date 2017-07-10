@@ -1,3 +1,7 @@
+## 2.6.0
+
+- enhancement: replace `cursorDx` with `changes` option
+
 ## 2.5.2
 
 - fix: comment lines are shifted when indented inside shifted collections (see end of [this section](doc/code.md#preserving-relative-indentation-while-typing))

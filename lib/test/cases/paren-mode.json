@@ -298,5 +298,15 @@
       "fileLineNo": 409,
       "text": "(def foo (bar\n           4 5 6\n           ; comment 1\n           7 8 9))\n           ; comment 2"
     }
+  },
+  {
+    "in": {
+      "fileLineNo": 419,
+      "text": "(my-fnfoo (if some-condition\n -----+++\n         println) my-funfoo {:foo 1\n                  ------+++\n                          :bar 2})"
+    },
+    "out": {
+      "fileLineNo": 427,
+      "text": "(foo (if some-condition\n       println) foo {:foo 1\n                     :bar 2})"
+    }
   }
 ]

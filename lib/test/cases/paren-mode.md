@@ -414,3 +414,19 @@ When typing before an open-paren, preserve the indentation of the child lines.
            7 8 9))
            ; comment 2
 ```
+
+__Multiple changes__:
+
+```in
+(my-fnfoo (if some-condition
+ -----+++
+         println) my-funfoo {:foo 1
+                  ------+++
+                          :bar 2})
+```
+
+```out
+(foo (if some-condition
+       println) foo {:foo 1
+                     :bar 2})
+```

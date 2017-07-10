@@ -748,5 +748,15 @@
       "fileLineNo": 1019,
       "text": "(defn foo\n  [a b]\n  ; comment 1\n  bar)\n  ; comment 2"
     }
+  },
+  {
+    "in": {
+      "fileLineNo": 1029,
+      "text": "(my-fnfoo (if some-condition\n -----+++\n         println) my-funfoo {:foo 1\n                  ------+++\n                          :bar 2})"
+    },
+    "out": {
+      "fileLineNo": 1037,
+      "text": "(foo (if some-condition\n       println) foo {:foo 1\n                     :bar 2})"
+    }
   }
 ]

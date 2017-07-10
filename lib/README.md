@@ -103,12 +103,13 @@ Arguments:
 - `options` is an object with the following properties:
   - `cursorLine` - zero-based line number of the cursor
   - `cursorX` - zero-based x-position of the cursor
-  - `cursorDx` - indicates the amount the cursor moved horizontally if something was inserted or deleted in order to help preserve relative indentation of child expressions ([see docs][cursorDx]).
+  - `changes` - ordered array of change objects with the following:
+    - `lineNo` - starting line number of the change
+    - `x` - starting x of the change
+    - `oldText` - original text that was replaced
+    - `newText` - new text that replaced the original text
   - `forceBalance` - employ the aggressive paren-balancing rules from v1 (defaults to false)
   - `partialResult` - return partially processed text/cursor if an error occurs (defaults to false)
-
-<!-- file links need to be full path to make them work for the NPM readme -->
-[cursorDx]:https://github.com/shaunlebron/parinfer/blob/master/lib/doc/code.md#preserving-relative-indentation-while-typing
 
 Returns an object with the following properties:
 
