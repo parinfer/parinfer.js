@@ -1,5 +1,7 @@
 ## Adding Parinfer to an Editor
 
+> __TODO__: replace `cursorDx` with `changes` option
+
 > See [Parinfer for Atom][atom-parinfer] to see an example of these steps implemented.
 
 [atom-parinfer]:https://github.com/oakmac/atom-parinfer

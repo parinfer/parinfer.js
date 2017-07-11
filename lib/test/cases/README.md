@@ -61,25 +61,6 @@ A pipe character `|` represents the cursor.
 > (def foo|)
 > ```
 
-## Cursor Dx
-
-An input block can contain a line, with `^ cursorDx` and a number.  The caret
-must be positioned under a cursor `|`.
-
-The cursorDx (i.e. delta x) represents the number of characters deleted or added
-behind the cursor that resulted in the current state.
-
-> ```in
-> |(def foo
-> ^ cursorDx -3
->       bar)
-> ```
->
-> ```out
-> |(def foo
->    bar)
-> ```
-
 ## Expected Error
 
 An output block can contain an error line, with a caret `^` and the name
