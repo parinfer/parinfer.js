@@ -1,6 +1,6 @@
 ## 3.0.0
 
-- enhancement: replace `cursorDx` with `changes` option
+- enhancement: replace `cursorDx` with `changes` option (republishing 2.6.0 as major version bump)
 
 ## 2.6.1
 
