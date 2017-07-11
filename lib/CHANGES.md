@@ -1,3 +1,11 @@
+## 3.0.0
+
+- enhancement: replace `cursorDx` with `changes` option
+
+## 2.6.1
+
+- republishing 2.5.2 since 2.6.0 was a breaking change that should be published as 3.0.0
+
 ## 2.6.0
 
 - enhancement: replace `cursorDx` with `changes` option
