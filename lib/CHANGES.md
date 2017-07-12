@@ -1,3 +1,7 @@
+## 3.0.1
+
+- fix: make deleted unbalanced parens influence shifted expressions (when `forceBalance` is true)
+
 ## 3.0.0
 
 - enhancement: replace `cursorDx` with `changes` option (republishing 2.6.0 as major version bump)
