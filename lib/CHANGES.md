@@ -1,3 +1,7 @@
+## 3.1.1
+
+- fix botched 3.1.0
+
 ## 3.1.0
 
 - enhancement: publish separate test API
