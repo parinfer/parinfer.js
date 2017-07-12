@@ -1,3 +1,7 @@
+## 3.1.0
+
+- enhancement: publish separate test API
+
 ## 3.0.1
 
 - fix: make deleted unbalanced parens influence shifted expressions (when `forceBalance` is true)

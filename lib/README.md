@@ -139,6 +139,66 @@ Returns an object with the following properties:
 
 [Tab stops]:https://en.wikipedia.org/wiki/Tab_stop
 
+## Test API
+
+You can use our testing API for a fast, visual way to specify options and verify
+results. This allows all metadata required by and returned from Parinfer to be
+specified inside the text using our annotation syntax.
+
+__[See here for Annotation Syntax details][annotation syntax]__
+
+```js
+// Currently only supported in Node
+var parinferTest = require('parinfer/test');
+```
+
+### Test Example
+
+The following code is a quick way to verify behavior of Indent Mode.
+The `|` is parsed as the cursor and removed from the text before processing.
+
+```js
+parinterTest.indentMode(`
+(def foo
+  "|
+  "(a b)
+      c")
+`);
+```
+
+This returns the processed text below, with `|` reinserted to show cursor
+result, and an `^ error` annotation line since a string was not closed:
+
+```
+(def foo
+  "|
+  "(a b)
+      c")
+       ^ error: unclosed-quote
+```
+
+### Test Usage
+
+```js
+parinferTest.indentMode(inputText, extras); // returns string
+parinferTest.parenMode(inputText, extras);  // returns string
+```
+
+`extras` allows us to specify options for which there is no annotation syntax yet:
+
+- `forceBalance`
+- `partialResult`
+- `printTabStops`
+
+You can also use the input/output functions directly:
+
+```js
+parinferTest.parseInput(inputText, extras); // returns {text, options}
+parinferTest.printOutput(result, extras);   // returns string
+
+// `result` is returned by main indentMode or parenMode functions
+```
+
 ## Questions?
 
 Thanks for asking!  You're helping make Parinfer better.  You can [email me]
@@ -166,16 +226,8 @@ npm install
 npm test
 ```
 
-__Sandbox__: See [`sandbox.js`] for examples on using Parinfer's [annotation syntax] as a
-fast, visual way to specify options and verify results.
-
-```js
-console.log(parinfer.testIndentMode("..."));
-console.log(parinfer.testParenMode("..."));
-
-// print out results of the annotation input parser (for debugging)
-parinfer.testInput("...");
-```
+__Sandbox__: See [`sandbox.js`] for running quick isolated tests and examples
+using the Test API.
 
 <!-- file links need to be full path to make them work for the NPM readme -->
 [`parinfer.js`]:https://github.com/shaunlebron/parinfer/blob/master/lib/parinfer.js

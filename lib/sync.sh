@@ -5,6 +5,7 @@
 ## - package.json version => parinfer.js
 
 jsfile=parinfer.js
+testjsfile=test.js
 docfile=doc/code.md
 
 ##----------------------------------------------------------------------------
@@ -38,9 +39,12 @@ version=$(perl -n -e'/"version": "(.+)"/ && print "$1"' package.json)
 
 # Sync version to code files.
 sed -i.bak "s|^// Parinfer .*|// Parinfer $version|" $jsfile
+sed -i.bak "s|^// Parinfer Test .*|// Parinfer Test $version|" $testjsfile
 sed -i.bak "s|^  version: .*|  version: \"$version\",|" $jsfile
 
 rm ${jsfile}.bak
+rm ${testjsfile}.bak
 
 echo "Updated $jsfile with package.json version $version"
+echo "Updated $testjsfile with package.json version $version"
 echo
