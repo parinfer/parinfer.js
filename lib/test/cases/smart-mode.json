@@ -1,170 +1,149 @@
 [
   {
-    "in": {
-      "text": "(foo\n  {:a 1\n:b 2})",
-      "options": {
-        "changes": [
-          {
-            "lineNo": 2,
-            "x": 0,
-            "oldText": "   ",
-            "newText": ""
-          }
-        ]
-      },
-      "fileText": "(foo\n  {:a 1\n   :b 2})\n---",
-      "fileLineNo": 4
+    "text": "(foo\n  {:a 1\n:b 2})",
+    "options": {
+      "changes": [
+        {
+          "lineNo": 2,
+          "x": 0,
+          "oldText": "   ",
+          "newText": ""
+        }
+      ]
     },
-    "out": {
-      "fileLineNo": 11,
-      "fileText": "(foo\n  {:a 1})\n:b 2",
-      "result": {
-        "text": "(foo\n  {:a 1})\n:b 2"
-      }
+    "result": {
+      "text": "(foo\n  {:a 1})\n:b 2"
+    },
+    "source": {
+      "lineNo": 4,
+      "in": "(foo\n  {:a 1\n   :b 2})\n---",
+      "out": "(foo\n  {:a 1})\n:b 2"
     }
   },
   {
-    "in": {
-      "text": "(foo\n    {:a 1\n   :b 2})",
-      "options": {
-        "changes": [
-          {
-            "lineNo": 1,
-            "x": 2,
-            "oldText": "",
-            "newText": "  "
-          }
-        ]
-      },
-      "fileText": "(foo\n    {:a 1\n  ++\n   :b 2})",
-      "fileLineNo": 19
+    "text": "(foo\n    {:a 1\n   :b 2})",
+    "options": {
+      "changes": [
+        {
+          "lineNo": 1,
+          "x": 2,
+          "oldText": "",
+          "newText": "  "
+        }
+      ]
     },
-    "out": {
-      "fileLineNo": 26,
-      "fileText": "(foo\n    {:a 1\n     :b 2})",
-      "result": {
-        "text": "(foo\n    {:a 1\n     :b 2})"
-      }
+    "result": {
+      "text": "(foo\n    {:a 1\n     :b 2})"
+    },
+    "source": {
+      "lineNo": 19,
+      "in": "(foo\n    {:a 1\n  ++\n   :b 2})",
+      "out": "(foo\n    {:a 1\n     :b 2})"
     }
   },
   {
-    "in": {
-      "text": "(foo\n  {:a 1\n     :b 2})",
-      "options": {
-        "changes": [
-          {
-            "lineNo": 1,
-            "x": 2,
-            "oldText": "  ",
-            "newText": ""
-          }
-        ]
-      },
-      "fileText": "(foo\n    {:a 1\n  --\n     :b 2})",
-      "fileLineNo": 32
+    "text": "(foo\n  {:a 1\n     :b 2})",
+    "options": {
+      "changes": [
+        {
+          "lineNo": 1,
+          "x": 2,
+          "oldText": "  ",
+          "newText": ""
+        }
+      ]
     },
-    "out": {
-      "fileLineNo": 39,
-      "fileText": "(foo\n  {:a 1\n   :b 2})",
-      "result": {
-        "text": "(foo\n  {:a 1\n   :b 2})"
-      }
+    "result": {
+      "text": "(foo\n  {:a 1\n   :b 2})"
+    },
+    "source": {
+      "lineNo": 32,
+      "in": "(foo\n    {:a 1\n  --\n     :b 2})",
+      "out": "(foo\n  {:a 1\n   :b 2})"
     }
   },
   {
-    "in": {
-      "text": "(f {:a 1\n      :b 2})",
-      "options": {
-        "changes": [
-          {
-            "lineNo": 0,
-            "x": 2,
-            "oldText": "oo",
-            "newText": ""
-          }
-        ]
-      },
-      "fileText": "(foo {:a 1\n  --\n      :b 2})",
-      "fileLineNo": 45
+    "text": "(f {:a 1\n      :b 2})",
+    "options": {
+      "changes": [
+        {
+          "lineNo": 0,
+          "x": 2,
+          "oldText": "oo",
+          "newText": ""
+        }
+      ]
     },
-    "out": {
-      "fileLineNo": 51,
-      "fileText": "(f {:a 1\n    :b 2})",
-      "result": {
-        "text": "(f {:a 1\n    :b 2})"
-      }
+    "result": {
+      "text": "(f {:a 1\n    :b 2})"
+    },
+    "source": {
+      "lineNo": 45,
+      "in": "(foo {:a 1\n  --\n      :b 2})",
+      "out": "(f {:a 1\n    :b 2})"
     }
   },
   {
-    "in": {
-      "text": "(foo\n{:a 1\n   :b 2})",
-      "options": {
-        "changes": [
-          {
-            "lineNo": 1,
-            "x": 0,
-            "oldText": "  ",
-            "newText": ""
-          }
-        ]
-      },
-      "fileText": "(foo\n  {:a 1\n--\n   :b 2})",
-      "fileLineNo": 58
+    "text": "(foo\n{:a 1\n   :b 2})",
+    "options": {
+      "changes": [
+        {
+          "lineNo": 1,
+          "x": 0,
+          "oldText": "  ",
+          "newText": ""
+        }
+      ]
     },
-    "out": {
-      "fileLineNo": 65,
-      "fileText": "(foo)\n{:a 1\n :b 2}",
-      "result": {
-        "text": "(foo)\n{:a 1\n :b 2}"
-      }
+    "result": {
+      "text": "(foo)\n{:a 1\n :b 2}"
+    },
+    "source": {
+      "lineNo": 58,
+      "in": "(foo\n  {:a 1\n--\n   :b 2})",
+      "out": "(foo)\n{:a 1\n :b 2}"
     }
   },
   {
-    "in": {
-      "text": "(foo)\n  {:a 1\n:b 2}",
-      "options": {
-        "changes": [
-          {
-            "lineNo": 1,
-            "x": 0,
-            "oldText": "",
-            "newText": "  "
-          }
-        ]
-      },
-      "fileText": "(foo)\n  {:a 1\n++\n:b 2}",
-      "fileLineNo": 71
+    "text": "(foo)\n  {:a 1\n:b 2}",
+    "options": {
+      "changes": [
+        {
+          "lineNo": 1,
+          "x": 0,
+          "oldText": "",
+          "newText": "  "
+        }
+      ]
     },
-    "out": {
-      "fileLineNo": 78,
-      "fileText": "(foo\n  {:a 1\n   :b 2})",
-      "result": {
-        "text": "(foo\n  {:a 1\n   :b 2})"
-      }
+    "result": {
+      "text": "(foo\n  {:a 1\n   :b 2})"
+    },
+    "source": {
+      "lineNo": 71,
+      "in": "(foo)\n  {:a 1\n++\n:b 2}",
+      "out": "(foo\n  {:a 1\n   :b 2})"
     }
   },
   {
-    "in": {
-      "text": "(a (b[) c) (d) e)",
-      "options": {
-        "changes": [
-          {
-            "lineNo": 0,
-            "x": 5,
-            "oldText": "",
-            "newText": "["
-          }
-        ]
-      },
-      "fileText": "(a (b[) c) (d) e)\n     +",
-      "fileLineNo": 86
+    "text": "(a (b[) c) (d) e)",
+    "options": {
+      "changes": [
+        {
+          "lineNo": 0,
+          "x": 5,
+          "oldText": "",
+          "newText": "["
+        }
+      ]
     },
-    "out": {
-      "fileLineNo": 91,
-      "fileText": "(a (b[]) c) (d) e)",
-      "result": {
-        "text": "(a (b[]) c) (d) e)"
-      }
+    "result": {
+      "text": "(a (b[]) c) (d) e)"
+    },
+    "source": {
+      "lineNo": 86,
+      "in": "(a (b[) c) (d) e)\n     +",
+      "out": "(a (b[]) c) (d) e)"
     }
   }
 ]

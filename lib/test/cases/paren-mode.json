@@ -1,569 +1,476 @@
 [
   {
-    "in": {
-      "text": "(let [foo 1]\nfoo)",
-      "options": {},
-      "fileText": "(let [foo 1]\nfoo)",
-      "fileLineNo": 6
+    "text": "(let [foo 1]\nfoo)",
+    "options": {},
+    "result": {
+      "text": "(let [foo 1]\n foo)"
     },
-    "out": {
-      "fileLineNo": 11,
-      "fileText": "(let [foo 1]\n foo)",
-      "result": {
-        "text": "(let [foo 1]\n foo)"
-      }
+    "source": {
+      "lineNo": 6,
+      "in": "(let [foo 1]\nfoo)",
+      "out": "(let [foo 1]\n foo)"
     }
   },
   {
-    "in": {
-      "text": "(let [foo 1]\n      foo)",
-      "options": {},
-      "fileText": "(let [foo 1]\n      foo)",
-      "fileLineNo": 18
+    "text": "(let [foo 1]\n      foo)",
+    "options": {},
+    "result": {
+      "text": "(let [foo 1]\n     foo)"
     },
-    "out": {
-      "fileLineNo": 23,
-      "fileText": "(let [foo 1]\n     foo)",
-      "result": {
-        "text": "(let [foo 1]\n     foo)"
-      }
+    "source": {
+      "lineNo": 18,
+      "in": "(let [foo 1]\n      foo)",
+      "out": "(let [foo 1]\n     foo)"
     }
   },
   {
-    "in": {
-      "text": "(let [foo {:a 1}]\n           foo)",
-      "options": {},
-      "fileText": "(let [foo {:a 1}]\n           foo)",
-      "fileLineNo": 28
+    "text": "(let [foo {:a 1}]\n           foo)",
+    "options": {},
+    "result": {
+      "text": "(let [foo {:a 1}]\n     foo)"
     },
-    "out": {
-      "fileLineNo": 33,
-      "fileText": "(let [foo {:a 1}]\n     foo)",
-      "result": {
-        "text": "(let [foo {:a 1}]\n     foo)"
-      }
+    "source": {
+      "lineNo": 28,
+      "in": "(let [foo {:a 1}]\n           foo)",
+      "out": "(let [foo {:a 1}]\n     foo)"
     }
   },
   {
-    "in": {
-      "text": "(let [foo 1]\n      foo)\n\n(let [foo 1]\nfoo)",
-      "options": {},
-      "fileText": "(let [foo 1]\n      foo)\n\n(let [foo 1]\nfoo)",
-      "fileLineNo": 40
+    "text": "(let [foo 1]\n      foo)\n\n(let [foo 1]\nfoo)",
+    "options": {},
+    "result": {
+      "text": "(let [foo 1]\n     foo)\n\n(let [foo 1]\n foo)"
     },
-    "out": {
-      "fileLineNo": 48,
-      "fileText": "(let [foo 1]\n     foo)\n\n(let [foo 1]\n foo)",
-      "result": {
-        "text": "(let [foo 1]\n     foo)\n\n(let [foo 1]\n foo)"
-      }
+    "source": {
+      "lineNo": 40,
+      "in": "(let [foo 1]\n      foo)\n\n(let [foo 1]\nfoo)",
+      "out": "(let [foo 1]\n     foo)\n\n(let [foo 1]\n foo)"
     }
   },
   {
-    "in": {
-      "text": "(let [foo [1 2 3]]\n      (-> foo\n          (map inc)))",
-      "options": {},
-      "fileText": "(let [foo [1 2 3]]\n      (-> foo\n          (map inc)))",
-      "fileLineNo": 60
+    "text": "(let [foo [1 2 3]]\n      (-> foo\n          (map inc)))",
+    "options": {},
+    "result": {
+      "text": "(let [foo [1 2 3]]\n     (-> foo\n         (map inc)))"
     },
-    "out": {
-      "fileLineNo": 66,
-      "fileText": "(let [foo [1 2 3]]\n     (-> foo\n         (map inc)))",
-      "result": {
-        "text": "(let [foo [1 2 3]]\n     (-> foo\n         (map inc)))"
-      }
+    "source": {
+      "lineNo": 60,
+      "in": "(let [foo [1 2 3]]\n      (-> foo\n          (map inc)))",
+      "out": "(let [foo [1 2 3]]\n     (-> foo\n         (map inc)))"
     }
   },
   {
-    "in": {
-      "text": "(let [foo 1\n      ]; <-- spaces\n  foo)",
-      "options": {},
-      "fileText": "(let [foo 1\n      ]; <-- spaces\n  foo)",
-      "fileLineNo": 78
+    "text": "(let [foo 1\n      ]; <-- spaces\n  foo)",
+    "options": {},
+    "result": {
+      "text": "(let [foo 1]\n      ; <-- spaces\n  foo)"
     },
-    "out": {
-      "fileLineNo": 84,
-      "fileText": "(let [foo 1]\n      ; <-- spaces\n  foo)",
-      "result": {
-        "text": "(let [foo 1]\n      ; <-- spaces\n  foo)"
-      }
+    "source": {
+      "lineNo": 78,
+      "in": "(let [foo 1\n      ]; <-- spaces\n  foo)",
+      "out": "(let [foo 1]\n      ; <-- spaces\n  foo)"
     }
   },
   {
-    "in": {
-      "text": "(let [foo 1\n      bar 2\n\n     ] (+ foo bar\n  ); <-- spaces\n)",
-      "options": {},
-      "fileText": "(let [foo 1\n      bar 2\n\n     ] (+ foo bar\n  ); <-- spaces\n)",
-      "fileLineNo": 90
+    "text": "(let [foo 1\n      bar 2\n\n     ] (+ foo bar\n  ); <-- spaces\n)",
+    "options": {},
+    "result": {
+      "text": "(let [foo 1\n      bar 2]\n\n     (+ foo bar))\n  ; <-- spaces\n"
     },
-    "out": {
-      "fileLineNo": 99,
-      "fileText": "(let [foo 1\n      bar 2]\n\n     (+ foo bar))\n  ; <-- spaces\n",
-      "result": {
-        "text": "(let [foo 1\n      bar 2]\n\n     (+ foo bar))\n  ; <-- spaces\n"
-      }
+    "source": {
+      "lineNo": 90,
+      "in": "(let [foo 1\n      bar 2\n\n     ] (+ foo bar\n  ); <-- spaces\n)",
+      "out": "(let [foo 1\n      bar 2]\n\n     (+ foo bar))\n  ; <-- spaces\n"
     }
   },
   {
-    "in": {
-      "text": "(def x [1 2 3 4\n         5 6 7 8])",
-      "options": {},
-      "fileText": "(def x [1 2 3 4\n         5 6 7 8])",
-      "fileLineNo": 112
+    "text": "(def x [1 2 3 4\n         5 6 7 8])",
+    "options": {},
+    "result": {
+      "text": "(def x [1 2 3 4\n         5 6 7 8])"
     },
-    "out": {
-      "fileLineNo": 117,
-      "fileText": "(def x [1 2 3 4\n         5 6 7 8])",
-      "result": {
-        "text": "(def x [1 2 3 4\n         5 6 7 8])"
-      }
+    "source": {
+      "lineNo": 112,
+      "in": "(def x [1 2 3 4\n         5 6 7 8])",
+      "out": "(def x [1 2 3 4\n         5 6 7 8])"
     }
   },
   {
-    "in": {
-      "text": "  (assoc x\n:foo 1\n     :bar 2)",
-      "options": {},
-      "fileText": "  (assoc x\n:foo 1\n     :bar 2)",
-      "fileLineNo": 124
+    "text": "  (assoc x\n:foo 1\n     :bar 2)",
+    "options": {},
+    "result": {
+      "text": "  (assoc x\n   :foo 1\n     :bar 2)"
     },
-    "out": {
-      "fileLineNo": 130,
-      "fileText": "  (assoc x\n   :foo 1\n     :bar 2)",
-      "result": {
-        "text": "  (assoc x\n   :foo 1\n     :bar 2)"
-      }
+    "source": {
+      "lineNo": 124,
+      "in": "  (assoc x\n:foo 1\n     :bar 2)",
+      "out": "  (assoc x\n   :foo 1\n     :bar 2)"
     }
   },
   {
-    "in": {
-      "text": "(foo",
-      "options": {},
-      "fileText": "(foo",
-      "fileLineNo": 138
+    "text": "(foo",
+    "options": {},
+    "result": {
+      "error": {
+        "name": "unclosed-paren",
+        "lineNo": 0,
+        "x": 0
+      },
+      "text": "(foo"
     },
-    "out": {
-      "fileLineNo": 142,
-      "fileText": "(foo\n^ error: unclosed-paren",
-      "result": {
-        "error": {
-          "name": "unclosed-paren",
+    "source": {
+      "lineNo": 138,
+      "in": "(foo",
+      "out": "(foo\n^ error: unclosed-paren"
+    }
+  },
+  {
+    "text": "(defn foo\n[arg arg2\nbar",
+    "options": {},
+    "result": {
+      "error": {
+        "name": "unclosed-paren",
+        "lineNo": 1,
+        "x": 0
+      },
+      "text": "(defn foo\n[arg arg2\nbar"
+    },
+    "source": {
+      "lineNo": 147,
+      "in": "(defn foo\n[arg arg2\nbar",
+      "out": "(defn foo\n[arg arg2\n^ error: unclosed-paren\nbar"
+    }
+  },
+  {
+    "text": "(foo})",
+    "options": {},
+    "result": {
+      "error": {
+        "name": "unmatched-close-paren",
+        "lineNo": 0,
+        "x": 4
+      },
+      "text": "(foo})"
+    },
+    "source": {
+      "lineNo": 162,
+      "in": "(foo})",
+      "out": "(foo})\n    ^ error: unmatched-close-paren"
+    }
+  },
+  {
+    "text": "(foo\n  })",
+    "options": {},
+    "result": {
+      "error": {
+        "name": "unmatched-close-paren",
+        "lineNo": 1,
+        "x": 2
+      },
+      "text": "(foo\n  })"
+    },
+    "source": {
+      "lineNo": 171,
+      "in": "(foo\n  })",
+      "out": "(foo\n  })\n  ^ error: unmatched-close-paren"
+    }
+  },
+  {
+    "text": "(defn foo\n  [arg\n  bar)",
+    "options": {},
+    "result": {
+      "error": {
+        "name": "unmatched-close-paren",
+        "lineNo": 2,
+        "x": 5
+      },
+      "text": "(defn foo\n  [arg\n  bar)"
+    },
+    "source": {
+      "lineNo": 182,
+      "in": "(defn foo\n  [arg\n  bar)",
+      "out": "(defn foo\n  [arg\n  bar)\n     ^ error: unmatched-close-paren"
+    }
+  },
+  {
+    "text": "; hello \\n world",
+    "options": {},
+    "result": {
+      "text": "; hello \\n world"
+    },
+    "source": {
+      "lineNo": 199,
+      "in": "; hello \\n world",
+      "out": "; hello \\n world"
+    }
+  },
+  {
+    "text": "(def foo \\,)\n(def bar \\ )",
+    "options": {},
+    "result": {
+      "text": "(def foo \\,)\n(def bar \\ )"
+    },
+    "source": {
+      "lineNo": 209,
+      "in": "(def foo \\,)\n(def bar \\ )",
+      "out": "(def foo \\,)\n(def bar \\ )"
+    }
+  },
+  {
+    "text": "(foo [a b]\\\nc)",
+    "options": {},
+    "result": {
+      "error": {
+        "name": "eol-backslash",
+        "lineNo": 0,
+        "x": 10
+      },
+      "text": "(foo [a b]\\\nc)"
+    },
+    "source": {
+      "lineNo": 221,
+      "in": "(foo [a b]\\\nc)",
+      "out": "(foo [a b]\\\n          ^ error: eol-backslash\nc)"
+    }
+  },
+  {
+    "text": "(def foo\n  \"hello\n  bar)",
+    "options": {},
+    "result": {
+      "error": {
+        "name": "unclosed-quote",
+        "lineNo": 1,
+        "x": 2
+      },
+      "text": "(def foo\n  \"hello\n  bar)"
+    },
+    "source": {
+      "lineNo": 234,
+      "in": "(def foo\n  \"hello\n  bar)",
+      "out": "(def foo\n  \"hello\n  ^ error: unclosed-quote\n  bar)"
+    }
+  },
+  {
+    "text": "(def foo [a b]\n  ; \"my string\nret)",
+    "options": {},
+    "result": {
+      "error": {
+        "name": "quote-danger",
+        "lineNo": 1,
+        "x": 4
+      },
+      "text": "(def foo [a b]\n  ; \"my string\nret)"
+    },
+    "source": {
+      "lineNo": 251,
+      "in": "(def foo [a b]\n  ; \"my string\nret)",
+      "out": "(def foo [a b]\n  ; \"my string\n    ^ error: quote-danger\nret)"
+    }
+  },
+  {
+    "text": "(def foo [a b]\n  ; \"my multiline\n  ; docstring.\"\nret)",
+    "options": {},
+    "result": {
+      "text": "(def foo [a b]\n  ; \"my multiline\n  ; docstring.\"\n ret)"
+    },
+    "source": {
+      "lineNo": 266,
+      "in": "(def foo [a b]\n  ; \"my multiline\n  ; docstring.\"\nret)",
+      "out": "(def foo [a b]\n  ; \"my multiline\n  ; docstring.\"\n ret)"
+    }
+  },
+  {
+    "text": "( )\"\n\"",
+    "options": {},
+    "result": {
+      "text": "( )\"\n\""
+    },
+    "source": {
+      "lineNo": 285,
+      "in": "( )\"\n\"",
+      "out": "( )\"\n\""
+    }
+  },
+  {
+    "text": "(foo )",
+    "options": {
+      "cursorX": 5,
+      "cursorLine": 0
+    },
+    "result": {
+      "cursorX": 5,
+      "cursorLine": 0,
+      "text": "(foo )"
+    },
+    "source": {
+      "lineNo": 300,
+      "in": "(foo |)",
+      "out": "(foo |)"
+    }
+  },
+  {
+    "text": "(foo [1 2 3 ] )",
+    "options": {
+      "cursorX": 12,
+      "cursorLine": 0
+    },
+    "result": {
+      "cursorX": 12,
+      "cursorLine": 0,
+      "text": "(foo [1 2 3 ] )"
+    },
+    "source": {
+      "lineNo": 308,
+      "in": "(foo [1 2 3 |] )",
+      "out": "(foo [1 2 3 |] )"
+    }
+  },
+  {
+    "text": "(foo )",
+    "options": {},
+    "result": {
+      "text": "(foo)"
+    },
+    "source": {
+      "lineNo": 318,
+      "in": "(foo )",
+      "out": "(foo)"
+    }
+  },
+  {
+    "text": "(foo [1 2 3 ] )",
+    "options": {},
+    "result": {
+      "text": "(foo [1 2 3])"
+    },
+    "source": {
+      "lineNo": 326,
+      "in": "(foo [1 2 3 ] )",
+      "out": "(foo [1 2 3])"
+    }
+  },
+  {
+    "text": "(foo [a b\n])",
+    "options": {
+      "cursorX": 0,
+      "cursorLine": 1
+    },
+    "result": {
+      "cursorX": 6,
+      "cursorLine": 1,
+      "text": "(foo [a b\n      ])"
+    },
+    "source": {
+      "lineNo": 338,
+      "in": "(foo [a b\n|])",
+      "out": "(foo [a b\n      |])"
+    }
+  },
+  {
+    "text": "(foo [1 2 3\n 4 5 6\n 7 8 9])",
+    "options": {
+      "cursorX": 8,
+      "cursorLine": 2
+    },
+    "result": {
+      "cursorX": 13,
+      "cursorLine": 2,
+      "text": "(foo [1 2 3\n      4 5 6\n      7 8 9])"
+    },
+    "source": {
+      "lineNo": 350,
+      "in": "(foo [1 2 3\n 4 5 6\n 7 8 9])|",
+      "out": "(foo [1 2 3\n      4 5 6\n      7 8 9])|"
+    }
+  },
+  {
+    "text": "(let [foo 1\n           ; comment 1\n           bar 2\n           baz 3])\n           ; comment 2",
+    "options": {
+      "changes": [
+        {
           "lineNo": 0,
-          "x": 0
-        },
-        "text": "(foo"
-      }
+          "x": 5,
+          "oldText": "    ",
+          "newText": ""
+        }
+      ]
+    },
+    "result": {
+      "text": "(let [foo 1\n       ; comment 1\n       bar 2\n       baz 3])\n       ; comment 2"
+    },
+    "source": {
+      "lineNo": 366,
+      "in": "(let     [foo 1\n     ----\n           ; comment 1\n           bar 2\n           baz 3])\n           ; comment 2",
+      "out": "(let [foo 1\n       ; comment 1\n       bar 2\n       baz 3])\n       ; comment 2"
     }
   },
   {
-    "in": {
-      "text": "(defn foo\n[arg arg2\nbar",
-      "options": {},
-      "fileText": "(defn foo\n[arg arg2\nbar",
-      "fileLineNo": 147
-    },
-    "out": {
-      "fileLineNo": 153,
-      "fileText": "(defn foo\n[arg arg2\n^ error: unclosed-paren\nbar",
-      "result": {
-        "error": {
-          "name": "unclosed-paren",
-          "lineNo": 1,
-          "x": 0
-        },
-        "text": "(defn foo\n[arg arg2\nbar"
-      }
-    }
-  },
-  {
-    "in": {
-      "text": "(foo})",
-      "options": {},
-      "fileText": "(foo})",
-      "fileLineNo": 162
-    },
-    "out": {
-      "fileLineNo": 166,
-      "fileText": "(foo})\n    ^ error: unmatched-close-paren",
-      "result": {
-        "error": {
-          "name": "unmatched-close-paren",
+    "text": "(def foo\n      ; comment 1\n      bar)\n      ; comment 2",
+    "options": {
+      "changes": [
+        {
           "lineNo": 0,
-          "x": 4
-        },
-        "text": "(foo})"
-      }
+          "x": 0,
+          "oldText": "   ",
+          "newText": ""
+        }
+      ]
+    },
+    "result": {
+      "text": "(def foo\n   ; comment 1\n   bar)\n   ; comment 2"
+    },
+    "source": {
+      "lineNo": 383,
+      "in": "   (def foo\n---\n      ; comment 1\n      bar)\n      ; comment 2",
+      "out": "(def foo\n   ; comment 1\n   bar)\n   ; comment 2"
     }
   },
   {
-    "in": {
-      "text": "(foo\n  })",
-      "options": {},
-      "fileText": "(foo\n  })",
-      "fileLineNo": 171
-    },
-    "out": {
-      "fileLineNo": 176,
-      "fileText": "(foo\n  })\n  ^ error: unmatched-close-paren",
-      "result": {
-        "error": {
-          "name": "unmatched-close-paren",
-          "lineNo": 1,
-          "x": 2
-        },
-        "text": "(foo\n  })"
-      }
-    }
-  },
-  {
-    "in": {
-      "text": "(defn foo\n  [arg\n  bar)",
-      "options": {},
-      "fileText": "(defn foo\n  [arg\n  bar)",
-      "fileLineNo": 182
-    },
-    "out": {
-      "fileLineNo": 188,
-      "fileText": "(defn foo\n  [arg\n  bar)\n     ^ error: unmatched-close-paren",
-      "result": {
-        "error": {
-          "name": "unmatched-close-paren",
-          "lineNo": 2,
-          "x": 5
-        },
-        "text": "(defn foo\n  [arg\n  bar)"
-      }
-    }
-  },
-  {
-    "in": {
-      "text": "; hello \\n world",
-      "options": {},
-      "fileText": "; hello \\n world",
-      "fileLineNo": 199
-    },
-    "out": {
-      "fileLineNo": 203,
-      "fileText": "; hello \\n world",
-      "result": {
-        "text": "; hello \\n world"
-      }
-    }
-  },
-  {
-    "in": {
-      "text": "(def foo \\,)\n(def bar \\ )",
-      "options": {},
-      "fileText": "(def foo \\,)\n(def bar \\ )",
-      "fileLineNo": 209
-    },
-    "out": {
-      "fileLineNo": 214,
-      "fileText": "(def foo \\,)\n(def bar \\ )",
-      "result": {
-        "text": "(def foo \\,)\n(def bar \\ )"
-      }
-    }
-  },
-  {
-    "in": {
-      "text": "(foo [a b]\\\nc)",
-      "options": {},
-      "fileText": "(foo [a b]\\\nc)",
-      "fileLineNo": 221
-    },
-    "out": {
-      "fileLineNo": 226,
-      "fileText": "(foo [a b]\\\n          ^ error: eol-backslash\nc)",
-      "result": {
-        "error": {
-          "name": "eol-backslash",
+    "text": "(def foo (bar\n       4 5 6\n       ; comment 1\n       7 8 9))\n       ; comment 2",
+    "options": {
+      "changes": [
+        {
           "lineNo": 0,
-          "x": 10
-        },
-        "text": "(foo [a b]\\\nc)"
-      }
+          "x": 4,
+          "oldText": "",
+          "newText": " foo"
+        }
+      ]
+    },
+    "result": {
+      "text": "(def foo (bar\n           4 5 6\n           ; comment 1\n           7 8 9))\n           ; comment 2"
+    },
+    "source": {
+      "lineNo": 400,
+      "in": "(def foo (bar\n    ++++\n       4 5 6\n       ; comment 1\n       7 8 9))\n       ; comment 2",
+      "out": "(def foo (bar\n           4 5 6\n           ; comment 1\n           7 8 9))\n           ; comment 2"
     }
   },
   {
-    "in": {
-      "text": "(def foo\n  \"hello\n  bar)",
-      "options": {},
-      "fileText": "(def foo\n  \"hello\n  bar)",
-      "fileLineNo": 234
-    },
-    "out": {
-      "fileLineNo": 240,
-      "fileText": "(def foo\n  \"hello\n  ^ error: unclosed-quote\n  bar)",
-      "result": {
-        "error": {
-          "name": "unclosed-quote",
+    "text": "(foo (if some-condition\n         println) foo {:foo 1\n                          :bar 2})",
+    "options": {
+      "changes": [
+        {
+          "lineNo": 0,
+          "x": 1,
+          "oldText": "my-fn",
+          "newText": "foo"
+        },
+        {
           "lineNo": 1,
-          "x": 2
-        },
-        "text": "(def foo\n  \"hello\n  bar)"
-      }
-    }
-  },
-  {
-    "in": {
-      "text": "(def foo [a b]\n  ; \"my string\nret)",
-      "options": {},
-      "fileText": "(def foo [a b]\n  ; \"my string\nret)",
-      "fileLineNo": 251
+          "x": 18,
+          "oldText": "my-fun",
+          "newText": "foo"
+        }
+      ]
     },
-    "out": {
-      "fileLineNo": 257,
-      "fileText": "(def foo [a b]\n  ; \"my string\n    ^ error: quote-danger\nret)",
-      "result": {
-        "error": {
-          "name": "quote-danger",
-          "lineNo": 1,
-          "x": 4
-        },
-        "text": "(def foo [a b]\n  ; \"my string\nret)"
-      }
-    }
-  },
-  {
-    "in": {
-      "text": "(def foo [a b]\n  ; \"my multiline\n  ; docstring.\"\nret)",
-      "options": {},
-      "fileText": "(def foo [a b]\n  ; \"my multiline\n  ; docstring.\"\nret)",
-      "fileLineNo": 266
+    "result": {
+      "text": "(foo (if some-condition\n       println) foo {:foo 1\n                     :bar 2})"
     },
-    "out": {
-      "fileLineNo": 273,
-      "fileText": "(def foo [a b]\n  ; \"my multiline\n  ; docstring.\"\n ret)",
-      "result": {
-        "text": "(def foo [a b]\n  ; \"my multiline\n  ; docstring.\"\n ret)"
-      }
-    }
-  },
-  {
-    "in": {
-      "text": "( )\"\n\"",
-      "options": {},
-      "fileText": "( )\"\n\"",
-      "fileLineNo": 285
-    },
-    "out": {
-      "fileLineNo": 290,
-      "fileText": "( )\"\n\"",
-      "result": {
-        "text": "( )\"\n\""
-      }
-    }
-  },
-  {
-    "in": {
-      "text": "(foo )",
-      "options": {
-        "cursorX": 5,
-        "cursorLine": 0
-      },
-      "fileText": "(foo |)",
-      "fileLineNo": 300
-    },
-    "out": {
-      "fileLineNo": 304,
-      "fileText": "(foo |)",
-      "result": {
-        "cursorX": 5,
-        "cursorLine": 0,
-        "text": "(foo )"
-      }
-    }
-  },
-  {
-    "in": {
-      "text": "(foo [1 2 3 ] )",
-      "options": {
-        "cursorX": 12,
-        "cursorLine": 0
-      },
-      "fileText": "(foo [1 2 3 |] )",
-      "fileLineNo": 308
-    },
-    "out": {
-      "fileLineNo": 312,
-      "fileText": "(foo [1 2 3 |] )",
-      "result": {
-        "cursorX": 12,
-        "cursorLine": 0,
-        "text": "(foo [1 2 3 ] )"
-      }
-    }
-  },
-  {
-    "in": {
-      "text": "(foo )",
-      "options": {},
-      "fileText": "(foo )",
-      "fileLineNo": 318
-    },
-    "out": {
-      "fileLineNo": 322,
-      "fileText": "(foo)",
-      "result": {
-        "text": "(foo)"
-      }
-    }
-  },
-  {
-    "in": {
-      "text": "(foo [1 2 3 ] )",
-      "options": {},
-      "fileText": "(foo [1 2 3 ] )",
-      "fileLineNo": 326
-    },
-    "out": {
-      "fileLineNo": 330,
-      "fileText": "(foo [1 2 3])",
-      "result": {
-        "text": "(foo [1 2 3])"
-      }
-    }
-  },
-  {
-    "in": {
-      "text": "(foo [a b\n])",
-      "options": {
-        "cursorX": 0,
-        "cursorLine": 1
-      },
-      "fileText": "(foo [a b\n|])",
-      "fileLineNo": 338
-    },
-    "out": {
-      "fileLineNo": 343,
-      "fileText": "(foo [a b\n      |])",
-      "result": {
-        "cursorX": 6,
-        "cursorLine": 1,
-        "text": "(foo [a b\n      ])"
-      }
-    }
-  },
-  {
-    "in": {
-      "text": "(foo [1 2 3\n 4 5 6\n 7 8 9])",
-      "options": {
-        "cursorX": 8,
-        "cursorLine": 2
-      },
-      "fileText": "(foo [1 2 3\n 4 5 6\n 7 8 9])|",
-      "fileLineNo": 350
-    },
-    "out": {
-      "fileLineNo": 356,
-      "fileText": "(foo [1 2 3\n      4 5 6\n      7 8 9])|",
-      "result": {
-        "cursorX": 13,
-        "cursorLine": 2,
-        "text": "(foo [1 2 3\n      4 5 6\n      7 8 9])"
-      }
-    }
-  },
-  {
-    "in": {
-      "text": "(let [foo 1\n           ; comment 1\n           bar 2\n           baz 3])\n           ; comment 2",
-      "options": {
-        "changes": [
-          {
-            "lineNo": 0,
-            "x": 5,
-            "oldText": "    ",
-            "newText": ""
-          }
-        ]
-      },
-      "fileText": "(let     [foo 1\n     ----\n           ; comment 1\n           bar 2\n           baz 3])\n           ; comment 2",
-      "fileLineNo": 366
-    },
-    "out": {
-      "fileLineNo": 375,
-      "fileText": "(let [foo 1\n       ; comment 1\n       bar 2\n       baz 3])\n       ; comment 2",
-      "result": {
-        "text": "(let [foo 1\n       ; comment 1\n       bar 2\n       baz 3])\n       ; comment 2"
-      }
-    }
-  },
-  {
-    "in": {
-      "text": "(def foo\n      ; comment 1\n      bar)\n      ; comment 2",
-      "options": {
-        "changes": [
-          {
-            "lineNo": 0,
-            "x": 0,
-            "oldText": "   ",
-            "newText": ""
-          }
-        ]
-      },
-      "fileText": "   (def foo\n---\n      ; comment 1\n      bar)\n      ; comment 2",
-      "fileLineNo": 383
-    },
-    "out": {
-      "fileLineNo": 391,
-      "fileText": "(def foo\n   ; comment 1\n   bar)\n   ; comment 2",
-      "result": {
-        "text": "(def foo\n   ; comment 1\n   bar)\n   ; comment 2"
-      }
-    }
-  },
-  {
-    "in": {
-      "text": "(def foo (bar\n       4 5 6\n       ; comment 1\n       7 8 9))\n       ; comment 2",
-      "options": {
-        "changes": [
-          {
-            "lineNo": 0,
-            "x": 4,
-            "oldText": "",
-            "newText": " foo"
-          }
-        ]
-      },
-      "fileText": "(def foo (bar\n    ++++\n       4 5 6\n       ; comment 1\n       7 8 9))\n       ; comment 2",
-      "fileLineNo": 400
-    },
-    "out": {
-      "fileLineNo": 409,
-      "fileText": "(def foo (bar\n           4 5 6\n           ; comment 1\n           7 8 9))\n           ; comment 2",
-      "result": {
-        "text": "(def foo (bar\n           4 5 6\n           ; comment 1\n           7 8 9))\n           ; comment 2"
-      }
-    }
-  },
-  {
-    "in": {
-      "text": "(foo (if some-condition\n         println) foo {:foo 1\n                          :bar 2})",
-      "options": {
-        "changes": [
-          {
-            "lineNo": 0,
-            "x": 1,
-            "oldText": "my-fn",
-            "newText": "foo"
-          },
-          {
-            "lineNo": 1,
-            "x": 18,
-            "oldText": "my-fun",
-            "newText": "foo"
-          }
-        ]
-      },
-      "fileText": "(my-fnfoo (if some-condition\n -----+++\n         println) my-funfoo {:foo 1\n                  ------+++\n                          :bar 2})",
-      "fileLineNo": 419
-    },
-    "out": {
-      "fileLineNo": 427,
-      "fileText": "(foo (if some-condition\n       println) foo {:foo 1\n                     :bar 2})",
-      "result": {
-        "text": "(foo (if some-condition\n       println) foo {:foo 1\n                     :bar 2})"
-      }
+    "source": {
+      "lineNo": 419,
+      "in": "(my-fnfoo (if some-condition\n -----+++\n         println) my-funfoo {:foo 1\n                  ------+++\n                          :bar 2})",
+      "out": "(foo (if some-condition\n       println) foo {:foo 1\n                     :bar 2})"
     }
   }
 ]

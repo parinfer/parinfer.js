@@ -21,23 +21,21 @@ It is converted to the following data:
 
 ```js
 {
-  "in": {
-    "fileLineNo": 2,
-    "fileText": "input line 1\ninput line 2",
+  // INPUT: the args to indentMode or parenMode
+  "text": "...",
+  "options": {...}
 
-    // passed to indentMode or parenMode
+  // OUTPUT: expected return value of indentMode or parenMode
+  "result": {
     "text": "...",
-    "options": {...}
-  },
-  "out": {
-    "fileLineNo": 7,
-    "fileText": "output line 1\noutput line 2",
+    ...
+  }
 
-    // returned from indentMode or parenMode
-    "result": {
-      "text": "...",
-      ...
-    }
+  // original source text (containing annotations)
+  "source": {
+    "in": "...",
+    "out": "...",
+    "lineNo": n
   }
 }
 ```
