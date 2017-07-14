@@ -19,15 +19,25 @@ specify these things in markdown:
 
 It is converted to the following data:
 
-```json
+```js
 {
   "in": {
     "fileLineNo": 2,
-    "text": "input line 1\ninput line 2"
+    "fileText": "input line 1\ninput line 2",
+
+    // passed to indentMode or parenMode
+    "text": "...",
+    "options": {...}
   },
   "out": {
     "fileLineNo": 7,
-    "text": "output line 1\noutput line 2"
+    "fileText": "output line 1\noutput line 2",
+
+    // returned from indentMode or parenMode
+    "result": {
+      "text": "...",
+      ...
+    }
   }
 }
 ```

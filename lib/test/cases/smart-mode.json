@@ -1,72 +1,170 @@
 [
   {
     "in": {
-      "fileLineNo": 4,
-      "text": "(foo\n  {:a 1\n   :b 2})\n---"
+      "text": "(foo\n  {:a 1\n:b 2})",
+      "options": {
+        "changes": [
+          {
+            "lineNo": 2,
+            "x": 0,
+            "oldText": "   ",
+            "newText": ""
+          }
+        ]
+      },
+      "fileText": "(foo\n  {:a 1\n   :b 2})\n---",
+      "fileLineNo": 4
     },
     "out": {
       "fileLineNo": 11,
-      "text": "(foo\n  {:a 1})\n:b 2"
+      "fileText": "(foo\n  {:a 1})\n:b 2",
+      "result": {
+        "text": "(foo\n  {:a 1})\n:b 2"
+      }
     }
   },
   {
     "in": {
-      "fileLineNo": 19,
-      "text": "(foo\n    {:a 1\n  ++\n   :b 2})"
+      "text": "(foo\n    {:a 1\n   :b 2})",
+      "options": {
+        "changes": [
+          {
+            "lineNo": 1,
+            "x": 2,
+            "oldText": "",
+            "newText": "  "
+          }
+        ]
+      },
+      "fileText": "(foo\n    {:a 1\n  ++\n   :b 2})",
+      "fileLineNo": 19
     },
     "out": {
       "fileLineNo": 26,
-      "text": "(foo\n    {:a 1\n     :b 2})"
+      "fileText": "(foo\n    {:a 1\n     :b 2})",
+      "result": {
+        "text": "(foo\n    {:a 1\n     :b 2})"
+      }
     }
   },
   {
     "in": {
-      "fileLineNo": 32,
-      "text": "(foo\n    {:a 1\n  --\n     :b 2})"
+      "text": "(foo\n  {:a 1\n     :b 2})",
+      "options": {
+        "changes": [
+          {
+            "lineNo": 1,
+            "x": 2,
+            "oldText": "  ",
+            "newText": ""
+          }
+        ]
+      },
+      "fileText": "(foo\n    {:a 1\n  --\n     :b 2})",
+      "fileLineNo": 32
     },
     "out": {
       "fileLineNo": 39,
-      "text": "(foo\n  {:a 1\n   :b 2})"
+      "fileText": "(foo\n  {:a 1\n   :b 2})",
+      "result": {
+        "text": "(foo\n  {:a 1\n   :b 2})"
+      }
     }
   },
   {
     "in": {
-      "fileLineNo": 45,
-      "text": "(foo {:a 1\n  --\n      :b 2})"
+      "text": "(f {:a 1\n      :b 2})",
+      "options": {
+        "changes": [
+          {
+            "lineNo": 0,
+            "x": 2,
+            "oldText": "oo",
+            "newText": ""
+          }
+        ]
+      },
+      "fileText": "(foo {:a 1\n  --\n      :b 2})",
+      "fileLineNo": 45
     },
     "out": {
       "fileLineNo": 51,
-      "text": "(f {:a 1\n    :b 2})"
+      "fileText": "(f {:a 1\n    :b 2})",
+      "result": {
+        "text": "(f {:a 1\n    :b 2})"
+      }
     }
   },
   {
     "in": {
-      "fileLineNo": 58,
-      "text": "(foo\n  {:a 1\n--\n   :b 2})"
+      "text": "(foo\n{:a 1\n   :b 2})",
+      "options": {
+        "changes": [
+          {
+            "lineNo": 1,
+            "x": 0,
+            "oldText": "  ",
+            "newText": ""
+          }
+        ]
+      },
+      "fileText": "(foo\n  {:a 1\n--\n   :b 2})",
+      "fileLineNo": 58
     },
     "out": {
       "fileLineNo": 65,
-      "text": "(foo)\n{:a 1\n :b 2}"
+      "fileText": "(foo)\n{:a 1\n :b 2}",
+      "result": {
+        "text": "(foo)\n{:a 1\n :b 2}"
+      }
     }
   },
   {
     "in": {
-      "fileLineNo": 71,
-      "text": "(foo)\n  {:a 1\n++\n:b 2}"
+      "text": "(foo)\n  {:a 1\n:b 2}",
+      "options": {
+        "changes": [
+          {
+            "lineNo": 1,
+            "x": 0,
+            "oldText": "",
+            "newText": "  "
+          }
+        ]
+      },
+      "fileText": "(foo)\n  {:a 1\n++\n:b 2}",
+      "fileLineNo": 71
     },
     "out": {
       "fileLineNo": 78,
-      "text": "(foo\n  {:a 1\n   :b 2})"
+      "fileText": "(foo\n  {:a 1\n   :b 2})",
+      "result": {
+        "text": "(foo\n  {:a 1\n   :b 2})"
+      }
     }
   },
   {
     "in": {
-      "fileLineNo": 86,
-      "text": "(a (b[) c) (d) e)\n     +"
+      "text": "(a (b[) c) (d) e)",
+      "options": {
+        "changes": [
+          {
+            "lineNo": 0,
+            "x": 5,
+            "oldText": "",
+            "newText": "["
+          }
+        ]
+      },
+      "fileText": "(a (b[) c) (d) e)\n     +",
+      "fileLineNo": 86
     },
     "out": {
       "fileLineNo": 91,
-      "text": "(a (b[]) c) (d) e)"
+      "fileText": "(a (b[]) c) (d) e)",
+      "result": {
+        "text": "(a (b[]) c) (d) e)"
+      }
     }
   }
 ]
