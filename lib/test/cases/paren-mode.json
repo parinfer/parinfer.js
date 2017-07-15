@@ -3,7 +3,8 @@
     "text": "(let [foo 1]\nfoo)",
     "options": {},
     "result": {
-      "text": "(let [foo 1]\n foo)"
+      "text": "(let [foo 1]\n foo)",
+      "success": true
     },
     "source": {
       "lineNo": 6,
@@ -15,7 +16,8 @@
     "text": "(let [foo 1]\n      foo)",
     "options": {},
     "result": {
-      "text": "(let [foo 1]\n     foo)"
+      "text": "(let [foo 1]\n     foo)",
+      "success": true
     },
     "source": {
       "lineNo": 18,
@@ -27,7 +29,8 @@
     "text": "(let [foo {:a 1}]\n           foo)",
     "options": {},
     "result": {
-      "text": "(let [foo {:a 1}]\n     foo)"
+      "text": "(let [foo {:a 1}]\n     foo)",
+      "success": true
     },
     "source": {
       "lineNo": 28,
@@ -39,7 +42,8 @@
     "text": "(let [foo 1]\n      foo)\n\n(let [foo 1]\nfoo)",
     "options": {},
     "result": {
-      "text": "(let [foo 1]\n     foo)\n\n(let [foo 1]\n foo)"
+      "text": "(let [foo 1]\n     foo)\n\n(let [foo 1]\n foo)",
+      "success": true
     },
     "source": {
       "lineNo": 40,
@@ -51,7 +55,8 @@
     "text": "(let [foo [1 2 3]]\n      (-> foo\n          (map inc)))",
     "options": {},
     "result": {
-      "text": "(let [foo [1 2 3]]\n     (-> foo\n         (map inc)))"
+      "text": "(let [foo [1 2 3]]\n     (-> foo\n         (map inc)))",
+      "success": true
     },
     "source": {
       "lineNo": 60,
@@ -63,7 +68,8 @@
     "text": "(let [foo 1\n      ]; <-- spaces\n  foo)",
     "options": {},
     "result": {
-      "text": "(let [foo 1]\n      ; <-- spaces\n  foo)"
+      "text": "(let [foo 1]\n      ; <-- spaces\n  foo)",
+      "success": true
     },
     "source": {
       "lineNo": 78,
@@ -75,7 +81,8 @@
     "text": "(let [foo 1\n      bar 2\n\n     ] (+ foo bar\n  ); <-- spaces\n)",
     "options": {},
     "result": {
-      "text": "(let [foo 1\n      bar 2]\n\n     (+ foo bar))\n  ; <-- spaces\n"
+      "text": "(let [foo 1\n      bar 2]\n\n     (+ foo bar))\n  ; <-- spaces\n",
+      "success": true
     },
     "source": {
       "lineNo": 90,
@@ -87,7 +94,8 @@
     "text": "(def x [1 2 3 4\n         5 6 7 8])",
     "options": {},
     "result": {
-      "text": "(def x [1 2 3 4\n         5 6 7 8])"
+      "text": "(def x [1 2 3 4\n         5 6 7 8])",
+      "success": true
     },
     "source": {
       "lineNo": 112,
@@ -99,7 +107,8 @@
     "text": "  (assoc x\n:foo 1\n     :bar 2)",
     "options": {},
     "result": {
-      "text": "  (assoc x\n   :foo 1\n     :bar 2)"
+      "text": "  (assoc x\n   :foo 1\n     :bar 2)",
+      "success": true
     },
     "source": {
       "lineNo": 124,
@@ -116,7 +125,8 @@
         "lineNo": 0,
         "x": 0
       },
-      "text": "(foo"
+      "text": "(foo",
+      "success": false
     },
     "source": {
       "lineNo": 138,
@@ -133,7 +143,8 @@
         "lineNo": 1,
         "x": 0
       },
-      "text": "(defn foo\n[arg arg2\nbar"
+      "text": "(defn foo\n[arg arg2\nbar",
+      "success": false
     },
     "source": {
       "lineNo": 147,
@@ -150,7 +161,8 @@
         "lineNo": 0,
         "x": 4
       },
-      "text": "(foo})"
+      "text": "(foo})",
+      "success": false
     },
     "source": {
       "lineNo": 162,
@@ -167,7 +179,8 @@
         "lineNo": 1,
         "x": 2
       },
-      "text": "(foo\n  })"
+      "text": "(foo\n  })",
+      "success": false
     },
     "source": {
       "lineNo": 171,
@@ -184,7 +197,8 @@
         "lineNo": 2,
         "x": 5
       },
-      "text": "(defn foo\n  [arg\n  bar)"
+      "text": "(defn foo\n  [arg\n  bar)",
+      "success": false
     },
     "source": {
       "lineNo": 182,
@@ -196,7 +210,8 @@
     "text": "; hello \\n world",
     "options": {},
     "result": {
-      "text": "; hello \\n world"
+      "text": "; hello \\n world",
+      "success": true
     },
     "source": {
       "lineNo": 199,
@@ -208,7 +223,8 @@
     "text": "(def foo \\,)\n(def bar \\ )",
     "options": {},
     "result": {
-      "text": "(def foo \\,)\n(def bar \\ )"
+      "text": "(def foo \\,)\n(def bar \\ )",
+      "success": true
     },
     "source": {
       "lineNo": 209,
@@ -225,7 +241,8 @@
         "lineNo": 0,
         "x": 10
       },
-      "text": "(foo [a b]\\\nc)"
+      "text": "(foo [a b]\\\nc)",
+      "success": false
     },
     "source": {
       "lineNo": 221,
@@ -242,7 +259,8 @@
         "lineNo": 1,
         "x": 2
       },
-      "text": "(def foo\n  \"hello\n  bar)"
+      "text": "(def foo\n  \"hello\n  bar)",
+      "success": false
     },
     "source": {
       "lineNo": 234,
@@ -259,7 +277,8 @@
         "lineNo": 1,
         "x": 4
       },
-      "text": "(def foo [a b]\n  ; \"my string\nret)"
+      "text": "(def foo [a b]\n  ; \"my string\nret)",
+      "success": false
     },
     "source": {
       "lineNo": 251,
@@ -271,7 +290,8 @@
     "text": "(def foo [a b]\n  ; \"my multiline\n  ; docstring.\"\nret)",
     "options": {},
     "result": {
-      "text": "(def foo [a b]\n  ; \"my multiline\n  ; docstring.\"\n ret)"
+      "text": "(def foo [a b]\n  ; \"my multiline\n  ; docstring.\"\n ret)",
+      "success": true
     },
     "source": {
       "lineNo": 266,
@@ -283,7 +303,8 @@
     "text": "( )\"\n\"",
     "options": {},
     "result": {
-      "text": "( )\"\n\""
+      "text": "( )\"\n\"",
+      "success": true
     },
     "source": {
       "lineNo": 285,
@@ -300,7 +321,8 @@
     "result": {
       "cursorX": 5,
       "cursorLine": 0,
-      "text": "(foo )"
+      "text": "(foo )",
+      "success": true
     },
     "source": {
       "lineNo": 300,
@@ -317,7 +339,8 @@
     "result": {
       "cursorX": 12,
       "cursorLine": 0,
-      "text": "(foo [1 2 3 ] )"
+      "text": "(foo [1 2 3 ] )",
+      "success": true
     },
     "source": {
       "lineNo": 308,
@@ -329,7 +352,8 @@
     "text": "(foo )",
     "options": {},
     "result": {
-      "text": "(foo)"
+      "text": "(foo)",
+      "success": true
     },
     "source": {
       "lineNo": 318,
@@ -341,7 +365,8 @@
     "text": "(foo [1 2 3 ] )",
     "options": {},
     "result": {
-      "text": "(foo [1 2 3])"
+      "text": "(foo [1 2 3])",
+      "success": true
     },
     "source": {
       "lineNo": 326,
@@ -358,7 +383,8 @@
     "result": {
       "cursorX": 6,
       "cursorLine": 1,
-      "text": "(foo [a b\n      ])"
+      "text": "(foo [a b\n      ])",
+      "success": true
     },
     "source": {
       "lineNo": 338,
@@ -375,7 +401,8 @@
     "result": {
       "cursorX": 13,
       "cursorLine": 2,
-      "text": "(foo [1 2 3\n      4 5 6\n      7 8 9])"
+      "text": "(foo [1 2 3\n      4 5 6\n      7 8 9])",
+      "success": true
     },
     "source": {
       "lineNo": 350,
@@ -396,7 +423,8 @@
       ]
     },
     "result": {
-      "text": "(let [foo 1\n       ; comment 1\n       bar 2\n       baz 3])\n       ; comment 2"
+      "text": "(let [foo 1\n       ; comment 1\n       bar 2\n       baz 3])\n       ; comment 2",
+      "success": true
     },
     "source": {
       "lineNo": 366,
@@ -417,7 +445,8 @@
       ]
     },
     "result": {
-      "text": "(def foo\n   ; comment 1\n   bar)\n   ; comment 2"
+      "text": "(def foo\n   ; comment 1\n   bar)\n   ; comment 2",
+      "success": true
     },
     "source": {
       "lineNo": 383,
@@ -438,7 +467,8 @@
       ]
     },
     "result": {
-      "text": "(def foo (bar\n           4 5 6\n           ; comment 1\n           7 8 9))\n           ; comment 2"
+      "text": "(def foo (bar\n           4 5 6\n           ; comment 1\n           7 8 9))\n           ; comment 2",
+      "success": true
     },
     "source": {
       "lineNo": 400,
@@ -465,7 +495,8 @@
       ]
     },
     "result": {
-      "text": "(foo (if some-condition\n       println) foo {:foo 1\n                     :bar 2})"
+      "text": "(foo (if some-condition\n       println) foo {:foo 1\n                     :bar 2})",
+      "success": true
     },
     "source": {
       "lineNo": 419,

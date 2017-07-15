@@ -12,7 +12,8 @@
       ]
     },
     "result": {
-      "text": "(foo\n  {:a 1})\n:b 2"
+      "text": "(foo\n  {:a 1})\n:b 2",
+      "success": true
     },
     "source": {
       "lineNo": 4,
@@ -33,7 +34,8 @@
       ]
     },
     "result": {
-      "text": "(foo\n    {:a 1\n     :b 2})"
+      "text": "(foo\n    {:a 1\n     :b 2})",
+      "success": true
     },
     "source": {
       "lineNo": 19,
@@ -54,7 +56,8 @@
       ]
     },
     "result": {
-      "text": "(foo\n  {:a 1\n   :b 2})"
+      "text": "(foo\n  {:a 1\n   :b 2})",
+      "success": true
     },
     "source": {
       "lineNo": 32,
@@ -75,7 +78,8 @@
       ]
     },
     "result": {
-      "text": "(f {:a 1\n    :b 2})"
+      "text": "(f {:a 1\n    :b 2})",
+      "success": true
     },
     "source": {
       "lineNo": 45,
@@ -96,7 +100,8 @@
       ]
     },
     "result": {
-      "text": "(foo)\n{:a 1\n :b 2}"
+      "text": "(foo)\n{:a 1\n :b 2}",
+      "success": true
     },
     "source": {
       "lineNo": 58,
@@ -117,7 +122,8 @@
       ]
     },
     "result": {
-      "text": "(foo\n  {:a 1\n   :b 2})"
+      "text": "(foo\n  {:a 1\n   :b 2})",
+      "success": true
     },
     "source": {
       "lineNo": 71,
@@ -138,7 +144,8 @@
       ]
     },
     "result": {
-      "text": "(a (b[]) c) (d) e)"
+      "text": "(a (b[]) c) (d) e)",
+      "success": true
     },
     "source": {
       "lineNo": 86,
