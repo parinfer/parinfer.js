@@ -194,6 +194,8 @@ You can also use the input/output functions directly:
 
 ```js
 parinferTest.parseInput(inputText, extras); // returns {text, options}
+parinferTest.parseOutput(inputText, extras); // returns result
+
 parinferTest.printOutput(result, extras);   // returns string
 
 // `result` is returned by main indentMode or parenMode functions

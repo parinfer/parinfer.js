@@ -1,3 +1,8 @@
+## 3.2.0
+
+- change: remove `cursorX`, `cursorLine`, and `tabStops` from result if null or empty
+- add: new `parseOutput` function in test API
+
 ## 3.1.1
 
 - fix botched 3.1.0

@@ -1120,7 +1120,7 @@ as I can.
 [`ERROR_UNMATCHED_OPEN_PAREN`]:../parinfer.js#L270
 [`ERROR_UNHANDLED`]:../parinfer.js#L271
 [`errorMessages`]:../parinfer.js#L273
-[`API`]:../parinfer.js#L1047
+[`API`]:../parinfer.js#L1052
 [`isBoolean`]:../parinfer.js#L63
 [`isArray`]:../parinfer.js#L67
 [`isInteger`]:../parinfer.js#L71
@@ -1183,8 +1183,8 @@ as I can.
 [`processError`]:../parinfer.js#L978
 [`processText`]:../parinfer.js#L990
 [`publicResult`]:../parinfer.js#L1015
-[`indentMode`]:../parinfer.js#L1037
-[`parenMode`]:../parinfer.js#L1042
+[`indentMode`]:../parinfer.js#L1042
+[`parenMode`]:../parinfer.js#L1047
 [`result.mode`]:../parinfer.js#L171
 [`result.origText`]:../parinfer.js#L173
 [`result.inputLines`]:../parinfer.js#L177
