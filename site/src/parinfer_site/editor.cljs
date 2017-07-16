@@ -46,8 +46,13 @@
   [cm change]
   (when (not= "setValue" (.-origin change))
     (record-change! cm {:change (parse-change change)})
-    (fix-text! cm :change change)
+    ; (fix-text! cm :change change)
     (set-frame-updated! cm true)))
+
+(defn on-changes
+  [cm all-changes]
+  (let [changes (.filter all-changes #(not= "setValue" (.-origin %)))]
+    (fix-text! cm :changes changes)))
 
 (defn on-cursor-activity
   "Called after the cursor moves in the editor."
@@ -153,6 +158,7 @@
 
        ;; handle code mirror events
        (.on cm "change" on-change)
+       (.on cm "changes" on-changes)
        (.on cm "beforeChange" before-change)
        (.on cm "cursorActivity" on-cursor-activity)
 

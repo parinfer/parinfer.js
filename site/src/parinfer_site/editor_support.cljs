@@ -37,24 +37,12 @@
                       (+ len-last-line (.. change -from -ch)))]
           (- end-x start-x))))))
 
-(defn compute-cm-change
-  [cm change options prev-state]
-  (let [{:keys [start-line end-line num-new-lines]}
-        (if change
-          {:start-line (.. change -from -line)
-           :end-line (inc (.. change -to -line))
-           :num-new-lines (alength (.-text change))}
-
-          (let [start (:cursor-line prev-state)
-                end (inc start)]
-            {:start-line start
-             :end-line end
-             :num-new-lines (- end start)}))
-
-        lines (for [i (range start-line (+ start-line num-new-lines))]
-                (.getLine cm i))]
-    {:line-no [start-line end-line]
-     :new-line lines}))
+(defn convert-change
+  [change]
+  {:x (.. change -from -ch)
+   :lineNo (.. change -from -line)
+   :oldText (.join (.. change -remove) "\n")
+   :newText (.join (.. change -text) "\n")})
 
 (defn mark-error! [cm {:keys [error]}]
   (let [clear-marks! (fn [cm]
@@ -75,8 +63,8 @@
 
 (defn fix-text!
   "Correctly format the text from the given editor."
-  [cm & {:keys [change use-cache?]
-         :or {change nil, use-cache? false}}]
+  [cm & {:keys [changes use-cache?]
+         :or {changes [], use-cache? false}}]
   (let [;; get the current state of the editor
         ;; (e.g. text, cursor, selections, scroll)
 
@@ -90,7 +78,7 @@
 
         options {:cursor-line (.-line cursor)
                  :cursor-x (.-ch cursor)
-                 :cursor-dx (compute-cursor-dx cursor change)}
+                 :changes (map convert-change changes)}
 
         key- (cm-key cm)
         options (merge options (get-in @state [key- :options]))
