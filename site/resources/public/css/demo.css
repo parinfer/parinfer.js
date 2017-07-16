@@ -196,7 +196,8 @@ label.user-option {
 }
 
 label.user-option input {
-  margin-right: 10px;
+  margin-right: 5px;
+  vertical-align: middle;
 }
 
 label.calc-option {

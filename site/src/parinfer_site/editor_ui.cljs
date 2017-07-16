@@ -46,7 +46,6 @@
 
 (def force-balance-caption
   (list
-    [:em "forceBalance:"]
     "Employ v1's aggressive rules to ensure parens are always balanced."))
 
 (def mode->caption
@@ -87,19 +86,21 @@
     (render [_]
       (html
         [:div
-         [:select.mode
-          {:value (name (:mode editor))
-           :on-mouse-over (fn [e] (om/update! editor :help-caption (mode->caption (:mode editor))))
-           :on-mouse-out (fn [e] (om/update! editor :help-caption ""))
-           :on-change (fn [e]
-                        (let [new-mode (keyword (.. e -target -value))]
-                          (om/update! editor :help-caption (mode->caption new-mode))
-                          (om/update! editor :mode new-mode)
-                          (refresh! (:cm editor))))}
-          [:option {:value "indent-mode"} "Indent Mode"]
-          [:option {:value "paren-mode"} "Paren Mode"]]
+         (when (= (major-version) "1")
+           [:select.mode
+            {:value (name (:mode editor))
+             :on-mouse-over (fn [e] (om/update! editor :help-caption (mode->caption (:mode editor))))
+             :on-mouse-out (fn [e] (om/update! editor :help-caption ""))
+             :on-change (fn [e]
+                          (let [new-mode (keyword (.. e -target -value))]
+                            (om/update! editor :help-caption (mode->caption new-mode))
+                            (om/update! editor :mode new-mode)
+                            (refresh! (:cm editor))))}
+            [:option {:value "indent-mode"} "Indent Mode"]
+            [:option {:value "paren-mode"} "Paren Mode"]])
 
-         (when (= (:mode editor) :indent-mode)
+         (when (and (= (:mode editor) :indent-mode)
+                    (not= (major-version) "1"))
            (let [path [:options :force-balance]]
              [:label.user-option
               {:on-mouse-over (fn [e] (om/update! editor :help-caption force-balance-caption))
@@ -112,15 +113,16 @@
                              (refresh! (:cm editor)))}]
               "forceBalance"]))
 
-         (let [cursor-dx (or (:cursor-dx (:prev-options editor)) 0)]
-           (list
-             [:span
-               {:on-mouse-over (fn [e] (om/update! editor :help-caption cursor-dx-caption))
-                :on-mouse-out (fn [e] (om/update! editor :help-caption ""))
-                :style {:float "right"}}
-               [:label.calc-option
-                "cursorDx=" cursor-dx]
-               [:span.calc-option " calculated when text is added or removed"]]))
+         (when (= (major-version) "1")
+           (let [cursor-dx (or (:cursor-dx (:prev-options editor)) 0)]
+             (list
+               [:span
+                 {:on-mouse-over (fn [e] (om/update! editor :help-caption cursor-dx-caption))
+                  :on-mouse-out (fn [e] (om/update! editor :help-caption ""))
+                  :style {:float "right"}}
+                 [:label.calc-option
+                  "cursorDx=" cursor-dx]
+                 [:span.calc-option " calculated when text is added or removed"]])))
 
          (let [{:keys [name message] :as error} (get-in editor [:result :error])]
            (when error

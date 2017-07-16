@@ -25,7 +25,7 @@
 (defn- convert-options [option]
   #js {:cursorX (:cursor-x option)
        :cursorLine (:cursor-line option)
-       :cursorDx (:cursor-dx option)
+       :changes (clj->js (:changes option))
        :forceBalance (:force-balance option)})
 
 (def indent-mode* (aget js/window "parinfer" "indentMode"))

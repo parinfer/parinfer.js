@@ -46,7 +46,7 @@
   [cm change]
   (when (not= "setValue" (.-origin change))
     (record-change! cm {:change (parse-change change)})
-    (fix-text! cm :change change)
+    (fix-text! cm :changes [change])
     (set-frame-updated! cm true)))
 
 (defn on-cursor-activity
@@ -54,6 +54,7 @@
   [cm]
   (when-not (frame-updated? cm)
     (record-change! cm {:selections (parse-selections (.listSelections cm))})
+    (js/console.log "on-cursor-activity called")
     (fix-text! cm))
   (set-frame-updated! cm false))
 
