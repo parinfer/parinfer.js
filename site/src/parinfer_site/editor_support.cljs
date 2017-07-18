@@ -21,10 +21,10 @@
 
 (defn convert-change
   [change]
-  {:x (.. change -from -ch)
-   :lineNo (.. change -from -line)
-   :oldText (.join (.. change -removed) "\n")
-   :newText (.join (.. change -text) "\n")})
+  {:x (aget change "from" "ch")
+   :lineNo (aget change "from" "line")
+   :oldText (.join (aget change "removed") "\n")
+   :newText (.join (aget change "text") "\n")})
 
 (defn mark-error! [cm {:keys [error]}]
   (let [clear-marks! (fn [cm]

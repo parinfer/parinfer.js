@@ -16,7 +16,7 @@
   ;; make sure cursor is still visible
   (let [element (.getWrapperElement cm)
         cursor (gdom/getElementByClass "CodeMirror-cursors" element)]
-    (set! (.. cursor -style -visibility) "visible")))
+    (aset cursor "style" "visibility" "visible")))
 
 (def indent-caption
   (list
@@ -92,7 +92,7 @@
              :on-mouse-over (fn [e] (om/update! editor :help-caption (mode->caption (:mode editor))))
              :on-mouse-out (fn [e] (om/update! editor :help-caption ""))
              :on-change (fn [e]
-                          (let [new-mode (keyword (.. e -target -value))]
+                          (let [new-mode (keyword (aget e "target" "value"))]
                             (om/update! editor :help-caption (mode->caption new-mode))
                             (om/update! editor :mode new-mode)
                             (refresh! (:cm editor))))}
@@ -109,7 +109,7 @@
                {:type "checkbox"
                 :checked (get-in editor path)
                 :on-change (fn [e]
-                             (om/update! editor path (.. e -target -checked))
+                             (om/update! editor path (aget e "target" "checked"))
                              (refresh! (:cm editor)))}]
               "forceBalance"]))
 

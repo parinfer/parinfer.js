@@ -85,7 +85,7 @@
   ([element-id] (create-regular-editor! element-id {}))
   ([element-id opts]
    (let [element (js/document.getElementById element-id)]
-     (when-not (= "none" (.. element -style -display))
+     (when-not (= "none" (aget element "style" "display"))
        (let [cm (js/CodeMirror.fromTextArea element (clj->js (merge editor-opts {:mode "clojure"} opts)))
              wrapper (.getWrapperElement cm)]
          (set! (.-id wrapper) (str "cm-" element-id))

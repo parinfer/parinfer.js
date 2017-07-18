@@ -91,7 +91,7 @@
           loop-delay (get recording :loop-delay 2000)
           element (.getWrapperElement cm)
           cursor (gdom/getElementByClass "CodeMirror-cursors" element)]
-      (set! (.. cursor -style -visibility) "visible")
+      (aset cursor "style" "visibility" "visible")
       (go-loop []
         (reset! (get-prev-state cm) nil)
         (swap! state assoc-in [key- :text] (:init-value recording))
