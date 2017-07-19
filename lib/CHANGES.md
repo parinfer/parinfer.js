@@ -1,3 +1,9 @@
+## 3.3.0 (unpublished)
+
+- experiment: prevent sibling adoption when dedenting expressions, until cursor
+  is moved to different line or to the right of the open-paren.
+  (see [#143](https://github.com/shaunlebron/parinfer/issues/143))
+
 ## 3.2.0
 
 - change: remove `cursorX`, `cursorLine`, and `tabStops` from result if null or empty

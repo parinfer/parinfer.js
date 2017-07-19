@@ -478,17 +478,6 @@ Once the cursor leaves the line, the space is removed.
 (def b [[c d]])
 ```
 
-This realignment of inferred close-parens also happens when the
-cursor is to the left of the gaps.
-
-```in
-(def |b [[c d] ])
-```
-
-```out
-(def |b [[c d]])
-```
-
 ## Cursor Blocking displacement of Paren Trail
 
 Inferred close-parens before the cursor are never removed, which may
@@ -1023,6 +1012,26 @@ But dedenting a top-level form should not cause a child to adopt a sibling:
   ; comment 1
   bar)
   ; comment 2
+```
+
+Prevent sibling adoption when dedenting by temporarily keeping close-parens from
+moving when the cursor is to the left of their open-parens.
+
+```in
+(defn foo
+  |[a b
+--
+   c d]
+  bar
+  baz)
+```
+
+```out
+(defn foo)
+|[a b
+ c d]
+  bar
+  baz
 ```
 
 __Multiple changes__:
