@@ -1,93 +1,5 @@
 [
   {
-    "text": "(foo\n  {:a 1\n:b 2})",
-    "options": {
-      "changes": [
-        {
-          "lineNo": 2,
-          "x": 0,
-          "oldText": "   ",
-          "newText": ""
-        }
-      ]
-    },
-    "result": {
-      "text": "(foo\n  {:a 1})\n:b 2",
-      "success": true
-    },
-    "source": {
-      "lineNo": 4,
-      "in": "(foo\n  {:a 1\n   :b 2})\n---",
-      "out": "(foo\n  {:a 1})\n:b 2"
-    }
-  },
-  {
-    "text": "(foo\n    {:a 1\n   :b 2})",
-    "options": {
-      "changes": [
-        {
-          "lineNo": 1,
-          "x": 2,
-          "oldText": "",
-          "newText": "  "
-        }
-      ]
-    },
-    "result": {
-      "text": "(foo\n    {:a 1\n     :b 2})",
-      "success": true
-    },
-    "source": {
-      "lineNo": 19,
-      "in": "(foo\n    {:a 1\n  ++\n   :b 2})",
-      "out": "(foo\n    {:a 1\n     :b 2})"
-    }
-  },
-  {
-    "text": "(foo\n  {:a 1\n     :b 2})",
-    "options": {
-      "changes": [
-        {
-          "lineNo": 1,
-          "x": 2,
-          "oldText": "  ",
-          "newText": ""
-        }
-      ]
-    },
-    "result": {
-      "text": "(foo\n  {:a 1\n   :b 2})",
-      "success": true
-    },
-    "source": {
-      "lineNo": 32,
-      "in": "(foo\n    {:a 1\n  --\n     :b 2})",
-      "out": "(foo\n  {:a 1\n   :b 2})"
-    }
-  },
-  {
-    "text": "(f {:a 1\n      :b 2})",
-    "options": {
-      "changes": [
-        {
-          "lineNo": 0,
-          "x": 2,
-          "oldText": "oo",
-          "newText": ""
-        }
-      ]
-    },
-    "result": {
-      "text": "(f {:a 1\n    :b 2})",
-      "success": true
-    },
-    "source": {
-      "lineNo": 45,
-      "in": "(foo {:a 1\n  --\n      :b 2})",
-      "out": "(f {:a 1\n    :b 2})"
-    }
-  },
-  {
     "text": "(foo\n{:a 1\n   :b 2})",
     "options": {
       "changes": [
@@ -104,13 +16,13 @@
       "success": true
     },
     "source": {
-      "lineNo": 58,
+      "lineNo": 6,
       "in": "(foo\n  {:a 1\n--\n   :b 2})",
       "out": "(foo)\n{:a 1\n :b 2}"
     }
   },
   {
-    "text": "(foo)\n  {:a 1\n:b 2}",
+    "text": "(foo)\n  {:a 1\n :b 2}",
     "options": {
       "changes": [
         {
@@ -126,31 +38,151 @@
       "success": true
     },
     "source": {
-      "lineNo": 71,
-      "in": "(foo)\n  {:a 1\n++\n:b 2}",
+      "lineNo": 21,
+      "in": "(foo)\n  {:a 1\n++\n :b 2}",
       "out": "(foo\n  {:a 1\n   :b 2})"
     }
   },
   {
-    "text": "(a (b[) c) (d) e)",
+    "text": "(foo\n  {:a 1\n:b 2})",
     "options": {
       "changes": [
         {
-          "lineNo": 0,
-          "x": 5,
-          "oldText": "",
-          "newText": "["
+          "lineNo": 2,
+          "x": 0,
+          "oldText": "   ",
+          "newText": ""
         }
       ]
     },
     "result": {
-      "text": "(a (b[]) c) (d) e)",
+      "text": "(foo\n  {:a 1})\n:b 2",
       "success": true
     },
     "source": {
-      "lineNo": 86,
-      "in": "(a (b[) c) (d) e)\n     +",
-      "out": "(a (b[]) c) (d) e)"
+      "lineNo": 36,
+      "in": "(foo\n  {:a 1\n   :b 2})\n---",
+      "out": "(foo\n  {:a 1})\n:b 2"
+    }
+  },
+  {
+    "text": "(defn foo\n[a b]\n  bar)",
+    "options": {
+      "changes": [
+        {
+          "lineNo": 1,
+          "x": 0,
+          "oldText": "  ",
+          "newText": ""
+        }
+      ]
+    },
+    "result": {
+      "text": "(defn foo)\n[a b\n  bar]",
+      "success": true
+    },
+    "source": {
+      "lineNo": 51,
+      "in": "(defn foo\n  [a b]\n--\n  bar)",
+      "out": "(defn foo)\n[a b\n  bar]"
+    }
+  },
+  {
+    "text": "(defn foo\n    [a b]\n    bar)",
+    "options": {
+      "changes": [
+        {
+          "lineNo": 0,
+          "x": 0,
+          "oldText": "  ",
+          "newText": ""
+        }
+      ]
+    },
+    "result": {
+      "text": "(defn foo\n  [a b]\n  bar)",
+      "success": true
+    },
+    "source": {
+      "lineNo": 66,
+      "in": "  (defn foo\n--\n    [a b]\n    bar)",
+      "out": "(defn foo\n  [a b]\n  bar)"
+    }
+  },
+  {
+    "text": "(defn foo\n    [a b]\n    ; comment 1\n    bar)\n    ; comment 2",
+    "options": {
+      "changes": [
+        {
+          "lineNo": 0,
+          "x": 0,
+          "oldText": "  ",
+          "newText": ""
+        }
+      ]
+    },
+    "result": {
+      "text": "(defn foo\n  [a b]\n  ; comment 1\n  bar)\n  ; comment 2",
+      "success": true
+    },
+    "source": {
+      "lineNo": 81,
+      "in": "  (defn foo\n--\n    [a b]\n    ; comment 1\n    bar)\n    ; comment 2",
+      "out": "(defn foo\n  [a b]\n  ; comment 1\n  bar)\n  ; comment 2"
+    }
+  },
+  {
+    "text": "(defn foo\n[a b\n   c d]\n  bar\n  baz)",
+    "options": {
+      "cursorX": 0,
+      "cursorLine": 1,
+      "changes": [
+        {
+          "lineNo": 1,
+          "x": 0,
+          "oldText": "  ",
+          "newText": ""
+        }
+      ]
+    },
+    "result": {
+      "cursorX": 0,
+      "cursorLine": 1,
+      "text": "(defn foo)\n[a b\n c d]\n  bar\n  baz",
+      "success": true
+    },
+    "source": {
+      "lineNo": 103,
+      "in": "(defn foo\n  |[a b\n--\n   c d]\n  bar\n  baz)",
+      "out": "(defn foo)\n|[a b\n c d]\n  bar\n  baz"
+    }
+  },
+  {
+    "text": "(foo (if some-condition\n         println) foo {:foo 1\n                          :bar 2})",
+    "options": {
+      "changes": [
+        {
+          "lineNo": 0,
+          "x": 1,
+          "oldText": "my-fn",
+          "newText": "foo"
+        },
+        {
+          "lineNo": 1,
+          "x": 18,
+          "oldText": "my-fun",
+          "newText": "foo"
+        }
+      ]
+    },
+    "result": {
+      "text": "(foo (if some-condition\n       println) foo {:foo 1\n                     :bar 2})",
+      "success": true
+    },
+    "source": {
+      "lineNo": 122,
+      "in": "(my-fnfoo (if some-condition\n -----+++\n         println) my-funfoo {:foo 1\n                  ------+++\n                          :bar 2})",
+      "out": "(foo (if some-condition\n       println) foo {:foo 1\n                     :bar 2})"
     }
   }
 ]

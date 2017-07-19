@@ -1,6 +1,7 @@
-## 3.3.0 (unpublished)
+## 3.3.0
 
-- experiment: prevent sibling adoption when dedenting expressions, until cursor
+- add: create `smartMode` to hold new smart features and to preserve original `indentMode`
+- add: prevent sibling adoption when dedenting expressions, until cursor
   is moved to different line or to the right of the open-paren.
   (see [#143](https://github.com/shaunlebron/parinfer/issues/143))
 

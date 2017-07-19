@@ -2,19 +2,23 @@
 
 [Parlinter]:https://github.com/shaunlebron/parlinter
 
+__NEW: Smart Mode__ is an ongoing experiment to hopefully eliminate the need for
+users to switch between Indent Mode and Paren Mode. Try out the [demo]!
+
 # Parinfer Lib [![Travis](https://travis-ci.org/shaunlebron/parinfer.svg?branch=master)](https://travis-ci.org/shaunlebron/parinfer)
 
 This is the canonical implementation of [Parinfer]'s core transformation
 functions. Though it is written in JavaScript, it is ported and synchronized to
 other languages to reach most major text editors.
 
-- [Parinfer Demo Editor](http://shaunlebron.github.io/parinfer/demo) - Try it out online.
+- [Parinfer Demo Editor][demo] - Try it out online.
 - [Parinfer Code Documentation][code.md] - Read for deep knowledge on inner workings.
 
 <!-- file links need to be full path to make them work for the NPM readme -->
 [code.md]:https://github.com/shaunlebron/parinfer/blob/master/lib/doc/code.md
 
 [Parinfer]:http://shaunlebron.github.io/parinfer/
+[demo]:http://shaunlebron.github.io/parinfer/demo
 
 ## A stable core for editor plugins
 
@@ -88,6 +92,7 @@ _See [integrating.md]_
 
 ## API
 
+##### `smartMode(text[, options])`
 ##### `indentMode(text[, options])`
 ##### `parenMode(text[, options])`
 
@@ -95,7 +100,7 @@ Runs
 [Indent Mode](http://shaunlebron.github.io/parinfer/#indent-mode)
 or
 [Paren Mode](http://shaunlebron.github.io/parinfer/#paren-mode)
-on the given text.
+on the given text.  Smart Mode is currently something in between.
 
 Arguments:
 
@@ -180,6 +185,7 @@ result, and an `^ error` annotation line since a string was not closed:
 ### Test Usage
 
 ```js
+parinferTest.smartMode(inputText, extras); // returns string
 parinferTest.indentMode(inputText, extras); // returns string
 parinferTest.parenMode(inputText, extras);  // returns string
 ```
