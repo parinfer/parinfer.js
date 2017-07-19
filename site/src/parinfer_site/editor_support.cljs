@@ -2,7 +2,8 @@
   "Connects parinfer mode functions to CodeMirror"
   (:require
     [clojure.string :as string :refer [join]]
-    [parinfer-site.parinfer :refer [indent-mode
+    [parinfer-site.parinfer :refer [smart-mode
+                                    indent-mode
                                     paren-mode]]
     [parinfer-site.state :refer [state]]))
 
@@ -70,6 +71,7 @@
 
         result
         (case mode
+          :smart-mode (smart-mode current-text options)
           :indent-mode (indent-mode current-text options)
           :paren-mode (paren-mode current-text options)
           nil)

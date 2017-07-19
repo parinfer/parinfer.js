@@ -1,5 +1,5 @@
 //
-// Parinfer 3.2.0
+// Parinfer 3.3.0
 //
 // Copyright 2015-2017 © Shaun Lebron
 // MIT License
@@ -39,7 +39,8 @@
 var UINT_NULL = -999;
 
 var INDENT_MODE = "INDENT_MODE",
-    PAREN_MODE = "PAREN_MODE";
+    PAREN_MODE = "PAREN_MODE",
+    SMART_MODE = "SMART_MODE";
 
 var BACKSLASH = '\\',
     BLANK_SPACE = ' ',
@@ -166,9 +167,13 @@ function parseOptions(options) {
 
 function getInitialResult(text, options, mode) {
 
+  var smartMode = (mode === SMART_MODE);
+  var actualMode = smartMode ? INDENT_MODE : mode;
+
   var result = {
 
-    mode: mode,                // [enum] - current processing mode (INDENT_MODE or PAREN_MODE)
+    mode: actualMode,          // [enum] - current processing mode (INDENT_MODE or PAREN_MODE)
+    smartMode: smartMode,      // [boolean] - smartMode is a sub-mode of Indent Mode (for now)
 
     origText: text,            // [string] - original text
     origCursorX: UINT_NULL,
@@ -458,9 +463,19 @@ function onOpenParen(result) {
 
 function onMatchedCloseParen(result) {
   var opener = peek(result.parenStack, 0);
-  result.parenTrail.endX = result.x + 1;
-  result.parenTrail.openers.push(opener);
-  result.maxIndent = opener.x;
+  var cursorClamping = (
+    result.smartMode &&
+    result.cursorLine === opener.lineNo &&
+    result.cursorX <= opener.x
+  );
+  if (cursorClamping) {
+    resetParenTrail(result, result.lineNo, result.x+1);
+  }
+  else {
+    result.parenTrail.endX = result.x + 1;
+    result.parenTrail.openers.push(opener);
+    result.maxIndent = opener.x;
+  }
   result.parenStack.pop();
   result.discardStack.push(opener);
 }
@@ -589,11 +604,13 @@ function isCursorInComment(result) {
 }
 
 function handleChangeDelta(result) {
-  var line = result.changes[result.inputLineNo];
-  if (line) {
-    var change = line[result.inputX];
-    if (change) {
-      result.indentDelta += (change.newEndX - change.oldEndX);
+  if (result.smartMode || result.mode === PAREN_MODE) {
+    var line = result.changes[result.inputLineNo];
+    if (line) {
+      var change = line[result.inputX];
+      if (change) {
+        result.indentDelta += (change.newEndX - change.oldEndX);
+      }
     }
   }
 }
@@ -1049,10 +1066,16 @@ function parenMode(text, options) {
   return publicResult(processText(text, options, PAREN_MODE));
 }
 
+function smartMode(text, options) {
+  options = parseOptions(options);
+  return publicResult(processText(text, options, SMART_MODE));
+}
+
 var API = {
-  version: "3.2.0",
+  version: "3.3.0",
   indentMode: indentMode,
-  parenMode: parenMode
+  parenMode: parenMode,
+  smartMode: smartMode
 };
 
 return API;

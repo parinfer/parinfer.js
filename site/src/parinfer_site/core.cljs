@@ -287,7 +287,8 @@
   (create-editor! "code-demo" :demo)
   (editor-ui/render! :demo)
   (start-editor-sync!)
-  (swap! state assoc-in [:demo :text] demo-example))
+  (swap! state assoc-in [:demo :text] demo-example)
+  (swap! state assoc-in [:demo :mode] :smart-mode))
 
 (defn state-viewer
   [{:keys [postline-states cursor-line]} owner]

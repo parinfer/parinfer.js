@@ -4,6 +4,7 @@
     [om.core :as om]
     [sablono.core :refer-macros [html]]
     [parinfer-site.editor-support :refer [fix-text!]]
+    [parinfer-site.parinfer :refer [major-version]]
     [goog.dom :as gdom]))
 
 (defn refresh!
@@ -17,6 +18,12 @@
   (let [element (.getWrapperElement cm)
         cursor (gdom/getElementByClass "CodeMirror-cursors" element)]
     (aset cursor "style" "visibility" "visible")))
+
+(def smart-caption
+  (list
+    [:em "Smart Mode"]
+    "New experimental behavior, hopefully making it unnecessary
+     to switch between Indent Mode and Paren Mode"))
 
 (def indent-caption
   (list
@@ -49,11 +56,9 @@
     "Employ v1's aggressive rules to ensure parens are always balanced."))
 
 (def mode->caption
-  {:indent-mode indent-caption
+  {:smart-mode smart-caption
+   :indent-mode indent-caption
    :paren-mode paren-caption})
-
-(defn major-version []
-  (aget js/window "parinfer" "version" "0"))
 
 (defn editor-header
   [editor]
@@ -86,21 +91,20 @@
     (render [_]
       (html
         [:div
-         (when (= (major-version) "1")
-           [:select.mode
-            {:value (name (:mode editor))
-             :on-mouse-over (fn [e] (om/update! editor :help-caption (mode->caption (:mode editor))))
-             :on-mouse-out (fn [e] (om/update! editor :help-caption ""))
-             :on-change (fn [e]
-                          (let [new-mode (keyword (aget e "target" "value"))]
-                            (om/update! editor :help-caption (mode->caption new-mode))
-                            (om/update! editor :mode new-mode)
-                            (refresh! (:cm editor))))}
-            [:option {:value "indent-mode"} "Indent Mode"]
-            [:option {:value "paren-mode"} "Paren Mode"]])
+          [:select.mode
+           {:value (name (:mode editor))
+            :on-mouse-over (fn [e] (om/update! editor :help-caption (mode->caption (:mode editor))))
+            :on-mouse-out (fn [e] (om/update! editor :help-caption ""))
+            :on-change (fn [e]
+                         (let [new-mode (keyword (aget e "target" "value"))]
+                           (om/update! editor :help-caption (mode->caption new-mode))
+                           (om/update! editor :mode new-mode)
+                           (refresh! (:cm editor))))}
+           [:option {:value "smart-mode"} "Smart Mode"]
+           [:option {:value "indent-mode"} "Indent Mode"]
+           [:option {:value "paren-mode"} "Paren Mode"]]
 
-         (when (and (= (:mode editor) :indent-mode)
-                    (not= (major-version) "1"))
+         (when (#{:indent-mode :smart-mode} (:mode editor))
            (let [path [:options :force-balance]]
              [:label.user-option
               {:on-mouse-over (fn [e] (om/update! editor :help-caption force-balance-caption))
@@ -112,17 +116,6 @@
                              (om/update! editor path (aget e "target" "checked"))
                              (refresh! (:cm editor)))}]
               "forceBalance"]))
-
-         (when (= (major-version) "1")
-           (let [cursor-dx (or (:cursor-dx (:prev-options editor)) 0)]
-             (list
-               [:span
-                 {:on-mouse-over (fn [e] (om/update! editor :help-caption cursor-dx-caption))
-                  :on-mouse-out (fn [e] (om/update! editor :help-caption ""))
-                  :style {:float "right"}}
-                 [:label.calc-option
-                  "cursorDx=" cursor-dx]
-                 [:span.calc-option " calculated when text is added or removed"]])))
 
          (let [{:keys [name message] :as error} (get-in editor [:result :error])]
            (when error

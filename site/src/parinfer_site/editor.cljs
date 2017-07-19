@@ -54,7 +54,6 @@
   [cm]
   (when-not (frame-updated? cm)
     (record-change! cm {:selections (parse-selections (.listSelections cm))})
-    (js/console.log "on-cursor-activity called")
     (fix-text! cm))
   (set-frame-updated! cm false))
 

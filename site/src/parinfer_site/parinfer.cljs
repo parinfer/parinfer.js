@@ -1,5 +1,8 @@
 (ns parinfer-site.parinfer)
 
+(defn major-version []
+  (aget js/window "parinfer" "version" "0"))
+
 (defn- convert-changed-line [e]
   {:line-no (aget e "lineNo")
    :line (aget e "line")})
@@ -28,8 +31,13 @@
        :changes (clj->js (:changes option))
        :forceBalance (:force-balance option)})
 
+(def smart-mode* (aget js/window "parinfer" "smartMode"))
 (def indent-mode* (aget js/window "parinfer" "indentMode"))
 (def paren-mode* (aget js/window "parinfer" "parenMode"))
+
+(defn smart-mode
+  ([text] (convert-result (smart-mode* text)))
+  ([text options] (convert-result (smart-mode* text (convert-options options)))))
 
 (defn indent-mode
   ([text] (convert-result (indent-mode* text)))
