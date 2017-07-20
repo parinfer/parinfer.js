@@ -430,3 +430,43 @@ __Multiple changes__:
        println) foo {:foo 1
                      :bar 2})
 ```
+
+## Extending indentation constraints
+
+Child lines should never fall to the right of a sibling list somewhere above it.
+This promotes more structural stability in Indent Mode—allowing child lines
+to be deleted without affecting structure of subsequent lines.
+
+In the example below, the original Paren Mode would dedent `1 2 3`, but would
+leave `4 5 6` unchanged.  Subsequently, if the user deletes `1 2 3` in Indent
+Mode, `4 5 6` would immediately be adopted into the `[bar baz]` collection,
+which is likely an unintended side effect.
+
+This places a harder constraint on indentation in Paren Mode than Indent Mode,
+making the invariant no longer equivalent between them.
+
+```in
+(foo [bar baz]
+       1 2 3
+       4 5 6)
+```
+
+```out
+(foo [bar baz]
+     1 2 3
+     4 5 6)
+```
+
+```in
+(foo [bar baz
+         ]; <-- spaces
+       1 2 3
+       4 5 6)
+```
+
+```out
+(foo [bar baz]
+         ; <-- spaces
+     1 2 3
+     4 5 6)
+```

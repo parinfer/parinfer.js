@@ -1,3 +1,10 @@
+## 3.4.0
+
+- experiment: [extend indentation constraints] in Paren Mode to promote more
+stability in Indent Mode and Smart Mode
+
+[extend indentation constraints]:test/cases/paren-mode.md#extending-indentation-constraints
+
 ## 3.3.0
 
 - add: create `smartMode` to hold new smart features and to preserve original `indentMode`

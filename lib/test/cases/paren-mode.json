@@ -503,5 +503,31 @@
       "in": "(my-fnfoo (if some-condition\n -----+++\n         println) my-funfoo {:foo 1\n                  ------+++\n                          :bar 2})",
       "out": "(foo (if some-condition\n       println) foo {:foo 1\n                     :bar 2})"
     }
+  },
+  {
+    "text": "(foo [bar baz]\n       1 2 3\n       4 5 6)",
+    "options": {},
+    "result": {
+      "text": "(foo [bar baz]\n     1 2 3\n     4 5 6)",
+      "success": true
+    },
+    "source": {
+      "lineNo": 447,
+      "in": "(foo [bar baz]\n       1 2 3\n       4 5 6)",
+      "out": "(foo [bar baz]\n     1 2 3\n     4 5 6)"
+    }
+  },
+  {
+    "text": "(foo [bar baz\n         ]; <-- spaces\n       1 2 3\n       4 5 6)",
+    "options": {},
+    "result": {
+      "text": "(foo [bar baz]\n         ; <-- spaces\n     1 2 3\n     4 5 6)",
+      "success": true
+    },
+    "source": {
+      "lineNo": 459,
+      "in": "(foo [bar baz\n         ]; <-- spaces\n       1 2 3\n       4 5 6)",
+      "out": "(foo [bar baz]\n         ; <-- spaces\n     1 2 3\n     4 5 6)"
+    }
   }
 ]
