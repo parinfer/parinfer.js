@@ -1,3 +1,7 @@
+## 3.4.1
+
+- refactor: remove `discardStack` since `parenTrail.openers` is same thing
+
 ## 3.4.0
 
 - experiment: [extend indentation constraints] in Paren Mode to promote more

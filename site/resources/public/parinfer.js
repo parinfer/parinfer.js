@@ -1,5 +1,5 @@
 //
-// Parinfer 3.4.0
+// Parinfer 3.4.1
 //
 // Copyright 2015-2017 © Shaun Lebron
 // MIT License
@@ -192,9 +192,6 @@ function getInitialResult(text, options, mode) {
     parenStack: [],            // We track where we are in the Lisp tree by keeping a stack (array) of open-parens.
                                // Stack elements are objects containing keys {ch, x, lineNo, indentDelta}
                                // whose values are the same as those described here in this result structure.
-
-    discardStack: [],          // In Paren Mode, we track discarded open-parens (from parenStack) so we can determine the
-                               // paren trail from previous line when shifting comments.
 
     tabStops: [],              // In Indent Mode, it is useful for editors to snap a line's indentation
                                // to certain critical points.  Thus, we have a `tabStops` array of objects containing
@@ -477,7 +474,6 @@ function onMatchedCloseParen(result) {
     result.parenTrail.openers.push(opener);
   }
   result.parenStack.pop();
-  result.discardStack.push(opener);
 }
 
 function onUnmatchedCloseParen(result) {
@@ -744,12 +740,13 @@ function cleanParenTrail(result) {
 // PAREN MODE: append a valid close-paren to the end of the paren trail
 function appendParenTrail(result) {
   var opener = result.parenStack.pop();
-  result.discardStack.push(opener);
   var closeCh = MATCH_PAREN[opener.ch];
 
   setMaxIndent(result, opener);
   insertWithinLine(result, result.parenTrail.lineNo, result.parenTrail.endX, closeCh);
+
   result.parenTrail.endX++;
+  result.parenTrail.openers.push(opener);
 }
 
 function invalidateParenTrail(result) {
@@ -831,7 +828,6 @@ function correctIndent(result) {
 
 function onIndent(result) {
   result.trackingIndent = false;
-  result.discardStack = [];
 
   if (result.quoteDanger) {
     throw error(result, ERROR_QUOTE_DANGER);
@@ -871,13 +867,13 @@ function onLeadingCloseParen(result) {
 }
 
 function shiftCommentLine(result) {
-  var parenTrailLength = result.parenTrail.endX - result.parenTrail.startX;
+  var parenTrailLength = result.parenTrail.openers.length;
 
   // restore the openers matching the previous paren trail
   var j;
   if (result.mode === PAREN_MODE) {
     for (j=0; j<parenTrailLength; j++) {
-      result.parenStack.push(peek(result.discardStack, j));
+      result.parenStack.push(peek(result.parenTrail.openers, j));
     }
   }
 
@@ -1085,7 +1081,7 @@ function smartMode(text, options) {
 }
 
 var API = {
-  version: "3.4.0",
+  version: "3.4.1",
   indentMode: indentMode,
   parenMode: parenMode,
   smartMode: smartMode
