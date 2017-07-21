@@ -25,11 +25,13 @@
    :changed-lines (mapv convert-changed-line (aget result "changedLines"))
    :error (convert-error (aget result "error"))})
 
-(defn- convert-options [option]
-  #js {:cursorX (:cursor-x option)
-       :cursorLine (:cursor-line option)
-       :changes (clj->js (:changes option))
-       :forceBalance (:force-balance option)})
+(defn- convert-options [options]
+  #js {:cursorX (:cursor-x options)
+       :cursorLine (:cursor-line options)
+       :prevCursorX (:prev-cursor-x options)
+       :prevCursorLine (:prev-cursor-line options)
+       :changes (clj->js (:changes options))
+       :forceBalance (:force-balance options)})
 
 (def smart-mode* (aget js/window "parinfer" "smartMode"))
 (def indent-mode* (aget js/window "parinfer" "indentMode"))

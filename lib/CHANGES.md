@@ -1,3 +1,8 @@
+## 3.5.0
+
+- add: fix indentation in Smart Mode after cursor leaves a holding area, preventing
+unintended line adoption (see [#143](https://github.com/shaunlebron/parinfer/issues/143))
+
 ## 3.4.1
 
 - refactor: remove `discardStack` since `parenTrail.openers` is same thing

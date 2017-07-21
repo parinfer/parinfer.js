@@ -98,7 +98,7 @@ Indented comments move with expressions:
 
 ## Cursor temporarily preventing sibling adoption
 
-To prevent undesirable sibling adoption when dedenting, we temporarily keeping
+To prevent undesirable sibling adoption when dedenting, we temporarily keep
 a close-paren from moving when the cursor is to the left of its open-paren.
 
 ```in
@@ -132,4 +132,57 @@ a close-paren from moving when the cursor is to the left of its open-paren.
 (foo (if some-condition
        println) foo {:foo 1
                      :bar 2})
+```
+
+## Precarious Paren Resolution
+
+Suppose we deleted `foo` in the example below.  We expect `4` to not be adopted
+by any collection inside `(((1 2 3)))`.
+
+```in
+(foo |(((1
+ ----
+        2
+        3)))
+    4)
+```
+
+```out
+(|(((1
+    2
+    3)))
+    4)
+```
+
+When cursor is removed, the precarious parens are resolved by preserving structure
+and correcting indentation.
+
+```in
+((((1
+ ^ prevCursor
+    2
+    3)))
+    4)
+```
+
+```out
+((((1
+    2
+    3)))
+ 4)
+```
+
+```in
+((|((1
+ ^ prevCursor
+    2
+    3)))
+    4)
+```
+
+```out
+((|((1
+    2
+    3)))
+ 4)
 ```

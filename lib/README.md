@@ -108,6 +108,7 @@ Arguments:
 - `options` is an object with the following properties:
   - `cursorLine` - zero-based line number of the cursor
   - `cursorX` - zero-based x-position of the cursor
+  - `prevCursorLine` and `prevCursorX` is required by Smart Mode (previous cursor position)
   - `changes` - ordered array of change objects with the following:
     - `lineNo` - starting line number of the change
     - `x` - starting x of the change

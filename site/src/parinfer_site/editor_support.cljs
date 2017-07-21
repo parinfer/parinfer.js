@@ -44,6 +44,9 @@
       (when-let [extra (:extra error)]
         (add-mark! cm (:line-no extra) (:x extra) "error")))))
 
+;; TODO: we need to attach this to the editor instance, not have a global value
+(def prev-cursor {})
+
 (defn fix-text!
   "Correctly format the text from the given editor."
   [cm & {:keys [changes use-cache?]
@@ -61,6 +64,8 @@
 
         options {:cursor-line (.-line cursor)
                  :cursor-x (.-ch cursor)
+                 :prev-cursor-line (:line prev-cursor)
+                 :prev-cursor-x (:x prev-cursor)
                  :changes (mapv convert-change changes)}
 
         key- (cm-key cm)
@@ -79,6 +84,10 @@
         ;; format the text
         new-text (:text result)
         new-cursor-x (:cursor-x result)]
+
+    (set! prev-cursor
+      {:line (.-line cursor)
+       :x (.-ch cursor)})
 
     (when (= key- :demo)
       (swap! state assoc-in [key- :result] result)
