@@ -1,5 +1,5 @@
 //
-// Parinfer 3.4.1
+// Parinfer 3.5.0
 //
 // Copyright 2015-2017 © Shaun Lebron
 // MIT License
@@ -131,17 +131,18 @@ function transformChange(change) {
 }
 
 function transformChanges(changes) {
+  if (changes.length === 0) {
+    return null;
+  }
   var lines = {};
   var line, i, change;
-  if (changes) {
-    for (i=0; i<changes.length; i++) {
-      change = transformChange(changes[i]);
-      line = lines[change.lookupLineNo];
-      if (!line) {
-        line = lines[change.lookupLineNo] = {};
-      }
-      line[change.lookupX] = change;
+  for (i=0; i<changes.length; i++) {
+    change = transformChange(changes[i]);
+    line = lines[change.lookupLineNo];
+    if (!line) {
+      line = lines[change.lookupLineNo] = {};
     }
+    line[change.lookupX] = change;
   }
   return lines;
 }
@@ -151,6 +152,8 @@ function parseOptions(options) {
   return {
     cursorX: options.cursorX,
     cursorLine: options.cursorLine,
+    prevCursorX: options.prevCursorX,
+    prevCursorLine: options.prevCursorLine,
     changes: options.changes,
     partialResult: options.partialResult,
     forceBalance: options.forceBalance
@@ -176,8 +179,8 @@ function getInitialResult(text, options, mode) {
     smartMode: smartMode,      // [boolean] - smartMode is a sub-mode of Indent Mode (for now)
 
     origText: text,            // [string] - original text
-    origCursorX: UINT_NULL,
-    origCursorLine: UINT_NULL,
+    origCursorX: UINT_NULL,    // [integer] - original cursorX option
+    origCursorLine: UINT_NULL, // [integer] - original cursorLine option
 
     inputLines:                // [string array] - input lines that we process line-by-line, char-by-char
       text.split(LINE_ENDING_REGEX),
@@ -206,8 +209,10 @@ function getInitialResult(text, options, mode) {
 
     cursorX: UINT_NULL,        // [integer] - x position of the cursor
     cursorLine: UINT_NULL,     // [integer] - line number of the cursor
+    prevCursorX: UINT_NULL,    // [integer] - x position of the previous cursor
+    prevCursorLine: UINT_NULL, // [integer] - line number of the previous cursor
 
-    changes: {},               // [object] - mapping change.key to a change object (please see `transformChange` for object structure)
+    changes: null,             // [object] - mapping change.key to a change object (please see `transformChange` for object structure)
 
     isInCode: true,            // [boolean] - indicates if we are currently in "code space" (not string or comment)
     isEscaping: false,         // [boolean] - indicates if the next character will be escaped (e.g. `\c`).  This may be inside string, comment, or code.
@@ -251,6 +256,8 @@ function getInitialResult(text, options, mode) {
                                                  result.origCursorX        = options.cursorX; }
     if (isInteger(options.cursorLine))         { result.cursorLine         = options.cursorLine;
                                                  result.origCursorLine     = options.cursorLine; }
+    if (isInteger(options.prevCursorX))        { result.prevCursorX        = options.prevCursorX; }
+    if (isInteger(options.prevCursorLine))     { result.prevCursorLine     = options.prevCursorLine; }
     if (isArray(options.changes))              { result.changes            = transformChanges(options.changes); }
     if (isBoolean(options.partialResult))      { result.partialResult      = options.partialResult; }
     if (isBoolean(options.forceBalance))       { result.forceBalance       = options.forceBalance; }
@@ -459,14 +466,33 @@ function onOpenParen(result) {
   }
 }
 
+function checkCursorHolding(result) {
+  var opener = peek(result.parenStack, 0);
+  var parent = peek(result.parenStack, 1);
+  var holdMinX = parent ? parent.x+1 : 0;
+  var holdMaxX = opener.x;
+
+  var holding = (
+    result.cursorLine === opener.lineNo &&
+    holdMinX <= result.cursorX && result.cursorX <= holdMaxX
+  );
+  var shouldCheckPrev = !result.changes && result.prevCursorLine !== UINT_NULL;
+  if (shouldCheckPrev) {
+    var prevHolding = (
+      result.prevCursorLine === opener.lineNo &&
+      holdMinX <= result.prevCursorX && result.prevCursorX <= holdMaxX
+    );
+    if (prevHolding && !holding) {
+      throw {smartModeFixIndent: true};
+    }
+  }
+  return holding;
+}
+
 function onMatchedCloseParen(result) {
   var opener = peek(result.parenStack, 0);
-  var cursorClamping = (
-    result.smartMode &&
-    result.cursorLine === opener.lineNo &&
-    result.cursorX <= opener.x
-  );
-  if (cursorClamping) {
+
+  if (result.smartMode && checkCursorHolding(result)) {
     resetParenTrail(result, result.lineNo, result.x+1);
   }
   else {
@@ -600,7 +626,7 @@ function isCursorInComment(result) {
 }
 
 function handleChangeDelta(result) {
-  if (result.smartMode || result.mode === PAREN_MODE) {
+  if (result.changes && (result.smartMode || result.mode === PAREN_MODE)) {
     var line = result.changes[result.inputLineNo];
     if (line) {
       var change = line[result.inputX];
@@ -1010,6 +1036,7 @@ function processError(result, e) {
   else {
     result.error.name = ERROR_UNHANDLED;
     result.error.message = e.stack;
+    throw e;
   }
 }
 
@@ -1026,6 +1053,9 @@ function processText(text, options, mode) {
   }
   catch (e) {
     if (e.indentModeLeadingCloseParen) {
+      return processText(text, options, PAREN_MODE);
+    }
+    if (e.smartModeFixIndent) {
       return processText(text, options, PAREN_MODE);
     }
     processError(result, e);
@@ -1081,7 +1111,7 @@ function smartMode(text, options) {
 }
 
 var API = {
-  version: "3.4.1",
+  version: "3.5.0",
   indentMode: indentMode,
   parenMode: parenMode,
   smartMode: smartMode
