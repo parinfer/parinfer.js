@@ -146,3 +146,22 @@ For the above example:
 (defn foobar []
   nil)
 ```
+
+## Previous Cursor
+
+Smart Mode corrects indentation after the cursor is released from a holding
+area. Thus, `^ prevCursor` lets us point to the position where the cursor moved
+from.
+
+> ```in
+> (foo {:a 1
+>     ^ prevCursor
+>       :b 2}
+>       bar)
+> ```
+>
+> ```out
+> (foo {:a 1
+>       :b 2}
+>      bar) ; <-- indentation corrected
+> ```
