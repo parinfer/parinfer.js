@@ -246,5 +246,67 @@
       "in": "((|((1\n ^ prevCursor\n    2\n    3)))\n    4)",
       "out": "((|((1\n    2\n    3)))\n 4)"
     }
+  },
+  {
+    "text": "(foo [1 2 3]\n      4 5 6\n      7 8 9])",
+    "options": {
+      "cursorX": 12,
+      "cursorLine": 0,
+      "changes": [
+        {
+          "lineNo": 0,
+          "x": 11,
+          "oldText": "",
+          "newText": "]"
+        }
+      ]
+    },
+    "result": {
+      "cursorX": 12,
+      "cursorLine": 0,
+      "text": "(foo [1 2 3]\n      4 5 6\n      7 8 9)",
+      "success": true
+    },
+    "source": {
+      "lineNo": 193,
+      "in": "(foo [1 2 3]|\n           +\n      4 5 6\n      7 8 9])",
+      "out": "(foo [1 2 3]|\n      4 5 6\n      7 8 9)"
+    }
+  },
+  {
+    "text": "(foo [1 2 3]\n      4 5 6\n      7 8 9)",
+    "options": {
+      "prevCursorX": 12,
+      "prevCursorLine": 0
+    },
+    "result": {
+      "text": "(foo [1 2 3]\n     4 5 6\n     7 8 9)",
+      "success": true
+    },
+    "source": {
+      "lineNo": 209,
+      "in": "(foo [1 2 3]\n            ^ prevCursor\n      4 5 6\n      7 8 9)",
+      "out": "(foo [1 2 3]\n     4 5 6\n     7 8 9)"
+    }
+  },
+  {
+    "text": "(foo [1 2 3]\n      4 5 6\n      7 8 9)",
+    "options": {
+      "cursorX": 11,
+      "cursorLine": 0,
+      "prevCursorX": 14,
+      "prevCursorLine": 0
+    },
+    "result": {
+      "cursorX": 11,
+      "cursorLine": 0,
+      "text": "(foo [1 2 3]\n     4 5 6\n     7 8 9)",
+      "success": true
+    },
+    "source": {
+      "lineNo": 222,
+      "in": "(foo [1 2 3|]\n             ^ prevCursor\n      4 5 6\n      7 8 9)",
+      "out": "(foo [1 2 3|]\n     4 5 6\n     7 8 9)"
+    }
   }
 ]

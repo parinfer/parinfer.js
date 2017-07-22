@@ -4,7 +4,7 @@
 
 > __TODO__: document that Paren Mode indentation constraint is now stronger than in Indent Mode for stability (see [Extending Indentation Constraints])
 
-> __TODO__: document that Smart Mode will correct indentation whenever a cursor leaves the holding area
+> __TODO__: document that Smart Mode will correct indentation whenever a cursor leaves a paren-trail holding area
 
 [Extending Indentation Constraints]:../test/cases/paren-mode.md#extending-indentation-constraints
 
@@ -1126,7 +1126,7 @@ as I can.
 [`ERROR_UNMATCHED_OPEN_PAREN`]:../parinfer.js#L279
 [`ERROR_UNHANDLED`]:../parinfer.js#L280
 [`errorMessages`]:../parinfer.js#L282
-[`API`]:../parinfer.js#L1113
+[`API`]:../parinfer.js#L1126
 [`isBoolean`]:../parinfer.js#L64
 [`isArray`]:../parinfer.js#L68
 [`isInteger`]:../parinfer.js#L72
@@ -1162,38 +1162,39 @@ as I can.
 [`onBackslash`]:../parinfer.js#L566
 [`afterBackslash`]:../parinfer.js#L570
 [`onChar`]:../parinfer.js#L581
-[`isCursorOnLeft`]:../parinfer.js#L607
-[`isCursorOnRight`]:../parinfer.js#L615
-[`isCursorInComment`]:../parinfer.js#L624
-[`handleChangeDelta`]:../parinfer.js#L628
-[`resetParenTrail`]:../parinfer.js#L644
-[`clampParenTrailToCursor`]:../parinfer.js#L652
-[`popParenTrail`]:../parinfer.js#L681
-[`getParentOpenerIndex`]:../parinfer.js#L695
-[`correctParenTrail`]:../parinfer.js#L722
-[`cleanParenTrail`]:../parinfer.js#L738
-[`appendParenTrail`]:../parinfer.js#L767
-[`invalidateParenTrail`]:../parinfer.js#L778
-[`checkUnmatchedOutsideParenTrail`]:../parinfer.js#L787
-[`setMaxIndent`]:../parinfer.js#L794
-[`finishNewParenTrail`]:../parinfer.js#L806
-[`changeIndent`]:../parinfer.js#L826
-[`correctIndent`]:../parinfer.js#L835
-[`onIndent`]:../parinfer.js#L855
-[`onLeadingCloseParen`]:../parinfer.js#L876
-[`shiftCommentLine`]:../parinfer.js#L895
-[`checkIndent`]:../parinfer.js#L921
-[`initIndent`]:../parinfer.js#L937
-[`setTabStops`]:../parinfer.js#L949
-[`processChar`]:../parinfer.js#L970
-[`processLine`]:../parinfer.js#L992
-[`finalizeResult`]:../parinfer.js#L1014
-[`processError`]:../parinfer.js#L1030
-[`processText`]:../parinfer.js#L1043
-[`publicResult`]:../parinfer.js#L1071
-[`indentMode`]:../parinfer.js#L1098
-[`parenMode`]:../parinfer.js#L1103
-[`smartMode`]:../parinfer.js#L1108
+[`isCursorLeftOf`]:../parinfer.js#L607
+[`isCursorRightOf`]:../parinfer.js#L616
+[`isCursorInComment`]:../parinfer.js#L625
+[`handleChangeDelta`]:../parinfer.js#L629
+[`resetParenTrail`]:../parinfer.js#L645
+[`isCursorClampingParenTrail`]:../parinfer.js#L652
+[`clampParenTrailToCursor`]:../parinfer.js#L660
+[`popParenTrail`]:../parinfer.js#L694
+[`getParentOpenerIndex`]:../parinfer.js#L708
+[`correctParenTrail`]:../parinfer.js#L735
+[`cleanParenTrail`]:../parinfer.js#L751
+[`appendParenTrail`]:../parinfer.js#L780
+[`invalidateParenTrail`]:../parinfer.js#L791
+[`checkUnmatchedOutsideParenTrail`]:../parinfer.js#L800
+[`setMaxIndent`]:../parinfer.js#L807
+[`finishNewParenTrail`]:../parinfer.js#L819
+[`changeIndent`]:../parinfer.js#L839
+[`correctIndent`]:../parinfer.js#L848
+[`onIndent`]:../parinfer.js#L868
+[`onLeadingCloseParen`]:../parinfer.js#L889
+[`shiftCommentLine`]:../parinfer.js#L908
+[`checkIndent`]:../parinfer.js#L934
+[`initIndent`]:../parinfer.js#L950
+[`setTabStops`]:../parinfer.js#L962
+[`processChar`]:../parinfer.js#L983
+[`processLine`]:../parinfer.js#L1005
+[`finalizeResult`]:../parinfer.js#L1027
+[`processError`]:../parinfer.js#L1043
+[`processText`]:../parinfer.js#L1056
+[`publicResult`]:../parinfer.js#L1084
+[`indentMode`]:../parinfer.js#L1111
+[`parenMode`]:../parinfer.js#L1116
+[`smartMode`]:../parinfer.js#L1121
 [`result.mode`]:../parinfer.js#L178
 [`result.smartMode`]:../parinfer.js#L179
 [`result.origText`]:../parinfer.js#L181

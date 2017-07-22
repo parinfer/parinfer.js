@@ -1,3 +1,7 @@
+## 3.6.0
+
+- add: fix indentation in Smart Mode after cursor leaves the end of a Paren Trail (see [#147](https://github.com/shaunlebron/parinfer/issues/147))
+
 ## 3.5.0
 
 - add: fix indentation in Smart Mode after cursor leaves a holding area, preventing

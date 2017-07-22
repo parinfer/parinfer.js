@@ -1,5 +1,5 @@
 //
-// Parinfer 3.5.0
+// Parinfer 3.6.0
 //
 // Copyright 2015-2017 © Shaun Lebron
 // MIT License
@@ -604,25 +604,26 @@ function onChar(result) {
 // Cursor functions
 //------------------------------------------------------------------------------
 
-function isCursorOnLeft(result) {
+function isCursorLeftOf(cursorX, cursorLine, x, lineNo) {
   return (
-    result.lineNo === result.cursorLine &&
-    result.cursorX !== UINT_NULL &&
-    result.cursorX <= result.x
-  );
-}
-
-function isCursorOnRight(result, x) {
-  return (
-    result.lineNo === result.cursorLine &&
-    result.cursorX !== UINT_NULL &&
+    cursorLine === lineNo &&
     x !== UINT_NULL &&
-    result.cursorX > x
+    cursorX !== UINT_NULL &&
+    cursorX <= x // inclusive since (cursorX = x) implies (x-1 < cursor < x)
   );
 }
 
-function isCursorInComment(result) {
-  return isCursorOnRight(result, result.commentX);
+function isCursorRightOf(cursorX, cursorLine, x, lineNo) {
+  return (
+    cursorLine === lineNo &&
+    x !== UINT_NULL &&
+    cursorX !== UINT_NULL &&
+    cursorX > x
+  );
+}
+
+function isCursorInComment(result, cursorX, cursorLine) {
+  return isCursorRightOf(cursorX, cursorLine, result.commentX, result.lineNo);
 }
 
 function handleChangeDelta(result) {
@@ -648,17 +649,29 @@ function resetParenTrail(result, lineNo, x) {
   result.parenTrail.openers = [];
 }
 
+function isCursorClampingParenTrail(result, cursorX, cursorLine) {
+  return (
+    isCursorRightOf(cursorX, cursorLine, result.parenTrail.startX, result.lineNo) &&
+    !isCursorInComment(result, cursorX, cursorLine)
+  );
+}
+
 // INDENT MODE: allow the cursor to clamp the paren trail
 function clampParenTrailToCursor(result) {
   var startX = result.parenTrail.startX;
   var endX = result.parenTrail.endX;
 
-  var isCursorClamping = (
-    isCursorOnRight(result, startX) &&
-    !isCursorInComment(result)
-  );
+  var clamping = isCursorClampingParenTrail(result, result.cursorX, result.cursorLine);
 
-  if (isCursorClamping) {
+  var shouldCheckPrev = (result.smartMode && !result.changes);
+  if (shouldCheckPrev) {
+    var wasClamping = isCursorClampingParenTrail(result, result.prevCursorX, result.prevCursorLine);
+    if (wasClamping && !clamping || result.cursorX < result.prevCursorX) {
+      throw {smartModeFixIndent: true};
+    }
+  }
+
+  if (clamping) {
     var newStartX = Math.max(startX, result.cursorX);
     var newEndX = Math.max(endX, result.cursorX);
 
@@ -882,7 +895,7 @@ function onLeadingCloseParen(result) {
     if (!isValidCloseParen(result.parenStack, result.ch)) {
       throw error(result, ERROR_UNMATCHED_CLOSE_PAREN);
     }
-    if (isCursorOnLeft(result)) {
+    if (isCursorLeftOf(result.cursorX, result.cursorLine, result.x, result.lineNo)) {
       result.skipChar = false;
       onIndent(result);
     }
@@ -1111,7 +1124,7 @@ function smartMode(text, options) {
 }
 
 var API = {
-  version: "3.5.0",
+  version: "3.6.0",
   indentMode: indentMode,
   parenMode: parenMode,
   smartMode: smartMode
