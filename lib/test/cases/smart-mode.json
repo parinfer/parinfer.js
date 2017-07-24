@@ -308,5 +308,161 @@
       "in": "(foo [1 2 3|]\n             ^ prevCursor\n      4 5 6\n      7 8 9)",
       "out": "(foo [1 2 3|]\n     4 5 6\n     7 8 9)"
     }
+  },
+  {
+    "text": "  (foo\n  (bar\n    baz))",
+    "options": {
+      "changes": [
+        {
+          "lineNo": 0,
+          "x": 0,
+          "oldText": "",
+          "newText": "  "
+        }
+      ]
+    },
+    "result": {
+      "text": "  (foo\n    (bar\n      baz))",
+      "success": true
+    },
+    "source": {
+      "lineNo": 239,
+      "in": "  (foo\n++\n  (bar\n    baz))",
+      "out": "  (foo\n    (bar\n      baz))"
+    }
+  },
+  {
+    "text": "  (foo\n    (bar\n    baz))",
+    "options": {
+      "changes": [
+        {
+          "lineNo": 0,
+          "x": 0,
+          "oldText": "",
+          "newText": "  "
+        },
+        {
+          "lineNo": 1,
+          "x": 0,
+          "oldText": "",
+          "newText": "  "
+        }
+      ]
+    },
+    "result": {
+      "text": "  (foo\n    (bar\n      baz))",
+      "success": true
+    },
+    "source": {
+      "lineNo": 254,
+      "in": "  (foo\n++\n    (bar\n++\n    baz))",
+      "out": "  (foo\n    (bar\n      baz))"
+    }
+  },
+  {
+    "text": "  (foo\n      (bar\n        baz))",
+    "options": {
+      "changes": [
+        {
+          "lineNo": 1,
+          "x": 0,
+          "oldText": "",
+          "newText": "  "
+        },
+        {
+          "lineNo": 2,
+          "x": 0,
+          "oldText": "",
+          "newText": "  "
+        }
+      ]
+    },
+    "result": {
+      "text": "  (foo\n      (bar\n        baz))",
+      "success": true
+    },
+    "source": {
+      "lineNo": 270,
+      "in": "  (foo\n      (bar\n++\n        baz))\n++",
+      "out": "  (foo\n      (bar\n        baz))"
+    }
+  },
+  {
+    "text": "  (foo\n  bar\n  baz)",
+    "options": {
+      "changes": [
+        {
+          "lineNo": 0,
+          "x": 0,
+          "oldText": "",
+          "newText": "  "
+        }
+      ]
+    },
+    "result": {
+      "text": "  (foo\n    bar\n    baz)",
+      "success": true
+    },
+    "source": {
+      "lineNo": 287,
+      "in": "  (foo\n++\n  bar\n  baz)",
+      "out": "  (foo\n    bar\n    baz)"
+    }
+  },
+  {
+    "text": "  (foo\n    bar\n  baz)",
+    "options": {
+      "changes": [
+        {
+          "lineNo": 0,
+          "x": 0,
+          "oldText": "",
+          "newText": "  "
+        },
+        {
+          "lineNo": 1,
+          "x": 0,
+          "oldText": "",
+          "newText": "  "
+        }
+      ]
+    },
+    "result": {
+      "text": "  (foo\n    bar\n    baz)",
+      "success": true
+    },
+    "source": {
+      "lineNo": 302,
+      "in": "  (foo\n++\n    bar\n++\n  baz)",
+      "out": "  (foo\n    bar\n    baz)"
+    }
+  },
+  {
+    "text": "(foo\n    bar\n    baz)",
+    "options": {
+      "changes": [
+        {
+          "lineNo": 1,
+          "x": 0,
+          "oldText": "",
+          "newText": "  "
+        },
+        {
+          "lineNo": 2,
+          "x": 0,
+          "oldText": "",
+          "newText": "  "
+        }
+      ]
+    },
+    "result": {
+      "text": "(foo\n    bar\n    baz)",
+      "success": true
+    },
+    "source": {
+      "lineNo": 318,
+      "in": "(foo\n    bar\n++\n    baz)\n++",
+      "out": "(foo\n    bar\n    baz)"
+    }
   }
 ]

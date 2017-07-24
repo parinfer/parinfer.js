@@ -232,3 +232,100 @@ be corrected to respect the structure given.
      4 5 6
      7 8 9)
 ```
+
+## Indenting Selected Lines
+
+Indent only the first line:
+
+```in
+  (foo
+++
+  (bar
+    baz))
+```
+
+```out
+  (foo
+    (bar
+      baz))
+```
+
+Indent first two lines:
+
+```in
+  (foo
+++
+    (bar
+++
+    baz))
+```
+
+```out
+  (foo
+    (bar
+      baz))
+```
+
+Indent last two lines:
+
+```in
+  (foo
+      (bar
+++
+        baz))
+++
+```
+
+```out
+  (foo
+      (bar
+        baz))
+```
+
+
+Indent only the first line:
+
+```in
+  (foo
+++
+  bar
+  baz)
+```
+
+```out
+  (foo
+    bar
+    baz)
+```
+
+Indent first two lines:
+
+```in
+  (foo
+++
+    bar
+++
+  baz)
+```
+
+```out
+  (foo
+    bar
+    baz)
+```
+
+Indent last two lines:
+
+```in
+(foo
+    bar
+++
+    baz)
+++
+```
+
+```out
+(foo
+    bar
+    baz)
+```

@@ -1,3 +1,7 @@
+## 3.8.0
+
+- fix: don't accumulate extra indentation when `changes` indents multiple lines (see [#154](https://github.com/shaunlebron/parinfer/issues/154))
+
 ## 3.7.0
 
 - add: return non-empty `parenTrails` so editors can dim/mark them (see [Paren Trails](https://github.com/shaunlebron/parinfer/blob/master/lib/doc/code.md#paren-trail))

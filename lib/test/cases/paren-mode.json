@@ -564,5 +564,161 @@
       "in": "(defn foo\n  \"hello, this is a docstring\"\n  [a b]\n  (let [sum (+ a b)\n        prod (* a b)]\n     {:sum sum\n      :prod prod}))",
       "out": "(defn foo\n  \"hello, this is a docstring\"\n  [a b]\n      ^ parenTrail\n  (let [sum (+ a b)\n                  ^ parenTrail\n        prod (* a b)]\n                   ^^ parenTrail\n     {:sum sum\n      :prod prod}))\n                ^^^ parenTrail"
     }
+  },
+  {
+    "text": "  (foo\n  (bar\n    baz))",
+    "options": {
+      "changes": [
+        {
+          "lineNo": 0,
+          "x": 0,
+          "oldText": "",
+          "newText": "  "
+        }
+      ]
+    },
+    "result": {
+      "text": "  (foo\n    (bar\n      baz))",
+      "success": true
+    },
+    "source": {
+      "lineNo": 506,
+      "in": "  (foo\n++\n  (bar\n    baz))",
+      "out": "  (foo\n    (bar\n      baz))"
+    }
+  },
+  {
+    "text": "  (foo\n    (bar\n    baz))",
+    "options": {
+      "changes": [
+        {
+          "lineNo": 0,
+          "x": 0,
+          "oldText": "",
+          "newText": "  "
+        },
+        {
+          "lineNo": 1,
+          "x": 0,
+          "oldText": "",
+          "newText": "  "
+        }
+      ]
+    },
+    "result": {
+      "text": "  (foo\n    (bar\n      baz))",
+      "success": true
+    },
+    "source": {
+      "lineNo": 521,
+      "in": "  (foo\n++\n    (bar\n++\n    baz))",
+      "out": "  (foo\n    (bar\n      baz))"
+    }
+  },
+  {
+    "text": "  (foo\n      (bar\n        baz))",
+    "options": {
+      "changes": [
+        {
+          "lineNo": 1,
+          "x": 0,
+          "oldText": "",
+          "newText": "  "
+        },
+        {
+          "lineNo": 2,
+          "x": 0,
+          "oldText": "",
+          "newText": "  "
+        }
+      ]
+    },
+    "result": {
+      "text": "  (foo\n      (bar\n        baz))",
+      "success": true
+    },
+    "source": {
+      "lineNo": 537,
+      "in": "  (foo\n      (bar\n++\n        baz))\n++",
+      "out": "  (foo\n      (bar\n        baz))"
+    }
+  },
+  {
+    "text": "  (foo\n  bar\n  baz)",
+    "options": {
+      "changes": [
+        {
+          "lineNo": 0,
+          "x": 0,
+          "oldText": "",
+          "newText": "  "
+        }
+      ]
+    },
+    "result": {
+      "text": "  (foo\n    bar\n    baz)",
+      "success": true
+    },
+    "source": {
+      "lineNo": 554,
+      "in": "  (foo\n++\n  bar\n  baz)",
+      "out": "  (foo\n    bar\n    baz)"
+    }
+  },
+  {
+    "text": "  (foo\n    bar\n  baz)",
+    "options": {
+      "changes": [
+        {
+          "lineNo": 0,
+          "x": 0,
+          "oldText": "",
+          "newText": "  "
+        },
+        {
+          "lineNo": 1,
+          "x": 0,
+          "oldText": "",
+          "newText": "  "
+        }
+      ]
+    },
+    "result": {
+      "text": "  (foo\n    bar\n    baz)",
+      "success": true
+    },
+    "source": {
+      "lineNo": 569,
+      "in": "  (foo\n++\n    bar\n++\n  baz)",
+      "out": "  (foo\n    bar\n    baz)"
+    }
+  },
+  {
+    "text": "(foo\n    bar\n    baz)",
+    "options": {
+      "changes": [
+        {
+          "lineNo": 1,
+          "x": 0,
+          "oldText": "",
+          "newText": "  "
+        },
+        {
+          "lineNo": 2,
+          "x": 0,
+          "oldText": "",
+          "newText": "  "
+        }
+      ]
+    },
+    "result": {
+      "text": "(foo\n    bar\n    baz)",
+      "success": true
+    },
+    "source": {
+      "lineNo": 585,
+      "in": "(foo\n    bar\n++\n    baz)\n++",
+      "out": "(foo\n    bar\n    baz)"
+    }
   }
 ]

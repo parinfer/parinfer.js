@@ -499,3 +499,100 @@ We return non-empty Paren Trails so plugins can dim them with markers:
       :prod prod}))
                 ^^^ parenTrail
 ```
+
+## Indenting Selected Lines
+
+Indent only the first line:
+
+```in
+  (foo
+++
+  (bar
+    baz))
+```
+
+```out
+  (foo
+    (bar
+      baz))
+```
+
+Indent first two lines:
+
+```in
+  (foo
+++
+    (bar
+++
+    baz))
+```
+
+```out
+  (foo
+    (bar
+      baz))
+```
+
+Indent last two lines:
+
+```in
+  (foo
+      (bar
+++
+        baz))
+++
+```
+
+```out
+  (foo
+      (bar
+        baz))
+```
+
+
+Indent only the first line:
+
+```in
+  (foo
+++
+  bar
+  baz)
+```
+
+```out
+  (foo
+    bar
+    baz)
+```
+
+Indent first two lines:
+
+```in
+  (foo
+++
+    bar
+++
+  baz)
+```
+
+```out
+  (foo
+    bar
+    baz)
+```
+
+Indent last two lines:
+
+```in
+(foo
+    bar
+++
+    baz)
+++
+```
+
+```out
+(foo
+    bar
+    baz)
+```
