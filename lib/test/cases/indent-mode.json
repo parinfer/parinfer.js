@@ -1211,5 +1211,40 @@
       "in": "(let [a {:foo 1}\n      bar [1 2 3]]\n  |\n  bar)",
       "out": "(let [a {:foo 1}\n      bar [1 2 3]]\n^    ^    ^ tabStops\n  |\n  bar)"
     }
+  },
+  {
+    "text": "(defn foo\n  \"hello, this is a docstring\"\n  [a b]\n  (let [sum (+ a b)\n        prod (* a b)]\n     {:sum sum\n      :prod prod}))",
+    "options": {},
+    "result": {
+      "parenTrails": [
+        {
+          "lineNo": 2,
+          "startX": 6,
+          "endX": 7
+        },
+        {
+          "lineNo": 3,
+          "startX": 18,
+          "endX": 19
+        },
+        {
+          "lineNo": 4,
+          "startX": 19,
+          "endX": 21
+        },
+        {
+          "lineNo": 6,
+          "startX": 16,
+          "endX": 19
+        }
+      ],
+      "text": "(defn foo\n  \"hello, this is a docstring\"\n  [a b]\n  (let [sum (+ a b)\n        prod (* a b)]\n     {:sum sum\n      :prod prod}))",
+      "success": true
+    },
+    "source": {
+      "lineNo": 935,
+      "in": "(defn foo\n  \"hello, this is a docstring\"\n  [a b]\n  (let [sum (+ a b)\n        prod (* a b)]\n     {:sum sum\n      :prod prod}))",
+      "out": "(defn foo\n  \"hello, this is a docstring\"\n  [a b]\n      ^ parenTrail\n  (let [sum (+ a b)\n                  ^ parenTrail\n        prod (* a b)]\n                   ^^ parenTrail\n     {:sum sum\n      :prod prod}))\n                ^^^ parenTrail"
+    }
   }
 ]

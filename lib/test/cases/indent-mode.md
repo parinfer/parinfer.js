@@ -928,3 +928,31 @@ use them to create tab stops for smart indentation snapping.
   |
   bar)
 ```
+
+## Paren Trails
+
+We return non-empty Paren Trails so plugins can dim them with markers:
+
+```in
+(defn foo
+  "hello, this is a docstring"
+  [a b]
+  (let [sum (+ a b)
+        prod (* a b)]
+     {:sum sum
+      :prod prod}))
+```
+
+```out
+(defn foo
+  "hello, this is a docstring"
+  [a b]
+      ^ parenTrail
+  (let [sum (+ a b)
+                  ^ parenTrail
+        prod (* a b)]
+                   ^^ parenTrail
+     {:sum sum
+      :prod prod}))
+                ^^^ parenTrail
+```

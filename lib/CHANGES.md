@@ -1,3 +1,7 @@
+## 3.7.0
+
+- add: return non-empty `parenTrails` so editors can dim/mark them (see [Paren Trails](https://github.com/shaunlebron/parinfer/blob/master/lib/doc/code.md#paren-trail))
+
 ## 3.6.0
 
 - add: fix indentation in Smart Mode after cursor leaves the end of a Paren Trail (see [#147](https://github.com/shaunlebron/parinfer/issues/147))

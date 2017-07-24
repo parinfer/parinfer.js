@@ -142,6 +142,11 @@ Returns an object with the following properties:
   - `x` is a zero-based x-position of the tab stop
   - `lineNo` is a zero-based line number of the open-paren responsible for the tab stop
   - `ch` is the character of the open-paren responsible for the tab stop (e.g. `(`,`[`,`{`)
+- `parenTrails` is an array of object representing the [Paren Trails] at the end
+  of each line that Parinfer may move
+  - `lineNo` is a zero-based line number
+  - `startX` is a zero-based x-position of the first close-paren
+  - `endX` is a zero-based x-position after the last close-paren
 
 [Tab stops]:https://en.wikipedia.org/wiki/Tab_stop
 
@@ -244,3 +249,4 @@ using the Test API.
 [`test/cases/`]:https://github.com/shaunlebron/parinfer/tree/master/lib/test/cases
 [annotation syntax]:https://github.com/shaunlebron/parinfer/blob/master/lib/test/cases/README.md#annotations
 [`sandbox.js`]:https://github.com/shaunlebron/parinfer/blob/master/lib/sandbox.js
+[Paren Trails]:https://github.com/shaunlebron/parinfer/blob/master/lib/doc/code.md#paren-trail
