@@ -3,7 +3,6 @@
     [parinfer-site.state :refer [state]]
     [om.core :as om]
     [sablono.core :refer-macros [html]]
-    [parinfer-site.editor-support :refer [fix-text!]]
     [parinfer-site.parinfer :refer [major-version]]
     [goog.dom :as gdom]))
 
@@ -12,7 +11,7 @@
   [cm]
 
   ;; update the text by running parinfer on it
-  (fix-text! cm)
+  ; (fix-text! cm)
 
   ;; make sure cursor is still visible
   (let [element (.getWrapperElement cm)
@@ -99,7 +98,11 @@
                          (let [new-mode (keyword (aget e "target" "value"))]
                            (om/update! editor :help-caption (mode->caption new-mode))
                            (om/update! editor :mode new-mode)
-                           (refresh! (:cm editor))))}
+                           (js/parinferCodeMirror.setMode
+                             (:cm editor)
+                             ({:indent-mode "indent"
+                               :paren-mode "paren"
+                               :smart-mode "smart"} new-mode))))}
            [:option {:value "smart-mode"} "Smart Mode"]
            [:option {:value "indent-mode"} "Indent Mode"]
            [:option {:value "paren-mode"} "Paren Mode"]]
@@ -113,8 +116,11 @@
                {:type "checkbox"
                 :checked (get-in editor path)
                 :on-change (fn [e]
-                             (om/update! editor path (aget e "target" "checked"))
-                             (refresh! (:cm editor)))}]
+                             (let [checked (aget e "target" "checked")]
+                               (om/update! editor path checked)
+                               (js/parinferCodeMirror.setOptions
+                                 (:cm editor)
+                                 #js{:forceBalance checked})))}]
               "forceBalance"]))
 
          (let [{:keys [name message] :as error} (get-in editor [:result :error])]

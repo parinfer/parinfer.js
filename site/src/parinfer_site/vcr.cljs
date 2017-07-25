@@ -66,11 +66,11 @@
 
 (defn start-recording!
   [key-]
-  (let [{:keys [text cm] :as editor} (get @state key-)]
+  (let [{:keys [cm] :as editor} (get @state key-)]
     (swap! vcr update-in [key-]
            assoc
            :changes []
-           :init-value text
+           :init-value (.getValue cm)
            :recording? true
            :last-time nil)))
 
@@ -94,7 +94,7 @@
       (aset cursor "style" "visibility" "visible")
       (go-loop []
         (reset! (get-prev-state cm) nil)
-        (swap! state assoc-in [key- :text] (:init-value recording))
+        (.setValue cm (:init-value recording))
         (loop [changes (:changes recording)]
           (when (seq changes)
             (let [{:keys [change selections dt] :as data} (first changes)

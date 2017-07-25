@@ -1,5 +1,5 @@
 //
-// Parinfer 3.6.0
+// Parinfer 3.8.0
 //
 // Copyright 2015-2017 © Shaun Lebron
 // MIT License
@@ -206,6 +206,8 @@ function getInitialResult(text, options, mode) {
       endX: UINT_NULL,         // [integer] - x position after the last paren in this range
       openers: []              // [array of stack elements] - corresponding open-paren for each close-paren in this range
     },
+
+    parenTrails: [],           // [array of {lineNo, startX, endX}] - all non-empty parenTrails to be returned
 
     cursorX: UINT_NULL,        // [integer] - x position of the cursor
     cursorLine: UINT_NULL,     // [integer] - line number of the cursor
@@ -744,6 +746,8 @@ function correctParenTrail(result, indentX) {
 
   if (result.parenTrail.lineNo !== UINT_NULL) {
     replaceWithinLine(result, result.parenTrail.lineNo, result.parenTrail.startX, result.parenTrail.endX, parens);
+    result.parenTrail.endX = result.parenTrail.startX + parens.length;
+    rememberParenTrail(result);
   }
 }
 
@@ -785,6 +789,7 @@ function appendParenTrail(result) {
   insertWithinLine(result, result.parenTrail.lineNo, result.parenTrail.endX, closeCh);
 
   result.parenTrail.endX++;
+  updateRememberedParenTrail(result);
   result.parenTrail.openers.push(opener);
 }
 
@@ -816,6 +821,27 @@ function setMaxIndent(result, opener) {
   }
 }
 
+function rememberParenTrail(result) {
+  var trail = result.parenTrail;
+  if (trail.startX !== trail.endX) {
+    result.parenTrails.push({
+      lineNo: trail.lineNo,
+      startX: trail.startX,
+      endX: trail.endX
+    });
+  }
+}
+
+function updateRememberedParenTrail(result) {
+  var trail = result.parenTrails[result.parenTrails.length-1];
+  if (!trail || trail.lineNo !== result.parenTrail.lineNo) {
+    rememberParenTrail(result);
+  }
+  else {
+    trail.endX = result.parenTrail.endX;
+  }
+}
+
 function finishNewParenTrail(result) {
   if (result.isInStr) {
     invalidateParenTrail(result);
@@ -829,6 +855,7 @@ function finishNewParenTrail(result) {
     if (result.lineNo !== result.cursorLine) {
       cleanParenTrail(result);
     }
+    rememberParenTrail(result);
   }
 }
 
@@ -836,13 +863,19 @@ function finishNewParenTrail(result) {
 // Indentation functions
 //------------------------------------------------------------------------------
 
-function changeIndent(result, delta) {
+function addIndent(result, delta) {
   var origIndent = result.x;
   var newIndent = origIndent + delta;
   var indentStr = repeatString(BLANK_SPACE, newIndent);
   replaceWithinLine(result, result.lineNo, 0, origIndent, indentStr);
   result.x = newIndent;
   result.indentDelta += delta;
+}
+
+function shouldAddOpenerIndent(result, opener) {
+  // Don't add opener.indentDelta if the user already added it.
+  // (happens when multiple lines are indented together)
+  return (opener.indentDelta !== result.indentDelta);
 }
 
 function correctIndent(result) {
@@ -855,13 +888,15 @@ function correctIndent(result) {
   if (opener) {
     minIndent = opener.x + 1;
     maxIndent = opener.maxChildIndent;
-    newIndent += opener.indentDelta;
+    if (shouldAddOpenerIndent(result, opener)) {
+      newIndent += opener.indentDelta;
+    }
   }
 
   newIndent = clamp(newIndent, minIndent, maxIndent);
 
   if (newIndent !== origIndent) {
-    changeIndent(result, newIndent - origIndent);
+    addIndent(result, newIndent - origIndent);
   }
 }
 
@@ -876,9 +911,8 @@ function onIndent(result) {
     correctParenTrail(result, result.x);
 
     var opener = peek(result.parenStack, 0);
-    var delta = (opener ? opener.indentDelta : 0);
-    if (delta !== 0) {
-      changeIndent(result, delta);
+    if (opener && shouldAddOpenerIndent(result, opener)) {
+      addIndent(result, opener.indentDelta);
     }
   }
   else if (result.mode === PAREN_MODE) {
@@ -919,8 +953,8 @@ function shiftCommentLine(result) {
   // shift the comment line based on the parent open paren
   var i = getParentOpenerIndex(result, result.x);
   var opener = peek(result.parenStack, i);
-  if (opener) {
-    changeIndent(result, opener.indentDelta);
+  if (opener && shouldAddOpenerIndent(result, opener)) {
+    addIndent(result, opener.indentDelta);
   }
 
   // repop the openers matching the previous paren trail
@@ -1090,7 +1124,8 @@ function publicResult(result) {
       cursorX: result.cursorX,
       cursorLine: result.cursorLine,
       success: true,
-      tabStops: result.tabStops
+      tabStops: result.tabStops,
+      parenTrails: result.parenTrails
     };
   }
   else {
@@ -1098,6 +1133,7 @@ function publicResult(result) {
       text: result.partialResult ? result.lines.join(lineEnding) : result.origText,
       cursorX: result.partialResult ? result.cursorX : result.origCursorX,
       cursorLine: result.partialResult ? result.cursorLine : result.origCursorLine,
+      parenTrails: result.partialResult ? result.parenTrails : null,
       success: false,
       error: result.error
     };
@@ -1124,7 +1160,7 @@ function smartMode(text, options) {
 }
 
 var API = {
-  version: "3.6.0",
+  version: "3.8.0",
   indentMode: indentMode,
   parenMode: parenMode,
   smartMode: smartMode

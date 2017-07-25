@@ -11,8 +11,7 @@
                                stop-playing!
                                render-controls!]]
     [parinfer-site.editor :refer [create-editor!
-                                  create-regular-editor!
-                                  start-editor-sync!]]
+                                  create-regular-editor!]]
     [parinfer-site.editor-support :refer [get-prev-state]]
     [parinfer-site.state :refer [state]]
     [parinfer-site.toc :as toc]
@@ -125,7 +124,6 @@
     (create-editor! "code-not-displaced-on-enter" :not-displaced-on-enter opts)
     (create-editor! "code-displaced-after-cursor-leaves" :displaced-after-cursor-leaves opts))
 
-  (start-editor-sync!)
 
   (create-regular-editor! "code-c-expr" {:mode "javascript"})
   (create-regular-editor! "code-lisp-expr")
@@ -284,11 +282,11 @@
      "      :prod prod}))"]))
 
 (defn render-demo! []
-  (create-editor! "code-demo" :demo)
-  (editor-ui/render! :demo)
-  (start-editor-sync!)
-  (swap! state assoc-in [:demo :text] demo-example)
-  (swap! state assoc-in [:demo :mode] :smart-mode))
+  (let [cm (create-editor! "code-demo" :demo)]
+    (editor-ui/render! :demo)
+    (.setValue cm demo-example)
+    (swap! state assoc-in [:demo :mode] :smart-mode)
+    (js/parinferCodeMirror.setMode cm "smart")))
 
 (defn state-viewer
   [{:keys [postline-states cursor-line]} owner]
@@ -316,7 +314,6 @@
   (when-let [cm (create-editor! "code-editor" :editor {:viewportMargin Infinity
                                                        :lineNumbers true
                                                        :styleActiveLine true})]
-    (start-editor-sync!)
     (om/root
       state-viewer
       (get-prev-state cm)

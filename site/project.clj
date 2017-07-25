@@ -34,7 +34,8 @@
                                    "resources/public/js/lib/scrollMonitor.externs.js"
                                    "resources/public/js/lib/gears.d3.externs.js"
                                    "resources/public/js/lib/d3.ext.js"
-                                   "resources/public/js/lib/jsdiff.externs.js"]
+                                   "resources/public/js/lib/jsdiff.externs.js"
+                                   "resources/public/js/lib/parinfer-codemirror.externs.js"]
                          :main parinfer-site.core
                          :optimizations :advanced
                          :pretty-print false}}

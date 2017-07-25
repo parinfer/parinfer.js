@@ -4,8 +4,7 @@
     [clojure.string :refer [join]]
     [parinfer-site.state :refer [state
                                  empty-editor-state]]
-    [parinfer-site.editor-support :refer [fix-text!
-                                          cm-key
+    [parinfer-site.editor-support :refer [cm-key
                                           IEditor
                                           get-prev-state
                                           frame-updated?
@@ -46,26 +45,14 @@
   [cm change]
   (when (not= "setValue" (.-origin change))
     (record-change! cm {:change (parse-change change)})
-    (fix-text! cm :changes [change])
     (set-frame-updated! cm true)))
 
 (defn on-cursor-activity
   "Called after the cursor moves in the editor."
   [cm]
   (when-not (frame-updated? cm)
-    (record-change! cm {:selections (parse-selections (.listSelections cm))})
-    (fix-text! cm))
+    (record-change! cm {:selections (parse-selections (.listSelections cm))}))
   (set-frame-updated! cm false))
-
-(defn on-tab
-  "Indent selection or insert two spaces when tab is pressed.
-  from: https://github.com/codemirror/CodeMirror/issues/988#issuecomment-14921785"
-  [cm]
-  (if (.somethingSelected cm)
-    (.indentSelection cm)
-    (let [n (.getOption cm "indentUnit")
-          spaces (apply str (repeat n " "))]
-      (.replaceSelection cm spaces))))
 
 ;;----------------------------------------------------------------------
 ;; Setup
@@ -74,8 +61,7 @@
 (def editor-opts
   {:mode "clojure-parinfer"
    :theme "github"
-   :matchBrackets true
-   :extraKeys {:Tab on-tab}})
+   :matchBrackets true})
 
 (aset js/CodeMirror "keyMap" "default" "Shift-Tab" "indentLess")
 
@@ -99,8 +85,8 @@
            cm (js/CodeMirror.fromTextArea element (clj->js (merge editor-opts opts)))
            wrapper (.getWrapperElement cm)
            watcher (js/scrollMonitor.create wrapper)
-           initial-state (assoc empty-editor-state
-                                :mode (or (:parinfer-mode opts) :indent-mode))
+           mode (or (:parinfer-mode opts) :indent-mode)
+           initial-state (assoc empty-editor-state :mode mode)
            prev-editor-state (atom nil)]
 
 
@@ -156,25 +142,11 @@
        (.on cm "beforeChange" before-change)
        (.on cm "cursorActivity" on-cursor-activity)
 
+       (.init js/parinferCodeMirror
+         cm
+         ({:indent-mode "indent"
+           :paren-mode "paren"
+           :smart-mode "smart"} mode)
+         #js {:forceBalance true})
+
        cm))))
-
-;;----------------------------------------------------------------------
-;; Setup
-;;----------------------------------------------------------------------
-
-(defn on-state-change
-  "Called everytime the state changes to sync the code editor."
-  [_ _ old-state new-state]
-  (doseq [[k {:keys [cm text]}] new-state]
-    (let [changed? (not= text (.getValue cm))]
-      (when changed?
-        (.setValue cm text)))))
-
-(defn force-editor-sync! []
-  (doseq [[k {:keys [cm text]}] @state]
-    (.setValue cm text)))
-
-(defn start-editor-sync! []
-  ;; sync state changes to the editor
-  (add-watch state :editor-updater on-state-change)
-  (force-editor-sync!))
