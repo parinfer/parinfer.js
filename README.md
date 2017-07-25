@@ -18,9 +18,6 @@ changes and vice versa.  The hope is to make basic Lisp-editing easier for
 newcomers and experts alike, while still allowing existing plugins like Paredit
 to satisfy the need for more advanced operations.
 
-[Paredit]:http://danmidwood.com/content/2014/11/21/animated-paredit.html
-[Parinfer Home Page]:http://shaunlebron.github.io/parinfer/
-
 This project is split into two parts:
 
 - __[Parinfer Lib](https://github.com/shaunlebron/parinfer/tree/master/lib)__ - the _editor-agnostic_ library
@@ -40,8 +37,9 @@ integrating it into code editors at various stages of development.
 - [vim-parinfer] for [Vim]
 - [vscode-parinfer] for [Visual Studio Code]
 - [sublime-text-parinfer] for [Sublime Text]
-- parinfer-mode [1][parinfer-mode-1] or [2][parinfer-mode-2] for [Emacs]
-- [codemirror-parinfer] for [CodeMirror]
+- [parinfer-mode] for [Emacs]
+- [Parinfer layer] for [Spacemacs] - _in progress_
+- [parinfer-codemirror] for [CodeMirror] - _used on Parinfer's homepage_
 - [lt_parinfer] for [Light Table]
 - native support in [Nightcode]
 
@@ -64,20 +62,24 @@ Parinfer will soon be available for some REPL environments as well:
 [Visual Studio Code]:https://code.visualstudio.com/
 [sublime-text-parinfer]:https://github.com/oakmac/sublime-text-parinfer
 [Sublime Text]:http://www.sublimetext.com/
-[parinfer-mode-1]:https://github.com/edpaget/parinfer-mode
-[parinfer-mode-2]:https://github.com/DogLooksGood/parinfer-mode
+[parinfer-mode]:https://github.com/DogLooksGood/parinfer-mode
 [Emacs]:https://www.gnu.org/software/emacs/
 [vim-parinfer]:https://github.com/bhurlow/vim-parinfer
 [Vim]:http://www.vim.org/
-[codemirror-parinfer]:https://github.com/hiram-madelaine/codemirror-parinfer
+[parinfer-codemirror]:https://github.com/shaunlebron/parinfer-codemirror
 [CodeMirror]:https://codemirror.net/
 [lt_parinfer]:https://github.com/mauricioszabo/lt_parinfer
 [Light Table]:http://lighttable.com/
 [Nightcode]:https://github.com/oakes/Nightcode
+[Parinfer layer]:https://github.com/syl20bnr/spacemacs/issues/5574
+[Spacemacs]:http://spacemacs.org/
 
 [Replete]:https://github.com/mfikes/replete
 [Dirac DevTools]:https://github.com/binaryage/dirac
 [Reepl]:http://jaredforsyth.com/reepl/
+
+[Paredit]:http://danmidwood.com/content/2014/11/21/animated-paredit.html
+[Parinfer Home Page]:http://shaunlebron.github.io/parinfer/
 
 ---
 
