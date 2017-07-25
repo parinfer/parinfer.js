@@ -286,7 +286,8 @@
     (editor-ui/render! :demo)
     (.setValue cm demo-example)
     (swap! state assoc-in [:demo :mode] :smart-mode)
-    (js/parinferCodeMirror.setMode cm "smart")))
+    (js/parinferCodeMirror.setMode cm "smart")
+    (js/parinferCodeMirror.setOptions cm #js{:forceBalance false})))
 
 (defn state-viewer
   [{:keys [postline-states cursor-line]} owner]
