@@ -903,13 +903,15 @@ might want to align the next line there:
 
 ```in
 (foo bar
-  |baz)
+  (baz boo))
+|
 ```
 
 ```out
 (foo bar
-^    > tabStops
-  |baz)
+  (baz boo))
+^ ^    > tabStops
+|
 ```
 
 ```in

@@ -748,29 +748,34 @@
     }
   },
   {
-    "text": "(foo bar\n  baz)",
+    "text": "(foo bar\n  (baz boo))\n",
     "options": {
-      "cursorX": 2,
-      "cursorLine": 1
+      "cursorX": 0,
+      "cursorLine": 2
     },
     "result": {
       "tabStops": [
         {
           "x": 0,
           "ch": "(",
-          "lineNo": 0,
-          "argX": 5
+          "lineNo": 0
+        },
+        {
+          "x": 2,
+          "ch": "(",
+          "lineNo": 1,
+          "argX": 7
         }
       ],
-      "cursorX": 2,
-      "cursorLine": 1,
-      "text": "(foo bar\n  baz)",
+      "cursorX": 0,
+      "cursorLine": 2,
+      "text": "(foo bar\n  (baz boo))\n",
       "success": true
     },
     "source": {
       "lineNo": 623,
-      "in": "(foo bar\n  |baz)",
-      "out": "(foo bar\n^    > tabStops\n  |baz)"
+      "in": "(foo bar\n  (baz boo))\n|",
+      "out": "(foo bar\n  (baz boo))\n^ ^    > tabStops\n|"
     }
   },
   {
@@ -804,7 +809,7 @@
       "success": true
     },
     "source": {
-      "lineNo": 634,
+      "lineNo": 636,
       "in": "(let [a {:foo 1}\n      |\n      bar [1 2 3]]\n  bar)",
       "out": "(let [a {:foo 1}\n^    ^  ^     > tabStops\n      |\n      bar [1 2 3]]\n  bar)"
     }
@@ -840,7 +845,7 @@
       "success": true
     },
     "source": {
-      "lineNo": 649,
+      "lineNo": 651,
       "in": "(let [a {:foo 1}\n      bar (func 1 2 3)]\n  |\n  bar)",
       "out": "(let [a {:foo 1}\n      bar (func 1 2 3)]\n^    ^    ^     > tabStops\n  |\n  bar)"
     }
