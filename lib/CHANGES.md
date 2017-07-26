@@ -1,3 +1,7 @@
+## 3.9.0
+
+- add: return `tabStops` in Paren Mode (see [#156](https://github.com/shaunlebron/parinfer/issues/156))
+
 ## 3.8.0
 
 - fix: don't accumulate extra indentation when `changes` indents multiple lines (see [#154](https://github.com/shaunlebron/parinfer/issues/154))
