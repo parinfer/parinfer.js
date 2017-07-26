@@ -109,6 +109,7 @@ Arguments:
   - `cursorLine` - zero-based line number of the cursor
   - `cursorX` - zero-based x-position of the cursor
   - `prevCursorLine` and `prevCursorX` is required by Smart Mode (previous cursor position)
+  - `selectionStartLine` - first line of the current selection (used to return the correct tabStops for a selection)
   - `changes` - ordered array of change objects with the following:
     - `lineNo` - starting line number of the change
     - `x` - starting x of the change
@@ -135,11 +136,12 @@ Returns an object with the following properties:
   - `x` is a zero-based column where the error occurred
   - `extra` has lineNo and x of open-paren for `unmatched-close-paren`
 - `tabStops` is an array of objects representing [Tab stops], which is
-  populated in Indent Mode if a cursor position is supplied. We identify tab
+  populated if a cursor position or selection is supplied. We identify tab
   stops at relevant open-parens, and supply the following extra information so
   you may compute extra tab stops for one-space or two-space indentation
   conventions based on the type of open-paren.
   - `x` is a zero-based x-position of the tab stop
+  - `argX` position of the first argument after `x` (e.g. position of bar in `(foo bar`)
   - `lineNo` is a zero-based line number of the open-paren responsible for the tab stop
   - `ch` is the character of the open-paren responsible for the tab stop (e.g. `(`,`[`,`{`)
 - `parenTrails` is an array of object representing the [Paren Trails] at the end
