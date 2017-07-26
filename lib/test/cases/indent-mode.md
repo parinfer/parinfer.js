@@ -894,8 +894,22 @@ use them to create tab stops for smart indentation snapping.
 ```out
 (def x [1 2 3])
 (def y 2)
-^ tabStop
+^    > tabStops
 |
+```
+
+The `>` means the position of the first arg after an open-paren, because it people
+might want to align the next line there:
+
+```in
+(foo bar
+  |baz)
+```
+
+```out
+(foo bar
+^    > tabStops
+  |baz)
 ```
 
 ```in
@@ -907,7 +921,7 @@ use them to create tab stops for smart indentation snapping.
 
 ```out
 (let [a {:foo 1}
-^    ^  ^ tabStops
+^    ^  ^     > tabStops
       |
       bar [1 2 3]]
   bar)
@@ -916,15 +930,15 @@ use them to create tab stops for smart indentation snapping.
 
 ```in
 (let [a {:foo 1}
-      bar [1 2 3]]
+      bar (func 1 2 3)]
   |
   bar)
 ```
 
 ```out
 (let [a {:foo 1}
-      bar [1 2 3]]
-^    ^    ^ tabStops
+      bar (func 1 2 3)]
+^    ^    ^     > tabStops
   |
   bar)
 ```

@@ -732,7 +732,8 @@
         {
           "x": 0,
           "ch": "(",
-          "lineNo": 1
+          "lineNo": 1,
+          "argX": 5
         }
       ],
       "cursorX": 0,
@@ -741,9 +742,35 @@
       "success": true
     },
     "source": {
-      "lineNo": 605,
+      "lineNo": 607,
       "in": "(def x [1 2 3])\n(def y 2)\n|",
-      "out": "(def x [1 2 3])\n(def y 2)\n^ tabStop\n|"
+      "out": "(def x [1 2 3])\n(def y 2)\n^    > tabStops\n|"
+    }
+  },
+  {
+    "text": "(foo bar\n  baz)",
+    "options": {
+      "cursorX": 2,
+      "cursorLine": 1
+    },
+    "result": {
+      "tabStops": [
+        {
+          "x": 0,
+          "ch": "(",
+          "lineNo": 0,
+          "argX": 5
+        }
+      ],
+      "cursorX": 2,
+      "cursorLine": 1,
+      "text": "(foo bar\n  baz)",
+      "success": true
+    },
+    "source": {
+      "lineNo": 623,
+      "in": "(foo bar\n  |baz)",
+      "out": "(foo bar\n^    > tabStops\n  |baz)"
     }
   },
   {
@@ -767,7 +794,8 @@
         {
           "x": 8,
           "ch": "{",
-          "lineNo": 0
+          "lineNo": 0,
+          "argX": 14
         }
       ],
       "cursorX": 6,
@@ -776,13 +804,13 @@
       "success": true
     },
     "source": {
-      "lineNo": 618,
+      "lineNo": 634,
       "in": "(let [a {:foo 1}\n      |\n      bar [1 2 3]]\n  bar)",
-      "out": "(let [a {:foo 1}\n^    ^  ^ tabStops\n      |\n      bar [1 2 3]]\n  bar)"
+      "out": "(let [a {:foo 1}\n^    ^  ^     > tabStops\n      |\n      bar [1 2 3]]\n  bar)"
     }
   },
   {
-    "text": "(let [a {:foo 1}\n      bar [1 2 3]]\n  \n  bar)",
+    "text": "(let [a {:foo 1}\n      bar (func 1 2 3)]\n  \n  bar)",
     "options": {
       "cursorX": 2,
       "cursorLine": 2
@@ -801,19 +829,20 @@
         },
         {
           "x": 10,
-          "ch": "[",
-          "lineNo": 1
+          "ch": "(",
+          "lineNo": 1,
+          "argX": 16
         }
       ],
       "cursorX": 2,
       "cursorLine": 2,
-      "text": "(let [a {:foo 1}\n      bar [1 2 3]]\n  \n  bar)",
+      "text": "(let [a {:foo 1}\n      bar (func 1 2 3)]\n  \n  bar)",
       "success": true
     },
     "source": {
-      "lineNo": 634,
-      "in": "(let [a {:foo 1}\n      bar [1 2 3]]\n  |\n  bar)",
-      "out": "(let [a {:foo 1}\n      bar [1 2 3]]\n^    ^    ^ tabStops\n  |\n  bar)"
+      "lineNo": 649,
+      "in": "(let [a {:foo 1}\n      bar (func 1 2 3)]\n  |\n  bar)",
+      "out": "(let [a {:foo 1}\n      bar (func 1 2 3)]\n^    ^    ^     > tabStops\n  |\n  bar)"
     }
   }
 ]

@@ -1,6 +1,7 @@
 ## 3.9.0
 
 - add: return `tabStops` in Paren Mode (see [#156](https://github.com/shaunlebron/parinfer/issues/156))
+- add: return `argX` for Tab Stops (see [#157](https://github.com/shaunlebron/parinfer/issues/157))
 
 ## 3.8.0
 

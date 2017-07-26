@@ -86,19 +86,21 @@ of the error.  The caret is positioned under the offending character.
 ## Tab Stops
 
 An output block can contain a tabStops line before the cursor line. Each caret
-is positioned at the position of its associated open-paren.
+is positioned at the position of its associated open-paren. We also track the
+position of the first arg after a `(` with the `>` annotation, since some styles
+align to it.
 
 > ```in
 > (let [a {:foo 1}
->       bar [1 2 3]]
+>       bar (func 1 2 3)]
 >   |
 >   bar)
 > ```
 >
 > ```out
 > (let [a {:foo 1}
->       bar [1 2 3]]
-> ^    ^    ^ tabStops
+>       bar (func 1 2 3)]
+> ^    ^    ^     > tabStops
 >   |
 >   bar)
 > ```
