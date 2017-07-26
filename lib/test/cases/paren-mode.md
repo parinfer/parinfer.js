@@ -618,8 +618,8 @@ use them to create tab stops for smart indentation snapping.
 |
 ```
 
-The `>` means the position of the first arg after an open-paren, because it people
-might want to align the next line there:
+The `>` means the position of the first arg after an open-paren, because some styles
+use it for alignment.
 
 ```in
 (foo bar
