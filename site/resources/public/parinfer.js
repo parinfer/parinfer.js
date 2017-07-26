@@ -1,5 +1,5 @@
 //
-// Parinfer 3.8.0
+// Parinfer 3.9.0
 //
 // Copyright 2015-2017 © Shaun Lebron
 // MIT License
@@ -75,14 +75,6 @@ function isInteger(x) {
          Math.floor(x) === x;
 }
 
-function isOpenParen(c) {
-  return c === "{" || c === "(" || c === "[";
-}
-
-function isCloseParen(c) {
-  return c === "}" || c === ")" || c === "]";
-}
-
 //------------------------------------------------------------------------------
 // Options Structure
 //------------------------------------------------------------------------------
@@ -154,6 +146,7 @@ function parseOptions(options) {
     cursorLine: options.cursorLine,
     prevCursorX: options.prevCursorX,
     prevCursorLine: options.prevCursorLine,
+    selectionStartLine: options.selectionStartLine,
     changes: options.changes,
     partialResult: options.partialResult,
     forceBalance: options.forceBalance
@@ -198,7 +191,7 @@ function getInitialResult(text, options, mode) {
 
     tabStops: [],              // In Indent Mode, it is useful for editors to snap a line's indentation
                                // to certain critical points.  Thus, we have a `tabStops` array of objects containing
-                               // keys {ch, x, lineNo}, which is just the state of the `parenStack` at the cursor line.
+                               // keys {ch, x, lineNo, argX}, which is just the state of the `parenStack` at the cursor line.
 
     parenTrail: {              // the range of parens at the end of a line
       lineNo: UINT_NULL,       // [integer] - line number of the last parsed paren trail
@@ -214,10 +207,13 @@ function getInitialResult(text, options, mode) {
     prevCursorX: UINT_NULL,    // [integer] - x position of the previous cursor
     prevCursorLine: UINT_NULL, // [integer] - line number of the previous cursor
 
+    selectionStartLine: UINT_NULL, // [integer] - line number of the current selection starting point
+
     changes: null,             // [object] - mapping change.key to a change object (please see `transformChange` for object structure)
 
     isInCode: true,            // [boolean] - indicates if we are currently in "code space" (not string or comment)
     isEscaping: false,         // [boolean] - indicates if the next character will be escaped (e.g. `\c`).  This may be inside string, comment, or code.
+    isEscaped: false,          // [boolean] - indicates if the current character is escaped (e.g. `\c`).  This may be inside string, comment, or code.
     isInStr: false,            // [boolean] - indicates if we are currently inside a string
     isInComment: false,        // [boolean] - indicates if we are currently inside a comment
     commentX: UINT_NULL,       // [integer] - x position of the start of comment on current line (if any)
@@ -232,6 +228,19 @@ function getInitialResult(text, options, mode) {
     maxIndent: UINT_NULL,      // [integer] - maximum allowed indentation of subsequent lines in Paren Mode
     indentDelta: 0,            // [integer] - how far indentation was shifted by Paren Mode
                                //  (preserves relative indentation of nested expressions)
+
+    trackingArgTabStop: null,  // [string] - enum to track how close we are to the first-arg tabStop in a list
+                               //  For example a tabStop occurs at `bar` below:
+                               //
+                               //         `   (foo    bar`
+                               //          00011112222000  <-- state after processing char (enums below)
+                               //
+                               //         0   null    => not searching
+                               //         1   'space' => searching for next space
+                               //         2   'arg'   => searching for arg
+                               //
+                               //    (We create the tabStop when the change from 2->0 happens.)
+                               //
 
     error: {                   // if 'success' is false, return this error to the user
       name: null,              // [string] - Parinfer's unique name for this error
@@ -260,6 +269,7 @@ function getInitialResult(text, options, mode) {
                                                  result.origCursorLine     = options.cursorLine; }
     if (isInteger(options.prevCursorX))        { result.prevCursorX        = options.prevCursorX; }
     if (isInteger(options.prevCursorLine))     { result.prevCursorLine     = options.prevCursorLine; }
+    if (isInteger(options.selectionStartLine)) { result.selectionStartLine = options.selectionStartLine; }
     if (isArray(options.changes))              { result.changes            = transformChanges(options.changes); }
     if (isBoolean(options.partialResult))      { result.partialResult      = options.partialResult; }
     if (isBoolean(options.forceBalance))       { result.forceBalance       = options.forceBalance; }
@@ -412,6 +422,8 @@ function initLine(result, line) {
   result.indentDelta = 0;
   delete result.errorPosCache[ERROR_UNMATCHED_CLOSE_PAREN];
   delete result.errorPosCache[ERROR_UNMATCHED_OPEN_PAREN];
+
+  result.trackingArgTabStop = null;
 }
 
 // if the current character has changed, commit its change to the current line.
@@ -443,8 +455,16 @@ function peek(array, i) {
 }
 
 //------------------------------------------------------------------------------
-// Character functions
+// Questions about characters
 //------------------------------------------------------------------------------
+
+function isOpenParen(ch) {
+  return ch === "{" || ch === "(" || ch === "[";
+}
+
+function isCloseParen(ch) {
+  return ch === "}" || ch === ")" || ch === "]";
+}
 
 function isValidCloseParen(parenStack, ch) {
   if (parenStack.length === 0) {
@@ -453,20 +473,21 @@ function isValidCloseParen(parenStack, ch) {
   return peek(parenStack, 0).ch === MATCH_PAREN[ch];
 }
 
-function onOpenParen(result) {
-  if (result.isInCode) {
-    result.parenStack.push({
-      inputLineNo: result.inputLineNo,
-      inputX: result.inputX,
-
-      lineNo: result.lineNo,
-      x: result.x,
-      ch: result.ch,
-      indentDelta: result.indentDelta,
-      maxChildIndent: UINT_NULL
-    });
-  }
+function isWhitespace(result) {
+  var ch = result.ch;
+  return !result.isEscaped && (ch === BLANK_SPACE || ch === DOUBLE_SPACE);
 }
+
+// can this be the last code character of a list?
+function isClosable(result) {
+  var ch = result.ch;
+  var closer = (isCloseParen(ch) && !result.isEscaped);
+  return result.isInCode && !isWhitespace(result) && ch !== "" && !closer;
+}
+
+//------------------------------------------------------------------------------
+// Advanced operations on characters
+//------------------------------------------------------------------------------
 
 function checkCursorHolding(result) {
   var opener = peek(result.parenStack, 0);
@@ -491,6 +512,41 @@ function checkCursorHolding(result) {
   return holding;
 }
 
+function trackArgTabStop(result, state) {
+  if (state === 'space') {
+    if (result.isInCode && isWhitespace(result)) {
+      result.trackingArgTabStop = 'arg';
+    }
+  }
+  else if (state === 'arg') {
+    if (!isWhitespace(result)) {
+        var opener = peek(result.parenStack, 0);
+        opener.argX = result.x;
+        result.trackingArgTabStop = null;
+    }
+  }
+}
+
+//------------------------------------------------------------------------------
+// Literal character events
+//------------------------------------------------------------------------------
+
+function onOpenParen(result) {
+  if (result.isInCode) {
+    result.parenStack.push({
+      inputLineNo: result.inputLineNo,
+      inputX: result.inputX,
+
+      lineNo: result.lineNo,
+      x: result.x,
+      ch: result.ch,
+      indentDelta: result.indentDelta,
+      maxChildIndent: UINT_NULL
+    });
+    result.trackingArgTabStop = 'space';
+  }
+}
+
 function onMatchedCloseParen(result) {
   var opener = peek(result.parenStack, 0);
 
@@ -502,6 +558,7 @@ function onMatchedCloseParen(result) {
     result.parenTrail.openers.push(opener);
   }
   result.parenStack.pop();
+  result.trackingArgTabStop = null;
 }
 
 function onUnmatchedCloseParen(result) {
@@ -541,6 +598,7 @@ function onSemicolon(result) {
   if (result.isInCode) {
     result.isInComment = true;
     result.commentX = result.x;
+    result.trackingArgTabStop = null;
   }
 }
 
@@ -571,6 +629,7 @@ function onBackslash(result) {
 
 function afterBackslash(result) {
   result.isEscaping = false;
+  result.isEscaped = true;
 
   if (result.ch === NEWLINE) {
     if (result.isInCode) {
@@ -580,10 +639,15 @@ function afterBackslash(result) {
   }
 }
 
+//------------------------------------------------------------------------------
+// Character dispatch
+//------------------------------------------------------------------------------
+
 function onChar(result) {
   var ch = result.ch;
-  var escaped = result.isEscaping;
-  if (escaped)                  { afterBackslash(result); }
+  result.isEscaped = false;
+
+  if (result.isEscaping)        { afterBackslash(result); }
   else if (isOpenParen(ch))     { onOpenParen(result); }
   else if (isCloseParen(ch))    { onCloseParen(result); }
   else if (ch === DOUBLE_QUOTE) { onQuote(result); }
@@ -592,13 +656,17 @@ function onChar(result) {
   else if (ch === TAB)          { onTab(result); }
   else if (ch === NEWLINE)      { onNewline(result); }
 
+  ch = result.ch;
+
   result.isInCode = !result.isInComment && !result.isInStr;
 
-  ch = result.ch;
-  var blank = ch === "" || ch === BLANK_SPACE || ch === DOUBLE_SPACE;
-  var trailable = !blank && !isCloseParen(ch);
-  if (result.isInCode && (escaped || trailable)) {
+  if (isClosable(result)) {
     resetParenTrail(result, result.lineNo, result.x+ch.length);
+  }
+
+  var state = result.trackingArgTabStop;
+  if (state) {
+     trackArgTabStop(result, state);
   }
 }
 
@@ -993,20 +1061,45 @@ function initIndent(result) {
   }
 }
 
+function makeTabStop(result, opener) {
+  var tabStop = {
+    ch: opener.ch,
+    x: opener.x,
+    lineNo: opener.lineNo
+  };
+  if (opener.argX != null) {
+    tabStop.argX = opener.argX;
+  }
+  return tabStop;
+}
+
+function getTabStopLine(result) {
+  return result.selectionStartLine !== UINT_NULL ? result.selectionStartLine : result.cursorLine;
+}
+
 function setTabStops(result) {
-  if (result.cursorLine !== result.lineNo ||
-      result.mode !== INDENT_MODE) {
+  if (getTabStopLine(result) !== result.lineNo) {
     return;
   }
 
-  var i,e;
+  var i;
   for (i=0; i<result.parenStack.length; i++) {
-    e = result.parenStack[i];
-    result.tabStops.push({
-      ch: e.ch,
-      x: e.x,
-      lineNo: e.lineNo
-    });
+    result.tabStops.push(makeTabStop(result, result.parenStack[i]));
+  }
+
+  if (result.mode === PAREN_MODE) {
+    for (i=result.parenTrail.openers.length-1; i>=0; i--) {
+      result.tabStops.push(makeTabStop(result, result.parenTrail.openers[i]));
+    }
+  }
+
+  // remove argX if it falls to the right of the next stop
+  for (i=1; i<result.tabStops.length; i++) {
+    var x = result.tabStops[i].x;
+    var prevArgX = result.tabStops[i-1].argX;
+    if (prevArgX != null && prevArgX >= x) {
+      delete result.tabStops[i-1].argX;
+    }
   }
 }
 
@@ -1160,7 +1253,7 @@ function smartMode(text, options) {
 }
 
 var API = {
-  version: "3.8.0",
+  version: "3.9.0",
   indentMode: indentMode,
   parenMode: parenMode,
   smartMode: smartMode
