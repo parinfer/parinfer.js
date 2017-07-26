@@ -1,5 +1,5 @@
 //
-// Parinfer for CodeMirror 1.0.0
+// Parinfer for CodeMirror 1.3.0
 //
 // Copyright 2017 © Shaun Lebron
 // MIT License
@@ -39,6 +39,26 @@ var CLASSNAME_ERROR = 'parinfer-error';
 var CLASSNAME_PARENTRAIL = 'parinfer-paren-trail';
 
 //------------------------------------------------------------------------------
+// State
+// (`state` represents the parinfer state attached to a single CodeMirror editor)
+//------------------------------------------------------------------------------
+
+function initialState(cm, mode, options) {
+  return {
+    cm: cm,
+    mode: mode,
+    options: options,
+    enabled: false,
+    cursorTimeout: null,
+    monitorCursor: true,
+    prevCursorX: null,
+    prevCursorLine: null,
+    callbackCursor: null,
+    callbackChanges: null,
+  };
+}
+
+//------------------------------------------------------------------------------
 // Errors
 //------------------------------------------------------------------------------
 
@@ -67,7 +87,7 @@ function ensureState(cm) {
 }
 
 //------------------------------------------------------------------------------
-// Stateless CodeMirror helpers
+// Data conversion
 //------------------------------------------------------------------------------
 
 function convertChanges(changes) {
@@ -80,6 +100,10 @@ function convertChanges(changes) {
     };
   });
 }
+
+//------------------------------------------------------------------------------
+// Markers
+//------------------------------------------------------------------------------
 
 function clearMarks(cm, className) {
   var i;
@@ -123,51 +147,96 @@ function updateParenTrailMarks(cm, parenTrails) {
   }
 }
 
-function onTab(cm) {
-  // Use spaces instead of tabs.
-  // from https://github.com/codemirror/CodeMirror/issues/988#issuecomment-14921785
-  if (cm.somethingSelected()) {
-    cm.indentSelection("add");
-  } else {
-    cm.replaceSelection(cm.getOption("indentWithTabs")? "\t":
-      Array(cm.getOption("indentUnit") + 1).join(" "), "end", "+input");
+//------------------------------------------------------------------------------
+// Tab Stops
+//------------------------------------------------------------------------------
+
+function getSelectionStartLine(cm) {
+  var selection = cm.listSelections()[0];
+  // head and anchor are reversed sometimes
+  return Math.min(selection.head.line, selection.anchor.line);
+}
+
+function expandTabStops(tabStops) {
+  if (!tabStops) {
+    return null;
+  }
+  var xs = [];
+  var i, stop, prevX=-1;
+  for (i=0; i<tabStops.length; i++) {
+    stop = tabStops[i];
+    if (prevX >= stop.x) {
+      xs.pop();
+    }
+    xs.push(stop.x);
+    xs.push(stop.x + (stop.ch === '(' ? 2 : 1));
+    if (stop.argX != null) {
+      xs.push(stop.argX);
+    }
+  }
+  return xs;
+}
+
+function nextStop(stops, x, dx) {
+  if (!stops) {
+    return null;
+  }
+  var i, stop, right, left;
+  for (i=0; i<stops.length; i++) {
+    stop = stops[i];
+    if (x < stop) { right = stop; break; }
+    if (x > stop) { left = stop; }
+  }
+  if (dx === -1) { return left; }
+  if (dx === 1) { return right; }
+}
+
+function getIndent(cm, lineNo) {
+  var line = cm.getLine(lineNo);
+  var i;
+  for (i=0; i<line.length; i++) {
+    if (line[i] !== ' ') {
+      return i;
+    }
+  }
+  return null;
+}
+
+function onTab(cm, dx) {
+  var hasSelection = cm.somethingSelected();
+  var state = ensureState(cm);
+  var stops = expandTabStops(state.tabStops);
+
+  var x, nextX, lineNo;
+
+  if (hasSelection) {
+    // Indent whole Selection
+    lineNo = getSelectionStartLine(cm);
+    x = getIndent(cm, lineNo);
+    nextX = nextStop(stops, x, dx);
+    if (nextX == null) {
+      nextX = Math.max(0, x + dx*2);
+    }
+    cm.indentSelection(nextX-x);
+  }
+  else {
+    // Indent single line at cursor
+    var cursor = cm.getCursor();
+    lineNo = cursor.line;
+    x = cursor.ch;
+    if (x === getIndent(cm, cursor.line)) {
+      nextX = nextStop(stops, x, dx);
+    }
+    if (nextX == null) {
+      nextX = Math.max(0, x + dx*2);
+    }
+    cm.indentLine(lineNo, nextX-x);
   }
 }
 
 //------------------------------------------------------------------------------
-// Stateful CodeMirror functions
-// (`state` represents the parinfer state of a single CodeMirror editor)
+// Text Correction
 //------------------------------------------------------------------------------
-
-function initialState(cm, mode, options) {
-  return {
-    cm: cm,
-    mode: mode,
-    options: options,
-    enabled: false,
-    cursorTimeout: null,
-    monitorCursor: true,
-    prevCursorX: null,
-    prevCursorLine: null,
-    callbackCursor: null,
-    callbackChanges: null,
-  };
-}
-
-function onCursorChange(state) {
-  clearTimeout(state.cursorTimeout);
-  if (state.monitorCursor) {
-    state.cursorTimeout = setTimeout(function () { fixText(state); }, 0);
-  }
-}
-
-function onTextChanges(state, changes) {
-  clearTimeout(state.cursorTimeout);
-  var origin = changes[0].origin;
-  if (origin !== 'setValue') {
-    fixText(state, changes);
-  }
-}
 
 // If `changes` is missing, then only the cursor position has changed.
 function fixText(state, changes) {
@@ -186,6 +255,9 @@ function fixText(state, changes) {
     prevCursorLine: state.prevCursorLine,
     prevCursorX: state.prevCursorX
   };
+  if (hasSelection) {
+    options.selectionStartLine = getSelectionStartLine(cm);
+  }
   if (state.options) {
     var p;
     for (p in state.options) {
@@ -208,9 +280,8 @@ function fixText(state, changes) {
     default: ensureMode(mode);
   }
 
-  // Clear or add new marks
-  updateErrorMarks(cm, result.error);
-  updateParenTrailMarks(cm, result.parenTrails);
+  // Remember tab stops for smart tabbing.
+  state.tabStops = result.tabStops;
 
   if (text !== result.text) {
     // Backup history
@@ -236,6 +307,10 @@ function fixText(state, changes) {
     cm.scrollTo(scroller.scrollLeft, scroller.scrollTop);
   }
 
+  // Clear or add new marks
+  updateErrorMarks(cm, result.error);
+  updateParenTrailMarks(cm, result.parenTrails);
+
   // Remember the cursor position for next time
   state.prevCursorLine = result.cursorLine;
   state.prevCursorX = result.cursorX;
@@ -253,6 +328,21 @@ function fixText(state, changes) {
 // CodeMirror Integration
 //------------------------------------------------------------------------------
 
+function onCursorChange(state) {
+  clearTimeout(state.cursorTimeout);
+  if (state.monitorCursor) {
+    state.cursorTimeout = setTimeout(function () { fixText(state); }, 0);
+  }
+}
+
+function onTextChanges(state, changes) {
+  clearTimeout(state.cursorTimeout);
+  var origin = changes[0].origin;
+  if (origin !== 'setValue') {
+    fixText(state, changes);
+  }
+}
+
 function on(state) {
   if (state.enabled) {
     return;
@@ -268,7 +358,8 @@ function on(state) {
   cm.on('changes', state.callbackChanges);
   state.origExtraKeys = cm.getOption('extraKeys');
   cm.setOption('extraKeys', {
-    Tab: onTab
+    Tab: function(cm) { onTab(cm, 1); },
+    'Shift-Tab': function(cm) { onTab(cm, -1); }
   });
   state.enabled = true;
 }
@@ -334,7 +425,7 @@ function setOptions(cm, options) {
 }
 
 var API = {
-  version: "1.0.0",
+  version: "1.3.0",
   init: init,
   enable: enable,
   disable: disable,
