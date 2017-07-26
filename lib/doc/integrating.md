@@ -1,10 +1,9 @@
 ## Adding Parinfer to an Editor
 
-> __TODO__: replace `cursorDx` with `changes` option
+> See Parinfer for [Atom] or [CodeMirror] to see examples of these steps implemented.
 
-> See [Parinfer for Atom][atom-parinfer] to see an example of these steps implemented.
-
-[atom-parinfer]:https://github.com/oakmac/atom-parinfer
+[Atom]:https://github.com/oakmac/atom-parinfer
+[CodeMirror]:https://github.com/shaunlebron/parinfer-codemirror
 
 If you want to integrate this Parinfer library into an editor, here are some
 small steps you can take to get something quickly working.  Each step produces
@@ -23,52 +22,51 @@ something that you can try:
 1. __When the editor opens a file__ you must first pass their content to
   `parenMode` and replace its contents with the result.  This ensures
   indentation of a file is correct before using with Indent Mode.
-1. __Allow mode toggling__ by using some hotkeys.  For example:
-  - <kbd>Ctrl</kbd>+<kbd>(</kbd> to toggle between Indent Mode and Paren Mode
-  - <kbd>Ctrl</kbd>+<kbd>)</kbd> to turn Parinfer off
-1. __Supply extra info to Paren Mode__ to allow it to preserve relative indentaiton
-   as you type.  If your editor can notify you of the _type_ of change the user
-   just performed, such as the portion of text that was inserted, deleted, or removed,
-   then you can calculate a `cursorDx` value from it, allowing Paren Mode
-   to keep expressions well-formatted. (TODO, explain how to compute this)
-1. __For better performance__ on larger files, you can limit the call frequency
-  of `indentMode` and `parenMode` by waiting for the user to stop typing after
-  some interval, or by [debouncing] the function.
+1. __For smarter behavior__, used `smartMode` instead. Pass a batched list of
+  `changes` responsible for the most recent edit (see [example](https://github.com/shaunlebron/parinfer-codemirror/blob/37b36/parinfer-codemirror.js#L93-L102))
+  and also pass the previous cursor position `prevCursorX` and `prevCursorLine`.
 
-[debouncing]:https://davidwalsh.name/javascript-debounce-function
+## When to process text?
 
-## WIP: tab stops
+Process the text after a change OR a cursor movement.  Since a change always
+results in a cursor movement, make sure to only process after the change.
+You can see an example of this being handled [here](https://github.com/shaunlebron/parinfer-codemirror/blob/37b36/parinfer-codemirror.js#L331-L344)
+to prevent double-processing.
 
+## Partial File Processing
+
+> __TODO__: write about parent-expression hack used by
+> [atom-parinfer](https://github.com/oakmac/atom-parinfer)
+> to quickly identify and process top-level expressions.
+> Some subtleties are required, like processing previous
+> top-level expression even when cursor left its area.
+>
+> Also include [#148](https://github.com/shaunlebron/parinfer/issues/148)
+
+## Tab stops
 
  __Use Tab Stops__ to allow the user to quickly indent/dedent lines to
- important points in Indent Mode.  When the user presses <kbd>Tab</kbd> or
- <kbd>Shift</kbd>+<kbd>Tab</kbd>, do the following:
+ important points:
 
-   1. Prevent <kbd>Tab</kbd> from doing its normal space insertion, or just
-      remove them prior to the next step.
-   1. Run Indent Mode on the text, passing the cursor in as normal. BUT, if you
-      have multiple lines selected, you must instead pass in the
-      _starting position of the selection_ as the cursor.
-   1. The result returned by the previous step should include a `tabStops`
-      property.  These returned tab stops only represent open-paren positions,
-      so you need to insert extra tab stops depending on your desired
-      indentation conventions.  For example, you can add a tab stop to
-      represent a one-space indentation after every `[`, a two-space indentation
-      after every `(`, or even get fancy by reading the text that comes after `(`
-      to determine context-specific indentation, as is common in Lisp.
-   1. Insert the correct number of spaces (then re-run indent mode after the change as normal):
-     - If you pressed <kbd>Tab</kbd>, indent the current line (or first line of
-       the selection) to the next tab stop.
-     - If you pressed <kbd>Shift</kbd>+<kbd>Tab</kbd>, dedent the current line
-       (or first line of the selection) to the previous tab stop.
-     - If there is more than one selected line that you are indenting, shift the
-       subsequent lines by the same delta applied to the first.
-     - If no tab stop is available in the direction you're indenting, just use
-       two spaces as normal.
+  1. Set the `selectionStartLine` option to the first line number of your selected text (if any).
+  1. Save the most recent `tabStops` for use below.
+
+When <kbd>Tab</kbd> or <kbd>Shift</kbd>+<kbd>Tab</kbd> is pressed:
+
+  1. prevent it from doing its normal operation if necessary
+  1. expand the `tabStops` depending on what style you want to support (see [example](https://github.com/shaunlebron/parinfer-codemirror/blob/37b36/parinfer-codemirror.js#L160-L178))
+  1. search for next available tabStop before or after the current line's
+     indentation. (see [example](https://github.com/shaunlebron/parinfer-codemirror/blob/37b36/parinfer-codemirror.js#L180-L192))
+  1. indent the line(s) to the target tabStop
+     - __for cursor__ - only do this if the cursor is at the indentation point (i.e. `x = indent`)
+     - __for selection__ - the top line of the selection is the one used for deciding indentation
+  1. if no tabStop can be used, indent by some default amount instead
 
 ## Add Parinfer to a REPL
 
 > See this [gif][replete-gif] for an example of [Replete] for iOS using Parinfer in its REPL.
+
+> __TODO__: auto-indent can be done easier using the `partialResult` option of Paren Mode
 
 [replete-gif]:https://twitter.com/mfikes/status/668435676438900737
 [replete]:https://github.com/mfikes/replete
