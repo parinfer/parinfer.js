@@ -26,6 +26,10 @@
   [text]
   (string/split text #"\n" -1))
 
+;;----------------------------------------------------------------------
+;; Before-After editors
+;;----------------------------------------------------------------------
+
 (defn create-indent-before-after! []
   (let [cm-input (create-regular-editor! "code-indent-input" {:mode "clojure-parinfer"})
         cm-output (create-regular-editor! "code-indent-output" {:readOnly true
@@ -86,6 +90,9 @@
       (.on cm-input "change" sync!)
       (sync!))))
 
+;;----------------------------------------------------------------------
+;; Index setup
+;;----------------------------------------------------------------------
 
 (defn create-index-editors! []
 
@@ -135,12 +142,6 @@
   (create-indent-before-after!)
   (create-paren-before-after!))
 
-(defn animate-when-visible!
-  [key-]
-  (doto (get-in @state [key- :watcher])
-    (.enterViewport #(play-recording! key-))
-    (.exitViewport #(stop-playing! key-))))
-
 (def index-anims
   {:intro-indent vcr-data/indent-multi
    :intro-insert vcr-data/line
@@ -171,19 +172,39 @@
    :not-displaced-on-enter vcr-data/not-displaced-on-enter
    :displaced-after-cursor-leaves vcr-data/displaced-after-cursor-leaves})
 
-(defn load-index-anims! []
+;;----------------------------------------------------------------------
+;; 2017 setup
+;;----------------------------------------------------------------------
+
+(defn create-2017-editors! [])
+
+(def anims-2017 {})
+
+;;----------------------------------------------------------------------
+;; Animation Loading
+;;----------------------------------------------------------------------
+
+(defn animate-when-visible!
+  [key-]
+  (doto (get-in @state [key- :watcher])
+    (.enterViewport #(play-recording! key-))
+    (.exitViewport #(stop-playing! key-))))
+
+(defn load-anims! [anims]
   (swap! vcr
     (fn [data]
       (reduce
         (fn [result [key- state]]
           (update result key- merge state))
         data
-        index-anims)))
-
-  (doseq [[key- _] index-anims]
+        anims)))
+  (doseq [[key- _] anims]
     (animate-when-visible! key-))
-
   (js/scrollMonitor.recalculateLocations))
+
+;;----------------------------------------------------------------------
+;; Gears
+;;----------------------------------------------------------------------
 
 (def base-gears
   {:paren  {:x 280 :y 70
@@ -263,31 +284,9 @@
   (doseq [[id {:keys [data svg-opts]}] index-gears]
     (create-gears! (str "#" id) data svg-opts)))
 
-(defn render-index! []
-  (toc/init!)
-  (create-index-editors!)
-  (create-index-gears!)
-  (load-index-anims!)
-  (render-controls!))
-
-
-(def demo-example
-  (string/join "\n"
-    ["(defn foo"
-     "  \"hello, this is a docstring\""
-     "  [a b]"
-     "  (let [sum (+ a b)"
-     "        prod (* a b)]"
-     "     {:sum sum"
-     "      :prod prod}))"]))
-
-(defn render-demo! []
-  (let [cm (create-editor! "code-demo" :demo)]
-    (editor-ui/render! :demo)
-    (.setValue cm demo-example)
-    (swap! state assoc-in [:demo :mode] :smart-mode)
-    (js/parinferCodeMirror.setMode cm "smart")
-    (js/parinferCodeMirror.setOptions cm #js{:forceBalance false})))
+;;----------------------------------------------------------------------
+;; State Viewer
+;;----------------------------------------------------------------------
 
 (defn state-viewer
   [{:keys [postline-states cursor-line]} owner]
@@ -320,10 +319,44 @@
       (get-prev-state cm)
       {:target (js/document.getElementById "debug-state")})))
 
+;;----------------------------------------------------------------------
+;; Routing
+;;----------------------------------------------------------------------
+
+(defn render-index! []
+  (toc/init!)
+  (create-index-editors!)
+  (create-index-gears!)
+  (load-anims! index-anims)
+  (render-controls!))
+
+(defn render-2017! []
+  (toc/init!)
+  (create-2017-editors!)
+  (load-anims! anims-2017)
+  (render-controls!))
+
+(defn render-demo! []
+  (let [cm (create-editor! "code-demo" :demo)]
+    (editor-ui/render! :demo)
+    (.setValue cm
+      (string/join "\n"
+        ["(defn foo"
+         "  \"hello, this is a docstring\""
+         "  [a b]"
+         "  (let [sum (+ a b)"
+         "        prod (* a b)]"
+         "     {:sum sum"
+         "      :prod prod}))"]))
+    (swap! state assoc-in [:demo :mode] :smart-mode)
+    (js/parinferCodeMirror.setMode cm "smart")
+    (js/parinferCodeMirror.setOptions cm #js{:forceBalance false})))
+
 (defn init! []
   (cond
     (aget js/window "parinfer_demopage") (render-demo!)
     (aget js/window "parinfer_debug_state") (render-debug-state!)
+    (aget js/window "parinfer_2017") (render-2017!)
     :else (render-index!)))
 
 (init!)
