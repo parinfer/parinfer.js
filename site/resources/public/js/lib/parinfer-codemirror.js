@@ -1,5 +1,5 @@
 //
-// Parinfer for CodeMirror 1.3.0
+// Parinfer for CodeMirror 1.3.1
 //
 // Copyright 2017 © Shaun Lebron
 // MIT License
@@ -202,35 +202,66 @@ function getIndent(cm, lineNo) {
   return null;
 }
 
+function indentSelection(cm, dx, stops) {
+  // Indent whole Selection
+  var lineNo = getSelectionStartLine(cm);
+  var x = getIndent(cm, lineNo);
+  var nextX = nextStop(stops, x, dx);
+  if (nextX == null) {
+    nextX = Math.max(0, x + dx*2);
+  }
+  cm.indentSelection(nextX-x);
+}
+
+function indentLine(cm, lineNo, delta) {
+  var text = cm.getDoc().getLine(lineNo);
+
+  // cm.indentLine does not indent empty lines
+  if (text.trim() !== '') {
+    cm.indentLine(lineNo, delta);
+    return;
+  }
+
+  if (delta > 0) {
+    var spaces = Array(delta + 1).join(" ");
+    cm.replaceSelection(spaces);
+  }
+  else {
+    var x = cm.getCursor().ch;
+    cm.replaceRange("", {line: lineNo, ch: x+delta}, {line: lineNo, ch: x}, "+indent");
+  }
+}
+
+function indentAtCursor(cm, dx, stops) {
+  // Indent single line at cursor
+  var cursor = cm.getCursor();
+  var lineNo = cursor.line;
+  var x = cursor.ch;
+  var indent = getIndent(cm, cursor.line);
+
+  var stop = nextStop(stops, x, dx);
+  var useStops = (indent == null || x === indent);
+  var nextX = (stop != null && useStops) ? stop : Math.max(0, x+dx*2);
+
+  if (indent != null && indent < x && x < nextX) {
+    var spaces = Array(nextX-x + 1).join(" ");
+    cm.replaceSelection(spaces);
+  }
+  else {
+    indentLine(cm, lineNo, nextX-x);
+  }
+}
+
 function onTab(cm, dx) {
   var hasSelection = cm.somethingSelected();
   var state = ensureState(cm);
   var stops = expandTabStops(state.tabStops);
 
-  var x, nextX, lineNo;
-
   if (hasSelection) {
-    // Indent whole Selection
-    lineNo = getSelectionStartLine(cm);
-    x = getIndent(cm, lineNo);
-    nextX = nextStop(stops, x, dx);
-    if (nextX == null) {
-      nextX = Math.max(0, x + dx*2);
-    }
-    cm.indentSelection(nextX-x);
+    indentSelection(cm, dx, stops);
   }
   else {
-    // Indent single line at cursor
-    var cursor = cm.getCursor();
-    lineNo = cursor.line;
-    x = cursor.ch;
-    if (x === getIndent(cm, cursor.line)) {
-      nextX = nextStop(stops, x, dx);
-    }
-    if (nextX == null) {
-      nextX = Math.max(0, x + dx*2);
-    }
-    cm.indentLine(lineNo, nextX-x);
+    indentAtCursor(cm, dx, stops);
   }
 }
 
@@ -425,7 +456,7 @@ function setOptions(cm, options) {
 }
 
 var API = {
-  version: "1.3.0",
+  version: "1.3.1",
   init: init,
   enable: enable,
   disable: disable,
