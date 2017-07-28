@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <title>Parinfer 2017</title>
+  <meta name="description" content="Parinfer - simpler Lisp editing">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="css/fonts.css">
+  <link rel="stylesheet" href="css/font-awesome-4.4.0.min.css">
+  <link rel="stylesheet" href="codemirror/lib/codemirror.css">
+  <link rel="stylesheet" href="css/lib/keys.css">
+  <link rel="stylesheet" href="css/2017.css">
+  <link rel="stylesheet" href="css/theme.css">
+</head>
+<body class="no-mathjax">
+
+<div class="sidebar">
+  <h1>Par<em>infer</em></h1>
+  <div class="credits">
+    <a href="http://twitter.com/shaunlebron">@shaunlebron</a> |
+    <a href="https://github.com/shaunlebron/parinfer">GitHub</a>
+  </div>
+  <div id="toc">
+    <span class="caption">building table of contents...</a>
+  </div>
+</div>
+
+<div id="app">
+
+<!------------------------------------------------------------------------------------>
+
+<div class="wrapper only-mobile">
+<section>
+  <h1>Par<em>infer</em></h1>
+  <div class="credits">
+    <a href="http://twitter.com/shaunlebron">@shaunlebron</a> |
+    <a href="https://github.com/shaunlebron/parinfer">GitHub</a>
+  </div>
+
+<div class="interact">
+<i class="fa fa-desktop fa-lg"></i>
+<strong>Best viewed</strong> on wide desktop browsers.  Sorry for the inconvenience.
+</div>
+
+</section>
+</div>
+
+<!------------------------------------------------------------------------------------>
+
+<div class="wrapper">
+<section>
+<p class="subtitle">
+Let's <em>further</em> simplify the way we write Lisp...
+</p>
+
+<div class="interact">
+<i class="fa fa-keyboard-o fa-lg"></i>
+<strong>Try it!</strong> Interrupt the animations below to try it for yourself. Click outside to restore it.
+</div>
+
+
+<div>
+<div class="caption"><strong>Indent</strong> to move in and out of structure above while preserving structure below. (no modes)</div>
+<textarea id="code-intro-indent">
+</textarea>
+</div>
+
+<div>
+<div class="caption"><strong>Snap</strong> to important points when pressing Tab or Shift+Tab.</div>
+<textarea id="code-intro-snap">
+</textarea>
+</div>
+
+<div>
+<div class="caption"><strong>Safeguards</strong> preserve structure below an edit (and waits on cursor to avoid aggression).</div>
+<textarea id="code-intro-safeguards">
+</textarea>
+</div>
+
+<div>
+<div class="caption"><strong>Compromise</strong> by allowing temporary imbalance (optional) when it is easier to get you want.</div>
+<textarea id="code-intro-compromise">
+</textarea>
+</div>
+
+</section>
+</div>
+
+<!------------------------------------------------------------------------------------>
+
+<div class="wrapper fold">
+<section id="introduction">
+<h2>Background</h2>
+
+<em>Continuing the work from the original 2015 proposal for
+<a href="http://shaunlebron.github.io/parinfer">Parinfer</a>.</em>
+
+<p>
+<strong>Parinfer was designed to help newcomers with Lisp</strong>. It allows
+Lisp code to be driven by indentation—not by <em>removing</em> Parentheses, but by
+<em>inferring</em> them. It now exists as a plugin across many editors, and is
+reportedly used by newcomers and experienced users across different Lisps.
+</p>
+
+<p>
+<strong>Some parts didn't feel right over time</strong>. Though many of us
+enjoyed the core of its behavior, some edge cases had emerged to cause
+unintended structure changes.  And as we anticipated, users expressed problems
+with mode-switch confusion and noisy diffs on projects.
+</p>
+
+<p>
+<strong>We'd like to show how it has improved</strong>. There is now an easier
+unified mode, a project linter for teams, and some safeguards to prevent
+unintended structure changes.  Not all problems are solved, but this represents
+a milestone toward discovering more of Parinfer capabilities and tradeoffs so
+that we may better understand how to improve the newcomer experience for Lisp.
+</p>
+
+</section>
+</div>
+
+
+</div><!-- end #app -->
+
+<div id="controls-container"></div>
+
+<script src="codemirror/lib/codemirror.js"></script>
+<script src="codemirror/addon/selection/active-line.js"></script>
+<script src="codemirror/addon/edit/matchbrackets.js"></script>
+<script src="codemirror/mode/javascript/javascript.js"></script>
+<script src="codemirror/mode/clojure/clojure.js"></script>
+<script src="codemirror/mode/clojure/clojure-parinfer.js"></script>
+
+<script src="js/lib/scrollMonitor.js"></script>
+
+<script>
+window.parinfer_2017 = true;
+</script>
+
+<script src="parinfer.js"></script>
+<script src="js/lib/parinfer-codemirror.js"></script>
+<script src="js/compiled/parinfer-site.js"></script>
+
+</body>
+</html>
