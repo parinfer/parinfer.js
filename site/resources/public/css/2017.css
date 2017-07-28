@@ -523,3 +523,8 @@ i.fa {
     display: block;
   }
 }
+
+
+.parinfer-error {
+  background: #FFBEBE; color: black !important;
+}

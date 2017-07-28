@@ -275,22 +275,16 @@
       :dt 231}
      {:selections ({:anchor {:line 1, :ch 7}, :head {:line 1, :ch 7}}),
       :dt 640}
-     {:selections ({:anchor {:line 0, :ch 0}, :head {:line 0, :ch 0}}),
-      :dt 6}
      {:selections ({:anchor {:line 1, :ch 7}, :head {:line 1, :ch 7}}),
       :dt 2}
      {:selections ({:anchor {:line 0, :ch 7}, :head {:line 0, :ch 7}}),
       :dt 1099}
-     {:selections ({:anchor {:line 0, :ch 0}, :head {:line 0, :ch 0}}),
-      :dt 134}
      {:change
       {:from {:line 0, :ch 0},
        :to {:line 0, :ch 0},
        :text ("#"),
        :origin "+input"},
       :dt 416}
-     {:selections ({:anchor {:line 0, :ch 0}, :head {:line 0, :ch 0}}),
-      :dt 2}
      {:selections ({:anchor {:line 0, :ch 1}, :head {:line 0, :ch 1}}),
       :dt 1}
      {:change
@@ -299,30 +293,97 @@
        :text ("_"),
        :origin "+input"},
       :dt 253}
-     {:selections ({:anchor {:line 0, :ch 0}, :head {:line 0, :ch 0}}),
-      :dt 2}
      {:selections ({:anchor {:line 0, :ch 2}, :head {:line 0, :ch 2}}),
-      :dt 2}
-     {:change
-      {:from {:line 0, :ch 1},
-       :to {:line 0, :ch 2},
-       :text (""),
-       :origin "+delete"},
-      :dt 699}
-     {:selections ({:anchor {:line 0, :ch 0}, :head {:line 0, :ch 0}}),
-      :dt 2}
-     {:selections ({:anchor {:line 0, :ch 1}, :head {:line 0, :ch 1}}),
-      :dt 2}
-     {:change
-      {:from {:line 0, :ch 0},
-       :to {:line 0, :ch 1},
-       :text (""),
-       :origin "+delete"},
-      :dt 140}
-     {:selections ({:anchor {:line 0, :ch 0}, :head {:line 0, :ch 0}}),
-      :dt 3}],
+      :dt 2}]
     :init-value "",
     :last-time 1501271565973,
+    :recording? false})
+
+(def intro-compromise
+  '{:timescale 1
+    :changes
+    [{:selections ({:anchor {:line 0, :ch 0}, :head {:line 0, :ch 0}}),
+      :dt 0}
+     {:change
+      {:from {:line 0, :ch 0},
+       :to {:line 0, :ch 0},
+       :text
+       ("(defn foo [my-map]"
+        "  (let [{} my-map"
+        "        x (+ a b)]"
+        "    (println \"sum is\" x)))"),
+       :origin "paste"},
+      :dt 726}
+     {:selections ({:anchor {:line 1, :ch 9}, :head {:line 1, :ch 9}}),
+      :dt 1085}
+     {:change
+      {:from {:line 1, :ch 9},
+       :to {:line 1, :ch 9},
+       :text (":"),
+       :origin "+input"},
+      :dt 753}
+     {:change
+      {:from {:line 1, :ch 10},
+       :to {:line 1, :ch 10},
+       :text ("k"),
+       :origin "+input"},
+      :dt 208}
+     {:change
+      {:from {:line 1, :ch 11},
+       :to {:line 1, :ch 11},
+       :text ("e"),
+       :origin "+input"},
+      :dt 112}
+     {:change
+      {:from {:line 1, :ch 12},
+       :to {:line 1, :ch 12},
+       :text ("y"),
+       :origin "+input"},
+      :dt 88}
+     {:change
+      {:from {:line 1, :ch 13},
+       :to {:line 1, :ch 13},
+       :text ("s"),
+       :origin "+input"},
+      :dt 136}
+     {:change
+      {:from {:line 1, :ch 14},
+       :to {:line 1, :ch 14},
+       :text (" "),
+       :origin "+input"},
+      :dt 136}
+     {:change
+      {:from {:line 1, :ch 15},
+       :to {:line 1, :ch 15},
+       :text ("["),
+       :origin "+input"},
+      :dt 224}
+     {:change
+      {:from {:line 1, :ch 16},
+       :to {:line 1, :ch 16},
+       :text ("a"),
+       :origin "+input"},
+      :dt 207}
+     {:change
+      {:from {:line 1, :ch 17},
+       :to {:line 1, :ch 17},
+       :text (" "),
+       :origin "+input"},
+      :dt 169}
+     {:change
+      {:from {:line 1, :ch 18},
+       :to {:line 1, :ch 18},
+       :text ("b"),
+       :origin "+input"},
+      :dt 160}
+     {:change
+      {:from {:line 1, :ch 19},
+       :to {:line 1, :ch 19},
+       :text ("]"),
+       :origin "+input"},
+      :dt 232}],
+    :init-value "",
+    :last-time 1501272513450,
     :recording? false})
 
 (def intro
