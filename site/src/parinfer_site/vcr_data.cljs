@@ -1,6 +1,203 @@
 (ns parinfer-site.vcr-data
   "VCR data - editor animations pasted from the 'print' button in devmode")
 
+(def intro-indent
+ '{:timescale 2
+   :changes
+   [{:selections ({:anchor {:line 0, :ch 0}, :head {:line 0, :ch 0}}),
+     :dt 0}
+    {:change
+     {:from {:line 0, :ch 0},
+      :to {:line 0, :ch 0},
+      :text
+      ("(defn component []"
+       "  (html)"
+       "  [:div {:style {:background \"#FFF\""
+       "                 :color \"#000\"}}]"
+       "  [:h1 \"title\"])"),
+      :origin "paste"},
+     :dt 912}
+    {:selections ({:anchor {:line 4, :ch 2}, :head {:line 4, :ch 2}}),
+     :dt 1048}
+    {:change
+     {:from {:line 4, :ch 2},
+      :to {:line 4, :ch 2},
+      :text (" "),
+      :origin "+input"},
+     :dt 577}
+    {:selections ({:anchor {:line 4, :ch 3}, :head {:line 4, :ch 3}}),
+     :dt 3}
+    {:change
+     {:from {:line 4, :ch 3},
+      :to {:line 4, :ch 3},
+      :text (" "),
+      :origin "+input"},
+     :dt 187}
+    {:selections ({:anchor {:line 2, :ch 2}, :head {:line 2, :ch 2}}),
+     :dt 1006}
+    {:change
+     {:from {:line 2, :ch 2},
+      :to {:line 2, :ch 2},
+      :text (" "),
+      :origin "+input"},
+     :dt 497}
+    {:selections ({:anchor {:line 2, :ch 3}, :head {:line 2, :ch 3}}),
+     :dt 2}
+    {:change
+     {:from {:line 2, :ch 3},
+      :to {:line 2, :ch 3},
+      :text (" "),
+      :origin "+input"},
+     :dt 285}
+    {:selections ({:anchor {:line 2, :ch 4}, :head {:line 2, :ch 4}}),
+     :dt 2}
+    {:change
+     {:from {:line 2, :ch 3},
+      :to {:line 2, :ch 4},
+      :text (""),
+      :origin "+delete"},
+     :dt 1685}
+    {:selections ({:anchor {:line 2, :ch 3}, :head {:line 2, :ch 3}}),
+     :dt 2}
+    {:change
+     {:from {:line 2, :ch 2},
+      :to {:line 2, :ch 3},
+      :text (""),
+      :origin "+delete"},
+     :dt 210}
+    {:selections ({:anchor {:line 2, :ch 2}, :head {:line 2, :ch 2}}),
+     :dt 2}
+    {:change
+     {:from {:line 2, :ch 1},
+      :to {:line 2, :ch 2},
+      :text (""),
+      :origin "+delete"},
+     :dt 482}
+    {:selections ({:anchor {:line 2, :ch 1}, :head {:line 2, :ch 1}}),
+     :dt 2}
+    {:change
+     {:from {:line 2, :ch 0},
+      :to {:line 2, :ch 1},
+      :text (""),
+      :origin "+delete"},
+     :dt 219}
+    {:selections ({:anchor {:line 2, :ch 0}, :head {:line 2, :ch 0}}),
+     :dt 2}
+    {:change
+     {:from {:line 2, :ch 0},
+      :to {:line 2, :ch 0},
+      :text (" "),
+      :origin "+input"},
+     :dt 1036}
+    {:selections ({:anchor {:line 2, :ch 1}, :head {:line 2, :ch 1}}),
+     :dt 2}
+    {:change
+     {:from {:line 2, :ch 1},
+      :to {:line 2, :ch 1},
+      :text (" "),
+      :origin "+input"},
+     :dt 452}
+    {:selections ({:anchor {:line 2, :ch 2}, :head {:line 2, :ch 2}}),
+     :dt 2}],
+   :init-value "",
+   :last-time 1501268674807,
+   :recording? false})
+
+
+(def intro-snap
+  '{:timescale 1
+    :changes
+     [{:selections ({:anchor {:line 0, :ch 0}, :head {:line 0, :ch 0}}),
+       :dt 0}
+      {:change
+       {:from {:line 0, :ch 0},
+        :to {:line 0, :ch 0},
+        :text
+        ("(ns example.core"
+         "  (:require"
+         "    [clojure.string :refer [join]]"
+         "    [clojure.data :refer [diff]]"
+         "    foo))"),
+        :origin "paste"},
+       :dt 589}
+      {:selections ({:anchor {:line 4, :ch 4}, :head {:line 4, :ch 4}}),
+       :dt 762}
+      {:change
+       {:from {:line 4, :ch 0},
+        :to {:line 4, :ch 4},
+        :text ("     "),
+        :origin "+indenthack"},
+       :dt 697}
+      {:selections ({:anchor {:line 4, :ch 5}, :head {:line 4, :ch 5}}),
+       :dt 1}
+      {:change
+       {:from {:line 4, :ch 0},
+        :to {:line 4, :ch 5},
+        :text ("                  "),
+        :origin "+indenthack"},
+       :dt 341}
+      {:change
+       {:from {:line 4, :ch 0},
+        :to {:line 4, :ch 18},
+        :text ("                         "),
+        :origin "+indenthack"},
+       :dt 392}
+      {:change
+       {:from {:line 4, :ch 0},
+        :to {:line 4, :ch 25},
+        :text ("                          "),
+        :origin "+indenthack"},
+       :dt 448}
+      {:selections ({:anchor {:line 4, :ch 26}, :head {:line 4, :ch 26}}),
+       :dt 2}
+      {:change
+       {:from {:line 4, :ch 0},
+        :to {:line 4, :ch 26},
+        :text ("                         "),
+        :origin "+indenthack"},
+       :dt 1196}
+      {:selections ({:anchor {:line 4, :ch 25}, :head {:line 4, :ch 25}}),
+       :dt 1}
+      {:change
+       {:from {:line 4, :ch 0},
+        :to {:line 4, :ch 25},
+        :text ("                  "),
+        :origin "+indenthack"},
+       :dt 253}
+      {:change
+       {:from {:line 4, :ch 0},
+        :to {:line 4, :ch 18},
+        :text ("     "),
+        :origin "+indenthack"},
+       :dt 248}
+      {:change
+       {:from {:line 4, :ch 0},
+        :to {:line 4, :ch 5},
+        :text ("    "),
+        :origin "+indenthack"},
+       :dt 464}
+      {:selections ({:anchor {:line 4, :ch 4}, :head {:line 4, :ch 4}}),
+       :dt 1}
+      {:change
+       {:from {:line 4, :ch 0},
+        :to {:line 4, :ch 4},
+        :text ("  "),
+        :origin "+indenthack"},
+       :dt 404}
+      {:selections ({:anchor {:line 4, :ch 2}, :head {:line 4, :ch 2}}),
+       :dt 2}
+      {:change
+       {:from {:line 4, :ch 0},
+        :to {:line 4, :ch 2},
+        :text (""),
+        :origin "+indenthack"},
+       :dt 645}
+      {:selections ({:anchor {:line 4, :ch 0}, :head {:line 4, :ch 0}}),
+       :dt 1}],
+     :init-value "",
+     :last-time 1501270319122,
+     :recording? false})
+
 (def intro
  '{:timescale 4
    :changes

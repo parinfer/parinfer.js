@@ -177,7 +177,6 @@
 ;;----------------------------------------------------------------------
 
 (defn create-2017-editors! []
-
   (let [opts {:parinfer-mode :smart-mode
               :forceBalance false}]
     (create-editor! "code-intro-indent" :intro-indent opts)
@@ -185,7 +184,9 @@
     (create-editor! "code-intro-safeguards" :intro-safeguards opts)
     (create-editor! "code-intro-compromise" :intro-compromise opts)))
 
-(def anims-2017 {})
+(def anims-2017
+  {:intro-indent vcr-data/intro-indent
+   :intro-snap vcr-data/intro-snap})
 
 ;;----------------------------------------------------------------------
 ;; Animation Loading

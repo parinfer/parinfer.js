@@ -269,33 +269,20 @@ code {
   clear: both;
 }
 
-#cm-code-intro {
-  height: 200px;
-  margin-bottom: 80px;
+#cm-code-intro-indent {
+  height: 130px;
 }
 
-#cm-code-lisp-expr,
-#cm-code-c-expr
-{
-  height: 120px;
+#cm-code-intro-snap {
+  height: 130px;
 }
 
-#cm-code-lisp-indent,
-#cm-code-c-indent
-{
-  height: 174px;
+#cm-code-intro-safeguards {
+  height: 130px;
 }
 
-#cm-code-skim,
-#cm-code-inspect
-{
-  height: 96px;
-}
-
-#cm-code-skim span.cm-bracket
-{
-  opacity: 0.15;
-  color: #000;
+#cm-code-intro-compromise {
+  height: 130px;
 }
 
 #cm-code-inspect span.cm-keyword,
@@ -311,73 +298,6 @@ code {
   color: #000;
 }
 
-#cm-code-indent,
-#cm-code-indent-far
-{
-  height: 70px;
-}
-
-#cm-code-indent-multi,
-#cm-code-intro-indent
-{
-  height: 130px;
-}
-
-#cm-code-line,
-#cm-code-intro-insert
-{
-  height: 150px;
-}
-
-#cm-code-comment,
-#cm-code-intro-comment
-{
-  height: 130px;
-}
-
-#cm-code-wrap,
-#cm-code-splice,
-#cm-code-slurp,
-#cm-code-barf
-{
-  height: 70px;
-}
-
-#cm-code-string
-{
-  height: 110px;
-}
-
-#cm-code-displaced,
-#cm-code-not-displaced
-{
-  height: 90px;
-}
-
-#cm-code-indent-input,
-#cm-code-indent-output
-{
-  height: 250px;
-}
-
-#cm-code-indent-output
-{
-  opacity: 0.75;
-}
-
-#cm-code-indent-output .cm-bracket.cm-eol
-{
-  opacity: 1;
-  background: #AAFFC2;
-}
-
-#cm-code-indent-input .cm-bracket.cm-eol,
-#cm-code-indent-input .cm-bracket.cm-sol
-{
-  opacity: 1;
-  background: #FFBEBE;
-}
-
 .removed {
   background: #FFBEBE;
 }
@@ -388,66 +308,6 @@ code {
 
 .inserted {
   background: #AAFFC2;
-}
-
-#cm-code-indent-output .cm-bracket.cm-mol,
-#cm-code-indent-input .cm-bracket.cm-mol
-{
-  background: #FFE8B0;
-}
-
-#cm-code-indent-output span.cm-keyword,
-#cm-code-indent-output span.cm-variable,
-#cm-code-indent-output span.cm-builtin,
-#cm-code-indent-output span.cm-string,
-#cm-code-indent-output span.cm-def,
-#cm-code-indent-output span.cm-atom,
-#cm-code-indent-output span.cm-number,
-#cm-code-indent-output span.cm-comment,
-#cm-code-indent-input span.cm-keyword,
-#cm-code-indent-input span.cm-variable,
-#cm-code-indent-input span.cm-builtin,
-#cm-code-indent-input span.cm-string,
-#cm-code-indent-input span.cm-def,
-#cm-code-indent-input span.cm-atom,
-#cm-code-indent-input span.cm-number,
-#cm-code-indent-input span.cm-comment
-{
-  opacity: 0.3;
-  color: #000;
-}
-
-#cm-code-warn-good,
-#cm-code-warn-bad
-{
-  font-size: 14px;
-  height: 110px;
-}
-
-#cm-code-enter
-{
-  height: 180px;
-}
-
-#cm-code-paren-tune,
-#cm-code-paren-frac,
-#cm-code-paren-comment,
-#cm-code-paren-wrap,
-#cm-code-intro-paren
-{
-  height: 100px;
-}
-
-#cm-code-intro-paredit
-{
-  height: 100px;
-}
-
-#cm-code-displaced-after-balance,
-#cm-code-not-displaced-on-enter,
-#cm-code-displaced-after-cursor-leaves
-{
-  height: 80px;
 }
 
 p.centered
