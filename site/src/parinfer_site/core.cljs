@@ -186,7 +186,8 @@
 
 (def anims-2017
   {:intro-indent vcr-data/intro-indent
-   :intro-snap vcr-data/intro-snap})
+   :intro-snap vcr-data/intro-snap
+   :intro-safeguards vcr-data/intro-safeguards})
 
 ;;----------------------------------------------------------------------
 ;; Animation Loading

@@ -105,7 +105,7 @@
 
 
 (def intro-snap
-  '{:timescale 1
+  '{:timescale 1.3
     :changes
      [{:selections ({:anchor {:line 0, :ch 0}, :head {:line 0, :ch 0}}),
        :dt 0}
@@ -197,6 +197,133 @@
      :init-value "",
      :last-time 1501270319122,
      :recording? false})
+
+(def intro-safeguards
+  '{:timescale 2
+    :changes
+    [{:selections ({:anchor {:line 0, :ch 0}, :head {:line 0, :ch 0}}),
+      :dt 0}
+     {:change
+      {:from {:line 0, :ch 0},
+       :to {:line 0, :ch 0},
+       :text
+       ("(cljs/build (sources \"src\")"
+        "            {:main 'hello-world.core"
+        "             :output-to \"out/main.js\""
+        "             :verbose true})"),
+       :origin "paste"},
+      :dt 1090}
+     {:selections ({:anchor {:line 0, :ch 12}, :head {:line 0, :ch 12}}),
+      :dt 869}
+     {:selections ({:anchor {:line 0, :ch 12}, :head {:line 0, :ch 11}}),
+      :dt 111}
+     {:selections ({:anchor {:line 0, :ch 12}, :head {:line 0, :ch 10}}),
+      :dt 19}
+     {:selections ({:anchor {:line 0, :ch 12}, :head {:line 0, :ch 9}}),
+      :dt 21}
+     {:selections ({:anchor {:line 0, :ch 12}, :head {:line 0, :ch 8}}),
+      :dt 28}
+     {:selections ({:anchor {:line 0, :ch 12}, :head {:line 0, :ch 7}}),
+      :dt 34}
+     {:selections ({:anchor {:line 0, :ch 12}, :head {:line 0, :ch 6}}),
+      :dt 52}
+     {:selections ({:anchor {:line 0, :ch 12}, :head {:line 0, :ch 5}}),
+      :dt 64}
+     {:selections ({:anchor {:line 0, :ch 12}, :head {:line 0, :ch 4}}),
+      :dt 51}
+     {:selections ({:anchor {:line 0, :ch 12}, :head {:line 0, :ch 3}}),
+      :dt 50}
+     {:selections ({:anchor {:line 0, :ch 12}, :head {:line 0, :ch 2}}),
+      :dt 33}
+     {:selections ({:anchor {:line 0, :ch 12}, :head {:line 0, :ch 1}}),
+      :dt 49}
+     {:change
+      {:from {:line 0, :ch 1},
+       :to {:line 0, :ch 12},
+       :text ("b"),
+       :origin "+input"},
+      :dt 1089}
+     {:change
+      {:from {:line 0, :ch 2},
+       :to {:line 0, :ch 2},
+       :text ("u"),
+       :origin "+input"},
+      :dt 168}
+     {:change
+      {:from {:line 0, :ch 3},
+       :to {:line 0, :ch 3},
+       :text ("i"),
+       :origin "+input"},
+      :dt 80}
+     {:change
+      {:from {:line 0, :ch 4},
+       :to {:line 0, :ch 4},
+       :text ("l"),
+       :origin "+input"},
+      :dt 71}
+     {:change
+      {:from {:line 0, :ch 5},
+       :to {:line 0, :ch 5},
+       :text ("d"),
+       :origin "+input"},
+      :dt 169}
+     {:change
+      {:from {:line 0, :ch 6},
+       :to {:line 0, :ch 6},
+       :text (" "),
+       :origin "+input"},
+      :dt 231}
+     {:selections ({:anchor {:line 1, :ch 7}, :head {:line 1, :ch 7}}),
+      :dt 640}
+     {:selections ({:anchor {:line 0, :ch 0}, :head {:line 0, :ch 0}}),
+      :dt 6}
+     {:selections ({:anchor {:line 1, :ch 7}, :head {:line 1, :ch 7}}),
+      :dt 2}
+     {:selections ({:anchor {:line 0, :ch 7}, :head {:line 0, :ch 7}}),
+      :dt 1099}
+     {:selections ({:anchor {:line 0, :ch 0}, :head {:line 0, :ch 0}}),
+      :dt 134}
+     {:change
+      {:from {:line 0, :ch 0},
+       :to {:line 0, :ch 0},
+       :text ("#"),
+       :origin "+input"},
+      :dt 416}
+     {:selections ({:anchor {:line 0, :ch 0}, :head {:line 0, :ch 0}}),
+      :dt 2}
+     {:selections ({:anchor {:line 0, :ch 1}, :head {:line 0, :ch 1}}),
+      :dt 1}
+     {:change
+      {:from {:line 0, :ch 1},
+       :to {:line 0, :ch 1},
+       :text ("_"),
+       :origin "+input"},
+      :dt 253}
+     {:selections ({:anchor {:line 0, :ch 0}, :head {:line 0, :ch 0}}),
+      :dt 2}
+     {:selections ({:anchor {:line 0, :ch 2}, :head {:line 0, :ch 2}}),
+      :dt 2}
+     {:change
+      {:from {:line 0, :ch 1},
+       :to {:line 0, :ch 2},
+       :text (""),
+       :origin "+delete"},
+      :dt 699}
+     {:selections ({:anchor {:line 0, :ch 0}, :head {:line 0, :ch 0}}),
+      :dt 2}
+     {:selections ({:anchor {:line 0, :ch 1}, :head {:line 0, :ch 1}}),
+      :dt 2}
+     {:change
+      {:from {:line 0, :ch 0},
+       :to {:line 0, :ch 1},
+       :text (""),
+       :origin "+delete"},
+      :dt 140}
+     {:selections ({:anchor {:line 0, :ch 0}, :head {:line 0, :ch 0}}),
+      :dt 3}],
+    :init-value "",
+    :last-time 1501271565973,
+    :recording? false})
 
 (def intro
  '{:timescale 4
