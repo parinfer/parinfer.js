@@ -45,6 +45,14 @@ Main Compromises (for reducing surprise in edge cases)
   - pressing enter (paren mode on leading close-paren)
 - dedenting in smart mode
   - show also the cursor-holding example
+  - correction only done after editing to prevent aggressive
+
+philosophy of traveling through invalid states
+- dedent example
+- and imbalance example
+  - paren
+  - string
+
 
 copy-paste examples?
 

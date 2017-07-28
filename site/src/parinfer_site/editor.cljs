@@ -147,6 +147,6 @@
          ({:indent-mode "indent"
            :paren-mode "paren"
            :smart-mode "smart"} mode)
-         #js {:forceBalance true})
+         #js {:forceBalance (:forceBalance opts true)}
 
-       cm))))
+             cm)))))

@@ -176,7 +176,14 @@
 ;; 2017 setup
 ;;----------------------------------------------------------------------
 
-(defn create-2017-editors! [])
+(defn create-2017-editors! []
+
+  (let [opts {:parinfer-mode :smart-mode
+              :forceBalance false}]
+    (create-editor! "code-intro-indent" :intro-indent opts)
+    (create-editor! "code-intro-snap" :intro-snap opts)
+    (create-editor! "code-intro-safeguards" :intro-safeguards opts)
+    (create-editor! "code-intro-compromise" :intro-compromise opts)))
 
 (def anims-2017 {})
 
