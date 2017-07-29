@@ -1,3 +1,7 @@
+## 3.10.0 (wip)
+
+- add: return `parens` (full paren tree) if `returnParens` is enabled
+
 ## 3.9.0
 
 - add: return `tabStops` in Paren Mode (see [#156](https://github.com/shaunlebron/parinfer/issues/156))

@@ -242,8 +242,8 @@ npm install
 npm test
 ```
 
-__Sandbox__: See [`sandbox.js`] for running quick isolated tests and examples
-using the Test API.
+__Sandbox__: See [`sandbox.js`] for how I manually test things (always changing
+based on what I'm currently working on).
 
 <!-- file links need to be full path to make them work for the NPM readme -->
 [`parinfer.js`]:https://github.com/shaunlebron/parinfer/blob/master/lib/parinfer.js
