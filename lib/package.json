@@ -4,7 +4,7 @@
   "description": "a simpler way to write Lisp",
   "main": "parinfer.js",
   "scripts": {
-    "test": "eslint parinfer.js && eslint test.js && mocha test/cases.js && node test/perf.js"
+    "test": "eslint parinfer.js && eslint test.js && node asserts-on.js && mocha test/cases.js && node asserts-off.js && node test/perf.js"
   },
   "files": [
     "parinfer.js",
