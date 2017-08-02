@@ -595,6 +595,18 @@ It is allowed if the leading parens are also in paren trail:
   ; comment
 ```
 
+If there's more than one, point to the first one.
+
+```in
+[(foo
+  )] bar
+```
+
+```out
+[(foo
+  )] bar
+  ^ error: leading-close-paren
+```
 
 ## Unmatched close-parens
 
