@@ -1,5 +1,172 @@
 [
   {
+    "text": "(let [a 1\n      ])",
+    "options": {
+      "cursorX": 6,
+      "cursorLine": 1
+    },
+    "result": {
+      "cursorX": 6,
+      "cursorLine": 1,
+      "text": "(let [a 1\n      ])",
+      "success": true
+    },
+    "source": {
+      "lineNo": 10,
+      "in": "(let [a 1\n      |])",
+      "out": "(let [a 1\n      |])"
+    }
+  },
+  {
+    "text": "(let [a 1\n      ]); <-- spaces",
+    "options": {},
+    "result": {
+      "text": "(let [a 1])\n      ; <-- spaces",
+      "success": true
+    },
+    "source": {
+      "lineNo": 22,
+      "in": "(let [a 1\n      ]); <-- spaces",
+      "out": "(let [a 1])\n      ; <-- spaces"
+    }
+  },
+  {
+    "text": "(let [a 1\n      ] (+ a 2))",
+    "options": {
+      "cursorX": 6,
+      "cursorLine": 1
+    },
+    "result": {
+      "cursorX": 6,
+      "cursorLine": 1,
+      "text": "(let [a 1\n      ] (+ a 2))",
+      "success": true
+    },
+    "source": {
+      "lineNo": 35,
+      "in": "(let [a 1\n      |] (+ a 2))",
+      "out": "(let [a 1\n      |] (+ a 2))"
+    }
+  },
+  {
+    "text": "(let [a 1\n      ] (+ a 2))",
+    "options": {},
+    "result": {
+      "text": "(let [a 1]\n     (+ a 2))",
+      "success": true
+    },
+    "source": {
+      "lineNo": 49,
+      "in": "(let [a 1\n      ] (+ a 2))",
+      "out": "(let [a 1]\n     (+ a 2))"
+    }
+  },
+  {
+    "text": "(let [a 1\n  ] (+ a 2))",
+    "options": {
+      "cursorX": 2,
+      "cursorLine": 1
+    },
+    "result": {
+      "cursorX": 6,
+      "cursorLine": 1,
+      "text": "(let [a 1\n      ] (+ a 2))",
+      "success": true
+    },
+    "source": {
+      "lineNo": 63,
+      "in": "(let [a 1\n  |] (+ a 2))",
+      "out": "(let [a 1\n      |] (+ a 2))"
+    }
+  },
+  {
+    "text": "(let [a 1\n      ])",
+    "options": {
+      "cursorX": 7,
+      "cursorLine": 1
+    },
+    "result": {
+      "cursorX": 5,
+      "cursorLine": 1,
+      "text": "(let [a 1]\n     )",
+      "success": true
+    },
+    "source": {
+      "lineNo": 76,
+      "in": "(let [a 1\n      ]|)",
+      "out": "(let [a 1]\n     |)"
+    }
+  },
+  {
+    "text": "(foo\n  })",
+    "options": {
+      "cursorX": 3,
+      "cursorLine": 1
+    },
+    "result": {
+      "cursorX": 3,
+      "cursorLine": 1,
+      "error": {
+        "name": "unmatched-close-paren",
+        "lineNo": 1,
+        "x": 2
+      },
+      "text": "(foo\n  })",
+      "success": false
+    },
+    "source": {
+      "lineNo": 88,
+      "in": "(foo\n  }|)",
+      "out": "(foo\n  }|)\n  ^ error: unmatched-close-paren"
+    }
+  },
+  {
+    "text": "(foo\n  ) foo} bar",
+    "options": {
+      "cursorX": 12,
+      "cursorLine": 1
+    },
+    "result": {
+      "cursorX": 12,
+      "cursorLine": 1,
+      "error": {
+        "name": "unmatched-close-paren",
+        "lineNo": 1,
+        "x": 7
+      },
+      "text": "(foo\n  ) foo} bar",
+      "success": false
+    },
+    "source": {
+      "lineNo": 101,
+      "in": "(foo\n  ) foo} bar|",
+      "out": "(foo\n  ) foo} bar|\n       ^ error: unmatched-close-paren"
+    }
+  },
+  {
+    "text": "(foo\n  ) (bar",
+    "options": {
+      "cursorX": 8,
+      "cursorLine": 1
+    },
+    "result": {
+      "cursorX": 8,
+      "cursorLine": 1,
+      "error": {
+        "name": "unclosed-paren",
+        "lineNo": 1,
+        "x": 4
+      },
+      "text": "(foo\n  ) (bar",
+      "success": false
+    },
+    "source": {
+      "lineNo": 112,
+      "in": "(foo\n  ) (bar|",
+      "out": "(foo\n  ) (bar|\n    ^ error: unclosed-paren"
+    }
+  },
+  {
     "text": "(foo\n{:a 1\n   :b 2})",
     "options": {
       "changes": [
@@ -16,7 +183,7 @@
       "success": true
     },
     "source": {
-      "lineNo": 6,
+      "lineNo": 128,
       "in": "(foo\n  {:a 1\n--\n   :b 2})",
       "out": "(foo)\n{:a 1\n :b 2}"
     }
@@ -38,7 +205,7 @@
       "success": true
     },
     "source": {
-      "lineNo": 21,
+      "lineNo": 143,
       "in": "(foo)\n  {:a 1\n++\n :b 2}",
       "out": "(foo\n  {:a 1\n   :b 2})"
     }
@@ -60,7 +227,7 @@
       "success": true
     },
     "source": {
-      "lineNo": 36,
+      "lineNo": 158,
       "in": "(foo\n  {:a 1\n   :b 2})\n---",
       "out": "(foo\n  {:a 1})\n:b 2"
     }
@@ -82,7 +249,7 @@
       "success": true
     },
     "source": {
-      "lineNo": 51,
+      "lineNo": 173,
       "in": "(defn foo\n  [a b]\n--\n  bar)",
       "out": "(defn foo)\n[a b\n  bar]"
     }
@@ -104,7 +271,7 @@
       "success": true
     },
     "source": {
-      "lineNo": 66,
+      "lineNo": 188,
       "in": "  (defn foo\n--\n    [a b]\n    bar)",
       "out": "(defn foo\n  [a b]\n  bar)"
     }
@@ -126,7 +293,7 @@
       "success": true
     },
     "source": {
-      "lineNo": 81,
+      "lineNo": 203,
       "in": "  (defn foo\n--\n    [a b]\n    ; comment 1\n    bar)\n    ; comment 2",
       "out": "(defn foo\n  [a b]\n  ; comment 1\n  bar)\n  ; comment 2"
     }
@@ -152,7 +319,7 @@
       "success": true
     },
     "source": {
-      "lineNo": 103,
+      "lineNo": 225,
       "in": "(defn foo\n  |[a b\n--\n   c d]\n  bar\n  baz)",
       "out": "(defn foo)\n|[a b\n c d]\n  bar\n  baz"
     }
@@ -180,7 +347,7 @@
       "success": true
     },
     "source": {
-      "lineNo": 122,
+      "lineNo": 244,
       "in": "(my-fnfoo (if some-condition\n -----+++\n         println) my-funfoo {:foo 1\n                  ------+++\n                          :bar 2})",
       "out": "(foo (if some-condition\n       println) foo {:foo 1\n                     :bar 2})"
     }
@@ -206,7 +373,7 @@
       "success": true
     },
     "source": {
-      "lineNo": 141,
+      "lineNo": 263,
       "in": "(foo |(((1\n ----\n        2\n        3)))\n    4)",
       "out": "(|(((1\n    2\n    3)))\n    4)"
     }
@@ -222,7 +389,7 @@
       "success": true
     },
     "source": {
-      "lineNo": 159,
+      "lineNo": 281,
       "in": "((((1\n ^ prevCursor\n    2\n    3)))\n    4)",
       "out": "((((1\n    2\n    3)))\n 4)"
     }
@@ -242,7 +409,7 @@
       "success": true
     },
     "source": {
-      "lineNo": 174,
+      "lineNo": 296,
       "in": "((|((1\n ^ prevCursor\n    2\n    3)))\n    4)",
       "out": "((|((1\n    2\n    3)))\n 4)"
     }
@@ -268,7 +435,7 @@
       "success": true
     },
     "source": {
-      "lineNo": 193,
+      "lineNo": 315,
       "in": "(foo [1 2 3]|\n           +\n      4 5 6\n      7 8 9])",
       "out": "(foo [1 2 3]|\n      4 5 6\n      7 8 9)"
     }
@@ -284,7 +451,7 @@
       "success": true
     },
     "source": {
-      "lineNo": 209,
+      "lineNo": 331,
       "in": "(foo [1 2 3]\n            ^ prevCursor\n      4 5 6\n      7 8 9)",
       "out": "(foo [1 2 3]\n     4 5 6\n     7 8 9)"
     }
@@ -304,7 +471,7 @@
       "success": true
     },
     "source": {
-      "lineNo": 222,
+      "lineNo": 344,
       "in": "(foo [1 2 3|]\n             ^ prevCursor\n      4 5 6\n      7 8 9)",
       "out": "(foo [1 2 3|]\n     4 5 6\n     7 8 9)"
     }
@@ -326,7 +493,7 @@
       "success": true
     },
     "source": {
-      "lineNo": 239,
+      "lineNo": 361,
       "in": "  (foo\n++\n  (bar\n    baz))",
       "out": "  (foo\n    (bar\n      baz))"
     }
@@ -354,7 +521,7 @@
       "success": true
     },
     "source": {
-      "lineNo": 254,
+      "lineNo": 376,
       "in": "  (foo\n++\n    (bar\n++\n    baz))",
       "out": "  (foo\n    (bar\n      baz))"
     }
@@ -382,7 +549,7 @@
       "success": true
     },
     "source": {
-      "lineNo": 270,
+      "lineNo": 392,
       "in": "  (foo\n      (bar\n++\n        baz))\n++",
       "out": "  (foo\n      (bar\n        baz))"
     }
@@ -404,7 +571,7 @@
       "success": true
     },
     "source": {
-      "lineNo": 287,
+      "lineNo": 409,
       "in": "  (foo\n++\n  bar\n  baz)",
       "out": "  (foo\n    bar\n    baz)"
     }
@@ -432,7 +599,7 @@
       "success": true
     },
     "source": {
-      "lineNo": 302,
+      "lineNo": 424,
       "in": "  (foo\n++\n    bar\n++\n  baz)",
       "out": "  (foo\n    bar\n    baz)"
     }
@@ -460,7 +627,7 @@
       "success": true
     },
     "source": {
-      "lineNo": 318,
+      "lineNo": 440,
       "in": "(foo\n    bar\n++\n    baz)\n++",
       "out": "(foo\n    bar\n    baz)"
     }

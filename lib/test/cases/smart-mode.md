@@ -1,5 +1,127 @@
 # Smart Mode
 
+## Leading Close-Parens
+
+Leading close-parens can cause many problems that can be fixed by paren mode,
+so we exit to paren mode when they are detected.
+
+For example, it is convenient to keep trailing parens in front of the cursor
+after pressing enter or after deleting everything behind them:
+
+```in
+(let [a 1
+      |])
+```
+
+```out
+(let [a 1
+      |])
+```
+
+Moving the cursor away:
+
+```in
+(let [a 1
+      ]); <-- spaces
+```
+
+```out
+(let [a 1])
+      ; <-- spaces
+```
+
+But we also need safety from inadvertent AST breakage.  For example,
+Indent Mode should allow this intermediate state:
+
+```in
+(let [a 1
+      |] (+ a 2))
+```
+
+```out
+(let [a 1
+      |] (+ a 2))
+```
+
+Moving the cursor away will cause Indent Mode to still detect the leading
+close-paren, exit to Paren Mode, then fix the spacing to prevent inadvertent
+breakage.
+
+```in
+(let [a 1
+      ] (+ a 2))
+```
+
+```out
+(let [a 1]
+     (+ a 2))
+```
+
+To prevent weird things, indentation needs to be locked to respect
+the leading close-paren.  Exiting to Paren Mode allows this and prevents further
+AST breakage.
+
+```in
+(let [a 1
+  |] (+ a 2))
+```
+
+```out
+(let [a 1
+      |] (+ a 2))
+```
+
+Moving cursor to the right progressively moves leading close-parens behind it
+to their normal positions:
+
+```in
+(let [a 1
+      ]|)
+```
+
+```out
+(let [a 1]
+     |)
+```
+
+When in Paren Mode we must abide by its rules to stay balanced.
+
+```in
+(foo
+  }|)
+```
+
+```out
+(foo
+  }|)
+  ^ error: unmatched-close-paren
+```
+
+Likewise:
+
+```in
+(foo
+  ) foo} bar|
+```
+
+```out
+(foo
+  ) foo} bar|
+       ^ error: unmatched-close-paren
+```
+
+```in
+(foo
+  ) (bar|
+```
+
+```out
+(foo
+  ) (bar|
+    ^ error: unclosed-paren
+```
+
+
 ## Changes
 
 Dedent multi-line expression to leave its parent:

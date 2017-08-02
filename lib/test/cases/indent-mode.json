@@ -636,170 +636,34 @@
     }
   },
   {
-    "text": "(let [a 1\n      ])",
-    "options": {
-      "cursorX": 6,
-      "cursorLine": 1
-    },
-    "result": {
-      "cursorX": 6,
-      "cursorLine": 1,
-      "text": "(let [a 1\n      ])",
-      "success": true
-    },
-    "source": {
-      "lineNo": 574,
-      "in": "(let [a 1\n      |])",
-      "out": "(let [a 1\n      |])"
-    }
-  },
-  {
-    "text": "(let [a 1\n      ]); <-- spaces",
+    "text": "(foo\n  ) bar",
     "options": {},
     "result": {
-      "text": "(let [a 1])\n      ; <-- spaces",
-      "success": true
-    },
-    "source": {
-      "lineNo": 586,
-      "in": "(let [a 1\n      ]); <-- spaces",
-      "out": "(let [a 1])\n      ; <-- spaces"
-    }
-  },
-  {
-    "text": "(let [a 1\n      ] (+ a 2))",
-    "options": {
-      "cursorX": 6,
-      "cursorLine": 1
-    },
-    "result": {
-      "cursorX": 6,
-      "cursorLine": 1,
-      "text": "(let [a 1\n      ] (+ a 2))",
-      "success": true
-    },
-    "source": {
-      "lineNo": 599,
-      "in": "(let [a 1\n      |] (+ a 2))",
-      "out": "(let [a 1\n      |] (+ a 2))"
-    }
-  },
-  {
-    "text": "(let [a 1\n      ] (+ a 2))",
-    "options": {},
-    "result": {
-      "text": "(let [a 1]\n     (+ a 2))",
-      "success": true
-    },
-    "source": {
-      "lineNo": 613,
-      "in": "(let [a 1\n      ] (+ a 2))",
-      "out": "(let [a 1]\n     (+ a 2))"
-    }
-  },
-  {
-    "text": "(let [a 1\n  ] (+ a 2))",
-    "options": {
-      "cursorX": 2,
-      "cursorLine": 1
-    },
-    "result": {
-      "cursorX": 6,
-      "cursorLine": 1,
-      "text": "(let [a 1\n      ] (+ a 2))",
-      "success": true
-    },
-    "source": {
-      "lineNo": 627,
-      "in": "(let [a 1\n  |] (+ a 2))",
-      "out": "(let [a 1\n      |] (+ a 2))"
-    }
-  },
-  {
-    "text": "(let [a 1\n      ])",
-    "options": {
-      "cursorX": 7,
-      "cursorLine": 1
-    },
-    "result": {
-      "cursorX": 5,
-      "cursorLine": 1,
-      "text": "(let [a 1]\n     )",
-      "success": true
-    },
-    "source": {
-      "lineNo": 640,
-      "in": "(let [a 1\n      ]|)",
-      "out": "(let [a 1]\n     |)"
-    }
-  },
-  {
-    "text": "(foo\n  })",
-    "options": {
-      "cursorX": 3,
-      "cursorLine": 1
-    },
-    "result": {
-      "cursorX": 3,
-      "cursorLine": 1,
       "error": {
-        "name": "unmatched-close-paren",
+        "name": "leading-close-paren",
         "lineNo": 1,
         "x": 2
       },
-      "text": "(foo\n  })",
+      "text": "(foo\n  ) bar",
       "success": false
     },
     "source": {
-      "lineNo": 652,
-      "in": "(foo\n  }|)",
-      "out": "(foo\n  }|)\n  ^ error: unmatched-close-paren"
+      "lineNo": 574,
+      "in": "(foo\n  ) bar",
+      "out": "(foo\n  ) bar\n  ^ error: leading-close-paren"
     }
   },
   {
-    "text": "(foo\n  ) foo} bar",
-    "options": {
-      "cursorX": 12,
-      "cursorLine": 1
-    },
+    "text": "(foo\n  ); comment",
+    "options": {},
     "result": {
-      "cursorX": 12,
-      "cursorLine": 1,
-      "error": {
-        "name": "unmatched-close-paren",
-        "lineNo": 1,
-        "x": 7
-      },
-      "text": "(foo\n  ) foo} bar",
-      "success": false
+      "text": "(foo)\n  ; comment",
+      "success": true
     },
     "source": {
-      "lineNo": 665,
-      "in": "(foo\n  ) foo} bar|",
-      "out": "(foo\n  ) foo} bar|\n       ^ error: unmatched-close-paren"
-    }
-  },
-  {
-    "text": "(foo\n  ) (bar",
-    "options": {
-      "cursorX": 8,
-      "cursorLine": 1
-    },
-    "result": {
-      "cursorX": 8,
-      "cursorLine": 1,
-      "error": {
-        "name": "unclosed-paren",
-        "lineNo": 1,
-        "x": 4
-      },
-      "text": "(foo\n  ) (bar",
-      "success": false
-    },
-    "source": {
-      "lineNo": 676,
-      "in": "(foo\n  ) (bar|",
-      "out": "(foo\n  ) (bar|\n    ^ error: unclosed-paren"
+      "lineNo": 587,
+      "in": "(foo\n  ); comment",
+      "out": "(foo)\n  ; comment"
     }
   },
   {
@@ -820,7 +684,7 @@
       "success": false
     },
     "source": {
-      "lineNo": 698,
+      "lineNo": 609,
       "in": "(foo [bar (|...] baz)",
       "out": "(foo [bar (|...] baz)\n               ^ error: unmatched-close-paren"
     }
@@ -843,7 +707,7 @@
       "success": false
     },
     "source": {
-      "lineNo": 709,
+      "lineNo": 620,
       "in": "(foo [bar (]| baz)])",
       "out": "(foo [bar (]| baz)])\n           ^ error: unmatched-close-paren"
     }
@@ -866,7 +730,7 @@
       "success": false
     },
     "source": {
-      "lineNo": 721,
+      "lineNo": 632,
       "in": "[... (foo [bar ]| baz]  ...)]",
       "out": "[... (foo [bar ]| baz]  ...)]\n                     ^ error: unmatched-close-paren"
     }
@@ -889,7 +753,7 @@
       "success": false
     },
     "source": {
-      "lineNo": 732,
+      "lineNo": 643,
       "in": "(let [{:keys |foo bar]} my-map])",
       "out": "(let [{:keys |foo bar]} my-map])\n                     ^ error: unmatched-close-paren"
     }
@@ -907,7 +771,7 @@
       "success": true
     },
     "source": {
-      "lineNo": 743,
+      "lineNo": 654,
       "in": "(a (b (c))| d) e)",
       "out": "(a (b (c))| d) e"
     }
@@ -925,7 +789,7 @@
       "success": true
     },
     "source": {
-      "lineNo": 753,
+      "lineNo": 664,
       "in": "(a (b (c(|) d) e)",
       "out": "(a (b (c(|) d) e))"
     }
@@ -948,7 +812,7 @@
       "success": false
     },
     "source": {
-      "lineNo": 763,
+      "lineNo": 674,
       "in": "(f [x (a (b c(|) d) y] g)",
       "out": "(f [x (a (b c(|) d) y] g)\n                     ^ error: unmatched-close-paren"
     }
@@ -971,7 +835,7 @@
       "success": false
     },
     "source": {
-      "lineNo": 775,
+      "lineNo": 686,
       "in": "(foo\n  bar)| baz) qux",
       "out": "(foo\n  bar)| baz) qux\n           ^ error: unmatched-close-paren"
     }
@@ -994,7 +858,7 @@
       "success": false
     },
     "source": {
-      "lineNo": 786,
+      "lineNo": 697,
       "in": "(foo\n  [bar\n   bar)| baz\n   bar])",
       "out": "(foo\n  [bar\n   bar)| baz\n      ^ error: unmatched-close-paren\n   bar])"
     }
@@ -1017,7 +881,7 @@
       "success": false
     },
     "source": {
-      "lineNo": 803,
+      "lineNo": 714,
       "in": "(foo\n  [bar]\n|bar) baz",
       "out": "(foo\n  [bar]\n|bar) baz\n    ^ error: unmatched-close-paren"
     }
@@ -1040,7 +904,7 @@
       "success": false
     },
     "source": {
-      "lineNo": 819,
+      "lineNo": 730,
       "in": "(foo\n [bar]\n  |bar) baz",
       "out": "(foo\n [bar]\n  |bar) baz\n      ^ error: unmatched-close-paren"
     }
@@ -1058,7 +922,7 @@
       "success": false
     },
     "source": {
-      "lineNo": 834,
+      "lineNo": 745,
       "in": "(foo\n [bar\n bar]) baz",
       "out": "(foo\n [bar\n bar]) baz\n    ^ error: unmatched-close-paren"
     }
@@ -1076,7 +940,7 @@
       "success": true
     },
     "source": {
-      "lineNo": 851,
+      "lineNo": 762,
       "in": "(foo bar ;|)",
       "out": "(foo bar) ;|)"
     }
@@ -1094,7 +958,7 @@
       "success": true
     },
     "source": {
-      "lineNo": 861,
+      "lineNo": 772,
       "in": "(let [x 1\n      y 2;|])",
       "out": "(let [x 1\n      y 2]);|])"
     }
@@ -1112,7 +976,7 @@
       "success": true
     },
     "source": {
-      "lineNo": 873,
+      "lineNo": 784,
       "in": "(|",
       "out": "(|)"
     }
@@ -1138,7 +1002,7 @@
       "success": true
     },
     "source": {
-      "lineNo": 887,
+      "lineNo": 798,
       "in": "(def x [1 2 3])\n(def y 2)\n|",
       "out": "(def x [1 2 3])\n(def y 2)\n^    > tabStops\n|"
     }
@@ -1169,7 +1033,7 @@
       "success": true
     },
     "source": {
-      "lineNo": 903,
+      "lineNo": 814,
       "in": "(foo bar\n  (baz boo))\n|",
       "out": "(foo bar\n  (baz boo))\n^ ^    > tabStops\n|"
     }
@@ -1205,7 +1069,7 @@
       "success": true
     },
     "source": {
-      "lineNo": 916,
+      "lineNo": 827,
       "in": "(let [a {:foo 1}\n      |\n      bar [1 2 3]]\n  bar)",
       "out": "(let [a {:foo 1}\n^    ^  ^     > tabStops\n      |\n      bar [1 2 3]]\n  bar)"
     }
@@ -1241,7 +1105,7 @@
       "success": true
     },
     "source": {
-      "lineNo": 932,
+      "lineNo": 843,
       "in": "(let [a {:foo 1}\n      bar (func 1 2 3)]\n  |\n  bar)",
       "out": "(let [a {:foo 1}\n      bar (func 1 2 3)]\n^    ^    ^     > tabStops\n  |\n  bar)"
     }
@@ -1276,7 +1140,7 @@
       "success": true
     },
     "source": {
-      "lineNo": 951,
+      "lineNo": 862,
       "in": "(defn foo\n  \"hello, this is a docstring\"\n  [a b]\n  (let [sum (+ a b)\n        prod (* a b)]\n     {:sum sum\n      :prod prod}))",
       "out": "(defn foo\n  \"hello, this is a docstring\"\n  [a b]\n      ^ parenTrail\n  (let [sum (+ a b)\n                  ^ parenTrail\n        prod (* a b)]\n                   ^^ parenTrail\n     {:sum sum\n      :prod prod}))\n                ^^^ parenTrail"
     }

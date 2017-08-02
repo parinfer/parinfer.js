@@ -1,6 +1,8 @@
 ## 3.10.0 (wip)
 
 - add: return `parens` (full paren tree) if `returnParens` is enabled
+- change: move leading-close paren fix from Indent Mode to Smart Mode
+- change: throw leading close-paren error in Indent Mode if and it cannot be removed safely and `forceBalance` is off
 
 ## 3.9.0
 
