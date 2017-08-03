@@ -240,6 +240,22 @@ a close-paren from moving when the cursor is to the left of its open-paren.
   baz
 ```
 
+```in
+(defn foo)
+|[a b
+ c d]
+  bar
+  baz
+```
+
+```out
+(defn foo)
+|[a b
+ c d]
+  bar
+  baz
+```
+
 ## Multiple Changes
 
 ```in
@@ -256,7 +272,7 @@ a close-paren from moving when the cursor is to the left of its open-paren.
                      :bar 2})
 ```
 
-## Precarious Paren Resolution
+## Resolving Precarious Paren After Dedent
 
 Suppose we deleted `foo` in the example below.  We expect `4` to not be adopted
 by any collection inside `(((1 2 3)))`.
@@ -308,6 +324,8 @@ and correcting indentation.
     3)))
  4)
 ```
+
+## Resolving Precarious Paren After Adding them
 
 Also, suppose we _added_ a precarious paren `]` in the example below.  It is
 precarious because the cursor is holding the paren in place despite the

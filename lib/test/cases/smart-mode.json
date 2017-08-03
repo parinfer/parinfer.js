@@ -325,6 +325,24 @@
     }
   },
   {
+    "text": "(defn foo)\n[a b\n c d]\n  bar\n  baz",
+    "options": {
+      "cursorX": 0,
+      "cursorLine": 1
+    },
+    "result": {
+      "cursorX": 0,
+      "cursorLine": 1,
+      "text": "(defn foo)\n[a b\n c d]\n  bar\n  baz",
+      "success": true
+    },
+    "source": {
+      "lineNo": 242,
+      "in": "(defn foo)\n|[a b\n c d]\n  bar\n  baz",
+      "out": "(defn foo)\n|[a b\n c d]\n  bar\n  baz"
+    }
+  },
+  {
     "text": "(foo (if some-condition\n         println) foo {:foo 1\n                          :bar 2})",
     "options": {
       "changes": [
@@ -347,7 +365,7 @@
       "success": true
     },
     "source": {
-      "lineNo": 244,
+      "lineNo": 260,
       "in": "(my-fnfoo (if some-condition\n -----+++\n         println) my-funfoo {:foo 1\n                  ------+++\n                          :bar 2})",
       "out": "(foo (if some-condition\n       println) foo {:foo 1\n                     :bar 2})"
     }
@@ -373,7 +391,7 @@
       "success": true
     },
     "source": {
-      "lineNo": 263,
+      "lineNo": 279,
       "in": "(foo |(((1\n ----\n        2\n        3)))\n    4)",
       "out": "(|(((1\n    2\n    3)))\n    4)"
     }
@@ -389,7 +407,7 @@
       "success": true
     },
     "source": {
-      "lineNo": 281,
+      "lineNo": 297,
       "in": "((((1\n ^ prevCursor\n    2\n    3)))\n    4)",
       "out": "((((1\n    2\n    3)))\n 4)"
     }
@@ -409,7 +427,7 @@
       "success": true
     },
     "source": {
-      "lineNo": 296,
+      "lineNo": 312,
       "in": "((|((1\n ^ prevCursor\n    2\n    3)))\n    4)",
       "out": "((|((1\n    2\n    3)))\n 4)"
     }
@@ -435,7 +453,7 @@
       "success": true
     },
     "source": {
-      "lineNo": 315,
+      "lineNo": 333,
       "in": "(foo [1 2 3]|\n           +\n      4 5 6\n      7 8 9])",
       "out": "(foo [1 2 3]|\n      4 5 6\n      7 8 9)"
     }
@@ -451,7 +469,7 @@
       "success": true
     },
     "source": {
-      "lineNo": 331,
+      "lineNo": 349,
       "in": "(foo [1 2 3]\n            ^ prevCursor\n      4 5 6\n      7 8 9)",
       "out": "(foo [1 2 3]\n     4 5 6\n     7 8 9)"
     }
@@ -471,7 +489,7 @@
       "success": true
     },
     "source": {
-      "lineNo": 344,
+      "lineNo": 362,
       "in": "(foo [1 2 3|]\n             ^ prevCursor\n      4 5 6\n      7 8 9)",
       "out": "(foo [1 2 3|]\n     4 5 6\n     7 8 9)"
     }
@@ -493,7 +511,7 @@
       "success": true
     },
     "source": {
-      "lineNo": 361,
+      "lineNo": 379,
       "in": "  (foo\n++\n  (bar\n    baz))",
       "out": "  (foo\n    (bar\n      baz))"
     }
@@ -521,7 +539,7 @@
       "success": true
     },
     "source": {
-      "lineNo": 376,
+      "lineNo": 394,
       "in": "  (foo\n++\n    (bar\n++\n    baz))",
       "out": "  (foo\n    (bar\n      baz))"
     }
@@ -549,7 +567,7 @@
       "success": true
     },
     "source": {
-      "lineNo": 392,
+      "lineNo": 410,
       "in": "  (foo\n      (bar\n++\n        baz))\n++",
       "out": "  (foo\n      (bar\n        baz))"
     }
@@ -571,7 +589,7 @@
       "success": true
     },
     "source": {
-      "lineNo": 409,
+      "lineNo": 427,
       "in": "  (foo\n++\n  bar\n  baz)",
       "out": "  (foo\n    bar\n    baz)"
     }
@@ -599,7 +617,7 @@
       "success": true
     },
     "source": {
-      "lineNo": 424,
+      "lineNo": 442,
       "in": "  (foo\n++\n    bar\n++\n  baz)",
       "out": "  (foo\n    bar\n    baz)"
     }
@@ -627,7 +645,7 @@
       "success": true
     },
     "source": {
-      "lineNo": 440,
+      "lineNo": 458,
       "in": "(foo\n    bar\n++\n    baz)\n++",
       "out": "(foo\n    bar\n    baz)"
     }
