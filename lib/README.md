@@ -109,7 +109,7 @@ Arguments:
   - `cursorLine` - zero-based line number of the cursor
   - `cursorX` - zero-based x-position of the cursor
   - `prevCursorLine` and `prevCursorX` is required by Smart Mode (previous cursor position)
-  - `selectionStartLine` - first line of the current selection (used to return the correct tabStops for a selection)
+  - `selectionStartLine` - first line of the current selection
   - `changes` - ordered array of change objects with the following:
     - `lineNo` - starting line number of the change
     - `x` - starting x of the change
