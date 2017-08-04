@@ -1,4 +1,4 @@
-## 3.10.0 (wip)
+## 3.10.0
 
 - add: return `parens` (full paren tree) if `returnParens` is enabled
 - change: move leading-close paren fix from Indent Mode to Smart Mode
