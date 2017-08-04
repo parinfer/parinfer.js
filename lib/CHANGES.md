@@ -5,6 +5,8 @@
 - change: throw leading close-paren error in Indent Mode if and it cannot be removed safely and `forceBalance` is off
 - revert: do not fix indentation in Smart Mode after cursor leaves end of Paren Trail (from [#147])
   - this was causing bad pasting behavior since a line with extra parens would dedent subsequent lines
+- change: smart mode will allow selected lines to be indented in isolation (by running Indent Mode when `selectionStartLine` is passed in)
+  - this helps with correcting pastes without influence indentation around it
 
 ## 3.9.0
 

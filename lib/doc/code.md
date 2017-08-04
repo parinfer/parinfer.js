@@ -1128,7 +1128,7 @@ as I can.
 [`ERROR_LEADING_CLOSE_PAREN`]:../parinfer.js#L305
 [`ERROR_UNHANDLED`]:../parinfer.js#L306
 [`errorMessages`]:../parinfer.js#L308
-[`API`]:../parinfer.js#L1359
+[`API`]:../parinfer.js#L1360
 [`isBoolean`]:../parinfer.js#L66
 [`isArray`]:../parinfer.js#L70
 [`isInteger`]:../parinfer.js#L74
