@@ -7,6 +7,7 @@
   - this was causing bad pasting behavior since a line with extra parens would dedent subsequent lines
 - change: smart mode will allow selected lines to be indented in isolation (by running Indent Mode when `selectionStartLine` is passed in)
   - this helps with correcting pastes without influence indentation around it
+  - thanks to [@SevereOverfl0w](https://github.com/SevereOverfl0w)!
 
 ## 3.9.0
 
