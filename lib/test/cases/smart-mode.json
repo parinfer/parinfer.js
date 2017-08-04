@@ -433,68 +433,6 @@
     }
   },
   {
-    "text": "(foo [1 2 3]\n      4 5 6\n      7 8 9])",
-    "options": {
-      "cursorX": 12,
-      "cursorLine": 0,
-      "changes": [
-        {
-          "lineNo": 0,
-          "x": 11,
-          "oldText": "",
-          "newText": "]"
-        }
-      ]
-    },
-    "result": {
-      "cursorX": 12,
-      "cursorLine": 0,
-      "text": "(foo [1 2 3]\n      4 5 6\n      7 8 9)",
-      "success": true
-    },
-    "source": {
-      "lineNo": 333,
-      "in": "(foo [1 2 3]|\n           +\n      4 5 6\n      7 8 9])",
-      "out": "(foo [1 2 3]|\n      4 5 6\n      7 8 9)"
-    }
-  },
-  {
-    "text": "(foo [1 2 3]\n      4 5 6\n      7 8 9)",
-    "options": {
-      "prevCursorX": 12,
-      "prevCursorLine": 0
-    },
-    "result": {
-      "text": "(foo [1 2 3]\n     4 5 6\n     7 8 9)",
-      "success": true
-    },
-    "source": {
-      "lineNo": 349,
-      "in": "(foo [1 2 3]\n            ^ prevCursor\n      4 5 6\n      7 8 9)",
-      "out": "(foo [1 2 3]\n     4 5 6\n     7 8 9)"
-    }
-  },
-  {
-    "text": "(foo [1 2 3]\n      4 5 6\n      7 8 9)",
-    "options": {
-      "cursorX": 11,
-      "cursorLine": 0,
-      "prevCursorX": 14,
-      "prevCursorLine": 0
-    },
-    "result": {
-      "cursorX": 11,
-      "cursorLine": 0,
-      "text": "(foo [1 2 3]\n     4 5 6\n     7 8 9)",
-      "success": true
-    },
-    "source": {
-      "lineNo": 362,
-      "in": "(foo [1 2 3|]\n             ^ prevCursor\n      4 5 6\n      7 8 9)",
-      "out": "(foo [1 2 3|]\n     4 5 6\n     7 8 9)"
-    }
-  },
-  {
     "text": "  (foo\n  (bar\n    baz))",
     "options": {
       "changes": [
@@ -511,7 +449,7 @@
       "success": true
     },
     "source": {
-      "lineNo": 379,
+      "lineNo": 331,
       "in": "  (foo\n++\n  (bar\n    baz))",
       "out": "  (foo\n    (bar\n      baz))"
     }
@@ -539,7 +477,7 @@
       "success": true
     },
     "source": {
-      "lineNo": 394,
+      "lineNo": 346,
       "in": "  (foo\n++\n    (bar\n++\n    baz))",
       "out": "  (foo\n    (bar\n      baz))"
     }
@@ -567,7 +505,7 @@
       "success": true
     },
     "source": {
-      "lineNo": 410,
+      "lineNo": 362,
       "in": "  (foo\n      (bar\n++\n        baz))\n++",
       "out": "  (foo\n      (bar\n        baz))"
     }
@@ -589,7 +527,7 @@
       "success": true
     },
     "source": {
-      "lineNo": 427,
+      "lineNo": 379,
       "in": "  (foo\n++\n  bar\n  baz)",
       "out": "  (foo\n    bar\n    baz)"
     }
@@ -617,7 +555,7 @@
       "success": true
     },
     "source": {
-      "lineNo": 442,
+      "lineNo": 394,
       "in": "  (foo\n++\n    bar\n++\n  baz)",
       "out": "  (foo\n    bar\n    baz)"
     }
@@ -645,7 +583,7 @@
       "success": true
     },
     "source": {
-      "lineNo": 458,
+      "lineNo": 410,
       "in": "(foo\n    bar\n++\n    baz)\n++",
       "out": "(foo\n    bar\n    baz)"
     }

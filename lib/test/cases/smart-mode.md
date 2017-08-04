@@ -325,54 +325,6 @@ and correcting indentation.
  4)
 ```
 
-## Resolving Precarious Paren After Adding them
-
-Also, suppose we _added_ a precarious paren `]` in the example below.  It is
-precarious because the cursor is holding the paren in place despite the
-indentation of the following lines.
-
-```in
-(foo [1 2 3]|
-           +
-      4 5 6
-      7 8 9])
-```
-
-```out
-(foo [1 2 3]|
-      4 5 6
-      7 8 9)
-```
-
-If we move the cursor away from this holding area, the indentation should
-be corrected to respect the structure given.
-
-```in
-(foo [1 2 3]
-            ^ prevCursor
-      4 5 6
-      7 8 9)
-```
-
-```out
-(foo [1 2 3]
-     4 5 6
-     7 8 9)
-```
-
-```in
-(foo [1 2 3|]
-             ^ prevCursor
-      4 5 6
-      7 8 9)
-```
-
-```out
-(foo [1 2 3|]
-     4 5 6
-     7 8 9)
-```
-
 ## Indenting Selected Lines
 
 Indent only the first line:

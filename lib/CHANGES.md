@@ -3,6 +3,8 @@
 - add: return `parens` (full paren tree) if `returnParens` is enabled
 - change: move leading-close paren fix from Indent Mode to Smart Mode
 - change: throw leading close-paren error in Indent Mode if and it cannot be removed safely and `forceBalance` is off
+- revert: do not fix indentation in Smart Mode after cursor leaves end of Paren Trail (from [#147])
+  - this was causing bad pasting behavior since a line with extra parens would dedent subsequent lines
 
 ## 3.9.0
 
