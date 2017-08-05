@@ -147,6 +147,8 @@
          ({:indent-mode "indent"
            :paren-mode "paren"
            :smart-mode "smart"} mode)
-         #js {:forceBalance (:forceBalance opts true)})
+         #js {:forceBalance (:forceBalance opts true)
+              :guides (:guides opts)
+              :locus (:locus opts)})
 
        cm))))

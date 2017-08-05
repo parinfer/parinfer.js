@@ -1,5 +1,5 @@
 //
-// Parinfer 3.9.0
+// Parinfer 3.10.0
 //
 // Copyright 2015-2017 © Shaun Lebron
 // MIT License
@@ -39,8 +39,7 @@
 var UINT_NULL = -999;
 
 var INDENT_MODE = "INDENT_MODE",
-    PAREN_MODE = "PAREN_MODE",
-    SMART_MODE = "SMART_MODE";
+    PAREN_MODE = "PAREN_MODE";
 
 var BACKSLASH = '\\',
     BLANK_SPACE = ' ',
@@ -60,6 +59,9 @@ var MATCH_PAREN = {
   "(": ")",
   ")": "("
 };
+
+// toggle this to check the asserts during development
+var RUN_ASSERTS = false;
 
 function isBoolean(x) {
   return typeof x === 'boolean';
@@ -149,7 +151,8 @@ function parseOptions(options) {
     selectionStartLine: options.selectionStartLine,
     changes: options.changes,
     partialResult: options.partialResult,
-    forceBalance: options.forceBalance
+    forceBalance: options.forceBalance,
+    returnParens: options.returnParens
   };
 }
 
@@ -161,15 +164,26 @@ function parseOptions(options) {
 // of a given text, we mutate this structure to update the state of our
 // system.
 
-function getInitialResult(text, options, mode) {
+function initialParenTrail() {
+  return {
+    lineNo: UINT_NULL,       // [integer] - line number of the last parsed paren trail
+    startX: UINT_NULL,       // [integer] - x position of first paren in this range
+    endX: UINT_NULL,         // [integer] - x position after the last paren in this range
+    openers: [],             // [array of stack elements] - corresponding open-paren for each close-paren in this range
+    clamped: {
+      startX: UINT_NULL,     // startX before paren trail was clamped
+      endX: UINT_NULL,       // endX before paren trail was clamped
+      openers: []            // openers that were cut out after paren trail was clamped
+    }
+  };
+}
 
-  var smartMode = (mode === SMART_MODE);
-  var actualMode = smartMode ? INDENT_MODE : mode;
+function getInitialResult(text, options, mode, smart) {
 
   var result = {
 
-    mode: actualMode,          // [enum] - current processing mode (INDENT_MODE or PAREN_MODE)
-    smartMode: smartMode,      // [boolean] - smartMode is a sub-mode of Indent Mode (for now)
+    mode: mode,                // [enum] - current processing mode (INDENT_MODE or PAREN_MODE)
+    smart: smart,              // [boolean] - smart mode attempts special user-friendly behavior
 
     origText: text,            // [string] - original text
     origCursorX: UINT_NULL,    // [integer] - original cursorX option
@@ -193,14 +207,12 @@ function getInitialResult(text, options, mode) {
                                // to certain critical points.  Thus, we have a `tabStops` array of objects containing
                                // keys {ch, x, lineNo, argX}, which is just the state of the `parenStack` at the cursor line.
 
-    parenTrail: {              // the range of parens at the end of a line
-      lineNo: UINT_NULL,       // [integer] - line number of the last parsed paren trail
-      startX: UINT_NULL,       // [integer] - x position of first paren in this range
-      endX: UINT_NULL,         // [integer] - x position after the last paren in this range
-      openers: []              // [array of stack elements] - corresponding open-paren for each close-paren in this range
-    },
+    parenTrail: initialParenTrail(), // the range of parens at the end of a line
 
     parenTrails: [],           // [array of {lineNo, startX, endX}] - all non-empty parenTrails to be returned
+
+    returnParens: false,       // [boolean] - determines if we return `parens` described below
+    parens: [],                // [array of {lineNo, x, closer, children}] - paren tree if `returnParens` is true
 
     cursorX: UINT_NULL,        // [integer] - x position of the cursor
     cursorLine: UINT_NULL,     // [integer] - line number of the cursor
@@ -273,6 +285,7 @@ function getInitialResult(text, options, mode) {
     if (isArray(options.changes))              { result.changes            = transformChanges(options.changes); }
     if (isBoolean(options.partialResult))      { result.partialResult      = options.partialResult; }
     if (isBoolean(options.forceBalance))       { result.forceBalance       = options.forceBalance; }
+    if (isBoolean(options.returnParens))       { result.returnParens       = options.returnParens; }
   }
 
   return result;
@@ -289,6 +302,7 @@ var ERROR_UNCLOSED_QUOTE = "unclosed-quote";
 var ERROR_UNCLOSED_PAREN = "unclosed-paren";
 var ERROR_UNMATCHED_CLOSE_PAREN = "unmatched-close-paren";
 var ERROR_UNMATCHED_OPEN_PAREN = "unmatched-open-paren";
+var ERROR_LEADING_CLOSE_PAREN = "leading-close-paren";
 var ERROR_UNHANDLED = "unhandled";
 
 var errorMessages = {};
@@ -298,6 +312,7 @@ errorMessages[ERROR_UNCLOSED_QUOTE] = "String is missing a closing quote.";
 errorMessages[ERROR_UNCLOSED_PAREN] = "Unclosed open-paren.";
 errorMessages[ERROR_UNMATCHED_CLOSE_PAREN] = "Unmatched close-paren.";
 errorMessages[ERROR_UNMATCHED_OPEN_PAREN] = "Unmatched open-paren.";
+errorMessages[ERROR_LEADING_CLOSE_PAREN] = "Line cannot lead with a close-paren.";
 errorMessages[ERROR_UNHANDLED] = "Unhandled error.";
 
 function cacheErrorPos(result, errorName) {
@@ -356,6 +371,12 @@ function replaceWithinString(orig, start, end, replace) {
   );
 }
 
+if (RUN_ASSERTS) {
+  console.assert(replaceWithinString('aaa', 0, 2, '') === 'a');
+  console.assert(replaceWithinString('aaa', 0, 1, 'b') === 'baa');
+  console.assert(replaceWithinString('aaa', 0, 2, 'b') === 'ba');
+}
+
 function repeatString(text, n) {
   var i;
   var result = "";
@@ -363,6 +384,14 @@ function repeatString(text, n) {
     result += text;
   }
   return result;
+}
+
+if (RUN_ASSERTS) {
+  console.assert(repeatString('a', 2) === 'aa');
+  console.assert(repeatString('aa', 3) === 'aaaaaa');
+  console.assert(repeatString('aa', 0) === '');
+  console.assert(repeatString('', 0) === '');
+  console.assert(repeatString('', 5) === '');
 }
 
 function getLineEnding(text) {
@@ -422,8 +451,10 @@ function initLine(result, line) {
   result.indentDelta = 0;
   delete result.errorPosCache[ERROR_UNMATCHED_CLOSE_PAREN];
   delete result.errorPosCache[ERROR_UNMATCHED_OPEN_PAREN];
+  delete result.errorPosCache[ERROR_LEADING_CLOSE_PAREN];
 
   result.trackingArgTabStop = null;
+  result.trackingIndent = !result.isInStr;
 }
 
 // if the current character has changed, commit its change to the current line.
@@ -450,8 +481,32 @@ function clamp(val, minN, maxN) {
   return val;
 }
 
-function peek(array, i) {
-  return array[array.length-1-i];
+if (RUN_ASSERTS) {
+  console.assert(clamp(1, 3, 5) === 3);
+  console.assert(clamp(9, 3, 5) === 5);
+  console.assert(clamp(1, 3, UINT_NULL) === 3);
+  console.assert(clamp(5, 3, UINT_NULL) === 5);
+  console.assert(clamp(1, UINT_NULL, 5) === 1);
+  console.assert(clamp(9, UINT_NULL, 5) === 5);
+  console.assert(clamp(1, UINT_NULL, UINT_NULL) === 1);
+}
+
+function peek(arr, idxFromBack) {
+  var maxIdx = arr.length - 1;
+  if (idxFromBack > maxIdx) {
+    return null;
+  }
+  return arr[maxIdx - idxFromBack];
+}
+
+if (RUN_ASSERTS) {
+  console.assert(peek(['a'], 0) === 'a');
+  console.assert(peek(['a'], 1) === null);
+  console.assert(peek(['a', 'b', 'c'], 0) === 'c');
+  console.assert(peek(['a', 'b', 'c'], 1) === 'b');
+  console.assert(peek(['a', 'b', 'c'], 5) === null);
+  console.assert(peek([], 0) === null);
+  console.assert(peek([], 1) === null);
 }
 
 //------------------------------------------------------------------------------
@@ -506,7 +561,7 @@ function checkCursorHolding(result) {
       holdMinX <= result.prevCursorX && result.prevCursorX <= holdMaxX
     );
     if (prevHolding && !holding) {
-      throw {smartModeFixIndent: true};
+      throw {releaseCursorHold: true};
     }
   }
   return holding;
@@ -533,7 +588,7 @@ function trackArgTabStop(result, state) {
 
 function onOpenParen(result) {
   if (result.isInCode) {
-    result.parenStack.push({
+    var opener = {
       inputLineNo: result.inputLineNo,
       inputX: result.inputX,
 
@@ -542,20 +597,48 @@ function onOpenParen(result) {
       ch: result.ch,
       indentDelta: result.indentDelta,
       maxChildIndent: UINT_NULL
-    });
+    };
+
+    if (result.returnParens) {
+      opener.children = [];
+      opener.closer = {
+        lineNo: UINT_NULL,
+        x: UINT_NULL,
+        ch: ''
+      };
+      var parent = peek(result.parenStack, 0);
+      parent = parent ? parent.children : result.parens;
+      parent.push(opener);
+    }
+
+    result.parenStack.push(opener);
     result.trackingArgTabStop = 'space';
   }
 }
 
+function setCloser(opener, lineNo, x, ch) {
+  opener.closer.lineNo = lineNo;
+  opener.closer.x = x;
+  opener.closer.ch = ch;
+}
+
 function onMatchedCloseParen(result) {
   var opener = peek(result.parenStack, 0);
-
-  if (result.smartMode && checkCursorHolding(result)) {
-    resetParenTrail(result, result.lineNo, result.x+1);
+  if (result.returnParens) {
+    setCloser(opener, result.lineNo, result.x, result.ch);
   }
-  else {
-    result.parenTrail.endX = result.x + 1;
-    result.parenTrail.openers.push(opener);
+
+  result.parenTrail.endX = result.x + 1;
+  result.parenTrail.openers.push(opener);
+
+  if (result.mode === INDENT_MODE && result.smart && checkCursorHolding(result)) {
+    var origStartX = result.parenTrail.startX;
+    var origEndX = result.parenTrail.endX;
+    var origOpeners = result.parenTrail.openers;
+    resetParenTrail(result, result.lineNo, result.x+1);
+    result.parenTrail.clamped.startX = origStartX;
+    result.parenTrail.clamped.endX = origEndX;
+    result.parenTrail.clamped.openers = origOpeners;
   }
   result.parenStack.pop();
   result.trackingArgTabStop = null;
@@ -697,7 +780,7 @@ function isCursorInComment(result, cursorX, cursorLine) {
 }
 
 function handleChangeDelta(result) {
-  if (result.changes && (result.smartMode || result.mode === PAREN_MODE)) {
+  if (result.changes && (result.smart || result.mode === PAREN_MODE)) {
     var line = result.changes[result.inputLineNo];
     if (line) {
       var change = line[result.inputX];
@@ -717,6 +800,9 @@ function resetParenTrail(result, lineNo, x) {
   result.parenTrail.startX = x;
   result.parenTrail.endX = x;
   result.parenTrail.openers = [];
+  result.parenTrail.clamped.startX = UINT_NULL;
+  result.parenTrail.clamped.endX = UINT_NULL;
+  result.parenTrail.clamped.openers = [];
 }
 
 function isCursorClampingParenTrail(result, cursorX, cursorLine) {
@@ -733,14 +819,6 @@ function clampParenTrailToCursor(result) {
 
   var clamping = isCursorClampingParenTrail(result, result.cursorX, result.cursorLine);
 
-  var shouldCheckPrev = (result.smartMode && !result.changes);
-  if (shouldCheckPrev) {
-    var wasClamping = isCursorClampingParenTrail(result, result.prevCursorX, result.prevCursorLine);
-    if (wasClamping && !clamping || result.cursorX < result.prevCursorX) {
-      throw {smartModeFixIndent: true};
-    }
-  }
-
   if (clamping) {
     var newStartX = Math.max(startX, result.cursorX);
     var newEndX = Math.max(endX, result.cursorX);
@@ -754,9 +832,15 @@ function clampParenTrailToCursor(result) {
       }
     }
 
-    result.parenTrail.openers.splice(0, removeCount);
+    var openers = result.parenTrail.openers;
+
+    result.parenTrail.openers = openers.slice(removeCount);
     result.parenTrail.startX = newStartX;
     result.parenTrail.endX = newEndX;
+
+    result.parenTrail.clamped.openers = openers.slice(0, removeCount);
+    result.parenTrail.clamped.startX = startX;
+    result.parenTrail.clamped.endX = endX;
   }
 }
 
@@ -809,7 +893,13 @@ function correctParenTrail(result, indentX) {
   var i;
   for (i=0; i<index; i++) {
     var opener = result.parenStack.pop();
-    parens += MATCH_PAREN[opener.ch];
+    result.parenTrail.openers.push(opener);
+    var closeCh = MATCH_PAREN[opener.ch];
+    parens += closeCh;
+
+    if (result.returnParens) {
+      setCloser(opener, result.parenTrail.lineNo, result.parenTrail.startX+i, closeCh);
+    }
   }
 
   if (result.parenTrail.lineNo !== UINT_NULL) {
@@ -852,22 +942,20 @@ function cleanParenTrail(result) {
 function appendParenTrail(result) {
   var opener = result.parenStack.pop();
   var closeCh = MATCH_PAREN[opener.ch];
+  if (result.returnParens) {
+    setCloser(opener, result.parenTrail.lineNo, result.parenTrail.endX, closeCh);
+  }
 
   setMaxIndent(result, opener);
   insertWithinLine(result, result.parenTrail.lineNo, result.parenTrail.endX, closeCh);
 
   result.parenTrail.endX++;
-  updateRememberedParenTrail(result);
   result.parenTrail.openers.push(opener);
+  updateRememberedParenTrail(result);
 }
 
 function invalidateParenTrail(result) {
-  result.parenTrail = {
-    lineNo: UINT_NULL,
-    startX: UINT_NULL,
-    endX: UINT_NULL,
-    openers: []
-  };
+  result.parenTrail = initialParenTrail();
 }
 
 function checkUnmatchedOutsideParenTrail(result) {
@@ -891,12 +979,23 @@ function setMaxIndent(result, opener) {
 
 function rememberParenTrail(result) {
   var trail = result.parenTrail;
-  if (trail.startX !== trail.endX) {
-    result.parenTrails.push({
+  var openers = trail.clamped.openers.concat(trail.openers);
+  if (openers.length > 0) {
+    var isClamped = trail.clamped.startX !== UINT_NULL;
+    var allClamped = trail.openers.length === 0;
+    var shortTrail = {
       lineNo: trail.lineNo,
-      startX: trail.startX,
-      endX: trail.endX
-    });
+      startX: isClamped ? trail.clamped.startX : trail.startX,
+      endX: allClamped ? trail.clamped.endX : trail.endX
+    };
+    result.parenTrails.push(shortTrail);
+
+    if (result.returnParens) {
+      var i;
+      for (i=0; i<openers.length; i++) {
+        openers[i].closer.trail = shortTrail;
+      }
+    }
   }
 }
 
@@ -988,21 +1087,35 @@ function onIndent(result) {
   }
 }
 
+function checkLeadingCloseParen(result) {
+  if (result.errorPosCache[ERROR_LEADING_CLOSE_PAREN] &&
+      result.parenTrail.lineNo === result.lineNo) {
+    throw error(result, ERROR_LEADING_CLOSE_PAREN);
+  }
+}
+
 function onLeadingCloseParen(result) {
-  result.skipChar = true;
-  if (result.mode === INDENT_MODE && !result.forceBalance) {
-    throw {indentModeLeadingCloseParen: true};
+  if (result.mode === INDENT_MODE) {
+    if (!result.forceBalance) {
+      if (result.smart) {
+        throw {leadingCloseParen: true};
+      }
+      if (!result.errorPosCache[ERROR_LEADING_CLOSE_PAREN]) {
+        cacheErrorPos(result, ERROR_LEADING_CLOSE_PAREN);
+      }
+    }
+    result.skipChar = true;
   }
   if (result.mode === PAREN_MODE) {
     if (!isValidCloseParen(result.parenStack, result.ch)) {
       throw error(result, ERROR_UNMATCHED_CLOSE_PAREN);
     }
     if (isCursorLeftOf(result.cursorX, result.cursorLine, result.x, result.lineNo)) {
-      result.skipChar = false;
       onIndent(result);
     }
     else {
       appendParenTrail(result);
+      result.skipChar = true;
     }
   }
 }
@@ -1046,18 +1159,6 @@ function checkIndent(result) {
            result.ch !== BLANK_SPACE &&
            result.ch !== TAB) {
     onIndent(result);
-  }
-}
-
-function initIndent(result) {
-  if (result.mode === INDENT_MODE) {
-    result.trackingIndent = (
-      result.parenStack.length !== 0 &&
-      !result.isInStr
-    );
-  }
-  else if (result.mode === PAREN_MODE) {
-    result.trackingIndent = !result.isInStr;
   }
 }
 
@@ -1131,7 +1232,6 @@ function processChar(result, ch) {
 
 function processLine(result, lineNo) {
   initLine(result, result.inputLines[lineNo]);
-  initIndent(result);
 
   setTabStops(result);
 
@@ -1144,6 +1244,7 @@ function processLine(result, lineNo) {
 
   if (!result.forceBalance) {
     checkUnmatchedOutsideParenTrail(result);
+    checkLeadingCloseParen(result);
   }
 
   if (result.lineNo === result.parenTrail.lineNo) {
@@ -1180,8 +1281,8 @@ function processError(result, e) {
   }
 }
 
-function processText(text, options, mode) {
-  var result = getInitialResult(text, options, mode);
+function processText(text, options, mode, smart) {
+  var result = getInitialResult(text, options, mode, smart);
 
   try {
     var i;
@@ -1192,11 +1293,8 @@ function processText(text, options, mode) {
     finalizeResult(result);
   }
   catch (e) {
-    if (e.indentModeLeadingCloseParen) {
-      return processText(text, options, PAREN_MODE);
-    }
-    if (e.smartModeFixIndent) {
-      return processText(text, options, PAREN_MODE);
+    if (e.leadingCloseParen || e.releaseCursorHold) {
+      return processText(text, options, PAREN_MODE, smart);
     }
     processError(result, e);
   }
@@ -1220,6 +1318,9 @@ function publicResult(result) {
       tabStops: result.tabStops,
       parenTrails: result.parenTrails
     };
+    if (result.returnParens) {
+      final.parens = result.parens;
+    }
   }
   else {
     final = {
@@ -1230,6 +1331,9 @@ function publicResult(result) {
       success: false,
       error: result.error
     };
+    if (result.partialResult && result.returnParens) {
+      final.parens = result.parens;
+    }
   }
   if (final.cursorX === UINT_NULL) { delete final.cursorX; }
   if (final.cursorLine === UINT_NULL) { delete final.cursorLine; }
@@ -1249,11 +1353,12 @@ function parenMode(text, options) {
 
 function smartMode(text, options) {
   options = parseOptions(options);
-  return publicResult(processText(text, options, SMART_MODE));
+  var smart = options.selectionStartLine == null;
+  return publicResult(processText(text, options, INDENT_MODE, smart));
 }
 
 var API = {
-  version: "3.9.0",
+  version: "3.10.0",
   indentMode: indentMode,
   parenMode: parenMode,
   smartMode: smartMode
