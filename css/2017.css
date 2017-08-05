@@ -528,3 +528,14 @@ i.fa {
 .parinfer-error {
   background: #FFBEBE; color: black !important;
 }
+
+body.locus .CodeMirror {
+  line-height: 22px;
+}
+.parinfer-locus-paren {
+  visibility: hidden;
+}
+.parinfer-locus {
+  opacity: 0.1;
+  pointer-events: none;
+}

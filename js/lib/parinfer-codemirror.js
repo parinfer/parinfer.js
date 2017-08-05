@@ -37,6 +37,9 @@ var MODES = [PAREN_MODE, INDENT_MODE, SMART_MODE];
 
 var CLASSNAME_ERROR = 'parinfer-error';
 var CLASSNAME_PARENTRAIL = 'parinfer-paren-trail';
+var CLASSNAME_LOCUS_PAREN = 'parinfer-locus-paren';
+
+var CLASSNAME_LOCUS_LAYER = 'parinfer-locus';
 
 //------------------------------------------------------------------------------
 // State
@@ -266,6 +269,169 @@ function onTab(cm, dx) {
 }
 
 //------------------------------------------------------------------------------
+// Locus/Guides layer
+//------------------------------------------------------------------------------
+
+function getLayerContainer(cm) {
+  var wrapper = cm.getWrapperElement();
+  var lines = wrapper.querySelector('.CodeMirror-lines');
+  var container = lines.parentNode;
+  return container;
+}
+
+function parenSelected(paren, sel) {
+  return sel.contains({line: paren.lineNo, ch: paren.x}) !== -1;
+}
+
+function pointRevealsParenTrail(trail, pos) {
+  return (
+    pos.line === trail.lineNo &&
+    trail.startX <= pos.ch /* && cursor.ch <= trail.endX */
+  );
+}
+
+function hideParen(cm, paren) {
+  var sel = cm.getDoc().sel;
+  var sel0 = sel.ranges[0];
+  var shouldShowCloser = (
+    paren.lineNo === paren.closer.lineNo ||
+    !paren.closer.trail ||
+    pointRevealsParenTrail(paren.closer.trail, sel0.anchor) ||
+    pointRevealsParenTrail(paren.closer.trail, sel0.head) ||
+    parenSelected(paren.closer, sel)
+  );
+
+  if (!shouldShowCloser) {
+    addMark(cm, paren.closer.lineNo, paren.closer.x, paren.closer.x+1, CLASSNAME_LOCUS_PAREN);
+  }
+  hideParens(cm, paren.children);
+}
+
+function hideParens(cm, parens) {
+  var i;
+  for (i=0; i<parens.length; i++) {
+    hideParen(cm, parens[i]);
+  }
+}
+
+function charPos(cm, paren) {
+  var p = cm.charCoords({line: paren.lineNo, ch: paren.x}, "local");
+  var w = p.right - p.left;
+  return {
+    midx: p.left + w/2,
+    right: p.right,
+    left: p.left,
+    top: p.top,
+    bottom: p.bottom,
+  };
+}
+
+function getRightBound(cm, startLine, endLine) {
+  var doc = cm.getDoc();
+  var maxWidth=0;
+  var maxLineNo=0;
+  var i;
+  for (i=startLine; i<=endLine; i++) {
+    var line = doc.getLine(i);
+    if (line.length > maxWidth) {
+      maxWidth = line.length;
+      maxLineNo = i;
+    }
+  }
+  var wall = charPos(cm, {lineNo: maxLineNo, x: maxWidth});
+  return wall.right;
+}
+
+function addBox(cm, paren) {
+  var layer = cm[STATE_PROP].layer;
+  var paper = layer.paper;
+  var charW = layer.charW;
+  var charH = layer.charH;
+
+  var open = charPos(cm, paren);
+  var close = charPos(cm, paren.closer);
+
+  var r = 4;
+
+  if (paren.closer.trail && paren.lineNo !== paren.closer.lineNo) {
+    switch (layer.type) {
+      case 'guides':
+        paper.path([
+          'M', open.midx, open.bottom,
+          'V', close.bottom
+        ].join(' '));
+        break;
+      case 'locus':
+        var right = getRightBound(cm, paren.lineNo, paren.closer.lineNo);
+        paper.path([
+          'M', open.midx, open.top+r,
+          'A', r, r, 0, 0, 1, open.midx+r, open.top,
+          'H', right-r,
+          'A', r, r, 0, 0, 1, right, open.top+r,
+          'V', close.bottom,
+          'H', open.midx,
+          'V', open.bottom
+        ].join(' '));
+        break;
+    }
+  }
+
+  addBoxes(cm, paren.children);
+}
+
+function addBoxes(cm, parens) {
+  var i;
+  for (i=0; i<parens.length; i++) {
+    addBox(cm, parens[i]);
+  }
+}
+
+function addLayer(cm, type) {
+  var layer = cm[STATE_PROP].layer;
+  layer.type = type;
+
+  var el = document.createElement('div');
+  el.style.position = 'absolute';
+  el.style.left = '0';
+  el.style.top = '0';
+  el.style['z-index'] = 100;
+  el.className = CLASSNAME_LOCUS_LAYER;
+
+  layer.el = el;
+  layer.container.appendChild(el);
+
+  var pixelW = layer.container.clientWidth;
+  var pixelH = layer.container.clientHeight;
+
+  layer.paper = Raphael(el, pixelW, pixelH);
+}
+
+function clearLayer(cm) {
+  var layer = cm[STATE_PROP].layer;
+  if (layer && layer.el) {
+    layer.container.removeChild(layer.el);
+  }
+}
+
+function updateLocusLayer(cm, parens) {
+  clearMarks(cm, CLASSNAME_LOCUS_PAREN);
+  if (parens) {
+    hideParens(cm, parens);
+    clearLayer(cm);
+    addLayer(cm, 'locus');
+    addBoxes(cm, parens);
+  }
+}
+
+function updateGuidesLayer(cm, parens) {
+  if (parens) {
+    clearLayer(cm);
+    addLayer(cm, 'guides');
+    addBoxes(cm, parens);
+  }
+}
+
+//------------------------------------------------------------------------------
 // Text Correction
 //------------------------------------------------------------------------------
 
@@ -301,6 +467,15 @@ function fixText(state, changes) {
     options.changes = convertChanges(changes);
   }
 
+  var locus = state.options && state.options.locus;
+  var guides = state.options && state.options.guides;
+
+  if (locus || guides) {
+    delete options.locus;
+    delete options.guides;
+    options.returnParens = true;
+  }
+
   // Run Parinfer
   var result;
   var mode = state.fixMode ? PAREN_MODE : state.mode;
@@ -310,6 +485,9 @@ function fixText(state, changes) {
     case SMART_MODE:  result = parinfer.smartMode(text, options); break;
     default: ensureMode(mode);
   }
+
+  // Remember the paren tree.
+  state.parens = result.parens;
 
   // Remember tab stops for smart tabbing.
   state.tabStops = result.tabStops;
@@ -345,6 +523,12 @@ function fixText(state, changes) {
   // Remember the cursor position for next time
   state.prevCursorLine = result.cursorLine;
   state.prevCursorX = result.cursorX;
+
+  if (locus) {
+    updateLocusLayer(cm, result.parens);
+  } else if (guides) {
+    updateGuidesLayer(cm, result.parens);
+  }
 
   // Re-run with original mode if code was finally fixed in Paren Mode.
   if (state.fixMode && result.success) {
@@ -422,6 +606,10 @@ function init(cm, mode, options) {
 
   state = initialState(cm, mode, options);
   cm[STATE_PROP] = state;
+
+  state.layer = {
+    container: getLayerContainer(cm)
+  };
   return enable(cm);
 }
 
