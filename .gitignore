@@ -17,3 +17,7 @@ figwheel_server.log
 todo
 
 node_modules
+
+.idea
+parinfer.iml
+lib/wallaby.js
