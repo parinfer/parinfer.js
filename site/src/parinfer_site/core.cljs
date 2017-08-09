@@ -356,7 +356,6 @@
   (render-controls!))
 
 (defn render-2017! []
-  (toc/init!)
   (create-2017-editors!)
   (load-anims! anims-2017)
   (render-controls!))
