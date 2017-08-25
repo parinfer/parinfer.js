@@ -1,3 +1,11 @@
+## 3.11.0
+
+- fix: `parenTrails` now include those which may appear at the beginning of a line
+- fix: `parens` now correctly assigns relocated leading close-parens to their paren trail
+- enhancement: smart mode with `forceBalance` off will remove unmatched close-parens in a leading paren trail ( see [#163])
+
+[#163]:https://github.com/shaunlebron/parinfer/issues/163
+
 ## 3.10.0
 
 - add: return `parens` (full paren tree) if `returnParens` is enabled
@@ -8,6 +16,8 @@
 - change: smart mode will allow selected lines to be indented in isolation (by running Indent Mode when `selectionStartLine` is passed in)
   - this helps with correcting pastes without influence indentation around it
   - thanks to [@SevereOverfl0w](https://github.com/SevereOverfl0w)!
+
+[#147]:https://github.com/shaunlebron/parinfer/issues/147
 
 ## 3.9.0
 
