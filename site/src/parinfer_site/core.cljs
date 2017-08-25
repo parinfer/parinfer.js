@@ -361,18 +361,19 @@
   (render-controls!))
 
 (defn render-demo! []
-  (let [opts (options-2017)
+  (let [init-value (string/join "\n"
+                     ["(defn foo"
+                      "  \"hello, this is a docstring\""
+                      "  [a b]"
+                      "  (let [sum (+ a b)"
+                      "        prod (* a b)]"
+                      "     {:sum sum"
+                      "      :prod prod}))"])
+        opts (assoc (options-2017)
+               :init-value init-value
+               :guides (not (locus?)))
         cm (create-editor! "code-demo" :demo opts)]
     (editor-ui/render! :demo)
-    (.setValue cm
-      (string/join "\n"
-        ["(defn foo"
-         "  \"hello, this is a docstring\""
-         "  [a b]"
-         "  (let [sum (+ a b)"
-         "        prod (* a b)]"
-         "     {:sum sum"
-         "      :prod prod}))"]))
     (swap! state assoc-in [:demo :mode] :smart-mode)))
 
 (defn init! []

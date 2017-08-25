@@ -142,6 +142,9 @@
        (.on cm "beforeChange" before-change)
        (.on cm "cursorActivity" on-cursor-activity)
 
+       (when-let [init-value (:init-value opts)]
+         (.setValue cm init-value))
+
        (.init js/parinferCodeMirror
          cm
          ({:indent-mode "indent"
