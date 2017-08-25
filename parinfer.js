@@ -1,5 +1,5 @@
 //
-// Parinfer 3.10.0
+// Parinfer 3.11.0
 //
 // Copyright 2015-2017 © Shaun Lebron
 // MIT License
@@ -198,6 +198,7 @@ function getInitialResult(text, options, mode, smart) {
     lineNo: -1,                // [integer] - output line number we are on
     ch: "",                    // [string] - character we are processing (can be changed to indicate a replacement)
     x: 0,                      // [integer] - output x position of the current character (ch)
+    indentX: UINT_NULL,        // [integer] - x position of the indentation point if present
 
     parenStack: [],            // We track where we are in the Lisp tree by keeping a stack (array) of open-parens.
                                // Stack elements are objects containing keys {ch, x, lineNo, indentDelta}
@@ -447,6 +448,7 @@ function initLine(result, line) {
   result.lines.push(line);
 
   // reset line-specific state
+  result.indentX = UINT_NULL;
   result.commentX = UINT_NULL;
   result.indentDelta = 0;
   delete result.errorPosCache[ERROR_UNMATCHED_CLOSE_PAREN];
@@ -646,9 +648,14 @@ function onMatchedCloseParen(result) {
 
 function onUnmatchedCloseParen(result) {
   if (result.mode === PAREN_MODE) {
-    throw error(result, ERROR_UNMATCHED_CLOSE_PAREN);
+    var trail = result.parenTrail;
+    var inLeadingParenTrail = trail.lineNo === result.lineNo && trail.startX === result.indentX;
+    var canRemove = result.smart && inLeadingParenTrail;
+    if (!canRemove) {
+      throw error(result, ERROR_UNMATCHED_CLOSE_PAREN);
+    }
   }
-  if (!result.errorPosCache[ERROR_UNMATCHED_CLOSE_PAREN]) {
+  else if (result.mode === INDENT_MODE && !result.errorPosCache[ERROR_UNMATCHED_CLOSE_PAREN]) {
     cacheErrorPos(result, ERROR_UNMATCHED_CLOSE_PAREN);
     var opener = peek(result.parenStack, 0);
     if (opener) {
@@ -1006,6 +1013,10 @@ function updateRememberedParenTrail(result) {
   }
   else {
     trail.endX = result.parenTrail.endX;
+    if (result.returnParens) {
+      var opener = result.parenTrail.openers[result.parenTrail.openers.length-1];
+      opener.closer.trail = trail;
+    }
   }
 }
 
@@ -1036,6 +1047,7 @@ function addIndent(result, delta) {
   var indentStr = repeatString(BLANK_SPACE, newIndent);
   replaceWithinLine(result, result.lineNo, 0, origIndent, indentStr);
   result.x = newIndent;
+  result.indentX = newIndent;
   result.indentDelta += delta;
 }
 
@@ -1068,6 +1080,7 @@ function correctIndent(result) {
 }
 
 function onIndent(result) {
+  result.indentX = result.x;
   result.trackingIndent = false;
 
   if (result.quoteDanger) {
@@ -1108,9 +1121,15 @@ function onLeadingCloseParen(result) {
   }
   if (result.mode === PAREN_MODE) {
     if (!isValidCloseParen(result.parenStack, result.ch)) {
-      throw error(result, ERROR_UNMATCHED_CLOSE_PAREN);
+      if (result.smart) {
+        result.skipChar = true;
+      }
+      else {
+        throw error(result, ERROR_UNMATCHED_CLOSE_PAREN);
+      }
     }
-    if (isCursorLeftOf(result.cursorX, result.cursorLine, result.x, result.lineNo)) {
+    else if (isCursorLeftOf(result.cursorX, result.cursorLine, result.x, result.lineNo)) {
+      resetParenTrail(result, result.lineNo, result.x);
       onIndent(result);
     }
     else {
@@ -1120,7 +1139,7 @@ function onLeadingCloseParen(result) {
   }
 }
 
-function shiftCommentLine(result) {
+function onCommentLine(result) {
   var parenTrailLength = result.parenTrail.openers.length;
 
   // restore the openers matching the previous paren trail
@@ -1131,11 +1150,14 @@ function shiftCommentLine(result) {
     }
   }
 
-  // shift the comment line based on the parent open paren
   var i = getParentOpenerIndex(result, result.x);
   var opener = peek(result.parenStack, i);
-  if (opener && shouldAddOpenerIndent(result, opener)) {
-    addIndent(result, opener.indentDelta);
+  if (opener) {
+    // shift the comment line based on the parent open paren
+    if (shouldAddOpenerIndent(result, opener)) {
+      addIndent(result, opener.indentDelta);
+    }
+    // TODO: store some information here if we need to place close-parens after comment lines
   }
 
   // repop the openers matching the previous paren trail
@@ -1152,7 +1174,7 @@ function checkIndent(result) {
   }
   else if (result.ch === SEMICOLON) {
     // comments don't count as indentation points
-    shiftCommentLine(result);
+    onCommentLine(result);
     result.trackingIndent = false;
   }
   else if (result.ch !== NEWLINE &&
@@ -1358,7 +1380,7 @@ function smartMode(text, options) {
 }
 
 var API = {
-  version: "3.10.0",
+  version: "3.11.0",
   indentMode: indentMode,
   parenMode: parenMode,
   smartMode: smartMode
