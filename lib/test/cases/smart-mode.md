@@ -86,6 +86,29 @@ to their normal positions:
 
 When in Paren Mode we must abide by its rules to stay balanced.
 
+As a courtesy, unmatched close-parens in a paren trail at the beginning of a
+line are auto-removed (only when paren mode is triggered from smart mode).
+
+```in
+(|)
+-
+```
+
+```out
+|
+```
+
+```in
+(foo
+  (bar|))
+  ----
+```
+
+```out
+(foo
+  |)
+```
+
 ```in
 (foo
   }|)
@@ -93,8 +116,7 @@ When in Paren Mode we must abide by its rules to stay balanced.
 
 ```out
 (foo
-  }|)
-  ^ error: unmatched-close-paren
+  |)
 ```
 
 Likewise:
