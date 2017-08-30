@@ -663,3 +663,29 @@ use it for alignment.
   |
   bar)
 ```
+
+## Comments as Code
+
+```in
+(foo
+  ; bar
+)
+```
+
+```out
+(foo
+  ; bar
+  )
+```
+
+```in
+(foo
+; bar
+)
+```
+
+```out
+(foo
+ ; bar
+ )
+```

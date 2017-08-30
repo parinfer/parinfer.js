@@ -895,3 +895,147 @@ We return non-empty Paren Trails so plugins can dim them with markers:
       :prod prod}))
                 ^^^ parenTrail
 ```
+
+## Comments as Code
+
+```in
+(foo
+  ;bar)
+```
+
+```out
+(foo
+  ;bar)
+  )
+```
+
+```in
+(foo
+;bar)
+  )
+```
+
+```out
+(foo)
+;bar)
+```
+
+Comments should not change structure.
+
+```in
+(foo
+;bar
+  baz
+```
+
+```out
+(foo
+;bar
+  baz)
+```
+
+
+```in
+(foo
+  (bar
+ ;baz
+```
+
+```out
+(foo
+  (bar)
+ ;baz
+ )
+```
+
+```in
+(foo
+  (bar
+    ;baz
+```
+
+```out
+(foo
+  (bar
+    ;baz
+    ))
+```
+
+```in
+(foo
+  (bar
+   ;baz
+ qux
+```
+
+```out
+(foo
+  (bar
+   ;baz
+   )
+ qux)
+```
+
+```in
+(foo
+  (bar
+   ;baz
+ ;qux
+```
+
+```out
+(foo
+  (bar
+   ;baz
+   )
+ ;qux
+ )
+```
+
+```in
+(foo
+  (bar
+   ;baz
+;qux
+```
+
+```out
+(foo
+  (bar
+   ;baz
+;qux
+   ))
+```
+
+```in
+(foo
+  (bar
+   ;baz
+ ;qux
+   baz
+```
+
+```out
+(foo
+  (bar
+   ;baz
+ ;qux
+   baz))
+```
+
+```in
+(foo
+  (bar
+   ;baz
+;qux
+   ;boo
+```
+
+```out
+(foo
+  (bar
+   ;baz
+;qux
+   ;boo
+   ))
+```
