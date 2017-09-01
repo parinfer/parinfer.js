@@ -146,6 +146,19 @@ Likewise:
 
 ## Changes
 
+Indent a single-line expression to enter a sibling:
+
+```in
+(foo (bar)
+      baz)
+     +
+```
+
+```out
+(foo (bar
+      baz))
+```
+
 Dedent multi-line expression to leave its parent:
 
 ```in
