@@ -261,7 +261,6 @@ span.calc-option {
 }
 
 body.locus .CodeMirror {
-  line-height: 18px;
 }
 .parinfer-locus-paren {
   visibility: hidden;
