@@ -1,6 +1,18 @@
-> __Want to use Parinfer on a team?__ Introduce [Parlinter] as your project's linter!
-
-[Parlinter]:https://github.com/shaunlebron/parlinter
+<table><tr>
+<td>
+<a href="https://www.patreon.com/shaunlebron">
+<img height="32" src="https://c5.patreon.com/external/logo/downloads_logomark_color_on_coral@2x.png" valign="middle">
+</a>
+</td>
+<td>
+<a href="https://www.patreon.com/shaunlebron">
+Support Parinfer on Patreon
+</a>
+</td>
+<td>
+Help me make Lisp mainstream!
+</td>
+</tr></table>
 
 # Parinfer
 
