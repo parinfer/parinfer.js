@@ -131,6 +131,88 @@ this by ignoring negative values.
 var prevIndentX = indentX - Math.max(0, result.indentDelta);
 ```
 
+fix:
+
+```
+var prevIndentX = indentX - result.indentDelta;
+```
+
+this fix breaks the following four test cases:
+
+```
+smart-mode.md:163
+in~~~~~~~~~~~~~~~~~~~~~
+(foo
+  {:a 1
+--
+   :b 2})
+expected~~~~~~~~~~~~~~~
+(foo)
+{:a 1
+ :b 2}
+actual~~~~~~~~~~~~~~~~~
+(foo
+{:a 1
+ :b 2})
+```
+
+```
+smart-mode.md:193
+in~~~~~~~~~~~~~~~~~~~~~
+(foo
+  {:a 1
+   :b 2})
+---
+expected~~~~~~~~~~~~~~~
+(foo
+  {:a 1})
+:b 2
+actual~~~~~~~~~~~~~~~~~
+(foo
+  {:a 1
+:b 2})
+```
+
+```
+smart-mode.md:208
+in~~~~~~~~~~~~~~~~~~~~~
+(defn foo
+  [a b]
+--
+  bar)
+expected~~~~~~~~~~~~~~~
+(defn foo)
+[a b
+  bar]
+actual~~~~~~~~~~~~~~~~~
+(defn foo
+[a b
+  bar])
+```
+
+```
+smart-mode.md:260
+in~~~~~~~~~~~~~~~~~~~~~
+(defn foo
+  |[a b
+--
+   c d]
+  bar
+  baz)
+expected~~~~~~~~~~~~~~~
+(defn foo)
+|[a b
+ c d]
+  bar
+  baz
+actual~~~~~~~~~~~~~~~~~
+(defn foo
+|[a b
+ c d
+  bar])
+  baz
+```
+
 ## Case 2 (multiple indents from wrap)
 
 https://github.com/shaunlebron/parinfer/issues/173
