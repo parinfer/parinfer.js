@@ -213,6 +213,32 @@ actual~~~~~~~~~~~~~~~~~
   baz
 ```
 
+These break because `prevOutside` is always true, forcing `getParentOpenerIndex`
+to exit immediately--to assume the previous parent should remain the parent,
+which works here:
+
+```
+in~~~~~~~~~~~~~~
+  (foo
+++
+  bar
+expected~~~~~~~~
+  (foo
+    bar
+```
+
+but not here:
+
+```
+in~~~~~~~~~~~~~~
+(foo
+  bar
+--
+expected~~~~~~~~
+(foo)
+bar
+```
+
 ## Case 2 (multiple indents from wrap)
 
 https://github.com/shaunlebron/parinfer/issues/173
