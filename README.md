@@ -1,18 +1,4 @@
-<table><tr>
-<td>
-<a href="https://www.patreon.com/shaunlebron">
-<img height="32" src="https://c5.patreon.com/external/logo/downloads_logomark_color_on_coral@2x.png" valign="middle">
-</a>
-</td>
-<td>
-<a href="https://www.patreon.com/shaunlebron">
-Support Parinfer on Patreon
-</a>
-</td>
-<td>
-Help me make Lisp mainstream!
-</td>
-</tr></table>
+_[Thanks to my patrons](https://www.patreon.com/shaunlebron) supporting this work at $1159/month._
 
 # Parinfer
 
