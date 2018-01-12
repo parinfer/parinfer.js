@@ -716,5 +716,43 @@
       ],
       "out": "(foo\n    bar\n    baz)"
     }
+  },
+  {
+    "text": "{:a {:b (Integer/valueOf (-> \"\"\n                             (.length)))}}",
+    "options": {
+      "changes": [
+        {
+          "lineNo": 0,
+          "x": 4,
+          "oldText": "                ",
+          "newText": ""
+        },
+        {
+          "lineNo": 0,
+          "x": 8,
+          "oldText": "             ",
+          "newText": ""
+        },
+        {
+          "lineNo": 1,
+          "x": 29,
+          "oldText": "                             ",
+          "newText": ""
+        }
+      ]
+    },
+    "result": {
+      "text": "{:a {:b (Integer/valueOf (-> \"\"\n                             (.length)))}}",
+      "success": true
+    },
+    "source": {
+      "lineNo": 461,
+      "in": [
+        "{:a                 {:b              (Integer/valueOf (-> \"\"\n    ----------------\n                                                          (.length)))}}",
+        "{:a {:b              (Integer/valueOf (-> \"\"\n        -------------\n                                                          (.length)))}}",
+        "{:a {:b (Integer/valueOf (-> \"\"\n                                                          (.length)))}}\n                             -----------------------------"
+      ],
+      "out": "{:a {:b (Integer/valueOf (-> \"\"\n                             (.length)))}}"
+    }
   }
 ]

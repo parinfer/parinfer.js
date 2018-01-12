@@ -456,3 +456,28 @@ Indent last two lines:
     bar
     baz)
 ```
+
+## Overlapping changes
+
+```in
+{:a                 {:b              (Integer/valueOf (-> ""
+    ----------------
+                                                          (.length)))}}
+```
+
+```in
+{:a {:b              (Integer/valueOf (-> ""
+        -------------
+                                                          (.length)))}}
+```
+
+```in
+{:a {:b (Integer/valueOf (-> ""
+                                                          (.length)))}}
+                             -----------------------------
+```
+
+```out
+{:a {:b (Integer/valueOf (-> ""
+                             (.length)))}}
+```
