@@ -791,8 +791,7 @@
     "source": {
       "lineNo": 487,
       "in": [
-        "(let [a 1]\n  (\n  +\n  (foo))",
-        "(let [a 1]\n  (\n    (foo))\n  ++",
+        "(let [a 1]\n  (\n  +\n    (foo))\n  ++",
         "(let [a 1]\n  (\n    (foo)))\n         +"
       ],
       "out": "(let [a 1]\n  (\n    (foo)))"
@@ -821,7 +820,7 @@
       "success": true
     },
     "source": {
-      "lineNo": 516,
+      "lineNo": 510,
       "in": [
         "(let [a 1]\n\n  (foo))",
         "(let [a 1]\n  (let [a 1]\n  +++++++++++\n  (foo))\n++++++++\n  (foo))",
@@ -859,11 +858,10 @@
       "success": true
     },
     "source": {
-      "lineNo": 548,
+      "lineNo": 542,
       "in": [
         "{:a                 {:b              (Integer/valueOf (-> \"\"\n    ----------------\n                                                          (.length)))}}",
-        "{:a {:b              (Integer/valueOf (-> \"\"\n        -------------\n                                                          (.length)))}}",
-        "{:a {:b (Integer/valueOf (-> \"\"\n                                                          (.length)))}}\n                             -----------------------------"
+        "{:a {:b              (Integer/valueOf (-> \"\"\n        -------------\n                                                          (.length)))}}\n                             -----------------------------"
       ],
       "out": "{:a {:b (Integer/valueOf (-> \"\"\n                             (.length)))}}"
     }

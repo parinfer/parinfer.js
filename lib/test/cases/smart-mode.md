@@ -489,12 +489,6 @@ Indent last two lines:
 (let [a 1]
   (
   +
-  (foo))
-```
-
-```in
-(let [a 1]
-  (
     (foo))
   ++
 ```
@@ -555,11 +549,6 @@ Indent last two lines:
 ```in
 {:a {:b              (Integer/valueOf (-> ""
         -------------
-                                                          (.length)))}}
-```
-
-```in
-{:a {:b (Integer/valueOf (-> ""
                                                           (.length)))}}
                              -----------------------------
 ```
