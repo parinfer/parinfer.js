@@ -481,3 +481,34 @@ Indent last two lines:
 {:a {:b (Integer/valueOf (-> ""
                              (.length)))}}
 ```
+
+
+```in
+(let [a 1]
+
+  (foo))
+```
+
+```in
+(let [a 1]
+  (let [a 1]
+  +++++++++++
+  (foo))
+++++++++
+  (foo))
+```
+
+```in
+(let [a 1]
+  (let [a 1]
+    (foo))
+  ++
+  (foo))
+```
+
+```out
+(let [a 1]
+  (let [a 1]
+    (foo))
+  (foo))
+```

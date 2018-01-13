@@ -754,5 +754,37 @@
       ],
       "out": "{:a {:b (Integer/valueOf (-> \"\"\n                             (.length)))}}"
     }
+  },
+  {
+    "text": "(let [a 1]\n  (let [a 1]\n    (foo))\n  (foo))",
+    "options": {
+      "changes": [
+        {
+          "lineNo": 1,
+          "x": 2,
+          "oldText": "",
+          "newText": "(let [a 1]\n  (foo))"
+        },
+        {
+          "lineNo": 2,
+          "x": 2,
+          "oldText": "",
+          "newText": "  "
+        }
+      ]
+    },
+    "result": {
+      "text": "(let [a 1]\n  (let [a 1]\n    (foo))\n  (foo))",
+      "success": true
+    },
+    "source": {
+      "lineNo": 485,
+      "in": [
+        "(let [a 1]\n\n  (foo))",
+        "(let [a 1]\n  (let [a 1]\n  +++++++++++\n  (foo))\n++++++++\n  (foo))",
+        "(let [a 1]\n  (let [a 1]\n    (foo))\n  ++\n  (foo))"
+      ],
+      "out": "(let [a 1]\n  (let [a 1]\n    (foo))\n  (foo))"
+    }
   }
 ]
