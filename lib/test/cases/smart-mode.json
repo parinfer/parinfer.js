@@ -824,5 +824,48 @@
       ],
       "out": "(let [a 1]\n  (\n    (foo)))"
     }
+  },
+  {
+    "text": "((reduce-kv (fn [m k v]\n            {}\n            {})))",
+    "options": {
+      "changes": [
+        {
+          "lineNo": 0,
+          "x": 0,
+          "oldText": "",
+          "newText": "("
+        },
+        {
+          "lineNo": 1,
+          "x": 11,
+          "oldText": "",
+          "newText": " "
+        },
+        {
+          "lineNo": 2,
+          "x": 11,
+          "oldText": "",
+          "newText": " "
+        },
+        {
+          "lineNo": 2,
+          "x": 16,
+          "oldText": "",
+          "newText": ")"
+        }
+      ]
+    },
+    "result": {
+      "text": "((reduce-kv (fn [m k v])\n            {}\n            {}))",
+      "success": true
+    },
+    "source": {
+      "lineNo": 545,
+      "in": [
+        "((reduce-kv (fn [m k v]\n+\n            {}\n           +\n            {}))\n           +",
+        "((reduce-kv (fn [m k v]\n            {}\n            {})))\n                +"
+      ],
+      "out": "((reduce-kv (fn [m k v])\n            {}\n            {}))"
+    }
   }
 ]

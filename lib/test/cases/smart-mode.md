@@ -535,8 +535,32 @@ Indent last two lines:
          +
 ```
 
+
 ```out
 (let [a 1]
   (
     (foo)))
+```
+
+
+```in
+((reduce-kv (fn [m k v]
++
+            {}
+           +
+            {}))
+           +
+```
+
+```in
+((reduce-kv (fn [m k v]
+            {}
+            {})))
+                +
+```
+
+```out
+((reduce-kv (fn [m k v])
+            {}
+            {}))
 ```
