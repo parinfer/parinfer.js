@@ -512,3 +512,31 @@ Indent last two lines:
     (foo))
   (foo))
 ```
+
+
+```in
+(let [a 1]
+  (
+  +
+  (foo))
+```
+
+```in
+(let [a 1]
+  (
+    (foo))
+  ++
+```
+
+```in
+(let [a 1]
+  (
+    (foo)))
+         +
+```
+
+```out
+(let [a 1]
+  (
+    (foo)))
+```

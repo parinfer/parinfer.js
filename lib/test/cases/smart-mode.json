@@ -786,5 +786,43 @@
       ],
       "out": "(let [a 1]\n  (let [a 1]\n    (foo))\n  (foo))"
     }
+  },
+  {
+    "text": "(let [a 1]\n  (\n    (foo)))",
+    "options": {
+      "changes": [
+        {
+          "lineNo": 1,
+          "x": 2,
+          "oldText": "",
+          "newText": "("
+        },
+        {
+          "lineNo": 2,
+          "x": 2,
+          "oldText": "",
+          "newText": "  "
+        },
+        {
+          "lineNo": 2,
+          "x": 9,
+          "oldText": "",
+          "newText": ")"
+        }
+      ]
+    },
+    "result": {
+      "text": "(let [a 1]\n  (\n    (foo)))",
+      "success": true
+    },
+    "source": {
+      "lineNo": 516,
+      "in": [
+        "(let [a 1]\n  (\n  +\n  (foo))",
+        "(let [a 1]\n  (\n    (foo))\n  ++",
+        "(let [a 1]\n  (\n    (foo)))\n         +"
+      ],
+      "out": "(let [a 1]\n  (\n    (foo)))"
+    }
   }
 ]
