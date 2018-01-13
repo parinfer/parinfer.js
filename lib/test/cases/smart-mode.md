@@ -457,31 +457,62 @@ Indent last two lines:
     baz)
 ```
 
-## Overlapping changes
+## Multi-change Bug
+
+[Issue #173](https://github.com/shaunlebron/parinfer/issues/173)
 
 ```in
-{:a                 {:b              (Integer/valueOf (-> ""
-    ----------------
-                                                          (.length)))}}
+((reduce-kv (fn [m k v]
++
+            {}
+           +
+            {}))
+           +
 ```
 
 ```in
-{:a {:b              (Integer/valueOf (-> ""
-        -------------
-                                                          (.length)))}}
-```
-
-```in
-{:a {:b (Integer/valueOf (-> ""
-                                                          (.length)))}}
-                             -----------------------------
+((reduce-kv (fn [m k v]
+            {}
+            {})))
+                +
 ```
 
 ```out
-{:a {:b (Integer/valueOf (-> ""
-                             (.length)))}}
+((reduce-kv (fn [m k v])
+            {}
+            {}))
 ```
 
+[Issue #176](https://github.com/shaunlebron/parinfer/issues/176)
+
+```in
+(let [a 1]
+  (
+  +
+  (foo))
+```
+
+```in
+(let [a 1]
+  (
+    (foo))
+  ++
+```
+
+```in
+(let [a 1]
+  (
+    (foo)))
+         +
+```
+
+```out
+(let [a 1]
+  (
+    (foo)))
+```
+
+[Issue #177](https://github.com/shaunlebron/parinfer/issues/177)
 
 ```in
 (let [a 1]
@@ -513,54 +544,27 @@ Indent last two lines:
   (foo))
 ```
 
+[Issue #179](https://github.com/shaunlebron/parinfer/issues/179)
 
 ```in
-(let [a 1]
-  (
-  +
-  (foo))
+{:a                 {:b              (Integer/valueOf (-> ""
+    ----------------
+                                                          (.length)))}}
 ```
 
 ```in
-(let [a 1]
-  (
-    (foo))
-  ++
+{:a {:b              (Integer/valueOf (-> ""
+        -------------
+                                                          (.length)))}}
 ```
 
 ```in
-(let [a 1]
-  (
-    (foo)))
-         +
-```
-
-
-```out
-(let [a 1]
-  (
-    (foo)))
-```
-
-
-```in
-((reduce-kv (fn [m k v]
-+
-            {}
-           +
-            {}))
-           +
-```
-
-```in
-((reduce-kv (fn [m k v]
-            {}
-            {})))
-                +
+{:a {:b (Integer/valueOf (-> ""
+                                                          (.length)))}}
+                             -----------------------------
 ```
 
 ```out
-((reduce-kv (fn [m k v])
-            {}
-            {}))
+{:a {:b (Integer/valueOf (-> ""
+                             (.length)))}}
 ```

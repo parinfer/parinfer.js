@@ -718,114 +718,6 @@
     }
   },
   {
-    "text": "{:a {:b (Integer/valueOf (-> \"\"\n                             (.length)))}}",
-    "options": {
-      "changes": [
-        {
-          "lineNo": 0,
-          "x": 4,
-          "oldText": "                ",
-          "newText": ""
-        },
-        {
-          "lineNo": 0,
-          "x": 8,
-          "oldText": "             ",
-          "newText": ""
-        },
-        {
-          "lineNo": 1,
-          "x": 29,
-          "oldText": "                             ",
-          "newText": ""
-        }
-      ]
-    },
-    "result": {
-      "text": "{:a {:b (Integer/valueOf (-> \"\"\n                             (.length)))}}",
-      "success": true
-    },
-    "source": {
-      "lineNo": 461,
-      "in": [
-        "{:a                 {:b              (Integer/valueOf (-> \"\"\n    ----------------\n                                                          (.length)))}}",
-        "{:a {:b              (Integer/valueOf (-> \"\"\n        -------------\n                                                          (.length)))}}",
-        "{:a {:b (Integer/valueOf (-> \"\"\n                                                          (.length)))}}\n                             -----------------------------"
-      ],
-      "out": "{:a {:b (Integer/valueOf (-> \"\"\n                             (.length)))}}"
-    }
-  },
-  {
-    "text": "(let [a 1]\n  (let [a 1]\n    (foo))\n  (foo))",
-    "options": {
-      "changes": [
-        {
-          "lineNo": 1,
-          "x": 2,
-          "oldText": "",
-          "newText": "(let [a 1]\n  (foo))"
-        },
-        {
-          "lineNo": 2,
-          "x": 2,
-          "oldText": "",
-          "newText": "  "
-        }
-      ]
-    },
-    "result": {
-      "text": "(let [a 1]\n  (let [a 1]\n    (foo))\n  (foo))",
-      "success": true
-    },
-    "source": {
-      "lineNo": 485,
-      "in": [
-        "(let [a 1]\n\n  (foo))",
-        "(let [a 1]\n  (let [a 1]\n  +++++++++++\n  (foo))\n++++++++\n  (foo))",
-        "(let [a 1]\n  (let [a 1]\n    (foo))\n  ++\n  (foo))"
-      ],
-      "out": "(let [a 1]\n  (let [a 1]\n    (foo))\n  (foo))"
-    }
-  },
-  {
-    "text": "(let [a 1]\n  (\n    (foo)))",
-    "options": {
-      "changes": [
-        {
-          "lineNo": 1,
-          "x": 2,
-          "oldText": "",
-          "newText": "("
-        },
-        {
-          "lineNo": 2,
-          "x": 2,
-          "oldText": "",
-          "newText": "  "
-        },
-        {
-          "lineNo": 2,
-          "x": 9,
-          "oldText": "",
-          "newText": ")"
-        }
-      ]
-    },
-    "result": {
-      "text": "(let [a 1]\n  (\n    (foo)))",
-      "success": true
-    },
-    "source": {
-      "lineNo": 516,
-      "in": [
-        "(let [a 1]\n  (\n  +\n  (foo))",
-        "(let [a 1]\n  (\n    (foo))\n  ++",
-        "(let [a 1]\n  (\n    (foo)))\n         +"
-      ],
-      "out": "(let [a 1]\n  (\n    (foo)))"
-    }
-  },
-  {
     "text": "((reduce-kv (fn [m k v]\n            {}\n            {})))",
     "options": {
       "changes": [
@@ -860,12 +752,120 @@
       "success": true
     },
     "source": {
-      "lineNo": 545,
+      "lineNo": 463,
       "in": [
         "((reduce-kv (fn [m k v]\n+\n            {}\n           +\n            {}))\n           +",
         "((reduce-kv (fn [m k v]\n            {}\n            {})))\n                +"
       ],
       "out": "((reduce-kv (fn [m k v])\n            {}\n            {}))"
+    }
+  },
+  {
+    "text": "(let [a 1]\n  (\n    (foo)))",
+    "options": {
+      "changes": [
+        {
+          "lineNo": 1,
+          "x": 2,
+          "oldText": "",
+          "newText": "("
+        },
+        {
+          "lineNo": 2,
+          "x": 2,
+          "oldText": "",
+          "newText": "  "
+        },
+        {
+          "lineNo": 2,
+          "x": 9,
+          "oldText": "",
+          "newText": ")"
+        }
+      ]
+    },
+    "result": {
+      "text": "(let [a 1]\n  (\n    (foo)))",
+      "success": true
+    },
+    "source": {
+      "lineNo": 487,
+      "in": [
+        "(let [a 1]\n  (\n  +\n  (foo))",
+        "(let [a 1]\n  (\n    (foo))\n  ++",
+        "(let [a 1]\n  (\n    (foo)))\n         +"
+      ],
+      "out": "(let [a 1]\n  (\n    (foo)))"
+    }
+  },
+  {
+    "text": "(let [a 1]\n  (let [a 1]\n    (foo))\n  (foo))",
+    "options": {
+      "changes": [
+        {
+          "lineNo": 1,
+          "x": 2,
+          "oldText": "",
+          "newText": "(let [a 1]\n  (foo))"
+        },
+        {
+          "lineNo": 2,
+          "x": 2,
+          "oldText": "",
+          "newText": "  "
+        }
+      ]
+    },
+    "result": {
+      "text": "(let [a 1]\n  (let [a 1]\n    (foo))\n  (foo))",
+      "success": true
+    },
+    "source": {
+      "lineNo": 516,
+      "in": [
+        "(let [a 1]\n\n  (foo))",
+        "(let [a 1]\n  (let [a 1]\n  +++++++++++\n  (foo))\n++++++++\n  (foo))",
+        "(let [a 1]\n  (let [a 1]\n    (foo))\n  ++\n  (foo))"
+      ],
+      "out": "(let [a 1]\n  (let [a 1]\n    (foo))\n  (foo))"
+    }
+  },
+  {
+    "text": "{:a {:b (Integer/valueOf (-> \"\"\n                             (.length)))}}",
+    "options": {
+      "changes": [
+        {
+          "lineNo": 0,
+          "x": 4,
+          "oldText": "                ",
+          "newText": ""
+        },
+        {
+          "lineNo": 0,
+          "x": 8,
+          "oldText": "             ",
+          "newText": ""
+        },
+        {
+          "lineNo": 1,
+          "x": 29,
+          "oldText": "                             ",
+          "newText": ""
+        }
+      ]
+    },
+    "result": {
+      "text": "{:a {:b (Integer/valueOf (-> \"\"\n                             (.length)))}}",
+      "success": true
+    },
+    "source": {
+      "lineNo": 548,
+      "in": [
+        "{:a                 {:b              (Integer/valueOf (-> \"\"\n    ----------------\n                                                          (.length)))}}",
+        "{:a {:b              (Integer/valueOf (-> \"\"\n        -------------\n                                                          (.length)))}}",
+        "{:a {:b (Integer/valueOf (-> \"\"\n                                                          (.length)))}}\n                             -----------------------------"
+      ],
+      "out": "{:a {:b (Integer/valueOf (-> \"\"\n                             (.length)))}}"
     }
   }
 ]
