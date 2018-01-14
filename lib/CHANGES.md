@@ -1,3 +1,9 @@
+## 3.12.0
+
+- make Smart Mode work better when inputting multiple changes. See [#181]
+
+[#181]:https://github.com/shaunlebron/parinfer/pull/181
+
 ## 3.11.0
 
 - fix: `parenTrails` now include those which may appear at the beginning of a line
