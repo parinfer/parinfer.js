@@ -1,5 +1,5 @@
 //
-// Parinfer 3.11.0
+// Parinfer 3.12.0
 //
 // Copyright 2015-2017 © Shaun Lebron
 // MIT License
@@ -442,10 +442,9 @@ function insertWithinLine(result, lineNo, idx, insert) {
   replaceWithinLine(result, lineNo, idx, idx, insert);
 }
 
-function initLine(result, line) {
+function initLine(result) {
   result.x = 0;
   result.lineNo++;
-  result.lines.push(line);
 
   // reset line-specific state
   result.indentX = UINT_NULL;
@@ -866,27 +865,191 @@ function popParenTrail(result) {
   }
 }
 
+// Determine which open-paren (if any) on the parenStack should be considered
+// the direct parent of the current line (given its indentation point).
+// This allows Smart Mode to simulate Paren Mode's structure-preserving
+// behavior by adding its `opener.indentDelta` to the current line's indentation.
+// (care must be taken to prevent redundant indentation correction, detailed below)
 function getParentOpenerIndex(result, indentX) {
   var i;
   for (i=0; i<result.parenStack.length; i++) {
     var opener = peek(result.parenStack, i);
-    var currOutside = (opener.x < indentX);
-    var prevOutside = (opener.x - opener.indentDelta < indentX);
 
-    if (prevOutside) {
-      // If an open-paren WAS outside, its `indentDelta` will be used to KEEP IT
-      // outside, by adjusting the indentation of its child lines.
-      break;
+    var currOutside = (opener.x < indentX);
+
+    var prevIndentX = indentX - result.indentDelta;
+    var prevOutside = (opener.x - opener.indentDelta < prevIndentX);
+
+    var isParent = false;
+
+    if (prevOutside && currOutside) {
+      isParent = true;
     }
-    if (currOutside) {
-      // If an open-paren was JUST pushed outside and its parent open-paren was
-      // not pushed by same amount, new child line(s) will be adopted.
-      // Clear `indentDelta` since it is reserved for previous child lines only.
-      var nextOpener = peek(result.parenStack, i+1);
-      if (!nextOpener || nextOpener.indentDelta !== opener.indentDelta) {
-        opener.indentDelta = 0;
-        break;
+    else if (!prevOutside && !currOutside) {
+      isParent = false;
+    }
+    else if (prevOutside && !currOutside) {
+      // POSSIBLE FRAGMENTATION
+      // (foo    --\
+      //            +--- FRAGMENT `(foo bar)` => `(foo) bar`
+      // bar)    --/
+
+      // 1. PREVENT FRAGMENTATION
+      // ```in
+      //   (foo
+      // ++
+      //   bar
+      // ```
+      // ```out
+      //   (foo
+      //     bar
+      // ```
+      if (result.indentDelta === 0) {
+        isParent = true;
       }
+
+      // 2. ALLOW FRAGMENTATION
+      // ```in
+      // (foo
+      //   bar
+      // --
+      // ```
+      // ```out
+      // (foo)
+      // bar
+      // ```
+      else if (opener.indentDelta === 0) {
+        isParent = false;
+      }
+
+      else {
+        // TODO: identify legitimate cases where both are nonzero
+
+        // allow the fragmentation by default
+        isParent = false;
+
+        // TODO: should we throw to exit instead?  either of:
+        // 1. give up, just `throw error(...)`
+        // 2. fallback to paren mode to preserve structure
+      }
+    }
+    else if (!prevOutside && currOutside) {
+      // POSSIBLE ADOPTION
+      // (foo)   --\
+      //            +--- ADOPT `(foo) bar` => `(foo bar)`
+      //   bar   --/
+
+      var nextOpener = peek(result.parenStack, i+1);
+
+      // 1. DISALLOW ADOPTION
+      // ```in
+      //   (foo
+      // --
+      //     (bar)
+      // --
+      //     baz)
+      // ```
+      // ```out
+      // (foo
+      //   (bar)
+      //   baz)
+      // ```
+      // OR
+      // ```in
+      //   (foo
+      // --
+      //     (bar)
+      // -
+      //     baz)
+      // ```
+      // ```out
+      // (foo
+      //  (bar)
+      //  baz)
+      // ```
+      if (nextOpener && nextOpener.indentDelta <= opener.indentDelta) {
+        // we can only disallow adoption if nextOpener.indentDelta will actually
+        // prevent the indentX from being in the opener's threshold.
+        if (indentX + nextOpener.indentDelta > opener.x) {
+          isParent = true;
+        }
+        else {
+          isParent = false;
+        }
+      }
+
+      // 2. ALLOW ADOPTION
+      // ```in
+      // (foo
+      //     (bar)
+      // --
+      //     baz)
+      // ```
+      // ```out
+      // (foo
+      //   (bar
+      //     baz))
+      // ```
+      // OR
+      // ```in
+      //   (foo
+      // -
+      //     (bar)
+      // --
+      //     baz)
+      // ```
+      // ```out
+      //  (foo
+      //   (bar)
+      //    baz)
+      // ```
+      else if (nextOpener && nextOpener.indentDelta > opener.indentDelta) {
+        isParent = true;
+      }
+
+      // 3. ALLOW ADOPTION
+      // ```in
+      //   (foo)
+      // --
+      //   bar
+      // ```
+      // ```out
+      // (foo
+      //   bar)
+      // ```
+      // OR
+      // ```in
+      // (foo)
+      //   bar
+      // ++
+      // ```
+      // ```out
+      // (foo
+      //   bar
+      // ```
+      // OR
+      // ```in
+      //  (foo)
+      // +
+      //   bar
+      // ++
+      // ```
+      // ```out
+      //  (foo
+      //   bar)
+      // ```
+      else if (result.indentDelta > opener.indentDelta) {
+        isParent = true;
+      }
+
+      if (isParent) { // if new parent
+        // Clear `indentDelta` since it is reserved for previous child lines only.
+        opener.indentDelta = 0;
+      }
+    }
+
+    if (isParent) {
+      break;
     }
   }
   return i;
@@ -1088,6 +1251,7 @@ function onIndent(result) {
   }
 
   if (result.mode === INDENT_MODE) {
+
     correctParenTrail(result, result.x);
 
     var opener = peek(result.parenStack, 0);
@@ -1253,7 +1417,8 @@ function processChar(result, ch) {
 }
 
 function processLine(result, lineNo) {
-  initLine(result, result.inputLines[lineNo]);
+  initLine(result);
+  result.lines.push(result.inputLines[lineNo]);
 
   setTabStops(result);
 
@@ -1284,7 +1449,7 @@ function finalizeResult(result) {
     }
   }
   if (result.mode === INDENT_MODE) {
-    result.x = 0;
+    initLine(result);
     onIndent(result);
   }
   result.success = true;
@@ -1380,7 +1545,7 @@ function smartMode(text, options) {
 }
 
 var API = {
-  version: "3.11.0",
+  version: "3.12.0",
   indentMode: indentMode,
   parenMode: parenMode,
   smartMode: smartMode

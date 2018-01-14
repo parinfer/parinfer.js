@@ -13,7 +13,9 @@
     },
     "source": {
       "lineNo": 10,
-      "in": "(let [a 1\n      |])",
+      "in": [
+        "(let [a 1\n      |])"
+      ],
       "out": "(let [a 1\n      |])"
     }
   },
@@ -26,7 +28,9 @@
     },
     "source": {
       "lineNo": 22,
-      "in": "(let [a 1\n      ]); <-- spaces",
+      "in": [
+        "(let [a 1\n      ]); <-- spaces"
+      ],
       "out": "(let [a 1])\n      ; <-- spaces"
     }
   },
@@ -44,7 +48,9 @@
     },
     "source": {
       "lineNo": 35,
-      "in": "(let [a 1\n      |] (+ a 2))",
+      "in": [
+        "(let [a 1\n      |] (+ a 2))"
+      ],
       "out": "(let [a 1\n      |] (+ a 2))"
     }
   },
@@ -57,7 +63,9 @@
     },
     "source": {
       "lineNo": 49,
-      "in": "(let [a 1\n      ] (+ a 2))",
+      "in": [
+        "(let [a 1\n      ] (+ a 2))"
+      ],
       "out": "(let [a 1]\n     (+ a 2))"
     }
   },
@@ -75,7 +83,9 @@
     },
     "source": {
       "lineNo": 63,
-      "in": "(let [a 1\n  |] (+ a 2))",
+      "in": [
+        "(let [a 1\n  |] (+ a 2))"
+      ],
       "out": "(let [a 1\n      |] (+ a 2))"
     }
   },
@@ -93,7 +103,9 @@
     },
     "source": {
       "lineNo": 76,
-      "in": "(let [a 1\n      ]|)",
+      "in": [
+        "(let [a 1\n      ]|)"
+      ],
       "out": "(let [a 1]\n     |)"
     }
   },
@@ -119,7 +131,9 @@
     },
     "source": {
       "lineNo": 91,
-      "in": "(|)\n-",
+      "in": [
+        "(|)\n-"
+      ],
       "out": "|"
     }
   },
@@ -145,7 +159,9 @@
     },
     "source": {
       "lineNo": 100,
-      "in": "(foo\n  (bar|))\n  ----",
+      "in": [
+        "(foo\n  (bar|))\n  ----"
+      ],
       "out": "(foo\n  |)"
     }
   },
@@ -163,7 +179,9 @@
     },
     "source": {
       "lineNo": 111,
-      "in": "(foo\n  }|)",
+      "in": [
+        "(foo\n  }|)"
+      ],
       "out": "(foo\n  |)"
     }
   },
@@ -186,7 +204,9 @@
     },
     "source": {
       "lineNo": 123,
-      "in": "(foo\n  ) foo} bar|",
+      "in": [
+        "(foo\n  ) foo} bar|"
+      ],
       "out": "(foo\n  ) foo} bar|\n       ^ error: unmatched-close-paren"
     }
   },
@@ -209,7 +229,9 @@
     },
     "source": {
       "lineNo": 134,
-      "in": "(foo\n  ) (bar|",
+      "in": [
+        "(foo\n  ) (bar|"
+      ],
       "out": "(foo\n  ) (bar|\n    ^ error: unclosed-paren"
     }
   },
@@ -231,7 +253,9 @@
     },
     "source": {
       "lineNo": 150,
-      "in": "(foo (bar)\n      baz)\n     +",
+      "in": [
+        "(foo (bar)\n      baz)\n     +"
+      ],
       "out": "(foo (bar\n      baz))"
     }
   },
@@ -253,7 +277,9 @@
     },
     "source": {
       "lineNo": 163,
-      "in": "(foo\n  {:a 1\n--\n   :b 2})",
+      "in": [
+        "(foo\n  {:a 1\n--\n   :b 2})"
+      ],
       "out": "(foo)\n{:a 1\n :b 2}"
     }
   },
@@ -275,7 +301,9 @@
     },
     "source": {
       "lineNo": 178,
-      "in": "(foo)\n  {:a 1\n++\n :b 2}",
+      "in": [
+        "(foo)\n  {:a 1\n++\n :b 2}"
+      ],
       "out": "(foo\n  {:a 1\n   :b 2})"
     }
   },
@@ -297,7 +325,9 @@
     },
     "source": {
       "lineNo": 193,
-      "in": "(foo\n  {:a 1\n   :b 2})\n---",
+      "in": [
+        "(foo\n  {:a 1\n   :b 2})\n---"
+      ],
       "out": "(foo\n  {:a 1})\n:b 2"
     }
   },
@@ -319,7 +349,9 @@
     },
     "source": {
       "lineNo": 208,
-      "in": "(defn foo\n  [a b]\n--\n  bar)",
+      "in": [
+        "(defn foo\n  [a b]\n--\n  bar)"
+      ],
       "out": "(defn foo)\n[a b\n  bar]"
     }
   },
@@ -341,7 +373,9 @@
     },
     "source": {
       "lineNo": 223,
-      "in": "  (defn foo\n--\n    [a b]\n    bar)",
+      "in": [
+        "  (defn foo\n--\n    [a b]\n    bar)"
+      ],
       "out": "(defn foo\n  [a b]\n  bar)"
     }
   },
@@ -363,7 +397,9 @@
     },
     "source": {
       "lineNo": 238,
-      "in": "  (defn foo\n--\n    [a b]\n    ; comment 1\n    bar)\n    ; comment 2",
+      "in": [
+        "  (defn foo\n--\n    [a b]\n    ; comment 1\n    bar)\n    ; comment 2"
+      ],
       "out": "(defn foo\n  [a b]\n  ; comment 1\n  bar)\n  ; comment 2"
     }
   },
@@ -389,7 +425,9 @@
     },
     "source": {
       "lineNo": 260,
-      "in": "(defn foo\n  |[a b\n--\n   c d]\n  bar\n  baz)",
+      "in": [
+        "(defn foo\n  |[a b\n--\n   c d]\n  bar\n  baz)"
+      ],
       "out": "(defn foo)\n|[a b\n c d]\n  bar\n  baz"
     }
   },
@@ -407,7 +445,9 @@
     },
     "source": {
       "lineNo": 277,
-      "in": "(defn foo)\n|[a b\n c d]\n  bar\n  baz",
+      "in": [
+        "(defn foo)\n|[a b\n c d]\n  bar\n  baz"
+      ],
       "out": "(defn foo)\n|[a b\n c d]\n  bar\n  baz"
     }
   },
@@ -435,7 +475,9 @@
     },
     "source": {
       "lineNo": 295,
-      "in": "(my-fnfoo (if some-condition\n -----+++\n         println) my-funfoo {:foo 1\n                  ------+++\n                          :bar 2})",
+      "in": [
+        "(my-fnfoo (if some-condition\n -----+++\n         println) my-funfoo {:foo 1\n                  ------+++\n                          :bar 2})"
+      ],
       "out": "(foo (if some-condition\n       println) foo {:foo 1\n                     :bar 2})"
     }
   },
@@ -461,7 +503,9 @@
     },
     "source": {
       "lineNo": 314,
-      "in": "(foo |(((1\n ----\n        2\n        3)))\n    4)",
+      "in": [
+        "(foo |(((1\n ----\n        2\n        3)))\n    4)"
+      ],
       "out": "(|(((1\n    2\n    3)))\n    4)"
     }
   },
@@ -477,7 +521,9 @@
     },
     "source": {
       "lineNo": 332,
-      "in": "((((1\n ^ prevCursor\n    2\n    3)))\n    4)",
+      "in": [
+        "((((1\n ^ prevCursor\n    2\n    3)))\n    4)"
+      ],
       "out": "((((1\n    2\n    3)))\n 4)"
     }
   },
@@ -497,7 +543,9 @@
     },
     "source": {
       "lineNo": 347,
-      "in": "((|((1\n ^ prevCursor\n    2\n    3)))\n    4)",
+      "in": [
+        "((|((1\n ^ prevCursor\n    2\n    3)))\n    4)"
+      ],
       "out": "((|((1\n    2\n    3)))\n 4)"
     }
   },
@@ -519,7 +567,9 @@
     },
     "source": {
       "lineNo": 366,
-      "in": "  (foo\n++\n  (bar\n    baz))",
+      "in": [
+        "  (foo\n++\n  (bar\n    baz))"
+      ],
       "out": "  (foo\n    (bar\n      baz))"
     }
   },
@@ -547,7 +597,9 @@
     },
     "source": {
       "lineNo": 381,
-      "in": "  (foo\n++\n    (bar\n++\n    baz))",
+      "in": [
+        "  (foo\n++\n    (bar\n++\n    baz))"
+      ],
       "out": "  (foo\n    (bar\n      baz))"
     }
   },
@@ -575,7 +627,9 @@
     },
     "source": {
       "lineNo": 397,
-      "in": "  (foo\n      (bar\n++\n        baz))\n++",
+      "in": [
+        "  (foo\n      (bar\n++\n        baz))\n++"
+      ],
       "out": "  (foo\n      (bar\n        baz))"
     }
   },
@@ -597,7 +651,9 @@
     },
     "source": {
       "lineNo": 414,
-      "in": "  (foo\n++\n  bar\n  baz)",
+      "in": [
+        "  (foo\n++\n  bar\n  baz)"
+      ],
       "out": "  (foo\n    bar\n    baz)"
     }
   },
@@ -625,7 +681,9 @@
     },
     "source": {
       "lineNo": 429,
-      "in": "  (foo\n++\n    bar\n++\n  baz)",
+      "in": [
+        "  (foo\n++\n    bar\n++\n  baz)"
+      ],
       "out": "  (foo\n    bar\n    baz)"
     }
   },
@@ -653,8 +711,159 @@
     },
     "source": {
       "lineNo": 445,
-      "in": "(foo\n    bar\n++\n    baz)\n++",
+      "in": [
+        "(foo\n    bar\n++\n    baz)\n++"
+      ],
       "out": "(foo\n    bar\n    baz)"
+    }
+  },
+  {
+    "text": "((reduce-kv (fn [m k v]\n            {}\n            {})))",
+    "options": {
+      "changes": [
+        {
+          "lineNo": 0,
+          "x": 0,
+          "oldText": "",
+          "newText": "("
+        },
+        {
+          "lineNo": 1,
+          "x": 11,
+          "oldText": "",
+          "newText": " "
+        },
+        {
+          "lineNo": 2,
+          "x": 11,
+          "oldText": "",
+          "newText": " "
+        },
+        {
+          "lineNo": 2,
+          "x": 16,
+          "oldText": "",
+          "newText": ")"
+        }
+      ]
+    },
+    "result": {
+      "text": "((reduce-kv (fn [m k v])\n            {}\n            {}))",
+      "success": true
+    },
+    "source": {
+      "lineNo": 463,
+      "in": [
+        "((reduce-kv (fn [m k v]\n+\n            {}\n           +\n            {}))\n           +",
+        "((reduce-kv (fn [m k v]\n            {}\n            {})))\n                +"
+      ],
+      "out": "((reduce-kv (fn [m k v])\n            {}\n            {}))"
+    }
+  },
+  {
+    "text": "(let [a 1]\n  (\n    (foo)))",
+    "options": {
+      "changes": [
+        {
+          "lineNo": 1,
+          "x": 2,
+          "oldText": "",
+          "newText": "("
+        },
+        {
+          "lineNo": 2,
+          "x": 2,
+          "oldText": "",
+          "newText": "  "
+        },
+        {
+          "lineNo": 2,
+          "x": 9,
+          "oldText": "",
+          "newText": ")"
+        }
+      ]
+    },
+    "result": {
+      "text": "(let [a 1]\n  (\n    (foo)))",
+      "success": true
+    },
+    "source": {
+      "lineNo": 487,
+      "in": [
+        "(let [a 1]\n  (\n  +\n    (foo))\n  ++",
+        "(let [a 1]\n  (\n    (foo)))\n         +"
+      ],
+      "out": "(let [a 1]\n  (\n    (foo)))"
+    }
+  },
+  {
+    "text": "(let [a 1]\n  (let [a 1]\n    (foo))\n  (foo))",
+    "options": {
+      "changes": [
+        {
+          "lineNo": 1,
+          "x": 2,
+          "oldText": "",
+          "newText": "(let [a 1]\n  (foo))"
+        },
+        {
+          "lineNo": 2,
+          "x": 2,
+          "oldText": "",
+          "newText": "  "
+        }
+      ]
+    },
+    "result": {
+      "text": "(let [a 1]\n  (let [a 1]\n    (foo))\n  (foo))",
+      "success": true
+    },
+    "source": {
+      "lineNo": 510,
+      "in": [
+        "(let [a 1]\n\n  (foo))",
+        "(let [a 1]\n  (let [a 1]\n  +++++++++++\n  (foo))\n++++++++\n  (foo))",
+        "(let [a 1]\n  (let [a 1]\n    (foo))\n  ++\n  (foo))"
+      ],
+      "out": "(let [a 1]\n  (let [a 1]\n    (foo))\n  (foo))"
+    }
+  },
+  {
+    "text": "{:a {:b (Integer/valueOf (-> \"\"\n                             (.length)))}}",
+    "options": {
+      "changes": [
+        {
+          "lineNo": 0,
+          "x": 4,
+          "oldText": "                ",
+          "newText": ""
+        },
+        {
+          "lineNo": 0,
+          "x": 8,
+          "oldText": "             ",
+          "newText": ""
+        },
+        {
+          "lineNo": 1,
+          "x": 29,
+          "oldText": "                             ",
+          "newText": ""
+        }
+      ]
+    },
+    "result": {
+      "text": "{:a {:b (Integer/valueOf (-> \"\"\n                             (.length)))}}",
+      "success": true
+    },
+    "source": {
+      "lineNo": 542,
+      "in": [
+        "{:a                 {:b              (Integer/valueOf (-> \"\"\n    ----------------\n                                                          (.length)))}}",
+        "{:a {:b              (Integer/valueOf (-> \"\"\n        -------------\n                                                          (.length)))}}\n                             -----------------------------"
+      ],
+      "out": "{:a {:b (Integer/valueOf (-> \"\"\n                             (.length)))}}"
     }
   }
 ]

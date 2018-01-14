@@ -456,3 +456,104 @@ Indent last two lines:
     bar
     baz)
 ```
+
+## Multi-change Bug
+
+[Issue #173](https://github.com/shaunlebron/parinfer/issues/173)
+
+```in
+((reduce-kv (fn [m k v]
++
+            {}
+           +
+            {}))
+           +
+```
+
+```in
+((reduce-kv (fn [m k v]
+            {}
+            {})))
+                +
+```
+
+```out
+((reduce-kv (fn [m k v])
+            {}
+            {}))
+```
+
+[Issue #176](https://github.com/shaunlebron/parinfer/issues/176)
+
+```in
+(let [a 1]
+  (
+  +
+    (foo))
+  ++
+```
+
+```in
+(let [a 1]
+  (
+    (foo)))
+         +
+```
+
+```out
+(let [a 1]
+  (
+    (foo)))
+```
+
+[Issue #177](https://github.com/shaunlebron/parinfer/issues/177)
+
+```in
+(let [a 1]
+
+  (foo))
+```
+
+```in
+(let [a 1]
+  (let [a 1]
+  +++++++++++
+  (foo))
+++++++++
+  (foo))
+```
+
+```in
+(let [a 1]
+  (let [a 1]
+    (foo))
+  ++
+  (foo))
+```
+
+```out
+(let [a 1]
+  (let [a 1]
+    (foo))
+  (foo))
+```
+
+[Issue #179](https://github.com/shaunlebron/parinfer/issues/179)
+
+```in
+{:a                 {:b              (Integer/valueOf (-> ""
+    ----------------
+                                                          (.length)))}}
+```
+
+```in
+{:a {:b              (Integer/valueOf (-> ""
+        -------------
+                                                          (.length)))}}
+                             -----------------------------
+```
+
+```out
+{:a {:b (Integer/valueOf (-> ""
+                             (.length)))}}
+```

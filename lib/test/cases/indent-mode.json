@@ -8,7 +8,9 @@
     },
     "source": {
       "lineNo": 6,
-      "in": "(defn foo\n  [arg\n  ret",
+      "in": [
+        "(defn foo\n  [arg\n  ret"
+      ],
       "out": "(defn foo\n  [arg]\n  ret)"
     }
   },
@@ -21,7 +23,9 @@
     },
     "source": {
       "lineNo": 20,
-      "in": "(defn foo\n  [arg\n   ret",
+      "in": [
+        "(defn foo\n  [arg\n   ret"
+      ],
       "out": "(defn foo\n  [arg\n   ret])"
     }
   },
@@ -34,7 +38,9 @@
     },
     "source": {
       "lineNo": 34,
-      "in": "(defn foo\n[arg\n   ret",
+      "in": [
+        "(defn foo\n[arg\n   ret"
+      ],
       "out": "(defn foo)\n[arg\n   ret]"
     }
   },
@@ -47,7 +53,9 @@
     },
     "source": {
       "lineNo": 48,
-      "in": "(defn foo\n[arg\nret",
+      "in": [
+        "(defn foo\n[arg\nret"
+      ],
       "out": "(defn foo)\n[arg]\nret"
     }
   },
@@ -60,7 +68,9 @@
     },
     "source": {
       "lineNo": 62,
-      "in": "(defn foo\n  [arg\n  ret\n\n(defn foo\n  [arg\n  ret",
+      "in": [
+        "(defn foo\n  [arg\n  ret\n\n(defn foo\n  [arg\n  ret"
+      ],
       "out": "(defn foo\n  [arg]\n  ret)\n\n(defn foo\n  [arg]\n  ret)"
     }
   },
@@ -73,7 +83,9 @@
     },
     "source": {
       "lineNo": 86,
-      "in": "bar)",
+      "in": [
+        "bar)"
+      ],
       "out": "bar"
     }
   },
@@ -86,7 +98,9 @@
     },
     "source": {
       "lineNo": 96,
-      "in": "(def foo [a b]]",
+      "in": [
+        "(def foo [a b]]"
+      ],
       "out": "(def foo [a b])"
     }
   },
@@ -99,7 +113,9 @@
     },
     "source": {
       "lineNo": 106,
-      "in": "(let [x {:foo 1 :bar 2]\n  x)",
+      "in": [
+        "(let [x {:foo 1 :bar 2]\n  x)"
+      ],
       "out": "(let [x {:foo 1 :bar 2}]\n  x)"
     }
   },
@@ -122,7 +138,9 @@
     },
     "source": {
       "lineNo": 118,
-      "in": "(foo [a (|b] c)",
+      "in": [
+        "(foo [a (|b] c)"
+      ],
       "out": "(foo [a (|b] c)\n           ^ error: unmatched-close-paren"
     }
   },
@@ -140,7 +158,9 @@
     },
     "source": {
       "lineNo": 131,
-      "in": "(def foo \"as",
+      "in": [
+        "(def foo \"as"
+      ],
       "out": "(def foo \"as\n         ^ error: unclosed-quote"
     }
   },
@@ -158,7 +178,9 @@
     },
     "source": {
       "lineNo": 142,
-      "in": "(defn foo [a \"])",
+      "in": [
+        "(defn foo [a \"])"
+      ],
       "out": "(defn foo [a \"])\n             ^ error: unclosed-quote"
     }
   },
@@ -171,7 +193,9 @@
     },
     "source": {
       "lineNo": 153,
-      "in": "(defn foo\n  \"This is docstring.\n  Line 2 here.\"\n  ret",
+      "in": [
+        "(defn foo\n  \"This is docstring.\n  Line 2 here.\"\n  ret"
+      ],
       "out": "(defn foo\n  \"This is docstring.\n  Line 2 here.\"\n  ret)"
     }
   },
@@ -184,7 +208,9 @@
     },
     "source": {
       "lineNo": 169,
-      "in": "(let [a \"Hello\nWorld\"\n      b 2\n  ret",
+      "in": [
+        "(let [a \"Hello\nWorld\"\n      b 2\n  ret"
+      ],
       "out": "(let [a \"Hello\nWorld\"\n      b 2]\n  ret)"
     }
   },
@@ -197,7 +223,9 @@
     },
     "source": {
       "lineNo": 185,
-      "in": "(let [a \"])\"\n      b 2",
+      "in": [
+        "(let [a \"])\"\n      b 2"
+      ],
       "out": "(let [a \"])\"\n      b 2])"
     }
   },
@@ -210,7 +238,9 @@
     },
     "source": {
       "lineNo": 197,
-      "in": "(def foo \"\\\"\"",
+      "in": [
+        "(def foo \"\\\"\""
+      ],
       "out": "(def foo \"\\\"\")"
     }
   },
@@ -223,7 +253,9 @@
     },
     "source": {
       "lineNo": 208,
-      "in": "()\"\n\"",
+      "in": [
+        "()\"\n\""
+      ],
       "out": "()\"\n\""
     }
   },
@@ -246,7 +278,9 @@
     },
     "source": {
       "lineNo": 227,
-      "in": "\"|\"foo\"",
+      "in": [
+        "\"|\"foo\""
+      ],
       "out": "\"|\"foo\"\n      ^ error: unclosed-quote"
     }
   },
@@ -269,7 +303,9 @@
     },
     "source": {
       "lineNo": 238,
-      "in": "(def foo\n  \"|\n  \"(a b)\n      c\")",
+      "in": [
+        "(def foo\n  \"|\n  \"(a b)\n      c\")"
+      ],
       "out": "(def foo\n  \"|\n  \"(a b)\n      c\")\n       ^ error: unclosed-quote"
     }
   },
@@ -292,7 +328,9 @@
     },
     "source": {
       "lineNo": 262,
-      "in": "(for [col columns]\n  \"|\n  [:div.td {:style \"max-width: 500px;\"}])",
+      "in": [
+        "(for [col columns]\n  \"|\n  [:div.td {:style \"max-width: 500px;\"}])"
+      ],
       "out": "(for [col columns]\n  \"|\n  [:div.td {:style \"max-width: 500px;\"}])\n                                     ^ error: quote-danger"
     }
   },
@@ -305,7 +343,9 @@
     },
     "source": {
       "lineNo": 279,
-      "in": "(def foo [a b]\n  ; \"my multiline\n  ; docstring.\"\nret)",
+      "in": [
+        "(def foo [a b]\n  ; \"my multiline\n  ; docstring.\"\nret)"
+      ],
       "out": "(def foo [a b])\n  ; \"my multiline\n  ; docstring.\"\nret"
     }
   },
@@ -318,7 +358,9 @@
     },
     "source": {
       "lineNo": 295,
-      "in": "(def foo [a b]\n  ; \"\"\\\"\nret)",
+      "in": [
+        "(def foo [a b]\n  ; \"\"\\\"\nret)"
+      ],
       "out": "(def foo [a b])\n  ; \"\"\\\"\nret"
     }
   },
@@ -331,7 +373,9 @@
     },
     "source": {
       "lineNo": 311,
-      "in": "(defn foo [a b\n  \\[\n  ret",
+      "in": [
+        "(defn foo [a b\n  \\[\n  ret"
+      ],
       "out": "(defn foo [a b]\n  \\[\n  ret)"
     }
   },
@@ -344,7 +388,9 @@
     },
     "source": {
       "lineNo": 323,
-      "in": "(defn foo [a b]\n  ret\\)",
+      "in": [
+        "(defn foo [a b]\n  ret\\)"
+      ],
       "out": "(defn foo [a b]\n  ret\\))"
     }
   },
@@ -357,7 +403,9 @@
     },
     "source": {
       "lineNo": 333,
-      "in": "{:tag-open \\[ :tag-close \\]}\n{:tag-open \\[ :tag-close \\]}",
+      "in": [
+        "{:tag-open \\[ :tag-close \\]}\n{:tag-open \\[ :tag-close \\]}"
+      ],
       "out": "{:tag-open \\[ :tag-close \\]}\n{:tag-open \\[ :tag-close \\]}"
     }
   },
@@ -370,7 +418,9 @@
     },
     "source": {
       "lineNo": 346,
-      "in": "(def foo \\;",
+      "in": [
+        "(def foo \\;"
+      ],
       "out": "(def foo \\;)"
     }
   },
@@ -383,7 +433,9 @@
     },
     "source": {
       "lineNo": 356,
-      "in": "(def foo \\,\n(def bar \\ ; <-- space",
+      "in": [
+        "(def foo \\,\n(def bar \\ ; <-- space"
+      ],
       "out": "(def foo \\,)\n(def bar \\ ); <-- space"
     }
   },
@@ -401,7 +453,9 @@
     },
     "source": {
       "lineNo": 368,
-      "in": "(foo [a b\\\n  c)",
+      "in": [
+        "(foo [a b\\\n  c)"
+      ],
       "out": "(foo [a b\\\n         ^ error: eol-backslash\n  c)"
     }
   },
@@ -414,7 +468,9 @@
     },
     "source": {
       "lineNo": 384,
-      "in": "(def foo ;)",
+      "in": [
+        "(def foo ;)"
+      ],
       "out": "(def foo) ;)"
     }
   },
@@ -427,7 +483,9 @@
     },
     "source": {
       "lineNo": 395,
-      "in": "(let [a 1\n      b 2\n      c {:foo 1\n         ;; :bar 2}]\n  ret)",
+      "in": [
+        "(let [a 1\n      b 2\n      c {:foo 1\n         ;; :bar 2}]\n  ret)"
+      ],
       "out": "(let [a 1\n      b 2\n      c {:foo 1}]\n         ;; :bar 2}]\n  ret)"
     }
   },
@@ -440,7 +498,9 @@
     },
     "source": {
       "lineNo": 413,
-      "in": "(let [a 1 ;; a comment\n  ret)",
+      "in": [
+        "(let [a 1 ;; a comment\n  ret)"
+      ],
       "out": "(let [a 1] ;; a comment\n  ret)"
     }
   },
@@ -453,7 +513,9 @@
     },
     "source": {
       "lineNo": 425,
-      "in": "; hello \\n world",
+      "in": [
+        "; hello \\n world"
+      ],
       "out": "; hello \\n world"
     }
   },
@@ -471,7 +533,9 @@
     },
     "source": {
       "lineNo": 442,
-      "in": "(def b |)",
+      "in": [
+        "(def b |)"
+      ],
       "out": "(def b |)"
     }
   },
@@ -484,7 +548,9 @@
     },
     "source": {
       "lineNo": 452,
-      "in": "(def b )",
+      "in": [
+        "(def b )"
+      ],
       "out": "(def b)"
     }
   },
@@ -502,7 +568,9 @@
     },
     "source": {
       "lineNo": 462,
-      "in": "(def b [[c d] |])",
+      "in": [
+        "(def b [[c d] |])"
+      ],
       "out": "(def b [[c d] |])"
     }
   },
@@ -515,7 +583,9 @@
     },
     "source": {
       "lineNo": 472,
-      "in": "(def b [[c d] ])",
+      "in": [
+        "(def b [[c d] ])"
+      ],
       "out": "(def b [[c d]])"
     }
   },
@@ -528,7 +598,9 @@
     },
     "source": {
       "lineNo": 488,
-      "in": "(let [a 1])\n  ret)",
+      "in": [
+        "(let [a 1])\n  ret)"
+      ],
       "out": "(let [a 1]\n  ret)"
     }
   },
@@ -546,7 +618,9 @@
     },
     "source": {
       "lineNo": 500,
-      "in": "(let [a 1])|\n  ret)",
+      "in": [
+        "(let [a 1])|\n  ret)"
+      ],
       "out": "(let [a 1])|\n  ret"
     }
   },
@@ -559,7 +633,9 @@
     },
     "source": {
       "lineNo": 513,
-      "in": "(let [a 1]) 2\n  ret",
+      "in": [
+        "(let [a 1]) 2\n  ret"
+      ],
       "out": "(let [a 1]) 2\n  ret"
     }
   },
@@ -577,7 +653,9 @@
     },
     "source": {
       "lineNo": 526,
-      "in": "(let [a 1]|)\n  ret)",
+      "in": [
+        "(let [a 1]|)\n  ret)"
+      ],
       "out": "(let [a 1]|\n  ret)"
     }
   },
@@ -595,7 +673,9 @@
     },
     "source": {
       "lineNo": 538,
-      "in": "(let [a 1]) ;|\n  ret",
+      "in": [
+        "(let [a 1]) ;|\n  ret"
+      ],
       "out": "(let [a 1] ;|\n  ret)"
     }
   },
@@ -613,7 +693,9 @@
     },
     "source": {
       "lineNo": 550,
-      "in": "(foo)}}}}|",
+      "in": [
+        "(foo)}}}}|"
+      ],
       "out": "(foo)|"
     }
   },
@@ -631,7 +713,9 @@
     },
     "source": {
       "lineNo": 558,
-      "in": "(foo}}}}|)",
+      "in": [
+        "(foo}}}}|)"
+      ],
       "out": "(foo|)"
     }
   },
@@ -649,7 +733,9 @@
     },
     "source": {
       "lineNo": 574,
-      "in": "(foo\n  ) bar",
+      "in": [
+        "(foo\n  ) bar"
+      ],
       "out": "(foo\n  ) bar\n  ^ error: leading-close-paren"
     }
   },
@@ -662,7 +748,9 @@
     },
     "source": {
       "lineNo": 587,
-      "in": "(foo\n  ); comment",
+      "in": [
+        "(foo\n  ); comment"
+      ],
       "out": "(foo)\n  ; comment"
     }
   },
@@ -680,7 +768,9 @@
     },
     "source": {
       "lineNo": 599,
-      "in": "[(foo\n  )] bar",
+      "in": [
+        "[(foo\n  )] bar"
+      ],
       "out": "[(foo\n  )] bar\n  ^ error: leading-close-paren"
     }
   },
@@ -703,7 +793,9 @@
     },
     "source": {
       "lineNo": 621,
-      "in": "(foo [bar (|...] baz)",
+      "in": [
+        "(foo [bar (|...] baz)"
+      ],
       "out": "(foo [bar (|...] baz)\n               ^ error: unmatched-close-paren"
     }
   },
@@ -726,7 +818,9 @@
     },
     "source": {
       "lineNo": 632,
-      "in": "(foo [bar (]| baz)])",
+      "in": [
+        "(foo [bar (]| baz)])"
+      ],
       "out": "(foo [bar (]| baz)])\n           ^ error: unmatched-close-paren"
     }
   },
@@ -749,7 +843,9 @@
     },
     "source": {
       "lineNo": 644,
-      "in": "[... (foo [bar ]| baz]  ...)]",
+      "in": [
+        "[... (foo [bar ]| baz]  ...)]"
+      ],
       "out": "[... (foo [bar ]| baz]  ...)]\n                     ^ error: unmatched-close-paren"
     }
   },
@@ -772,7 +868,9 @@
     },
     "source": {
       "lineNo": 655,
-      "in": "(let [{:keys |foo bar]} my-map])",
+      "in": [
+        "(let [{:keys |foo bar]} my-map])"
+      ],
       "out": "(let [{:keys |foo bar]} my-map])\n                     ^ error: unmatched-close-paren"
     }
   },
@@ -790,7 +888,9 @@
     },
     "source": {
       "lineNo": 666,
-      "in": "(a (b (c))| d) e)",
+      "in": [
+        "(a (b (c))| d) e)"
+      ],
       "out": "(a (b (c))| d) e"
     }
   },
@@ -808,7 +908,9 @@
     },
     "source": {
       "lineNo": 676,
-      "in": "(a (b (c(|) d) e)",
+      "in": [
+        "(a (b (c(|) d) e)"
+      ],
       "out": "(a (b (c(|) d) e))"
     }
   },
@@ -831,7 +933,9 @@
     },
     "source": {
       "lineNo": 686,
-      "in": "(f [x (a (b c(|) d) y] g)",
+      "in": [
+        "(f [x (a (b c(|) d) y] g)"
+      ],
       "out": "(f [x (a (b c(|) d) y] g)\n                     ^ error: unmatched-close-paren"
     }
   },
@@ -854,7 +958,9 @@
     },
     "source": {
       "lineNo": 698,
-      "in": "(foo\n  bar)| baz) qux",
+      "in": [
+        "(foo\n  bar)| baz) qux"
+      ],
       "out": "(foo\n  bar)| baz) qux\n           ^ error: unmatched-close-paren"
     }
   },
@@ -877,7 +983,9 @@
     },
     "source": {
       "lineNo": 709,
-      "in": "(foo\n  [bar\n   bar)| baz\n   bar])",
+      "in": [
+        "(foo\n  [bar\n   bar)| baz\n   bar])"
+      ],
       "out": "(foo\n  [bar\n   bar)| baz\n      ^ error: unmatched-close-paren\n   bar])"
     }
   },
@@ -900,7 +1008,9 @@
     },
     "source": {
       "lineNo": 726,
-      "in": "(foo\n  [bar]\n|bar) baz",
+      "in": [
+        "(foo\n  [bar]\n|bar) baz"
+      ],
       "out": "(foo\n  [bar]\n|bar) baz\n    ^ error: unmatched-close-paren"
     }
   },
@@ -923,7 +1033,9 @@
     },
     "source": {
       "lineNo": 742,
-      "in": "(foo\n [bar]\n  |bar) baz",
+      "in": [
+        "(foo\n [bar]\n  |bar) baz"
+      ],
       "out": "(foo\n [bar]\n  |bar) baz\n      ^ error: unmatched-close-paren"
     }
   },
@@ -941,7 +1053,9 @@
     },
     "source": {
       "lineNo": 757,
-      "in": "(foo\n [bar\n bar]) baz",
+      "in": [
+        "(foo\n [bar\n bar]) baz"
+      ],
       "out": "(foo\n [bar\n bar]) baz\n    ^ error: unmatched-close-paren"
     }
   },
@@ -959,7 +1073,9 @@
     },
     "source": {
       "lineNo": 774,
-      "in": "(foo bar ;|)",
+      "in": [
+        "(foo bar ;|)"
+      ],
       "out": "(foo bar) ;|)"
     }
   },
@@ -977,7 +1093,9 @@
     },
     "source": {
       "lineNo": 784,
-      "in": "(let [x 1\n      y 2;|])",
+      "in": [
+        "(let [x 1\n      y 2;|])"
+      ],
       "out": "(let [x 1\n      y 2]);|])"
     }
   },
@@ -995,7 +1113,9 @@
     },
     "source": {
       "lineNo": 796,
-      "in": "(|",
+      "in": [
+        "(|"
+      ],
       "out": "(|)"
     }
   },
@@ -1021,7 +1141,9 @@
     },
     "source": {
       "lineNo": 810,
-      "in": "(def x [1 2 3])\n(def y 2)\n|",
+      "in": [
+        "(def x [1 2 3])\n(def y 2)\n|"
+      ],
       "out": "(def x [1 2 3])\n(def y 2)\n^    > tabStops\n|"
     }
   },
@@ -1052,7 +1174,9 @@
     },
     "source": {
       "lineNo": 826,
-      "in": "(foo bar\n  (baz boo))\n|",
+      "in": [
+        "(foo bar\n  (baz boo))\n|"
+      ],
       "out": "(foo bar\n  (baz boo))\n^ ^    > tabStops\n|"
     }
   },
@@ -1088,7 +1212,9 @@
     },
     "source": {
       "lineNo": 839,
-      "in": "(let [a {:foo 1}\n      |\n      bar [1 2 3]]\n  bar)",
+      "in": [
+        "(let [a {:foo 1}\n      |\n      bar [1 2 3]]\n  bar)"
+      ],
       "out": "(let [a {:foo 1}\n^    ^  ^     > tabStops\n      |\n      bar [1 2 3]]\n  bar)"
     }
   },
@@ -1124,7 +1250,9 @@
     },
     "source": {
       "lineNo": 855,
-      "in": "(let [a {:foo 1}\n      bar (func 1 2 3)]\n  |\n  bar)",
+      "in": [
+        "(let [a {:foo 1}\n      bar (func 1 2 3)]\n  |\n  bar)"
+      ],
       "out": "(let [a {:foo 1}\n      bar (func 1 2 3)]\n^    ^    ^     > tabStops\n  |\n  bar)"
     }
   },
@@ -1159,7 +1287,9 @@
     },
     "source": {
       "lineNo": 874,
-      "in": "(defn foo\n  \"hello, this is a docstring\"\n  [a b]\n  (let [sum (+ a b)\n        prod (* a b)]\n     {:sum sum\n      :prod prod}))",
+      "in": [
+        "(defn foo\n  \"hello, this is a docstring\"\n  [a b]\n  (let [sum (+ a b)\n        prod (* a b)]\n     {:sum sum\n      :prod prod}))"
+      ],
       "out": "(defn foo\n  \"hello, this is a docstring\"\n  [a b]\n      ^ parenTrail\n  (let [sum (+ a b)\n                  ^ parenTrail\n        prod (* a b)]\n                   ^^ parenTrail\n     {:sum sum\n      :prod prod}))\n                ^^^ parenTrail"
     }
   }
