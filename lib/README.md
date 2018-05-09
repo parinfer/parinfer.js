@@ -31,6 +31,7 @@ comprehensive test suite to help ensure consistent behavior.
 | implemented in | link               | relevant editor          |
 |:---------------|:-------------------|:-------------------------|
 | JavaScript     | parinfer.js (here) | Atom, VSCode, LightTable |
+| Rust           | [parinfer-rust]    | Vim                      |
 | Python         | [parinfer.py]      | Sublime Text             |
 | Kotlin (JVM)   | [parinfer-jvm]     | Cursive IDE, Nightcode   |
 | Emacs Lisp     | [parinfer-elisp]   | Emacs                    |
@@ -39,6 +40,7 @@ comprehensive test suite to help ensure consistent behavior.
 _<strong>[Open an issue]</strong> if you would like Parinfer ported to another language for
 use in an editor not listed above._
 
+[parinfer-rust]:https://github.com/eraserhd/parinfer-rust
 [parinfer.py]:https://github.com/oakmac/parinfer.py
 [parinfer-jvm]:https://github.com/oakmac/parinfer-jvm
 [parinfer-elisp]:https://github.com/oakmac/parinfer-elisp

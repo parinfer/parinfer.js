@@ -33,6 +33,7 @@ Parinfer is still in early development.  Several people have started
 integrating it into code editors at various stages of development.
 
 - [atom-parinfer] for [Atom]
+- [parinfer-rust] for [Vim] and [Neovim]
 - [nvim-parinfer.js] for [Neovim]
 - [vim-parinfer] for [Vim]
 - [vscode-parinfer] for [Visual Studio Code]
@@ -54,6 +55,7 @@ Parinfer will soon be available for some REPL environments as well:
 [Let me know]:https://github.com/shaunlebron/parinfer/issues/new?title=new%20plugin
 [lib readme]:lib
 
+[parinfer-rust]:https://github.com/eraserhd/parinfer-rust
 [atom-parinfer]:https://github.com/oakmac/atom-parinfer
 [Atom]:https://atom.io/
 [nvim-parinfer.js]:https://github.com/snoe/nvim-parinfer.js
