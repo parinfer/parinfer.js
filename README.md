@@ -1,6 +1,6 @@
 _Ask Parinfer questions at <http://talk.parinfer.io>_
 
-_[Thanks to my patrons](https://www.patreon.com/shaunlebron) supporting this work at $1159/month._
+_[Thanks to my patrons.](https://www.patreon.com/shaunlebron)_
 
 # Parinfer
 
