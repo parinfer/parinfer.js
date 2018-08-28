@@ -1,5 +1,3 @@
-_Ask Parinfer questions at <http://talk.parinfer.io>_
-
 _[Thanks to my patrons.](https://www.patreon.com/shaunlebron)_
 
 # Parinfer
