@@ -70,6 +70,36 @@ keep relative indentation of child expressions:
          (map inc)))
 ```
 
+## Threshold canceling
+
+`bar` is allowed to be indented because indent mode will not format it differently:
+
+```in
+()
+foo
+  bar
+```
+
+```out
+()
+foo
+  bar
+```
+
+likewise here too:
+
+```in
+(hello (world)
+  foo
+         bar)
+```
+
+```out
+(hello (world)
+  foo
+         bar)
+```
+
 ## Leading Close-Paren
 
 

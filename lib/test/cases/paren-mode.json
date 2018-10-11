@@ -75,6 +75,36 @@
     }
   },
   {
+    "text": "()\nfoo\n  bar",
+    "options": {},
+    "result": {
+      "text": "()\nfoo\n  bar",
+      "success": true
+    },
+    "source": {
+      "lineNo": 76,
+      "in": [
+        "()\nfoo\n  bar"
+      ],
+      "out": "()\nfoo\n  bar"
+    }
+  },
+  {
+    "text": "(hello (world)\n  foo\n         bar)",
+    "options": {},
+    "result": {
+      "text": "(hello (world)\n  foo\n         bar)",
+      "success": true
+    },
+    "source": {
+      "lineNo": 90,
+      "in": [
+        "(hello (world)\n  foo\n         bar)"
+      ],
+      "out": "(hello (world)\n  foo\n         bar)"
+    }
+  },
+  {
     "text": "(let [foo 1\n      ]; <-- spaces\n  foo)",
     "options": {},
     "result": {
@@ -82,7 +112,7 @@
       "success": true
     },
     "source": {
-      "lineNo": 78,
+      "lineNo": 108,
       "in": [
         "(let [foo 1\n      ]; <-- spaces\n  foo)"
       ],
@@ -97,7 +127,7 @@
       "success": true
     },
     "source": {
-      "lineNo": 90,
+      "lineNo": 120,
       "in": [
         "(let [foo 1\n      bar 2\n\n     ] (+ foo bar\n  ); <-- spaces\n)"
       ],
@@ -112,7 +142,7 @@
       "success": true
     },
     "source": {
-      "lineNo": 112,
+      "lineNo": 142,
       "in": [
         "(def x [1 2 3 4\n         5 6 7 8])"
       ],
@@ -127,7 +157,7 @@
       "success": true
     },
     "source": {
-      "lineNo": 124,
+      "lineNo": 154,
       "in": [
         "  (assoc x\n:foo 1\n     :bar 2)"
       ],
@@ -147,7 +177,7 @@
       "success": false
     },
     "source": {
-      "lineNo": 138,
+      "lineNo": 168,
       "in": [
         "(foo"
       ],
@@ -167,7 +197,7 @@
       "success": false
     },
     "source": {
-      "lineNo": 147,
+      "lineNo": 177,
       "in": [
         "(defn foo\n[arg arg2\nbar"
       ],
@@ -187,7 +217,7 @@
       "success": false
     },
     "source": {
-      "lineNo": 162,
+      "lineNo": 192,
       "in": [
         "(foo})"
       ],
@@ -207,7 +237,7 @@
       "success": false
     },
     "source": {
-      "lineNo": 171,
+      "lineNo": 201,
       "in": [
         "(foo\n  })"
       ],
@@ -227,7 +257,7 @@
       "success": false
     },
     "source": {
-      "lineNo": 182,
+      "lineNo": 212,
       "in": [
         "(defn foo\n  [arg\n  bar)"
       ],
@@ -242,7 +272,7 @@
       "success": true
     },
     "source": {
-      "lineNo": 199,
+      "lineNo": 229,
       "in": [
         "; hello \\n world"
       ],
@@ -257,7 +287,7 @@
       "success": true
     },
     "source": {
-      "lineNo": 209,
+      "lineNo": 239,
       "in": [
         "(def foo \\,)\n(def bar \\ )"
       ],
@@ -277,7 +307,7 @@
       "success": false
     },
     "source": {
-      "lineNo": 221,
+      "lineNo": 251,
       "in": [
         "(foo [a b]\\\nc)"
       ],
@@ -297,7 +327,7 @@
       "success": false
     },
     "source": {
-      "lineNo": 234,
+      "lineNo": 264,
       "in": [
         "(def foo\n  \"hello\n  bar)"
       ],
@@ -317,7 +347,7 @@
       "success": false
     },
     "source": {
-      "lineNo": 251,
+      "lineNo": 281,
       "in": [
         "(def foo [a b]\n  ; \"my string\nret)"
       ],
@@ -332,7 +362,7 @@
       "success": true
     },
     "source": {
-      "lineNo": 266,
+      "lineNo": 296,
       "in": [
         "(def foo [a b]\n  ; \"my multiline\n  ; docstring.\"\nret)"
       ],
@@ -347,7 +377,7 @@
       "success": true
     },
     "source": {
-      "lineNo": 285,
+      "lineNo": 315,
       "in": [
         "( )\"\n\""
       ],
@@ -367,7 +397,7 @@
       "success": true
     },
     "source": {
-      "lineNo": 300,
+      "lineNo": 330,
       "in": [
         "(foo |)"
       ],
@@ -387,7 +417,7 @@
       "success": true
     },
     "source": {
-      "lineNo": 308,
+      "lineNo": 338,
       "in": [
         "(foo [1 2 3 |] )"
       ],
@@ -402,7 +432,7 @@
       "success": true
     },
     "source": {
-      "lineNo": 318,
+      "lineNo": 348,
       "in": [
         "(foo )"
       ],
@@ -417,7 +447,7 @@
       "success": true
     },
     "source": {
-      "lineNo": 326,
+      "lineNo": 356,
       "in": [
         "(foo [1 2 3 ] )"
       ],
@@ -437,7 +467,7 @@
       "success": true
     },
     "source": {
-      "lineNo": 338,
+      "lineNo": 368,
       "in": [
         "(foo [a b\n|])"
       ],
@@ -457,7 +487,7 @@
       "success": true
     },
     "source": {
-      "lineNo": 350,
+      "lineNo": 380,
       "in": [
         "(foo [1 2 3\n 4 5 6\n 7 8 9])|"
       ],
@@ -481,7 +511,7 @@
       "success": true
     },
     "source": {
-      "lineNo": 366,
+      "lineNo": 396,
       "in": [
         "(let     [foo 1\n     ----\n           ; comment 1\n           bar 2\n           baz 3])\n           ; comment 2"
       ],
@@ -505,7 +535,7 @@
       "success": true
     },
     "source": {
-      "lineNo": 383,
+      "lineNo": 413,
       "in": [
         "   (def foo\n---\n      ; comment 1\n      bar)\n      ; comment 2"
       ],
@@ -529,7 +559,7 @@
       "success": true
     },
     "source": {
-      "lineNo": 400,
+      "lineNo": 430,
       "in": [
         "(def foo (bar\n    ++++\n       4 5 6\n       ; comment 1\n       7 8 9))\n       ; comment 2"
       ],
@@ -559,7 +589,7 @@
       "success": true
     },
     "source": {
-      "lineNo": 419,
+      "lineNo": 449,
       "in": [
         "(my-fnfoo (if some-condition\n -----+++\n         println) my-funfoo {:foo 1\n                  ------+++\n                          :bar 2})"
       ],
@@ -574,7 +604,7 @@
       "success": true
     },
     "source": {
-      "lineNo": 447,
+      "lineNo": 477,
       "in": [
         "(foo [bar baz]\n       1 2 3\n       4 5 6)"
       ],
@@ -589,7 +619,7 @@
       "success": true
     },
     "source": {
-      "lineNo": 459,
+      "lineNo": 489,
       "in": [
         "(foo [bar baz\n         ]; <-- spaces\n       1 2 3\n       4 5 6)"
       ],
@@ -626,7 +656,7 @@
       "success": true
     },
     "source": {
-      "lineNo": 478,
+      "lineNo": 508,
       "in": [
         "(defn foo\n  \"hello, this is a docstring\"\n  [a b]\n  (let [sum (+ a b)\n        prod (* a b)]\n     {:sum sum\n      :prod prod}))"
       ],
@@ -650,7 +680,7 @@
       "success": true
     },
     "source": {
-      "lineNo": 506,
+      "lineNo": 536,
       "in": [
         "  (foo\n++\n  (bar\n    baz))"
       ],
@@ -680,7 +710,7 @@
       "success": true
     },
     "source": {
-      "lineNo": 521,
+      "lineNo": 551,
       "in": [
         "  (foo\n++\n    (bar\n++\n    baz))"
       ],
@@ -710,7 +740,7 @@
       "success": true
     },
     "source": {
-      "lineNo": 537,
+      "lineNo": 567,
       "in": [
         "  (foo\n      (bar\n++\n        baz))\n++"
       ],
@@ -734,7 +764,7 @@
       "success": true
     },
     "source": {
-      "lineNo": 554,
+      "lineNo": 584,
       "in": [
         "  (foo\n++\n  bar\n  baz)"
       ],
@@ -764,7 +794,7 @@
       "success": true
     },
     "source": {
-      "lineNo": 569,
+      "lineNo": 599,
       "in": [
         "  (foo\n++\n    bar\n++\n  baz)"
       ],
@@ -794,7 +824,7 @@
       "success": true
     },
     "source": {
-      "lineNo": 585,
+      "lineNo": 615,
       "in": [
         "(foo\n    bar\n++\n    baz)\n++"
       ],
@@ -822,7 +852,7 @@
       "success": true
     },
     "source": {
-      "lineNo": 607,
+      "lineNo": 637,
       "in": [
         "(def x [1 2 3])\n(def y 2)\n|"
       ],
@@ -855,7 +885,7 @@
       "success": true
     },
     "source": {
-      "lineNo": 623,
+      "lineNo": 653,
       "in": [
         "(foo bar\n  (baz boo))\n|"
       ],
@@ -893,7 +923,7 @@
       "success": true
     },
     "source": {
-      "lineNo": 636,
+      "lineNo": 666,
       "in": [
         "(let [a {:foo 1}\n      |\n      bar [1 2 3]]\n  bar)"
       ],
@@ -931,7 +961,7 @@
       "success": true
     },
     "source": {
-      "lineNo": 651,
+      "lineNo": 681,
       "in": [
         "(let [a {:foo 1}\n      bar (func 1 2 3)]\n  |\n  bar)"
       ],
