@@ -1,5 +1,3 @@
-_[Thanks to my patrons.](https://www.patreon.com/shaunlebron)_
-
 # Parinfer
 
 _parentheses inference for Lisp_
