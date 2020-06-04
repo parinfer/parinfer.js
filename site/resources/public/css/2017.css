@@ -6,12 +6,7 @@ body {
   font-family: "Open Sans", Arial, freesans, sans-serif;
   color: #555;
   background: #F7F7F7;
-}
-
-#toc {
-  text-align: left;
-  margin-left: 10px;
-  font-size: 0.9em;
+  margin: 0;
 }
 
 a.header-link {
@@ -19,51 +14,6 @@ a.header-link {
   position: absolute;
   left: -1em;
   border-bottom: 0;
-}
-
-.toc-link a {
-  border-bottom: 0;
-  color: #111;
-}
-
-.toc-link {
-  line-height: 1.6em;
-  opacity: 0.4;
-  transition: opacity 0.3s;
-  margin-top: 2px;
-  margin-right: 2px;
-}
-
-.toc-hide {
-  display: none;
-}
-
-.toc-link.toc-active {
-  border-right: 2px solid #333;
-  margin-right: 0px;
-  opacity: 1;
-}
-
-.toc-link.toc-active-ancestor {
-  border-right: 2px solid #CCC;
-  margin-right: 0;
-  opacity: 1;
-}
-
-.toc-level-1 {
-  display: none;
-}
-
-.toc-level-2 {
-  padding-left: 10px;
-}
-
-.toc-level-3 {
-  padding-left: 30px;
-}
-
-.toc-level-4 {
-  padding-left: 40px;
 }
 
 #controls {
@@ -135,6 +85,7 @@ h1 em {
 }
 
 .subtitle {
+  text-align: center;
   font-size: 20px;
   font-weight: bold;
   margin-top: -18px;
@@ -162,7 +113,7 @@ a:link, a:visited, a:hover, a:active {
 
 p, li {
   line-height: 1.7em;
-  color: #555;
+  color: #222;
 }
 
 .sidebar {
@@ -192,20 +143,23 @@ p, li {
 }
 
 #app {
-  position: absolute;
-  left: 300px;
-  top: 0;
-  right: 0;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
 }
 
 .wrapper {
-  right: 0;
   margin:0;
-  border-top: 1px solid #dedede;
+  width: 100%;
 }
 
 .wrapper.fold {
-  background: #fefefe;
+  background: rgba(255, 237, 170, 0.87);
+  border: 0;
+}
+
+.wrapper.fold p {
+  text-align: center;
 }
 
 .wrapper.fold .interact {
@@ -220,6 +174,7 @@ p, li {
 
 section {
   width: 862px;
+  margin: 0 auto;
   padding: 70px;
 }
 
@@ -231,9 +186,8 @@ section {
 
 .caption {
   padding-top: 20px;
-  margin-bottom: 5px;
+  margin-bottom: 10px;
   margin-left: 5px;
-  font-style: italic;
   color: #888;
 }
 
@@ -493,38 +447,17 @@ i.fa {
   display: none;
 }
 
-@media only screen and (max-width : 850px) {
-  #app {
-    position: static;
-  }
-
-  .sidebar {
-    display: none;
-  }
-
-  section {
-    width: 782px;
-    padding: 30px;
-  }
-
-  .wrapper {
-    border: 0;
-  }
-
-  h1 {
-    font-size: 80px;
-  }
-
-  .credits {
-    font-size: 1.5em;
-  }
-
-  .only-mobile {
-    display: block;
-  }
-}
-
-
 .parinfer-error {
   background: #FFBEBE; color: black !important;
+}
+
+body.locus .CodeMirror {
+  line-height: 22px;
+}
+.parinfer-locus-paren {
+  visibility: hidden;
+}
+.parinfer-locus {
+  opacity: 0.1;
+  pointer-events: none;
 }

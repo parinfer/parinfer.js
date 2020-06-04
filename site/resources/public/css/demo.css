@@ -259,3 +259,13 @@ span.calc-option {
 .parinfer-error {
   background: #FFBEBE;
 }
+
+body.locus .CodeMirror {
+}
+.parinfer-locus-paren {
+  visibility: hidden;
+}
+.parinfer-locus {
+  opacity: 0.1;
+  pointer-events: none;
+}

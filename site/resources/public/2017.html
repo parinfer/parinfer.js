@@ -15,112 +15,106 @@
 </head>
 <body class="no-mathjax">
 
-<div class="sidebar">
-  <h1>Par<em>infer</em></h1>
-  <div class="credits">
-    <a href="http://twitter.com/shaunlebron">@shaunlebron</a> |
-    <a href="https://github.com/shaunlebron/parinfer">GitHub</a>
-  </div>
-  <div id="toc">
-    <span class="caption">building table of contents...</a>
-  </div>
-</div>
-
 <div id="app">
 
 <!------------------------------------------------------------------------------------>
 
-<div class="wrapper only-mobile">
 <section>
   <h1>Par<em>infer</em></h1>
+  <div class="subtitle">
+    latest features memo
+  </div>
   <div class="credits">
     <a href="http://twitter.com/shaunlebron">@shaunlebron</a> |
     <a href="https://github.com/shaunlebron/parinfer">GitHub</a>
   </div>
-
-<div class="interact">
-<i class="fa fa-desktop fa-lg"></i>
-<strong>Best viewed</strong> on wide desktop browsers.  Sorry for the inconvenience.
-</div>
-
 </section>
-</div>
-
-<!------------------------------------------------------------------------------------>
-
-<div class="wrapper">
-<section>
-<p class="subtitle">
-Let's <em>further</em> simplify the way we write Lisp...
-</p>
-
-<div class="interact">
-<i class="fa fa-keyboard-o fa-lg"></i>
-<strong>Try it!</strong> Interrupt the animations below to try it for yourself. Click outside to restore it.
-</div>
-
-
-<div>
-<div class="caption"><strong>Indent</strong> to move in and out of structure above while preserving structure below. (no modes)</div>
-<textarea id="code-intro-indent">
-</textarea>
-</div>
-
-<div>
-<div class="caption"><strong>Snap</strong> to important points when pressing Tab or Shift+Tab.</div>
-<textarea id="code-intro-snap">
-</textarea>
-</div>
-
-<div>
-<div class="caption"><strong>Safeguards</strong> preserve structure below an edit (and waits on cursor to avoid aggression).</div>
-<textarea id="code-intro-safeguards">
-</textarea>
-</div>
-
-<div>
-<div class="caption"><strong>Compromise</strong> by allowing temporary imbalance (optional) when it is easier to get you want.</div>
-<textarea id="code-intro-compromise">
-</textarea>
-</div>
-
-</section>
-</div>
 
 <!------------------------------------------------------------------------------------>
 
 <div class="wrapper fold">
 <section id="introduction">
-<h2>Background</h2>
-
-<em>Continuing the work from the original 2015 proposal for
-<a href="http://shaunlebron.github.io/parinfer">Parinfer</a>.</em>
 
 <p>
-<strong>Parinfer was designed to help newcomers with Lisp</strong>. It allows
-Lisp code to be driven by indentation—not by <em>removing</em> Parentheses, but by
-<em>inferring</em> them. It now exists as a plugin across many editors, and is
-reportedly used by newcomers and experienced users across different Lisps.
+<strong>Hello,</strong>
+I'd like your feedback on these new experimental features!
 </p>
 
 <p>
-<strong>Some parts didn't feel right over time</strong>. Though many of us
-enjoyed the core of its behavior, some edge cases had emerged to cause
-unintended structure changes.  And as we anticipated, users expressed problems
-with mode-switch confusion and noisy diffs on projects.
+Please try them below or in <a href="https://atom.io/packages/parinfer">atom-parinfer</a> under the <em>Smart Mode</em> setting.
 </p>
 
 <p>
-<strong>We'd like to show how it has improved</strong>. There is now an easier
-unified mode, a project linter for teams, and some safeguards to prevent
-unintended structure changes.  Not all problems are solved, but this represents
-a milestone toward discovering more of Parinfer capabilities and tradeoffs so
-that we may better understand how to improve the newcomer experience for Lisp.
+Porting to other editors can begin after we address your feedback!
 </p>
 
 </section>
 </div>
 
+
+
+<!------------------------------------------------------------------------------------>
+
+<div class="wrapper">
+<section>
+
+<p>
+<strong>Smart Mode</strong>
+</p>
+
+<p>
+It was difficult to remember when to switch between the different modes.
+</p>
+
+<p>
+<strong>Indent code without disrupting structure below...</strong>
+</p>
+
+<p>
+  So now,
+indenting a line in the new <em>Smart Mode</em> will actively prevent any change in structure
+below it.  Thanks <a href="https://twitter.com/rgdelato">Ryan</a>!
+</p>
+
+<textarea id="code-intro-smart">
+</textarea>
+
+<p>
+<strong>...but you can still indent the old way.</strong>
+</p>
+
+<p>
+You sometimes need to be able to correct the indentation of a line without
+regard to the incorrect structure following a bad copy/paste. Thus, you can
+still indent a line without preserving structure in <em>Smart Mode</em> by
+selecting the text you are indenting.  Thanks <a
+href="https://twitter.com/SevereOverfl0w">Dominic</a>!
+</p>
+
+<textarea id="code-intro-paste">
+</textarea>
+</div>
+
+<div>
+<div class="caption"><strong>Structural tab-stops</strong> to important points when pressing Tab or Shift+Tab.</div>
+<textarea id="code-intro-tabstops">
+</textarea>
+</div>
+
+<div>
+<div class="caption"><strong>Structural safeguards</strong> preserve structure below an edit (and waits on cursor to avoid aggression).</div>
+<textarea id="code-intro-safeguards">
+</textarea>
+</div>
+
+<div>
+<div class="caption"><strong>Compromise on imbalance</strong> by allowing unmatched close-parens (optional) when it is easier to get you want.</div>
+<textarea id="code-intro-imbalance">
+</textarea>
+</div>
+
+</section>
+</div>
 
 </div><!-- end #app -->
 
@@ -140,6 +134,7 @@ window.parinfer_2017 = true;
 </script>
 
 <script src="parinfer.js"></script>
+<script src="js/lib/raphael.min.js"></script>
 <script src="js/lib/parinfer-codemirror.js"></script>
 <script src="js/compiled/parinfer-site.js"></script>
 

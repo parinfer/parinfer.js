@@ -564,125 +564,48 @@ The cursor should not keep unmatched close-parens in the trail:
 (foo|)
 ```
 
-## Leading Close-Parens
+## Leading close-parens
 
-Leading close-parens can cause many problems that can be fixed by paren mode,
-so we exit to paren mode when they are detected.
+Leading close-parens can cause many problems that we can ignore by simply removing
+them, which is what we do when `forceBalance` is enabled. (currently can't enable
+these in tests).
 
-For example, it is convenient to keep trailing parens in front of the cursor
-after pressing enter or after deleting everything behind them:
-
-```in
-(let [a 1
-      |])
-```
-
-```out
-(let [a 1
-      |])
-```
-
-Moving the cursor away:
-
-```in
-(let [a 1
-      ]); <-- spaces
-```
-
-```out
-(let [a 1])
-      ; <-- spaces
-```
-
-But we also need safety from inadvertent AST breakage.  For example,
-Indent Mode should allow this intermediate state:
-
-```in
-(let [a 1
-      |] (+ a 2))
-```
-
-```out
-(let [a 1
-      |] (+ a 2))
-```
-
-Moving the cursor away will cause Indent Mode to still detect the leading
-close-paren, exit to Paren Mode, then fix the spacing to prevent inadvertent
-breakage.
-
-```in
-(let [a 1
-      ] (+ a 2))
-```
-
-```out
-(let [a 1]
-     (+ a 2))
-```
-
-To prevent weird things, indentation needs to be locked to respect
-the leading close-paren.  Exiting to Paren Mode allows this and prevents further
-AST breakage.
-
-```in
-(let [a 1
-  |] (+ a 2))
-```
-
-```out
-(let [a 1
-      |] (+ a 2))
-```
-
-Moving cursor to the right progressively moves leading close-parens behind it
-to their normal positions:
-
-```in
-(let [a 1
-      ]|)
-```
-
-```out
-(let [a 1]
-     |)
-```
-
-When in Paren Mode we must abide by its rules to stay balanced.
+If `forceBalance` is not on, we suspend Indent Mode.
 
 ```in
 (foo
-  }|)
+  ) bar
 ```
 
 ```out
 (foo
-  }|)
-  ^ error: unmatched-close-paren
+  ) bar
+  ^ error: leading-close-paren
 ```
 
-Likewise:
+It is allowed if the leading parens are also in paren trail:
 
 ```in
 (foo
-  ) foo} bar|
+  ); comment
 ```
 
 ```out
-(foo
-  ) foo} bar|
-       ^ error: unmatched-close-paren
+(foo)
+  ; comment
 ```
+
+If there's more than one, point to the first one.
 
 ```in
-(foo
-  ) (bar|
+[(foo
+  )] bar
 ```
 
 ```out
-(foo
-  ) (bar|
-    ^ error: unclosed-paren
+[(foo
+  )] bar
+  ^ error: leading-close-paren
 ```
 
 ## Unmatched close-parens

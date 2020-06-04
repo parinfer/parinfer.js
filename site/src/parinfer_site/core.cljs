@@ -16,7 +16,8 @@
     [parinfer-site.state :refer [state]]
     [parinfer-site.toc :as toc]
     [parinfer-site.editor-ui :as editor-ui]
-    [parinfer-site.gears :refer [create-gears!]]))
+    [parinfer-site.gears :refer [create-gears!]]
+    goog.Uri))
 
 (enable-console-print!)
 
@@ -176,9 +177,23 @@
 ;; 2017 setup
 ;;----------------------------------------------------------------------
 
+(defn query []
+  (.getQuery (goog.Uri. js/document.location)))
+
+(defn locus? []
+  (= (query) "locus"))
+
+(defn guides? []
+  (= (query) "guides"))
+
+(defn options-2017 []
+  {:parinfer-mode :smart-mode
+   :forceBalance false
+   :locus (locus?)
+   :guides (guides?)})
+
 (defn create-2017-editors! []
-  (let [opts {:parinfer-mode :smart-mode
-              :forceBalance false}]
+  (let [opts (options-2017)]
     (create-editor! "code-intro-indent" :intro-indent opts)
     (create-editor! "code-intro-snap" :intro-snap opts)
     (create-editor! "code-intro-safeguards" :intro-safeguards opts)
@@ -341,28 +356,29 @@
   (render-controls!))
 
 (defn render-2017! []
-  (toc/init!)
   (create-2017-editors!)
   (load-anims! anims-2017)
   (render-controls!))
 
 (defn render-demo! []
-  (let [cm (create-editor! "code-demo" :demo)]
+  (let [init-value (string/join "\n"
+                     ["(defn foo"
+                      "  \"hello, this is a docstring\""
+                      "  [a b]"
+                      "  (let [sum (+ a b)"
+                      "        prod (* a b)]"
+                      "     {:sum sum"
+                      "      :prod prod}))"])
+        opts (assoc (options-2017)
+               :init-value init-value
+               :guides (not (locus?)))
+        cm (create-editor! "code-demo" :demo opts)]
     (editor-ui/render! :demo)
-    (.setValue cm
-      (string/join "\n"
-        ["(defn foo"
-         "  \"hello, this is a docstring\""
-         "  [a b]"
-         "  (let [sum (+ a b)"
-         "        prod (* a b)]"
-         "     {:sum sum"
-         "      :prod prod}))"]))
-    (swap! state assoc-in [:demo :mode] :smart-mode)
-    (js/parinferCodeMirror.setMode cm "smart")
-    (js/parinferCodeMirror.setOptions cm #js{:forceBalance false})))
+    (swap! state assoc-in [:demo :mode] :smart-mode)))
 
 (defn init! []
+  (when (or (locus?) (guides?))
+    (js/document.body.classList.add "locus"))
   (cond
     (aget js/window "parinfer_demopage") (render-demo!)
     (aget js/window "parinfer_debug_state") (render-debug-state!)

@@ -142,11 +142,16 @@
        (.on cm "beforeChange" before-change)
        (.on cm "cursorActivity" on-cursor-activity)
 
+       (when-let [init-value (:init-value opts)]
+         (.setValue cm init-value))
+
        (.init js/parinferCodeMirror
          cm
          ({:indent-mode "indent"
            :paren-mode "paren"
            :smart-mode "smart"} mode)
-         #js {:forceBalance (:forceBalance opts true)})
+         #js {:forceBalance (:forceBalance opts true)
+              :guides (:guides opts)
+              :locus (:locus opts)})
 
        cm))))

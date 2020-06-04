@@ -1,10 +1,10 @@
 {
   "name": "parinfer",
-  "version": "3.10.0",
+  "version": "3.12.0",
   "description": "a simpler way to write Lisp",
   "main": "parinfer.js",
   "scripts": {
-    "test": "eslint parinfer.js && eslint test.js && mocha test/cases.js && node test/perf.js"
+    "test": "bash test-all"
   },
   "files": [
     "parinfer.js",

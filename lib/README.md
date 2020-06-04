@@ -2,8 +2,15 @@
 
 [Parlinter]:https://github.com/shaunlebron/parlinter
 
-__NEW: Smart Mode__ is an ongoing experiment to hopefully eliminate the need for
-users to switch between Indent Mode and Paren Mode. Try out the [demo]!
+## Status Update 2019 (Smart Mode)
+
+**Smart Mode** (available in [demo]) was an experiment to eliminate switching between Indent Mode and Paren Mode—by looking at a change and determining whether to run Indent Mode or Paren Mode. It is well tested and worked great in our sandboxes, but we found that the majority of editor APIs do not allow us to integrate Smart Mode's rules _safely_.
+
+For example, if we don't catch a search/replace change in multiple locations of your document, but we infer from the next typing operation that we should run Indent Mode, then Smart Mode will make its decision without knowing the previous search/replace operation took place—thereby breaking its promise of choosing the best mode, and unsafely modifying your code.
+
+The larger problem is that Smart Mode requires the synchronous interception of _every type of change_ coming from the editor.  It must decide the right thing to do for input changes at single/multiple cursors, search/replace, copy/paste, advanced macro operations, buffer refreshes from changes on disk, and maybe some others we haven't thought of yet.  The interface for receiving these kinds of changes from the editor are not consistent—they either come in asynchronously or sychronously or _not at all_.  This forces us to resort to computing diffs, a lossy mapping from _changes_ to _patches_.
+
+We have made separate attempts to implement Smart Mode in Cursive, Vim, Atom, and Emacs through some wrangling that made integration very difficult and delicate, and ultimately incomplete.  _Editors simply are not yet designed to allow an ideal version of Parinfer to exist_—probably because nothing like Parinfer has demanded them before.  The practicality of requesting these (likely non-trivial) changes on the editor is to be determined.
 
 # Parinfer Lib [![Travis](https://travis-ci.org/shaunlebron/parinfer.svg?branch=master)](https://travis-ci.org/shaunlebron/parinfer)
 
@@ -31,6 +38,7 @@ comprehensive test suite to help ensure consistent behavior.
 | implemented in | link               | relevant editor          |
 |:---------------|:-------------------|:-------------------------|
 | JavaScript     | parinfer.js (here) | Atom, VSCode, LightTable |
+| Rust           | [parinfer-rust]    | Vim                      |
 | Python         | [parinfer.py]      | Sublime Text             |
 | Kotlin (JVM)   | [parinfer-jvm]     | Cursive IDE, Nightcode   |
 | Emacs Lisp     | [parinfer-elisp]   | Emacs                    |
@@ -39,6 +47,7 @@ comprehensive test suite to help ensure consistent behavior.
 _<strong>[Open an issue]</strong> if you would like Parinfer ported to another language for
 use in an editor not listed above._
 
+[parinfer-rust]:https://github.com/eraserhd/parinfer-rust
 [parinfer.py]:https://github.com/oakmac/parinfer.py
 [parinfer-jvm]:https://github.com/oakmac/parinfer-jvm
 [parinfer-elisp]:https://github.com/oakmac/parinfer-elisp
@@ -109,7 +118,7 @@ Arguments:
   - `cursorLine` - zero-based line number of the cursor
   - `cursorX` - zero-based x-position of the cursor
   - `prevCursorLine` and `prevCursorX` is required by Smart Mode (previous cursor position)
-  - `selectionStartLine` - first line of the current selection (used to return the correct tabStops for a selection)
+  - `selectionStartLine` - first line of the current selection
   - `changes` - ordered array of change objects with the following:
     - `lineNo` - starting line number of the change
     - `x` - starting x of the change

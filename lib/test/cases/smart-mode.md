@@ -1,6 +1,163 @@
 # Smart Mode
 
+## Leading Close-Parens
+
+Leading close-parens can cause many problems that can be fixed by paren mode,
+so we exit to paren mode when they are detected.
+
+For example, it is convenient to keep trailing parens in front of the cursor
+after pressing enter or after deleting everything behind them:
+
+```in
+(let [a 1
+      |])
+```
+
+```out
+(let [a 1
+      |])
+```
+
+Moving the cursor away:
+
+```in
+(let [a 1
+      ]); <-- spaces
+```
+
+```out
+(let [a 1])
+      ; <-- spaces
+```
+
+But we also need safety from inadvertent AST breakage.  For example,
+Indent Mode should allow this intermediate state:
+
+```in
+(let [a 1
+      |] (+ a 2))
+```
+
+```out
+(let [a 1
+      |] (+ a 2))
+```
+
+Moving the cursor away will cause Indent Mode to still detect the leading
+close-paren, exit to Paren Mode, then fix the spacing to prevent inadvertent
+breakage.
+
+```in
+(let [a 1
+      ] (+ a 2))
+```
+
+```out
+(let [a 1]
+     (+ a 2))
+```
+
+To prevent weird things, indentation needs to be locked to respect
+the leading close-paren.  Exiting to Paren Mode allows this and prevents further
+AST breakage.
+
+```in
+(let [a 1
+  |] (+ a 2))
+```
+
+```out
+(let [a 1
+      |] (+ a 2))
+```
+
+Moving cursor to the right progressively moves leading close-parens behind it
+to their normal positions:
+
+```in
+(let [a 1
+      ]|)
+```
+
+```out
+(let [a 1]
+     |)
+```
+
+When in Paren Mode we must abide by its rules to stay balanced.
+
+As a courtesy, unmatched close-parens in a paren trail at the beginning of a
+line are auto-removed (only when paren mode is triggered from smart mode).
+
+```in
+(|)
+-
+```
+
+```out
+|
+```
+
+```in
+(foo
+  (bar|))
+  ----
+```
+
+```out
+(foo
+  |)
+```
+
+```in
+(foo
+  }|)
+```
+
+```out
+(foo
+  |)
+```
+
+Likewise:
+
+```in
+(foo
+  ) foo} bar|
+```
+
+```out
+(foo
+  ) foo} bar|
+       ^ error: unmatched-close-paren
+```
+
+```in
+(foo
+  ) (bar|
+```
+
+```out
+(foo
+  ) (bar|
+    ^ error: unclosed-paren
+```
+
+
 ## Changes
+
+Indent a single-line expression to enter a sibling:
+
+```in
+(foo (bar)
+      baz)
+     +
+```
+
+```out
+(foo (bar
+      baz))
+```
 
 Dedent multi-line expression to leave its parent:
 
@@ -118,6 +275,22 @@ a close-paren from moving when the cursor is to the left of its open-paren.
   baz
 ```
 
+```in
+(defn foo)
+|[a b
+ c d]
+  bar
+  baz
+```
+
+```out
+(defn foo)
+|[a b
+ c d]
+  bar
+  baz
+```
+
 ## Multiple Changes
 
 ```in
@@ -134,7 +307,7 @@ a close-paren from moving when the cursor is to the left of its open-paren.
                      :bar 2})
 ```
 
-## Precarious Paren Resolution
+## Resolving Precarious Paren After Dedent
 
 Suppose we deleted `foo` in the example below.  We expect `4` to not be adopted
 by any collection inside `(((1 2 3)))`.
@@ -185,52 +358,6 @@ and correcting indentation.
     2
     3)))
  4)
-```
-
-Also, suppose we _added_ a precarious paren `]` in the example below.  It is
-precarious because the cursor is holding the paren in place despite the
-indentation of the following lines.
-
-```in
-(foo [1 2 3]|
-           +
-      4 5 6
-      7 8 9])
-```
-
-```out
-(foo [1 2 3]|
-      4 5 6
-      7 8 9)
-```
-
-If we move the cursor away from this holding area, the indentation should
-be corrected to respect the structure given.
-
-```in
-(foo [1 2 3]
-            ^ prevCursor
-      4 5 6
-      7 8 9)
-```
-
-```out
-(foo [1 2 3]
-     4 5 6
-     7 8 9)
-```
-
-```in
-(foo [1 2 3|]
-             ^ prevCursor
-      4 5 6
-      7 8 9)
-```
-
-```out
-(foo [1 2 3|]
-     4 5 6
-     7 8 9)
 ```
 
 ## Indenting Selected Lines
@@ -328,4 +455,105 @@ Indent last two lines:
 (foo
     bar
     baz)
+```
+
+## Multi-change Bug
+
+[Issue #173](https://github.com/shaunlebron/parinfer/issues/173)
+
+```in
+((reduce-kv (fn [m k v]
++
+            {}
+           +
+            {}))
+           +
+```
+
+```in
+((reduce-kv (fn [m k v]
+            {}
+            {})))
+                +
+```
+
+```out
+((reduce-kv (fn [m k v])
+            {}
+            {}))
+```
+
+[Issue #176](https://github.com/shaunlebron/parinfer/issues/176)
+
+```in
+(let [a 1]
+  (
+  +
+    (foo))
+  ++
+```
+
+```in
+(let [a 1]
+  (
+    (foo)))
+         +
+```
+
+```out
+(let [a 1]
+  (
+    (foo)))
+```
+
+[Issue #177](https://github.com/shaunlebron/parinfer/issues/177)
+
+```in
+(let [a 1]
+
+  (foo))
+```
+
+```in
+(let [a 1]
+  (let [a 1]
+  +++++++++++
+  (foo))
+++++++++
+  (foo))
+```
+
+```in
+(let [a 1]
+  (let [a 1]
+    (foo))
+  ++
+  (foo))
+```
+
+```out
+(let [a 1]
+  (let [a 1]
+    (foo))
+  (foo))
+```
+
+[Issue #179](https://github.com/shaunlebron/parinfer/issues/179)
+
+```in
+{:a                 {:b              (Integer/valueOf (-> ""
+    ----------------
+                                                          (.length)))}}
+```
+
+```in
+{:a {:b              (Integer/valueOf (-> ""
+        -------------
+                                                          (.length)))}}
+                             -----------------------------
+```
+
+```out
+{:a {:b (Integer/valueOf (-> ""
+                             (.length)))}}
 ```
