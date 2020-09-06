@@ -33,6 +33,22 @@ const indentModeCommentTest9000 = {
   }
 }
 
+const indentModeCommentTest9050 = {
+  text: '(def foo q)',
+  options: { commentChars: 'q' },
+  result: {
+    text: '(def foo) q)',
+    success: true
+  },
+  source: {
+    lineNo: 9050,
+    in: [
+      '(def foo q)'
+    ],
+    out: '(def foo) q)'
+  }
+}
+
 const indentModeCommentTest9100 = {
   text: '(def foo [a b]\n  # "my multiline\n  # docstring."\nret)',
   options: { commentChars: ['#'] },
@@ -49,8 +65,26 @@ const indentModeCommentTest9100 = {
   }
 }
 
+const indentModeCommentTest9150 = {
+  text: '(let [a 1\n      b 2\n      c {:foo 1\n         ## :bar 2}]\n  ret)',
+  options: { commentChars: '#' },
+  result: {
+    text: '(let [a 1\n      b 2\n      c {:foo 1}]\n         ## :bar 2}]\n  ret)',
+    success: true
+  },
+  source: {
+    lineNo: 9150,
+    in: [
+      '(let [a 1\n      b 2\n      c {:foo 1\n         ## :bar 2}]\n  ret)'
+    ],
+    out: '(let [a 1\n      b 2\n      c {:foo 1}]\n         ## :bar 2}]\n  ret)'
+  }
+}
+
 indentCases.push(indentModeCommentTest9000)
+indentCases.push(indentModeCommentTest9050)
 indentCases.push(indentModeCommentTest9100)
+indentCases.push(indentModeCommentTest9150)
 
 // -----------------------------------------------------------------------------
 // STRUCTURE TEST
