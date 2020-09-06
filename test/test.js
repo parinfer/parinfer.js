@@ -1,19 +1,63 @@
 /* global describe, it */
 
-// ----------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Compile tests from Markdown to JSON
-// ----------------------------------------------------------------------
-require('./cases/build.js').buildAll()
-var indentCases = require('./cases/indent-mode.json')
-var parenCases = require('./cases/paren-mode.json')
-var smartCases = require('./cases/smart-mode.json')
 
-// ----------------------------------------------------------------------
+require('./cases/build.js').buildAll()
+const indentCases = require('./cases/indent-mode.json')
+const parenCases = require('./cases/paren-mode.json')
+const smartCases = require('./cases/smart-mode.json')
+
+// NOTE:
+// Add some additional tests that do not participate in the "test cases in markdown" system
+// This is a hack in order to ensure that adding configurable comment characters
+// did not break anything.
+// Long-term: I want to refactor the "test cases in markdown" approach
+// -- C. Oakman, 06 Sep 2020
+
+const indentModeCommentTest9000 = {
+  text: '(def foo \\,\n(def bar \\ # <-- space',
+  options: {
+    commentChars: ['#']
+  },
+  result: {
+    text: '(def foo \\,)\n(def bar \\ )# <-- space',
+    success: true
+  },
+  source: {
+    lineNo: 9000,
+    in: [
+      '(def foo \\,\n(def bar \\ # <-- space'
+    ],
+    out: '(def foo \\,)\n(def bar \\ )# <-- space'
+  }
+}
+
+const indentModeCommentTest9100 = {
+  text: '(def foo [a b]\n  # "my multiline\n  # docstring."\nret)',
+  options: { commentChars: ['#'] },
+  result: {
+    text: '(def foo [a b])\n  # "my multiline\n  # docstring."\nret',
+    success: true
+  },
+  source: {
+    lineNo: 9100,
+    in: [
+      '(def foo [a b]\n  # "my multiline\n  # docstring."\nret)'
+    ],
+    out: '(def foo [a b])\n  # "my multiline\n  # docstring."\nret'
+  }
+}
+
+indentCases.push(indentModeCommentTest9000)
+indentCases.push(indentModeCommentTest9100)
+
+// -----------------------------------------------------------------------------
 // STRUCTURE TEST
 // Diff the relevant result properties.
-// ----------------------------------------------------------------------
-var parinfer = require('../parinfer.js')
-var assert = require('assert')
+
+const parinfer = require('../parinfer.js')
+const assert = require('assert')
 
 function assertStructure (actual, expected, description) {
   assert.strictEqual(actual.text, expected.text)
@@ -79,9 +123,12 @@ function testStructure (testCase, mode) {
   }
 
   it('should generate the same result structure on idempotence check', function () {
-    var options2 = {
+    const options2 = {
       cursorX: actual.cursorX,
       cursorLine: actual.cursorLine
+    }
+    if (testCase.options && testCase.options.commentChars) {
+      options2.commentChars = testCase.options.commentChars
     }
     switch (mode) {
       case 'indent': actual2 = parinfer.indentMode(actual.text, options2); break
@@ -93,31 +140,40 @@ function testStructure (testCase, mode) {
 
   it('should generate the same result structure on cross-mode check', function () {
     var hasCursor = expected.cursorX != null
+    const options3 = {}
+    if (testCase.options && testCase.options.commentChars) {
+      options3.commentChars = testCase.options.commentChars
+    }
     if (!hasCursor) {
       switch (mode) {
-        case 'indent': actual3 = parinfer.parenMode(actual.text); break
-        case 'paren': actual3 = parinfer.indentMode(actual.text); break
-        case 'smart': actual3 = parinfer.parenMode(actual.text); break
+        case 'indent': actual3 = parinfer.parenMode(actual.text, options3); break
+        case 'paren': actual3 = parinfer.indentMode(actual.text, options3); break
+        case 'smart': actual3 = parinfer.parenMode(actual.text, options3); break
       }
       assertStructure(actual3, actual)
     }
   })
 }
 
-// ----------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // STRING TESTS
 // Diff the annotated text instead of the data for easy reading.
 // (requires extra parser/printer code that we may not want to port)
-// ----------------------------------------------------------------------
-var parinferTest = require('../test.js')
+
+const parinferTest = require('../testParsingLib.js')
 
 function testString (testCase, mode) {
   var expected = testCase.result
   var source = testCase.source
-  var prettyOptions = {
+
+  const prettyOptions = {
     printTabStops: expected.tabStops,
     printParenTrails: expected.parenTrails
   }
+  if (testCase.options && testCase.options.commentChars) {
+    prettyOptions.commentChars = testCase.options.commentChars
+  }
+
   var pretty, pretty2, pretty3
 
   it('should generate the correct annotated output', function () {
@@ -146,7 +202,7 @@ function testString (testCase, mode) {
   })
 
   it('should generate the same annotated output on cross-mode check', function () {
-    var hasCursor = expected.cursorX != null
+    const hasCursor = expected.cursorX != null
     if (!hasCursor) {
       switch (mode) {
         case 'indent': pretty3 = parinferTest.parenMode(pretty, prettyOptions); break
@@ -158,9 +214,8 @@ function testString (testCase, mode) {
   })
 }
 
-// ----------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Test execution order
-// ----------------------------------------------------------------------
 
 function runTest (testCase, mode, filename) {
   describe(filename + ':' + testCase.source.lineNo, function () {

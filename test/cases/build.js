@@ -1,9 +1,8 @@
 var fs = require('fs')
-var parinferTest = require('../../test.js')
+var parinferTest = require('../../testParsingLib.js')
 
-// ------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Result Data
-// ------------------------------------------------------------------------------
 
 function getInitialResult () {
   var result = {
@@ -79,18 +78,16 @@ function finalizeCase (testCase) {
   }
 }
 
-// ------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Error Handling
-// ------------------------------------------------------------------------------
 
 function error (fileLineNo, msg) {
   console.error('error at test-case line #' + (fileLineNo + 1) + ': ' + msg)
   process.exit(1)
 }
 
-// ------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Test case parsing
-// ------------------------------------------------------------------------------
 
 function parseLine_endBlock (result, fileLineNo, line) {
   if (result.currLabel === null) {
@@ -150,7 +147,10 @@ function parseLine_default (result, fileLineNo, line) {
 
 function parseLine (result, fileLineNo, line) {
   var f
-  if (line === '```') { f = parseLine_endBlock } else if (line.startsWith('```')) { f = parseLine_startBlock } else if (result.currLabel !== null) { f = parseLine_insideBlock } else { f = parseLine_default }
+  if (line === '```') f = parseLine_endBlock
+  else if (line.startsWith('```')) f = parseLine_startBlock
+  else if (result.currLabel !== null) f = parseLine_insideBlock
+  else f = parseLine_default
 
   return f(result, fileLineNo, line)
 }
@@ -174,13 +174,12 @@ function parseText (text) {
   return result.cases
 }
 
-// ------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // JSON builder
-// ------------------------------------------------------------------------------
 
 var casesPath = __dirname
 
-function buildJson (name) {
+function buildJSON (name) {
   // JSON.stringify(data, null, "  ");
   var inFile = casesPath + '/' + name + '.md'
   var outFile = casesPath + '/' + name + '.json'
@@ -200,15 +199,14 @@ function buildJson (name) {
 
 function buildAll () {
   console.log('\nReading test cases described in Markdown and compiling to JSON...')
-  buildJson('indent-mode')
-  buildJson('paren-mode')
-  buildJson('smart-mode')
+  buildJSON('indent-mode')
+  buildJSON('paren-mode')
+  buildJSON('smart-mode')
   console.log()
 }
 
-// ------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // Exports and Entry
-// ------------------------------------------------------------------------------
 
 // export api
 exports.buildAll = buildAll

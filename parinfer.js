@@ -152,15 +152,16 @@
   function parseOptions (options) {
     options = options || {}
     return {
-      cursorX: options.cursorX,
-      cursorLine: options.cursorLine,
-      prevCursorX: options.prevCursorX,
-      prevCursorLine: options.prevCursorLine,
-      selectionStartLine: options.selectionStartLine,
       changes: options.changes,
-      partialResult: options.partialResult,
+      commentChars: options.commentChars,
+      cursorLine: options.cursorLine,
+      cursorX: options.cursorX,
       forceBalance: options.forceBalance,
-      returnParens: options.returnParens
+      partialResult: options.partialResult,
+      prevCursorLine: options.prevCursorLine,
+      prevCursorX: options.prevCursorX,
+      returnParens: options.returnParens,
+      selectionStartLine: options.selectionStartLine
     }
   }
 
@@ -281,8 +282,8 @@
 
     // Make sure no new properties are added to the result, for type safety.
     // (uncomment only when debugging, since it incurs a perf penalty)
-    // Object.preventExtensions(result);
-    // Object.preventExtensions(result.parenTrail);
+    // Object.preventExtensions(result)
+    // Object.preventExtensions(result.parenTrail)
 
     // merge options if they are valid
     if (options) {
@@ -301,6 +302,7 @@
       if (isBoolean(options.partialResult)) result.partialResult = options.partialResult
       if (isBoolean(options.forceBalance)) result.forceBalance = options.forceBalance
       if (isBoolean(options.returnParens)) result.returnParens = options.returnParens
+      if (isChar(options.commentChars)) result.commentChars = [options.commentChars]
       if (isArrayOfChars(options.commentChars)) result.commentChars = options.commentChars
     }
 

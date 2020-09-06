@@ -1,6 +1,6 @@
-var parinfer = require('../parinfer.js')
-var path = require('path')
-var fs = require('fs')
+const fs = require('fs')
+const path = require('path')
+const parinfer = require('../parinfer.js')
 
 function timeProcess (filename, text, options) {
   var numChars = text.length
@@ -22,13 +22,12 @@ function timeProcess (filename, text, options) {
   console.log()
 }
 
-var perfDir = path.resolve(__dirname, 'perf')
-var files = fs.readdirSync(perfDir)
-var i
+const perfDir = path.resolve(__dirname, 'perf')
+const files = fs.readdirSync(perfDir)
 
-for (i = 0; i < files.length; i++) {
-  var filename = files[i]
-  var fullpath = path.resolve(perfDir, filename)
-  var text = fs.readFileSync(fullpath, 'utf8')
+for (let i = 0; i < files.length; i++) {
+  const filename = files[i]
+  const fullpath = path.resolve(perfDir, filename)
+  const text = fs.readFileSync(fullpath, 'utf8')
   timeProcess(filename, text, {})
 }

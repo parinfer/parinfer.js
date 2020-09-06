@@ -5,7 +5,7 @@
 // MIT License
 //
 
-var parinfer = require('./parinfer')
+var parinfer = require('./parinfer.js')
 
 var LINE_ENDING_REGEX = /\r?\n/
 
@@ -191,6 +191,7 @@ function handlePostDiffLine (options, inputLineNo, outputLineNo, outputLines, ou
 function _parseInput (text, extras) {
   extras = extras || {}
   var options = {}
+  if (extras.commentChars) { options.commentChars = extras.commentChars }
   if (extras.forceBalance) { options.forceBalance = true }
   if (extras.partialResult) { options.partialResult = true }
   if (extras.printParensOnly) { options.returnParens = true }
