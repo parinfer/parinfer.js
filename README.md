@@ -11,7 +11,15 @@ This fork will contain only the parinfer.js library (and supporting tests).
 
 ## npm package
 
-This fork is published on npm under the package name `@chrisoakman/parinfer`
+This fork is published on npm under the package name [`@chrisoakman/parinfer`](https://www.npmjs.com/package/@chrisoakman/parinfer)
+
+```sh
+## using npm
+npm install @chrisoakman/parinfer
+
+## using yarn
+yarn add @chrisoakman/parinfer
+```
 
 ## Usage
 
