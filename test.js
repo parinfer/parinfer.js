@@ -52,7 +52,7 @@ function parsePrevCursorLine (options, inputLineNo, outputLineNo, input) {
     return false
   }
   var x = input.indexOf('^')
-  if (options.cursorX < x && options.cursorLine == outputLineNo) {
+  if (options.cursorX < x && options.cursorLine === outputLineNo) {
     x++
   }
   options.prevCursorX = x

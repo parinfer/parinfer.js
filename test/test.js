@@ -1,3 +1,5 @@
+/* global describe, it */
+
 // ----------------------------------------------------------------------
 // Compile tests from Markdown to JSON
 // ----------------------------------------------------------------------
@@ -39,7 +41,7 @@ function assertStructure (actual, expected, description) {
   }
 
   if (expected.parenTrails) {
-    assert.deepEqual(actual.parenTrails, expected.parenTrails)
+    assert.deepStrictEqual(actual.parenTrails, expected.parenTrails)
   }
 }
 

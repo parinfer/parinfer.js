@@ -1,3 +1,5 @@
+/* global define */
+
 //
 // Parinfer 3.12.0
 //
