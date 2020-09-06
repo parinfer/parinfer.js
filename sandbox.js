@@ -5,6 +5,5 @@
 // an ephemeral space for my latest manual tests for things.
 //
 
-const parinferTest = require('./test');
-const parinfer = require('./parinfer');
-
+const parinferTest = require('./test')
+const parinfer = require('./parinfer')
