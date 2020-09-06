@@ -1,3 +1,9 @@
+## 3.13.0 - 2020-09-06
+
+- add support for comment characters other than semicolon - [Issue #11](https://github.com/oakmac/parinfer/issues/11)
+- first release from @oakmac fork
+- apply standardjs linter to the codebase (ie: this release has a large code diff, but minimal logic change from 3.12.0)
+
 ## 3.12.0 - 2018-01-04
 
 - make Smart Mode work better when inputting multiple changes. See [#181]
@@ -25,7 +31,7 @@
 
 [#147]:https://github.com/shaunlebron/parinfer/issues/147
 
-## 3.9.0 - 2017-07-26 
+## 3.9.0 - 2017-07-26
 
 - add: return `tabStops` in Paren Mode (see [#156](https://github.com/shaunlebron/parinfer/issues/156))
 - add: return `argX` for Tab Stops (see [#157](https://github.com/shaunlebron/parinfer/issues/157))
@@ -39,11 +45,11 @@
 
 - add: return non-empty `parenTrails` so editors can dim/mark them (see [Paren Trails](https://github.com/shaunlebron/parinfer/blob/master/lib/doc/code.md#paren-trail))
 
-## 3.6.0 - 2017-07-22 
+## 3.6.0 - 2017-07-22
 
 - add: fix indentation in Smart Mode after cursor leaves the end of a Paren Trail (see [#147](https://github.com/shaunlebron/parinfer/issues/147))
 
-## 3.5.0 - 2017-07-21 
+## 3.5.0 - 2017-07-21
 
 - add: fix indentation in Smart Mode after cursor leaves a holding area, preventing
 unintended line adoption (see [#143](https://github.com/shaunlebron/parinfer/issues/143))
@@ -79,7 +85,7 @@ stability in Indent Mode and Smart Mode
 
 - enhancement: publish separate test API
 
-## 3.0.1 - 2017-07-11 
+## 3.0.1 - 2017-07-11
 
 - fix: make deleted unbalanced parens influence shifted expressions (when `forceBalance` is true)
 
@@ -99,7 +105,7 @@ stability in Indent Mode and Smart Mode
 
 - fix: comment lines are shifted when indented inside shifted collections (see end of [this section](doc/code.md#preserving-relative-indentation-while-typing))
 
-## 2.5.1 - 2017-07-09 
+## 2.5.1 - 2017-07-09
 
 - fix: dedenting an open-paren with `cursorDx` in Indent Mode will properly adopt new child lines
 
