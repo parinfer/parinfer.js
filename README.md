@@ -1,7 +1,3 @@
-> __Want to use Parinfer on a team?__ Introduce [Parlinter] as your project's linter!
-
-[Parlinter]:https://github.com/shaunlebron/parlinter
-
 # Parinfer.js (fork)
 
 This is a fork of [shaunlebron's Parinfer library] which was archived on Jan 2019.
@@ -16,47 +12,6 @@ This fork will contain only the parinfer.js library (and supporting tests).
 ## npm package
 
 This fork is published on npm under the package name `@chrisoakman/parinfer`
-
-## A stable core for editor plugins
-
-The behavior and implementation of the Parinfer library is stable and
-canonicalized.  To allow different editors to use it, we have ported the
-implementation to the languages required by the plugin
-APIs of most major text editors.  All language ports pass the same
-comprehensive test suite to help ensure consistent behavior.
-
-| implemented in | link               | relevant editor          |
-|:---------------|:-------------------|:-------------------------|
-| JavaScript     | parinfer.js (here) | Atom, VSCode, LightTable |
-| Rust           | [parinfer-rust]    | Vim                      |
-| Python         | [parinfer.py]      | Sublime Text             |
-| Kotlin (JVM)   | [parinfer-jvm]     | Cursive IDE, Nightcode   |
-| Emacs Lisp     | [parinfer-elisp]   | Emacs                    |
-| Vim Script     | [parinfer-viml]    | Vim                      |
-
-_<strong>[Open an issue]</strong> if you would like Parinfer ported to another language for
-use in an editor not listed above._
-
-[parinfer-rust]:https://github.com/eraserhd/parinfer-rust
-[parinfer.py]:https://github.com/oakmac/parinfer.py
-[parinfer-jvm]:https://github.com/oakmac/parinfer-jvm
-[parinfer-elisp]:https://github.com/oakmac/parinfer-elisp
-[parinfer-viml]:https://github.com/oakmac/parinfer-viml
-[Open an issue]:https://github.com/shaunlebron/parinfer/issues/new?title=port%20request
-
-## Installation
-
-```
-npm install parinfer
-```
-
-or download `parinfer.js` from [latest release] and include directly in html:
-
-[latest release]:https://github.com/shaunlebron/parinfer/releases/latest
-
-```html
-<script src="parinfer.js"></script>
-```
 
 ## Usage
 
@@ -244,6 +199,37 @@ based on what I'm currently working on).
 [`sandbox.js`]:https://github.com/shaunlebron/parinfer/blob/master/lib/sandbox.js
 [Paren Trails]:https://github.com/shaunlebron/parinfer/blob/master/lib/doc/code.md#paren-trail
 
+## A stable core for editor plugins
+
+> __Want to use Parinfer on a team?__ Introduce [Parlinter] as your project's linter!
+
+[Parlinter]:https://github.com/shaunlebron/parlinter
+
+The behavior and implementation of the Parinfer library is stable and
+canonicalized.  To allow different editors to use it, we have ported the
+implementation to the languages required by the plugin
+APIs of most major text editors.  All language ports pass the same
+comprehensive test suite to help ensure consistent behavior.
+
+| implemented in | link               | relevant editor          |
+|:---------------|:-------------------|:-------------------------|
+| JavaScript     | parinfer.js (here) | Atom, VSCode, LightTable |
+| Rust           | [parinfer-rust]    | Vim                      |
+| Python         | [parinfer.py]      | Sublime Text             |
+| Kotlin (JVM)   | [parinfer-jvm]     | Cursive IDE, Nightcode   |
+| Emacs Lisp     | [parinfer-elisp]   | Emacs                    |
+| Vim Script     | [parinfer-viml]    | Vim                      |
+
+_<strong>[Open an issue]</strong> if you would like Parinfer ported to another language for
+use in an editor not listed above._
+
+[parinfer-rust]:https://github.com/eraserhd/parinfer-rust
+[parinfer.py]:https://github.com/oakmac/parinfer.py
+[parinfer-jvm]:https://github.com/oakmac/parinfer-jvm
+[parinfer-elisp]:https://github.com/oakmac/parinfer-elisp
+[parinfer-viml]:https://github.com/oakmac/parinfer-viml
+[Open an issue]:https://github.com/shaunlebron/parinfer/issues/new?title=port%20request
+
 ## Status Update 2019 (Smart Mode)
 
 **Smart Mode** (available in [demo]) was an experiment to eliminate switching between Indent Mode and Paren Mode—by looking at a change and determining whether to run Indent Mode or Paren Mode. It is well tested and worked great in our sandboxes, but we found that the majority of editor APIs do not allow us to integrate Smart Mode's rules _safely_.
@@ -253,3 +239,7 @@ For example, if we don't catch a search/replace change in multiple locations of 
 The larger problem is that Smart Mode requires the synchronous interception of _every type of change_ coming from the editor.  It must decide the right thing to do for input changes at single/multiple cursors, search/replace, copy/paste, advanced macro operations, buffer refreshes from changes on disk, and maybe some others we haven't thought of yet.  The interface for receiving these kinds of changes from the editor are not consistent—they either come in asynchronously or sychronously or _not at all_.  This forces us to resort to computing diffs, a lossy mapping from _changes_ to _patches_.
 
 We have made separate attempts to implement Smart Mode in Cursive, Vim, Atom, and Emacs through some wrangling that made integration very difficult and delicate, and ultimately incomplete.  _Editors simply are not yet designed to allow an ideal version of Parinfer to exist_—probably because nothing like Parinfer has demanded them before.  The practicality of requesting these (likely non-trivial) changes on the editor is to be determined.
+
+## License
+
+[MIT License](LICENSE.md)

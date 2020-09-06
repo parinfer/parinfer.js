@@ -1,32 +1,17 @@
 {
-  "name": "parinfer",
+  "name": "@chrisoakman/parinfer",
   "version": "3.12.0",
-  "description": "a simpler way to write Lisp",
-  "main": "parinfer.js",
-  "scripts": {
-    "test": "bash test-all"
-  },
-  "files": [
-    "parinfer.js",
-    "test.js",
-    "README.md",
-    "CHANGES.md"
+  "description": "core Parinfer implementation for JavaScript",
+  "license": "MIT",
+
+  "author": "Shaun Lebron",
+  "contributors": [
+    "Chris Oakman <chris@oakmac.com> (https://chrisoakman.com)"
   ],
-  "eslintConfig": {
-    "extends": [
-      "defaults"
-    ],
-    "env": {
-      "node": true,
-      "commonjs": true,
-      "amd": true,
-      "browser": true
-    },
-    "rules": {
-      "no-console": 0,
-      "no-constant-condition": 0,
-      "semi": 2
-    }
+
+  "homepage": "https://github.com/oakmac/parinfer",
+  "bugs": {
+    "url": "https://github.com/oakmac/parinfer/issues"
   },
   "repository": {
     "type": "git",
@@ -37,15 +22,20 @@
     "paredit",
     "lisp"
   ],
-  "author": "Shaun Lebron",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/oakmac/parinfer/issues"
+
+  "main": "parinfer.js",
+  "files": [
+    "parinfer.js",
+    "README.md",
+    "CHANGES.md"
+  ],
+
+  "scripts": {
+    "lint": "standard",
+    "test": "bash test-all"
   },
-  "homepage": "http://shaunlebron.github.io/parinfer",
   "devDependencies": {
-    "eslint": "^1.10.3",
-    "eslint-config-defaults": "^7.1.1",
+    "standard": "14.3.4",
     "mocha": "^2.3.4"
   }
 }
