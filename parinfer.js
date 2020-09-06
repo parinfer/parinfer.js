@@ -44,7 +44,6 @@
   var DOUBLE_SPACE = '  '
   var DOUBLE_QUOTE = '"'
   var NEWLINE = '\n'
-  var SEMICOLON = ';'
   var TAB = '\t'
 
   var LINE_ENDING_REGEX = /\r?\n/
@@ -73,6 +72,18 @@
     return typeof x === 'number' &&
          isFinite(x) &&
          Math.floor(x) === x
+  }
+
+  function isString (s) {
+    return typeof s === 'string'
+  }
+
+  function isChar (c) {
+    return isString(c) && c.length === 1
+  }
+
+  function isArrayOfChars (arr) {
+    return isArray(arr) && arr.every(isChar)
   }
 
   // ---------------------------------------------------------------------------
@@ -195,13 +206,15 @@
       x: 0, // [integer] - output x position of the current character (ch)
       indentX: UINT_NULL, // [integer] - x position of the indentation point if present
 
-      parenStack: [], // We track where we are in the Lisp tree by keeping a stack (array) of open-parens.
+      // We track where we are in the Lisp tree by keeping a stack (array) of open-parens.
       // Stack elements are objects containing keys {ch, x, lineNo, indentDelta}
       // whose values are the same as those described here in this result structure.
+      parenStack: [],
 
-      tabStops: [], // In Indent Mode, it is useful for editors to snap a line's indentation
+      // In Indent Mode, it is useful for editors to snap a line's indentation
       // to certain critical points.  Thus, we have a `tabStops` array of objects containing
       // keys {ch, x, lineNo, argX}, which is just the state of the `parenStack` at the cursor line.
+      tabStops: [],
 
       parenTrail: initialParenTrail(), // the range of parens at the end of a line
 
@@ -214,6 +227,8 @@
       cursorLine: UINT_NULL, // [integer] - line number of the cursor
       prevCursorX: UINT_NULL, // [integer] - x position of the previous cursor
       prevCursorLine: UINT_NULL, // [integer] - line number of the previous cursor
+
+      commentChars: [';'], // [array of chars] - characters that signify a comment in the code
 
       selectionStartLine: UINT_NULL, // [integer] - line number of the current selection starting point
 
@@ -279,13 +294,14 @@
         result.cursorLine = options.cursorLine
         result.origCursorLine = options.cursorLine
       }
-      if (isInteger(options.prevCursorX)) { result.prevCursorX = options.prevCursorX }
-      if (isInteger(options.prevCursorLine)) { result.prevCursorLine = options.prevCursorLine }
-      if (isInteger(options.selectionStartLine)) { result.selectionStartLine = options.selectionStartLine }
-      if (isArray(options.changes)) { result.changes = transformChanges(options.changes) }
-      if (isBoolean(options.partialResult)) { result.partialResult = options.partialResult }
-      if (isBoolean(options.forceBalance)) { result.forceBalance = options.forceBalance }
-      if (isBoolean(options.returnParens)) { result.returnParens = options.returnParens }
+      if (isInteger(options.prevCursorX)) result.prevCursorX = options.prevCursorX
+      if (isInteger(options.prevCursorLine)) result.prevCursorLine = options.prevCursorLine
+      if (isInteger(options.selectionStartLine)) result.selectionStartLine = options.selectionStartLine
+      if (isArray(options.changes)) result.changes = transformChanges(options.changes)
+      if (isBoolean(options.partialResult)) result.partialResult = options.partialResult
+      if (isBoolean(options.forceBalance)) result.forceBalance = options.forceBalance
+      if (isBoolean(options.returnParens)) result.returnParens = options.returnParens
+      if (isArrayOfChars(options.commentChars)) result.commentChars = options.commentChars
     }
 
     return result
@@ -341,7 +357,7 @@
     var opener = peek(result.parenStack, 0)
 
     if (name === ERROR_UNMATCHED_CLOSE_PAREN) {
-    // extra error info for locating the open-paren that it should've matched
+      // extra error info for locating the open-paren that it should've matched
       cache = result.errorPosCache[ERROR_UNMATCHED_OPEN_PAREN]
       if (cache || opener) {
         e.extra = {
@@ -534,6 +550,10 @@
     return result.isInCode && !isWhitespace(result) && ch !== '' && !closer
   }
 
+  function isCommentChar (ch, commentChars) {
+    return commentChars.indexOf(ch) !== -1
+  }
+
   // ---------------------------------------------------------------------------
   // Advanced operations on characters
 
@@ -671,7 +691,7 @@
     }
   }
 
-  function onSemicolon (result) {
+  function onCommentChar (result) {
     if (result.isInCode) {
       result.isInComment = true
       result.commentX = result.x
@@ -721,7 +741,14 @@
     var ch = result.ch
     result.isEscaped = false
 
-    if (result.isEscaping) { afterBackslash(result) } else if (isOpenParen(ch)) { onOpenParen(result) } else if (isCloseParen(ch)) { onCloseParen(result) } else if (ch === DOUBLE_QUOTE) { onQuote(result) } else if (ch === SEMICOLON) { onSemicolon(result) } else if (ch === BACKSLASH) { onBackslash(result) } else if (ch === TAB) { onTab(result) } else if (ch === NEWLINE) { onNewline(result) }
+    if (result.isEscaping) afterBackslash(result)
+    else if (isOpenParen(ch)) onOpenParen(result)
+    else if (isCloseParen(ch)) onCloseParen(result)
+    else if (ch === DOUBLE_QUOTE) onQuote(result)
+    else if (isCommentChar(ch, result.commentChars)) onCommentChar(result)
+    else if (ch === BACKSLASH) onBackslash(result)
+    else if (ch === TAB) onTab(result)
+    else if (ch === NEWLINE) onNewline(result)
 
     ch = result.ch
 
@@ -1294,13 +1321,11 @@
   function checkIndent (result) {
     if (isCloseParen(result.ch)) {
       onLeadingCloseParen(result)
-    } else if (result.ch === SEMICOLON) {
-    // comments don't count as indentation points
+    } else if (isCommentChar(result.ch, result.commentChars)) {
+      // comments don't count as indentation points
       onCommentLine(result)
       result.trackingIndent = false
-    } else if (result.ch !== NEWLINE &&
-           result.ch !== BLANK_SPACE &&
-           result.ch !== TAB) {
+    } else if (result.ch !== NEWLINE && result.ch !== BLANK_SPACE && result.ch !== TAB) {
       onIndent(result)
     }
   }
