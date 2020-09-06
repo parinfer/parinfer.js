@@ -86,6 +86,110 @@ indentCases.push(indentModeCommentTest9050)
 indentCases.push(indentModeCommentTest9100)
 indentCases.push(indentModeCommentTest9150)
 
+const parenModeCommentTest8000 = {
+  text: '(let [foo 1\n      ]# <-- spaces\n  foo)',
+  options: { commentChars: '#' },
+  result: {
+    text: '(let [foo 1]\n      # <-- spaces\n  foo)',
+    success: true
+  },
+  source: {
+    lineNo: 8000,
+    in: [
+      '(let [foo 1\n      ]# <-- spaces\n  foo)'
+    ],
+    out: '(let [foo 1]\n      # <-- spaces\n  foo)'
+  }
+}
+
+const parenModeCommentTest8100 = {
+  text: '(let [foo 1\n      bar 2\n\n     ] (+ foo bar\n  )% <-- spaces\n)',
+  options: { commentChars: [';', '%'] },
+  result: {
+    text: '(let [foo 1\n      bar 2]\n\n     (+ foo bar))\n  % <-- spaces\n',
+    success: true
+  },
+  source: {
+    lineNo: 8100,
+    in: [
+      '(let [foo 1\n      bar 2\n\n     ] (+ foo bar\n  )% <-- spaces\n)'
+    ],
+    out: '(let [foo 1\n      bar 2]\n\n     (+ foo bar))\n  % <-- spaces\n'
+  }
+}
+
+const parenModeCommentTest8200 = {
+  text: '(def foo [a b]\n  # "my string\nret)',
+  options: { commentChars: ['#'] },
+  result: {
+    error: {
+      name: 'quote-danger',
+      lineNo: 1,
+      x: 4
+    },
+    text: '(def foo [a b]\n  # "my string\nret)',
+    success: false
+  },
+  source: {
+    lineNo: 8200,
+    in: [
+      '(def foo [a b]\n  # "my string\nret)'
+    ],
+    out: '(def foo [a b]\n  # "my string\n    ^ error: quote-danger\nret)'
+  }
+}
+
+parenCases.push(parenModeCommentTest8000)
+parenCases.push(parenModeCommentTest8100)
+parenCases.push(parenModeCommentTest8200)
+
+const smartModeCommentTest4100 = {
+  text: '(let [a 1\n      ])$ <-- spaces',
+  options: {
+    commentChars: [';', '$']
+  },
+  result: {
+    text: '(let [a 1])\n      $ <-- spaces',
+    success: true
+  },
+  source: {
+    lineNo: 4100,
+    in: [
+      '(let [a 1\n      ])$ <-- spaces'
+    ],
+    out: '(let [a 1])\n      $ <-- spaces'
+  }
+}
+
+const smartModeCommentTest4200 = {
+  text: '(defn foo\n    [a b]\n    # comment 1\n    bar)\n    # comment 2',
+  options: {
+    commentChars: ['#'],
+    changes: [
+      {
+        lineNo: 0,
+        x: 0,
+        oldText: '  ',
+        newText: ''
+      }
+    ]
+  },
+  result: {
+    text: '(defn foo\n  [a b]\n  # comment 1\n  bar)\n  # comment 2',
+    success: true
+  },
+  source: {
+    lineNo: 4200,
+    in: [
+      '  (defn foo\n--\n    [a b]\n    # comment 1\n    bar)\n    # comment 2'
+    ],
+    out: '(defn foo\n  [a b]\n  # comment 1\n  bar)\n  # comment 2'
+  }
+}
+
+smartCases.push(smartModeCommentTest4100)
+smartCases.push(smartModeCommentTest4200)
+
 // -----------------------------------------------------------------------------
 // STRUCTURE TEST
 // Diff the relevant result properties.
