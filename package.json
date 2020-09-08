@@ -1,14 +1,12 @@
 {
   "name": "@chrisoakman/parinfer",
-  "version": "3.13.0",
+  "version": "3.13.1",
   "description": "core Parinfer implementation for JavaScript",
   "license": "MIT",
-
   "author": "Shaun Lebron",
   "contributors": [
     "Chris Oakman <chris@oakmac.com> (https://chrisoakman.com)"
   ],
-
   "homepage": "https://github.com/oakmac/parinfer",
   "bugs": {
     "url": "https://github.com/oakmac/parinfer/issues"
@@ -22,14 +20,12 @@
     "paredit",
     "lisp"
   ],
-
   "main": "parinfer.js",
   "files": [
     "parinfer.js",
     "README.md",
     "CHANGES.md"
   ],
-
   "scripts": {
     "lint": "standard --fix",
     "test": "mocha"
