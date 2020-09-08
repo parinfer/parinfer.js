@@ -1,4 +1,6 @@
-# Parinfer.js (fork)
+# Parinfer.js (updated fork)
+
+> Pronounced "par-in-fur" - "par" rhymes with car and star; "fur" rhymes with blur and stir
 
 This is a fork of [shaunlebron's Parinfer library] which was archived on Jan 2019.
 
@@ -62,12 +64,13 @@ Runs
 [Indent Mode](http://shaunlebron.github.io/parinfer/#indent-mode)
 or
 [Paren Mode](http://shaunlebron.github.io/parinfer/#paren-mode)
-on the given text.  Smart Mode is currently something in between.
+on the given text. Smart Mode is currently something in between.
 
 Arguments:
 
 - `text` is the full text input.
 - `options` is an object with the following properties:
+  - `commentChars` - a character (ie: string of length 1) or array of characters that should be considered comments in the code (defaults to `[";"]`)
   - `cursorLine` - zero-based line number of the cursor
   - `cursorX` - zero-based x-position of the cursor
   - `prevCursorLine` and `prevCursorX` is required by Smart Mode (previous cursor position)
