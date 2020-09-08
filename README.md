@@ -1,6 +1,6 @@
 # Parinfer.js (updated fork)
 
-> Pronounced "par-in-fur" - "par" rhymes with car and star; "fur" rhymes with blur and stir
+> Pronounced "par-in-fur". "par" rhymes with car and star; "fur" rhymes with blur and stir
 
 This is a fork of [shaunlebron's Parinfer library] which was archived on Jan 2019.
 
