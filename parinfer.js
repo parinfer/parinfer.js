@@ -1,7 +1,7 @@
 /* global define */
 
 //
-// Parinfer 3.12.0
+// Parinfer 3.13.1
 //
 // Copyright 2015-2017 © Shaun Lebron
 // MIT License
@@ -1523,7 +1523,7 @@
   }
 
   var API = {
-    version: '3.12.0',
+    version: '3.13.1',
     indentMode: indentMode,
     parenMode: parenMode,
     smartMode: smartMode

@@ -1,3 +1,7 @@
+## 3.13.1 - 2020-09-08
+
+- update the `.version` property to return the correct version
+
 ## 3.13.0 - 2020-09-06
 
 - add support for comment characters other than semicolon - [Issue #11](https://github.com/oakmac/parinfer/issues/11)
