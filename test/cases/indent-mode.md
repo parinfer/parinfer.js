@@ -4,7 +4,7 @@
 
 Most basic behavior can be described by leaving out close-parens.
 
-```in
+```in:1000
 (defn foo
   [arg
   ret
@@ -18,7 +18,7 @@ Most basic behavior can be described by leaving out close-parens.
 
 indenting line 3:
 
-```in
+```in:1005
 (defn foo
   [arg
    ret
@@ -32,7 +32,7 @@ indenting line 3:
 
 dedenting line 2:
 
-```in
+```in:1010
 (defn foo
 [arg
    ret
@@ -46,7 +46,7 @@ dedenting line 2:
 
 dedenting line 2 and 3:
 
-```in
+```in:1015
 (defn foo
 [arg
 ret
@@ -60,7 +60,7 @@ ret
 
 multiple functions:
 
-```in
+```in:1020
 (defn foo
   [arg
   ret
@@ -84,7 +84,7 @@ multiple functions:
 
 close-paren at end-of-line with no open-paren:
 
-```in
+```in:1025
 bar)
 ```
 
@@ -94,7 +94,7 @@ bar
 
 close-paren at end-of-line is wrong type:
 
-```in
+```in:1030
 (def foo [a b]]
 ```
 
@@ -104,7 +104,7 @@ close-paren at end-of-line is wrong type:
 
 insert missing close-paren inside another when at end-of-line:
 
-```in
+```in:1035
 (let [x {:foo 1 :bar 2]
   x)
 ```
@@ -116,7 +116,7 @@ insert missing close-paren inside another when at end-of-line:
 
 unmatched close-parens _inside_ a line are removed:
 
-```in
+```in:1040
 (foo [a (|b] c)
 ```
 
@@ -129,7 +129,7 @@ unmatched close-parens _inside_ a line are removed:
 
 No close-parens are inserted when a string is unclosed.
 
-```in
+```in:1045
 (def foo "as
 ```
 
@@ -140,7 +140,7 @@ No close-parens are inserted when a string is unclosed.
 
 even if close-parens are quoted out, do not do anything.
 
-```in
+```in:1050
 (defn foo [a "])
 ```
 
@@ -151,7 +151,7 @@ even if close-parens are quoted out, do not do anything.
 
 Multiline strings are supported:
 
-```in
+```in:1055
 (defn foo
   "This is docstring.
   Line 2 here."
@@ -167,7 +167,7 @@ Multiline strings are supported:
 
 Indentation inside multiline strings does not trigger Parinfer's indentation rules.
 
-```in
+```in:1060
 (let [a "Hello
 World"
       b 2
@@ -183,7 +183,7 @@ World"
 
 Close-parens are ignored when inside strings.
 
-```in
+```in:1065
 (let [a "])"
       b 2
 ```
@@ -195,7 +195,7 @@ Close-parens are ignored when inside strings.
 
 Escaped quotes are handled correctly.
 
-```in
+```in:1070
 (def foo "\""
 ```
 
@@ -206,7 +206,7 @@ Escaped quotes are handled correctly.
 A line ending inside a string will not have a definable Paren Trail.  This
 minimal test case will fail if the close-paren is treated as a Paren Trail.
 
-```in
+```in:1075
 ()"
 "
 ```
@@ -225,7 +225,7 @@ the left of the cursor.
 Typing a quote before another string does not corrupt it (i.e. turn it inside
 out, causing Parinfer to treat its contents as code).
 
-```in
+```in:1080
 "|"foo"
 ```
 
@@ -236,7 +236,7 @@ out, causing Parinfer to treat its contents as code).
 
 Another case:
 
-```in
+```in:1085
 (def foo
   "|
   "(a b)
@@ -260,7 +260,7 @@ Notice that the following code is correctly balanced, quite accidentally, but
 Parinfer does not process it because the last line contains a comment with an
 odd number of quotes (one):
 
-```in
+```in:1090
 (for [col columns]
   "|
   [:div.td {:style "max-width: 500px;"}])
@@ -277,7 +277,7 @@ But a comment can contain an odd number of quotes if it is in a contiguous group
 which contain an even number of them.  This allows commenting out a multiline string without
 any problems:
 
-```in
+```in:1095
 (def foo [a b]
   ; "my multiline
   ; docstring."
@@ -293,7 +293,7 @@ ret
 
 Escaped strings are not counted when determining odd number of quotes in a comment.
 
-```in
+```in:1100
 (def foo [a b]
   ; ""\"
 ret)
@@ -309,7 +309,7 @@ ret
 
 Correctly handle escaped parens as literal characters.
 
-```in
+```in:1105
 (defn foo [a b
   \[
   ret
@@ -321,7 +321,7 @@ Correctly handle escaped parens as literal characters.
   ret)
 ```
 
-```in
+```in:1110
 (defn foo [a b]
   ret\)
 ```
@@ -331,7 +331,7 @@ Correctly handle escaped parens as literal characters.
   ret\))
 ```
 
-```in
+```in:1115
 {:tag-open \[ :tag-close \]}
 {:tag-open \[ :tag-close \]}
 ```
@@ -344,7 +344,7 @@ Correctly handle escaped parens as literal characters.
 Correctly handle escaped semicolons as characters instead of comments.
 Otherwise, the inferred close-parens would be inserted before them.
 
-```in
+```in:1120
 (def foo \;
 ```
 
@@ -354,7 +354,7 @@ Otherwise, the inferred close-parens would be inserted before them.
 
 Inferred close-parens are inserted after escaped whitespace.
 
-```in
+```in:1125
 (def foo \,
 (def bar \ ; <-- space
 ```
@@ -366,7 +366,7 @@ Inferred close-parens are inserted after escaped whitespace.
 
 Hanging backslash at end of line is invalid and causes processing to be abandoned.
 
-```in
+```in:1130
 (foo [a b\
   c)
 ```
@@ -382,7 +382,7 @@ Hanging backslash at end of line is invalid and causes processing to be abandone
 When commenting-out an inferred close-paren, a new one should be inserted
 before it.
 
-```in
+```in:1135
 (def foo ;)
 ```
 
@@ -393,7 +393,7 @@ before it.
 Commenting-out a line containing inferred close-parens should cause new ones to
 be inserted at the previous non-empty line.
 
-```in
+```in:1140
 (let [a 1
       b 2
       c {:foo 1
@@ -411,7 +411,7 @@ be inserted at the previous non-empty line.
 
 Inferred close-parens are inserted before comments.
 
-```in
+```in:1145
 (let [a 1 ;; a comment
   ret)
 ```
@@ -423,7 +423,7 @@ Inferred close-parens are inserted before comments.
 
 escape character in comment untouched:
 
-```in
+```in:1150
 ; hello \n world
 ```
 
@@ -440,7 +440,7 @@ __NOTE__: the pipe `|` represents the cursor, but the character is removed from 
 Inferred close-parens can only be inserted to the right of the cursor (if it is present).
 This allows us to insert a space before typing a new token.
 
-```in
+```in:1155
 (def b |)
 ```
 
@@ -450,7 +450,7 @@ This allows us to insert a space before typing a new token.
 
 Once the cursor leaves the line, the space is removed.
 
-```in
+```in:1160
 (def b )
 ```
 
@@ -460,7 +460,7 @@ Once the cursor leaves the line, the space is removed.
 
 Another example with more close-parens:
 
-```in
+```in:1165
 (def b [[c d] |])
 ```
 
@@ -470,7 +470,7 @@ Another example with more close-parens:
 
 Once the cursor leaves the line, the space is removed.
 
-```in
+```in:1170
 (def b [[c d] ])
 ```
 
@@ -486,7 +486,7 @@ after such a close-paren.
 
 For example, without the cursor on the first line, this is expected:
 
-```in
+```in:1175
 (let [a 1])
   ret)
 ```
@@ -498,7 +498,7 @@ For example, without the cursor on the first line, this is expected:
 
 With the cursor at the end of the first line, the indented line below does not affect it.
 
-```in
+```in:1180
 (let [a 1])|
   ret)
 ```
@@ -511,7 +511,7 @@ With the cursor at the end of the first line, the indented line below does not a
 If this was not allowed, we would not be able to reach this valid state from
 the previous state:
 
-```in
+```in:1185
 (let [a 1]) 2
   ret
 ```
@@ -524,7 +524,7 @@ the previous state:
 But if the cursor is before such a close-paren, we are not in a position to
 insert a token after it, thus indentation can affect it again:
 
-```in
+```in:1190
 (let [a 1]|)
   ret)
 ```
@@ -536,7 +536,7 @@ insert a token after it, thus indentation can affect it again:
 
 If the cursor is in a comment after such a close-paren, we can safely move it:
 
-```in
+```in:1195
 (let [a 1]) ;|
   ret
 ```
@@ -548,7 +548,7 @@ If the cursor is in a comment after such a close-paren, we can safely move it:
 
 The cursor should not keep unmatched close-parens in the trail:
 
-```in
+```in:1200
 (foo)}}}}|
 ```
 
@@ -556,7 +556,7 @@ The cursor should not keep unmatched close-parens in the trail:
 (foo)|
 ```
 
-```in
+```in:1205
 (foo}}}}|)
 ```
 
@@ -572,7 +572,7 @@ these in tests).
 
 If `forceBalance` is not on, we suspend Indent Mode.
 
-```in
+```in:1210
 (foo
   ) bar
 ```
@@ -585,7 +585,7 @@ If `forceBalance` is not on, we suspend Indent Mode.
 
 It is allowed if the leading parens are also in paren trail:
 
-```in
+```in:1215
 (foo
   ); comment
 ```
@@ -597,7 +597,7 @@ It is allowed if the leading parens are also in paren trail:
 
 If there's more than one, point to the first one.
 
-```in
+```in:1220
 [(foo
   )] bar
 ```
@@ -619,7 +619,7 @@ ever approached again.
 
 Inserting a `(` inside a nested vector:
 
-```in
+```in:1225
 (foo [bar (|...] baz)
 ```
 
@@ -630,7 +630,7 @@ Inserting a `(` inside a nested vector:
 
 Inserting a `]` inside a nested list:
 
-```in
+```in:1230
 (foo [bar (]| baz)])
 ```
 
@@ -642,7 +642,7 @@ Inserting a `]` inside a nested list:
 Inserting a `]` ahead of another inside a list (maybe to "barf" the end of the
 vector).
 
-```in
+```in:1235
 [... (foo [bar ]| baz]  ...)]
 ```
 
@@ -653,7 +653,7 @@ vector).
 
 Suppose you just backspaced a `[` below:
 
-```in
+```in:1240
 (let [{:keys |foo bar]} my-map])
 ```
 
@@ -664,7 +664,7 @@ Suppose you just backspaced a `[` below:
 
 Inserting a matched `)` inside nested expressions sometimes works out:
 
-```in
+```in:1245
 (a (b (c))| d) e)
 ```
 
@@ -674,7 +674,7 @@ Inserting a matched `)` inside nested expressions sometimes works out:
 
 Inserting a matched `(` inside nested expressions sometimes works out too:
 
-```in
+```in:1250
 (a (b (c(|) d) e)
 ```
 
@@ -684,7 +684,7 @@ Inserting a matched `(` inside nested expressions sometimes works out too:
 
 But all it takes is one different kind of a paren to keep it from working:
 
-```in
+```in:1255
 (f [x (a (b c(|) d) y] g)
 ```
 
@@ -696,7 +696,7 @@ But all it takes is one different kind of a paren to keep it from working:
 Unmatched close-parens on indented lines present similar issues.
 For example, inserting a `)` below:
 
-```in
+```in:1260
 (foo
   bar)| baz) qux
 ```
@@ -707,7 +707,7 @@ For example, inserting a `)` below:
            ^ error: unmatched-close-paren
 ```
 
-```in
+```in:1265
 (foo
   [bar
    bar)| baz
@@ -724,7 +724,7 @@ For example, inserting a `)` below:
 
 Or when dedenting a line makes an inner close-paren unmatched:
 
-```in
+```in:1270
 (foo
   [bar]
 |bar) baz
@@ -740,7 +740,7 @@ Or when dedenting a line makes an inner close-paren unmatched:
 In the same example, a different similar problem emerges when indenting a line
 makes the same inner close-paren unmatched:
 
-```in
+```in:1275
 (foo
  [bar]
   |bar) baz
@@ -755,7 +755,7 @@ makes the same inner close-paren unmatched:
 
 The same problem demonstrated for another dedenting example:
 
-```in
+```in:1280
 (foo
  [bar
  bar]) baz
@@ -772,7 +772,7 @@ The same problem demonstrated for another dedenting example:
 
 Commenting an inferred close-paren
 
-```in
+```in:1285
 (foo bar ;|)
 ```
 
@@ -782,7 +782,7 @@ Commenting an inferred close-paren
 
 Commenting multiple inferred close-parens
 
-```in
+```in:1290
 (let [x 1
       y 2;|])
 ```
@@ -794,7 +794,7 @@ Commenting multiple inferred close-parens
 
 When typing an open-paren, a close-paren should come after the cursor:
 
-```in
+```in:1295
 (|
 ```
 
@@ -808,7 +808,7 @@ We can return the positions of the open-parens whose structure would be
 affected by the indentation of the current cursor line.  This allows editors to
 use them to create tab stops for smart indentation snapping.
 
-```in
+```in:1300
 (def x [1 2 3])
 (def y 2)
 |
@@ -824,7 +824,7 @@ use them to create tab stops for smart indentation snapping.
 The `>` means the position of the first arg after an open-paren, because some styles
 use it for alignment.
 
-```in
+```in:1305
 (foo bar
   (baz boo))
 |
@@ -837,7 +837,7 @@ use it for alignment.
 |
 ```
 
-```in
+```in:1310
 (let [a {:foo 1}
       |
       bar [1 2 3]]
@@ -853,7 +853,7 @@ use it for alignment.
 ```
 
 
-```in
+```in:1315
 (let [a {:foo 1}
       bar (func 1 2 3)]
   |
@@ -872,7 +872,7 @@ use it for alignment.
 
 We return non-empty Paren Trails so plugins can dim them with markers:
 
-```in
+```in:1320
 (defn foo
   "hello, this is a docstring"
   [a b]

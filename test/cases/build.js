@@ -16,6 +16,7 @@ function getInitialResult () {
 
 function getInitialCase () {
   var testCase = {
+    id: null,
     in: [],
     out: []
   }
@@ -61,7 +62,7 @@ function finalizeCase (testCase) {
     throw e
   }
 
-  return {
+  const output = {
     // test input
     text: text,
     options: options,
@@ -76,6 +77,12 @@ function finalizeCase (testCase) {
       out: outBlock.fileText
     }
   }
+
+  if (testCase.id) {
+    output.id = testCase.id
+  }
+
+  return output
 }
 
 // -----------------------------------------------------------------------------
@@ -110,12 +117,13 @@ function parseLine_startBlock (result, fileLineNo, line) {
     error(fileLineNo, "must close previous block '" + result.currLabel + "' before starting new one.")
   }
 
-  var label = line.substring('```'.length)
+  const label = line.substring('```'.length).replace(/:.+/, '')
+  const isInLine = line.startsWith('```in')
 
-  if (label !== 'in' && label !== 'out') {
+  if (!isInLine && label !== 'out') {
     error(fileLineNo, "block name '" + label + "' must be either 'in' or 'out'.")
   }
-  if (label === 'in' && result.currCase.out.length > 0) {
+  if (isInLine && result.currCase.out.length > 0) {
     error(fileLineNo, "'in' blocks must come before the 'out' block.")
   }
   if (label === 'out' && result.currCase.in.length === 0) {
@@ -129,6 +137,17 @@ function parseLine_startBlock (result, fileLineNo, line) {
 
   const blocks = result.currCase[label]
   const newBlock = getInitialCaseBlock(fileLineNo)
+
+  if (isInLine) {
+    const lineArr = line.split(':')
+    if (lineArr.length === 2) {
+      const possibleId = parseInt(lineArr[1], 10)
+      if (typeof possibleId === 'number' && possibleId > 999 && possibleId < 10000) {
+        result.currCase.id = possibleId
+      }
+    }
+  }
+
   blocks.push(newBlock)
 }
 
