@@ -1,5 +1,31 @@
 /* global describe, it */
 
+const parinfer = require('../parinfer.js')
+const assert = require('assert')
+
+function isValidTestId (id) {
+  return typeof id === 'number' && id >= 1000 && id < 10000
+}
+
+function isTestIdArg (s) {
+  if (typeof s !== 'string') return false
+  const split = s.split(':')
+  if (split.length !== 2) return false
+  const testId = parseInt(split[1], 10)
+  return split[0] === '--id' && isValidTestId(testId)
+}
+
+assert(isTestIdArg('--id:1400'))
+assert(!isTestIdArg('--id'))
+assert(!isTestIdArg('--id:78'))
+
+function extractJustId (s) {
+  const a = s.split(':')
+  return parseInt(a[1], 10)
+}
+
+assert(extractJustId('--id:1400') === 1400)
+
 // -----------------------------------------------------------------------------
 // Compile tests from Markdown to JSON
 
@@ -15,7 +41,8 @@ const smartCases = require('./cases/smart-mode.json')
 // Long-term: I want to refactor the "test cases in markdown" approach
 // -- C. Oakman, 06 Sep 2020
 
-const indentModeCommentTest9000 = {
+const indentModeCommentTest1400 = {
+  id: 1400,
   text: '(def foo \\,\n(def bar \\ # <-- space',
   options: {
     commentChars: ['#']
@@ -33,7 +60,8 @@ const indentModeCommentTest9000 = {
   }
 }
 
-const indentModeCommentTest9050 = {
+const indentModeCommentTest1405 = {
+  id: 1405,
   text: '(def foo q)',
   options: { commentChars: 'q' },
   result: {
@@ -49,7 +77,8 @@ const indentModeCommentTest9050 = {
   }
 }
 
-const indentModeCommentTest9100 = {
+const indentModeCommentTest1410 = {
+  id: 1410,
   text: '(def foo [a b]\n  # "my multiline\n  # docstring."\nret)',
   options: { commentChars: ['#'] },
   result: {
@@ -65,7 +94,8 @@ const indentModeCommentTest9100 = {
   }
 }
 
-const indentModeCommentTest9150 = {
+const indentModeCommentTest1415 = {
+  id: 1415,
   text: '(let [a 1\n      b 2\n      c {:foo 1\n         ## :bar 2}]\n  ret)',
   options: { commentChars: '#' },
   result: {
@@ -81,12 +111,13 @@ const indentModeCommentTest9150 = {
   }
 }
 
-indentCases.push(indentModeCommentTest9000)
-indentCases.push(indentModeCommentTest9050)
-indentCases.push(indentModeCommentTest9100)
-indentCases.push(indentModeCommentTest9150)
+indentCases.push(indentModeCommentTest1400)
+indentCases.push(indentModeCommentTest1405)
+indentCases.push(indentModeCommentTest1410)
+indentCases.push(indentModeCommentTest1415)
 
-const parenModeCommentTest8000 = {
+const parenModeCommentTest2300 = {
+  id: 2300,
   text: '(let [foo 1\n      ]# <-- spaces\n  foo)',
   options: { commentChars: '#' },
   result: {
@@ -102,7 +133,8 @@ const parenModeCommentTest8000 = {
   }
 }
 
-const parenModeCommentTest8100 = {
+const parenModeCommentTest2305 = {
+  id: 2305,
   text: '(let [foo 1\n      bar 2\n\n     ] (+ foo bar\n  )% <-- spaces\n)',
   options: { commentChars: [';', '%'] },
   result: {
@@ -118,7 +150,8 @@ const parenModeCommentTest8100 = {
   }
 }
 
-const parenModeCommentTest8200 = {
+const parenModeCommentTest2310 = {
+  id: 2310,
   text: '(def foo [a b]\n  # "my string\nret)',
   options: { commentChars: ['#'] },
   result: {
@@ -139,11 +172,12 @@ const parenModeCommentTest8200 = {
   }
 }
 
-parenCases.push(parenModeCommentTest8000)
-parenCases.push(parenModeCommentTest8100)
-parenCases.push(parenModeCommentTest8200)
+parenCases.push(parenModeCommentTest2300)
+parenCases.push(parenModeCommentTest2305)
+parenCases.push(parenModeCommentTest2310)
 
-const smartModeCommentTest4100 = {
+const smartModeCommentTest3200 = {
+  id: 3200,
   text: '(let [a 1\n      ])$ <-- spaces',
   options: {
     commentChars: [';', '$']
@@ -161,7 +195,8 @@ const smartModeCommentTest4100 = {
   }
 }
 
-const smartModeCommentTest4200 = {
+const smartModeCommentTest3205 = {
+  id: 3205,
   text: '(defn foo\n    [a b]\n    # comment 1\n    bar)\n    # comment 2',
   options: {
     commentChars: ['#'],
@@ -187,17 +222,14 @@ const smartModeCommentTest4200 = {
   }
 }
 
-smartCases.push(smartModeCommentTest4100)
-smartCases.push(smartModeCommentTest4200)
+smartCases.push(smartModeCommentTest3200)
+smartCases.push(smartModeCommentTest3205)
 
 // -----------------------------------------------------------------------------
 // STRUCTURE TEST
 // Diff the relevant result properties.
 
-const parinfer = require('../parinfer.js')
-const assert = require('assert')
-
-function assertStructure (actual, expected, description) {
+function assertStructure (actual, expected) {
   assert.strictEqual(actual.text, expected.text)
   assert.strictEqual(actual.success, expected.success)
   assert.strictEqual(actual.cursorX, expected.cursorX)
@@ -352,30 +384,51 @@ function testString (testCase, mode) {
   })
 }
 
-// -----------------------------------------------------------------------------
-// Test execution order
-
-function runTest (testCase, mode, filename) {
-  describe(filename + ':' + testCase.source.lineNo, function () {
+function runTest (testCase, mode) {
+  describe('Test Case #' + testCase.id, function () {
     testString(testCase, mode)
     testStructure(testCase, mode)
   })
 }
 
-describe('Indent Mode cases from markdown', function () {
-  for (var i = 0; i < indentCases.length; i++) {
-    runTest(indentCases[i], 'indent', 'cases/indent-mode.md')
+// -----------------------------------------------------------------------------
+// Test execution order
+
+const allTestCases = indentCases.concat(parenCases, smartCases)
+const allTestCasesIds = allTestCases.reduce((acc, itm) => {
+  return acc.add(itm.id)
+}, new Set())
+
+const cliIdArgs = process.argv.filter(isTestIdArg).map(extractJustId)
+const onlyTestTheseIds = cliIdArgs.length === 0 ? allTestCasesIds : new Set(cliIdArgs)
+
+describe('test case ids are unique', function () {
+  assert.strictEqual(allTestCases.length, allTestCasesIds.size, 'all test case ids should be unique')
+})
+
+describe('Indent Mode', function () {
+  for (let i = 0; i < indentCases.length; i++) {
+    const testCase = indentCases[i]
+    if (onlyTestTheseIds.has(testCase.id)) {
+      runTest(testCase, 'indent')
+    }
   }
 })
 
-describe('Paren Mode cases from markdown', function () {
-  for (var i = 0; i < parenCases.length; i++) {
-    runTest(parenCases[i], 'paren', 'cases/paren-mode.md')
+describe('Paren Mode', function () {
+  for (let i = 0; i < parenCases.length; i++) {
+    const testCase = parenCases[i]
+    if (onlyTestTheseIds.has(testCase.id)) {
+      runTest(testCase, 'paren')
+    }
   }
 })
 
-describe('Smart Mode cases from markdown', function () {
-  for (var i = 0; i < smartCases.length; i++) {
-    runTest(smartCases[i], 'smart', 'cases/smart-mode.md')
+describe('Smart Mode', function () {
+  for (let i = 0; i < smartCases.length; i++) {
+    const testCase = smartCases[i]
+    if (onlyTestTheseIds.has(testCase.id)) {
+      runTest(testCase, 'smart')
+    }
   }
 })
