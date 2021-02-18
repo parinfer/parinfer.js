@@ -4,7 +4,7 @@
 
 clamp left
 
-```in
+```in:2000
 (let [foo 1]
 foo)
 ```
@@ -16,7 +16,7 @@ foo)
 
 clamp right
 
-```in
+```in:2005
 (let [foo 1]
       foo)
 ```
@@ -26,7 +26,7 @@ clamp right
      foo)
 ```
 
-```in
+```in:2010
 (let [foo {:a 1}]
            foo)
 ```
@@ -38,7 +38,7 @@ clamp right
 
 sanity check to apply rules to multiple expressions
 
-```in
+```in:2015
 (let [foo 1]
       foo)
 
@@ -58,7 +58,7 @@ foo)
 
 keep relative indentation of child expressions:
 
-```in
+```in:2020
 (let [foo [1 2 3]]
       (-> foo
           (map inc)))
@@ -76,7 +76,7 @@ keep relative indentation of child expressions:
 Close-parens at start of line are moved to end of previous line.  Note that the
 spaces before the close-paren are not removed.
 
-```in
+```in:2025
 (let [foo 1
       ]; <-- spaces
   foo)
@@ -88,7 +88,7 @@ spaces before the close-paren are not removed.
   foo)
 ```
 
-```in
+```in:2030
 (let [foo 1
       bar 2
 
@@ -110,7 +110,7 @@ spaces before the close-paren are not removed.
 
 extra indent is fine (won't cause parinfer to restructure it)
 
-```in
+```in:2035
 (def x [1 2 3 4
          5 6 7 8])
 ```
@@ -122,7 +122,7 @@ extra indent is fine (won't cause parinfer to restructure it)
 
 doesn't try to align siblings.
 
-```in
+```in:2040
   (assoc x
 :foo 1
      :bar 2)
@@ -136,7 +136,7 @@ doesn't try to align siblings.
 
 ## Unclosed Parens
 
-```in
+```in:2045
 (foo
 ```
 
@@ -145,7 +145,7 @@ doesn't try to align siblings.
 ^ error: unclosed-paren
 ```
 
-```in
+```in:2050
 (defn foo
 [arg arg2
 bar
@@ -160,7 +160,7 @@ bar
 
 ## Unmatched close-parens
 
-```in
+```in:2055
 (foo})
 ```
 
@@ -169,7 +169,7 @@ bar
     ^ error: unmatched-close-paren
 ```
 
-```in
+```in:2060
 (foo
   })
 ```
@@ -180,7 +180,7 @@ bar
   ^ error: unmatched-close-paren
 ```
 
-```in
+```in:2065
 (defn foo
   [arg
   bar)
@@ -197,7 +197,7 @@ bar
 
 escape character in comment untouched:
 
-```in
+```in:2070
 ; hello \n world
 ```
 
@@ -207,7 +207,7 @@ escape character in comment untouched:
 
 escaped whitespace
 
-```in
+```in:2075
 (def foo \,)
 (def bar \ )
 ```
@@ -219,7 +219,7 @@ escaped whitespace
 
 Hanging backslash at end of line is invalid and causes processing to be abandoned.
 
-```in
+```in:2080
 (foo [a b]\
 c)
 ```
@@ -232,7 +232,7 @@ c)
 
 ## Unclosed Quotes
 
-```in
+```in:2085
 (def foo
   "hello
   bar)
@@ -249,7 +249,7 @@ c)
 
 odd number of quotes not allowed in a comment, so it remains unprocessed:
 
-```in
+```in:2090
 (def foo [a b]
   ; "my string
 ret)
@@ -264,7 +264,7 @@ ret)
 
 balanced quotes allowed across contiguous comments:
 
-```in
+```in:2095
 (def foo [a b]
   ; "my multiline
   ; docstring."
@@ -283,7 +283,7 @@ ret)
 A line ending inside a string will not have a definable Paren Trail.  This
 minimal test case will fail if the close-paren is treated as a Paren Trail.
 
-```in
+```in:2100
 ( )"
 "
 ```
@@ -298,7 +298,7 @@ minimal test case will fail if the close-paren is treated as a Paren Trail.
 Preserve spaces in paren trail for the cursor line.  This allows the user
 to insert things between close-parens more easily.
 
-```in
+```in:2105
 (foo |)
 ```
 
@@ -306,7 +306,7 @@ to insert things between close-parens more easily.
 (foo |)
 ```
 
-```in
+```in:2110
 (foo [1 2 3 |] )
 ```
 
@@ -316,7 +316,7 @@ to insert things between close-parens more easily.
 
 But get rid of spaces in paren trail if no cursor is present on the line:
 
-```in
+```in:2115
 (foo )
 ```
 
@@ -324,7 +324,7 @@ But get rid of spaces in paren trail if no cursor is present on the line:
 (foo)
 ```
 
-```in
+```in:2120
 (foo [1 2 3 ] )
 ```
 
@@ -336,7 +336,7 @@ But get rid of spaces in paren trail if no cursor is present on the line:
 
 Pressing enter before a close-paren.
 
-```in
+```in:2125
 (foo [a b
 |])
 ```
@@ -348,7 +348,7 @@ Pressing enter before a close-paren.
 
 Cursor pushed forward when a form is balanced and indented.
 
-```in
+```in:2130
 (foo [1 2 3
  4 5 6
  7 8 9])|
@@ -364,7 +364,7 @@ Cursor pushed forward when a form is balanced and indented.
 
 When backspacing, preserve the indentation of the child lines.
 
-```in
+```in:2135
 (let     [foo 1
      ----
            ; comment 1
@@ -381,7 +381,7 @@ When backspacing, preserve the indentation of the child lines.
        ; comment 2
 ```
 
-```in
+```in:2140
    (def foo
 ---
       ; comment 1
@@ -398,7 +398,7 @@ When backspacing, preserve the indentation of the child lines.
 
 When typing before an open-paren, preserve the indentation of the child lines.
 
-```in
+```in:2145
 (def foo (bar
     ++++
        4 5 6
@@ -417,7 +417,7 @@ When typing before an open-paren, preserve the indentation of the child lines.
 
 __Multiple changes__:
 
-```in
+```in:2150
 (my-fnfoo (if some-condition
  -----+++
          println) my-funfoo {:foo 1
@@ -445,7 +445,7 @@ which is likely an unintended side effect.
 This places a harder constraint on indentation in Paren Mode than Indent Mode,
 making the invariant no longer equivalent between them.
 
-```in
+```in:2155
 (foo [bar baz]
        1 2 3
        4 5 6)
@@ -457,7 +457,7 @@ making the invariant no longer equivalent between them.
      4 5 6)
 ```
 
-```in
+```in:2160
 (foo [bar baz
          ]; <-- spaces
        1 2 3
@@ -476,7 +476,7 @@ making the invariant no longer equivalent between them.
 We return non-empty Paren Trails so plugins can dim them with markers:
 
 
-```in
+```in:2165
 (defn foo
   "hello, this is a docstring"
   [a b]
@@ -504,7 +504,7 @@ We return non-empty Paren Trails so plugins can dim them with markers:
 
 Indent only the first line:
 
-```in
+```in:2170
   (foo
 ++
   (bar
@@ -519,7 +519,7 @@ Indent only the first line:
 
 Indent first two lines:
 
-```in
+```in:2175
   (foo
 ++
     (bar
@@ -535,7 +535,7 @@ Indent first two lines:
 
 Indent last two lines:
 
-```in
+```in:2180
   (foo
       (bar
 ++
@@ -552,7 +552,7 @@ Indent last two lines:
 
 Indent only the first line:
 
-```in
+```in:2185
   (foo
 ++
   bar
@@ -567,7 +567,7 @@ Indent only the first line:
 
 Indent first two lines:
 
-```in
+```in:2190
   (foo
 ++
     bar
@@ -583,7 +583,7 @@ Indent first two lines:
 
 Indent last two lines:
 
-```in
+```in:2195
 (foo
     bar
 ++
@@ -605,7 +605,7 @@ We can return the positions of the open-parens whose structure would be
 affected by the indentation of the current cursor line.  This allows editors to
 use them to create tab stops for smart indentation snapping.
 
-```in
+```in:2200
 (def x [1 2 3])
 (def y 2)
 |
@@ -621,7 +621,7 @@ use them to create tab stops for smart indentation snapping.
 The `>` means the position of the first arg after an open-paren, because some styles
 use it for alignment.
 
-```in
+```in:2205
 (foo bar
   (baz boo))
 |
@@ -634,7 +634,7 @@ use it for alignment.
 |
 ```
 
-```in
+```in:2210
 (let [a {:foo 1}
       |
       bar [1 2 3]]
@@ -649,7 +649,7 @@ use it for alignment.
   bar)
 ```
 
-```in
+```in:2215
 (let [a {:foo 1}
       bar (func 1 2 3)]
   |

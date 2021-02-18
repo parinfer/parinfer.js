@@ -12,7 +12,8 @@
         "(let [foo 1]\nfoo)"
       ],
       "out": "(let [foo 1]\n foo)"
-    }
+    },
+    "id": 2000
   },
   {
     "text": "(let [foo 1]\n      foo)",
@@ -27,7 +28,8 @@
         "(let [foo 1]\n      foo)"
       ],
       "out": "(let [foo 1]\n     foo)"
-    }
+    },
+    "id": 2005
   },
   {
     "text": "(let [foo {:a 1}]\n           foo)",
@@ -42,7 +44,8 @@
         "(let [foo {:a 1}]\n           foo)"
       ],
       "out": "(let [foo {:a 1}]\n     foo)"
-    }
+    },
+    "id": 2010
   },
   {
     "text": "(let [foo 1]\n      foo)\n\n(let [foo 1]\nfoo)",
@@ -57,7 +60,8 @@
         "(let [foo 1]\n      foo)\n\n(let [foo 1]\nfoo)"
       ],
       "out": "(let [foo 1]\n     foo)\n\n(let [foo 1]\n foo)"
-    }
+    },
+    "id": 2015
   },
   {
     "text": "(let [foo [1 2 3]]\n      (-> foo\n          (map inc)))",
@@ -72,7 +76,8 @@
         "(let [foo [1 2 3]]\n      (-> foo\n          (map inc)))"
       ],
       "out": "(let [foo [1 2 3]]\n     (-> foo\n         (map inc)))"
-    }
+    },
+    "id": 2020
   },
   {
     "text": "(let [foo 1\n      ]; <-- spaces\n  foo)",
@@ -87,7 +92,8 @@
         "(let [foo 1\n      ]; <-- spaces\n  foo)"
       ],
       "out": "(let [foo 1]\n      ; <-- spaces\n  foo)"
-    }
+    },
+    "id": 2025
   },
   {
     "text": "(let [foo 1\n      bar 2\n\n     ] (+ foo bar\n  ); <-- spaces\n)",
@@ -102,7 +108,8 @@
         "(let [foo 1\n      bar 2\n\n     ] (+ foo bar\n  ); <-- spaces\n)"
       ],
       "out": "(let [foo 1\n      bar 2]\n\n     (+ foo bar))\n  ; <-- spaces\n"
-    }
+    },
+    "id": 2030
   },
   {
     "text": "(def x [1 2 3 4\n         5 6 7 8])",
@@ -117,7 +124,8 @@
         "(def x [1 2 3 4\n         5 6 7 8])"
       ],
       "out": "(def x [1 2 3 4\n         5 6 7 8])"
-    }
+    },
+    "id": 2035
   },
   {
     "text": "  (assoc x\n:foo 1\n     :bar 2)",
@@ -132,7 +140,8 @@
         "  (assoc x\n:foo 1\n     :bar 2)"
       ],
       "out": "  (assoc x\n   :foo 1\n     :bar 2)"
-    }
+    },
+    "id": 2040
   },
   {
     "text": "(foo",
@@ -152,7 +161,8 @@
         "(foo"
       ],
       "out": "(foo\n^ error: unclosed-paren"
-    }
+    },
+    "id": 2045
   },
   {
     "text": "(defn foo\n[arg arg2\nbar",
@@ -172,7 +182,8 @@
         "(defn foo\n[arg arg2\nbar"
       ],
       "out": "(defn foo\n[arg arg2\n^ error: unclosed-paren\nbar"
-    }
+    },
+    "id": 2050
   },
   {
     "text": "(foo})",
@@ -192,7 +203,8 @@
         "(foo})"
       ],
       "out": "(foo})\n    ^ error: unmatched-close-paren"
-    }
+    },
+    "id": 2055
   },
   {
     "text": "(foo\n  })",
@@ -212,7 +224,8 @@
         "(foo\n  })"
       ],
       "out": "(foo\n  })\n  ^ error: unmatched-close-paren"
-    }
+    },
+    "id": 2060
   },
   {
     "text": "(defn foo\n  [arg\n  bar)",
@@ -232,7 +245,8 @@
         "(defn foo\n  [arg\n  bar)"
       ],
       "out": "(defn foo\n  [arg\n  bar)\n     ^ error: unmatched-close-paren"
-    }
+    },
+    "id": 2065
   },
   {
     "text": "; hello \\n world",
@@ -247,7 +261,8 @@
         "; hello \\n world"
       ],
       "out": "; hello \\n world"
-    }
+    },
+    "id": 2070
   },
   {
     "text": "(def foo \\,)\n(def bar \\ )",
@@ -262,7 +277,8 @@
         "(def foo \\,)\n(def bar \\ )"
       ],
       "out": "(def foo \\,)\n(def bar \\ )"
-    }
+    },
+    "id": 2075
   },
   {
     "text": "(foo [a b]\\\nc)",
@@ -282,7 +298,8 @@
         "(foo [a b]\\\nc)"
       ],
       "out": "(foo [a b]\\\n          ^ error: eol-backslash\nc)"
-    }
+    },
+    "id": 2080
   },
   {
     "text": "(def foo\n  \"hello\n  bar)",
@@ -302,7 +319,8 @@
         "(def foo\n  \"hello\n  bar)"
       ],
       "out": "(def foo\n  \"hello\n  ^ error: unclosed-quote\n  bar)"
-    }
+    },
+    "id": 2085
   },
   {
     "text": "(def foo [a b]\n  ; \"my string\nret)",
@@ -322,7 +340,8 @@
         "(def foo [a b]\n  ; \"my string\nret)"
       ],
       "out": "(def foo [a b]\n  ; \"my string\n    ^ error: quote-danger\nret)"
-    }
+    },
+    "id": 2090
   },
   {
     "text": "(def foo [a b]\n  ; \"my multiline\n  ; docstring.\"\nret)",
@@ -337,7 +356,8 @@
         "(def foo [a b]\n  ; \"my multiline\n  ; docstring.\"\nret)"
       ],
       "out": "(def foo [a b]\n  ; \"my multiline\n  ; docstring.\"\n ret)"
-    }
+    },
+    "id": 2095
   },
   {
     "text": "( )\"\n\"",
@@ -352,7 +372,8 @@
         "( )\"\n\""
       ],
       "out": "( )\"\n\""
-    }
+    },
+    "id": 2100
   },
   {
     "text": "(foo )",
@@ -372,7 +393,8 @@
         "(foo |)"
       ],
       "out": "(foo |)"
-    }
+    },
+    "id": 2105
   },
   {
     "text": "(foo [1 2 3 ] )",
@@ -392,7 +414,8 @@
         "(foo [1 2 3 |] )"
       ],
       "out": "(foo [1 2 3 |] )"
-    }
+    },
+    "id": 2110
   },
   {
     "text": "(foo )",
@@ -407,7 +430,8 @@
         "(foo )"
       ],
       "out": "(foo)"
-    }
+    },
+    "id": 2115
   },
   {
     "text": "(foo [1 2 3 ] )",
@@ -422,7 +446,8 @@
         "(foo [1 2 3 ] )"
       ],
       "out": "(foo [1 2 3])"
-    }
+    },
+    "id": 2120
   },
   {
     "text": "(foo [a b\n])",
@@ -442,7 +467,8 @@
         "(foo [a b\n|])"
       ],
       "out": "(foo [a b\n      |])"
-    }
+    },
+    "id": 2125
   },
   {
     "text": "(foo [1 2 3\n 4 5 6\n 7 8 9])",
@@ -462,7 +488,8 @@
         "(foo [1 2 3\n 4 5 6\n 7 8 9])|"
       ],
       "out": "(foo [1 2 3\n      4 5 6\n      7 8 9])|"
-    }
+    },
+    "id": 2130
   },
   {
     "text": "(let [foo 1\n           ; comment 1\n           bar 2\n           baz 3])\n           ; comment 2",
@@ -486,7 +513,8 @@
         "(let     [foo 1\n     ----\n           ; comment 1\n           bar 2\n           baz 3])\n           ; comment 2"
       ],
       "out": "(let [foo 1\n       ; comment 1\n       bar 2\n       baz 3])\n       ; comment 2"
-    }
+    },
+    "id": 2135
   },
   {
     "text": "(def foo\n      ; comment 1\n      bar)\n      ; comment 2",
@@ -510,7 +538,8 @@
         "   (def foo\n---\n      ; comment 1\n      bar)\n      ; comment 2"
       ],
       "out": "(def foo\n   ; comment 1\n   bar)\n   ; comment 2"
-    }
+    },
+    "id": 2140
   },
   {
     "text": "(def foo (bar\n       4 5 6\n       ; comment 1\n       7 8 9))\n       ; comment 2",
@@ -534,7 +563,8 @@
         "(def foo (bar\n    ++++\n       4 5 6\n       ; comment 1\n       7 8 9))\n       ; comment 2"
       ],
       "out": "(def foo (bar\n           4 5 6\n           ; comment 1\n           7 8 9))\n           ; comment 2"
-    }
+    },
+    "id": 2145
   },
   {
     "text": "(foo (if some-condition\n         println) foo {:foo 1\n                          :bar 2})",
@@ -564,7 +594,8 @@
         "(my-fnfoo (if some-condition\n -----+++\n         println) my-funfoo {:foo 1\n                  ------+++\n                          :bar 2})"
       ],
       "out": "(foo (if some-condition\n       println) foo {:foo 1\n                     :bar 2})"
-    }
+    },
+    "id": 2150
   },
   {
     "text": "(foo [bar baz]\n       1 2 3\n       4 5 6)",
@@ -579,7 +610,8 @@
         "(foo [bar baz]\n       1 2 3\n       4 5 6)"
       ],
       "out": "(foo [bar baz]\n     1 2 3\n     4 5 6)"
-    }
+    },
+    "id": 2155
   },
   {
     "text": "(foo [bar baz\n         ]; <-- spaces\n       1 2 3\n       4 5 6)",
@@ -594,7 +626,8 @@
         "(foo [bar baz\n         ]; <-- spaces\n       1 2 3\n       4 5 6)"
       ],
       "out": "(foo [bar baz]\n         ; <-- spaces\n     1 2 3\n     4 5 6)"
-    }
+    },
+    "id": 2160
   },
   {
     "text": "(defn foo\n  \"hello, this is a docstring\"\n  [a b]\n  (let [sum (+ a b)\n        prod (* a b)]\n     {:sum sum\n      :prod prod}))",
@@ -631,7 +664,8 @@
         "(defn foo\n  \"hello, this is a docstring\"\n  [a b]\n  (let [sum (+ a b)\n        prod (* a b)]\n     {:sum sum\n      :prod prod}))"
       ],
       "out": "(defn foo\n  \"hello, this is a docstring\"\n  [a b]\n      ^ parenTrail\n  (let [sum (+ a b)\n                  ^ parenTrail\n        prod (* a b)]\n                   ^^ parenTrail\n     {:sum sum\n      :prod prod}))\n                ^^^ parenTrail"
-    }
+    },
+    "id": 2165
   },
   {
     "text": "  (foo\n  (bar\n    baz))",
@@ -655,7 +689,8 @@
         "  (foo\n++\n  (bar\n    baz))"
       ],
       "out": "  (foo\n    (bar\n      baz))"
-    }
+    },
+    "id": 2170
   },
   {
     "text": "  (foo\n    (bar\n    baz))",
@@ -685,7 +720,8 @@
         "  (foo\n++\n    (bar\n++\n    baz))"
       ],
       "out": "  (foo\n    (bar\n      baz))"
-    }
+    },
+    "id": 2175
   },
   {
     "text": "  (foo\n      (bar\n        baz))",
@@ -715,7 +751,8 @@
         "  (foo\n      (bar\n++\n        baz))\n++"
       ],
       "out": "  (foo\n      (bar\n        baz))"
-    }
+    },
+    "id": 2180
   },
   {
     "text": "  (foo\n  bar\n  baz)",
@@ -739,7 +776,8 @@
         "  (foo\n++\n  bar\n  baz)"
       ],
       "out": "  (foo\n    bar\n    baz)"
-    }
+    },
+    "id": 2185
   },
   {
     "text": "  (foo\n    bar\n  baz)",
@@ -769,7 +807,8 @@
         "  (foo\n++\n    bar\n++\n  baz)"
       ],
       "out": "  (foo\n    bar\n    baz)"
-    }
+    },
+    "id": 2190
   },
   {
     "text": "(foo\n    bar\n    baz)",
@@ -799,7 +838,8 @@
         "(foo\n    bar\n++\n    baz)\n++"
       ],
       "out": "(foo\n    bar\n    baz)"
-    }
+    },
+    "id": 2195
   },
   {
     "text": "(def x [1 2 3])\n(def y 2)\n",
@@ -827,7 +867,8 @@
         "(def x [1 2 3])\n(def y 2)\n|"
       ],
       "out": "(def x [1 2 3])\n(def y 2)\n^    > tabStops\n|"
-    }
+    },
+    "id": 2200
   },
   {
     "text": "(foo bar\n  (baz boo))\n",
@@ -860,7 +901,8 @@
         "(foo bar\n  (baz boo))\n|"
       ],
       "out": "(foo bar\n  (baz boo))\n^ ^    > tabStops\n|"
-    }
+    },
+    "id": 2205
   },
   {
     "text": "(let [a {:foo 1}\n      \n      bar [1 2 3]]\n  bar)",
@@ -898,7 +940,8 @@
         "(let [a {:foo 1}\n      |\n      bar [1 2 3]]\n  bar)"
       ],
       "out": "(let [a {:foo 1}\n^    ^  ^     > tabStops\n      |\n      bar [1 2 3]]\n  bar)"
-    }
+    },
+    "id": 2210
   },
   {
     "text": "(let [a {:foo 1}\n      bar (func 1 2 3)]\n  \n  bar)",
@@ -936,6 +979,7 @@
         "(let [a {:foo 1}\n      bar (func 1 2 3)]\n  |\n  bar)"
       ],
       "out": "(let [a {:foo 1}\n      bar (func 1 2 3)]\n^    ^    ^     > tabStops\n  |\n  bar)"
-    }
+    },
+    "id": 2215
   }
 ]
