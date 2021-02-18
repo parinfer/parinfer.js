@@ -8,7 +8,7 @@ so we exit to paren mode when they are detected.
 For example, it is convenient to keep trailing parens in front of the cursor
 after pressing enter or after deleting everything behind them:
 
-```in
+```in:3000
 (let [a 1
       |])
 ```
@@ -20,7 +20,7 @@ after pressing enter or after deleting everything behind them:
 
 Moving the cursor away:
 
-```in
+```in:3005
 (let [a 1
       ]); <-- spaces
 ```
@@ -33,7 +33,7 @@ Moving the cursor away:
 But we also need safety from inadvertent AST breakage.  For example,
 Indent Mode should allow this intermediate state:
 
-```in
+```in:3010
 (let [a 1
       |] (+ a 2))
 ```
@@ -47,7 +47,7 @@ Moving the cursor away will cause Indent Mode to still detect the leading
 close-paren, exit to Paren Mode, then fix the spacing to prevent inadvertent
 breakage.
 
-```in
+```in:3015
 (let [a 1
       ] (+ a 2))
 ```
@@ -61,7 +61,7 @@ To prevent weird things, indentation needs to be locked to respect
 the leading close-paren.  Exiting to Paren Mode allows this and prevents further
 AST breakage.
 
-```in
+```in:3020
 (let [a 1
   |] (+ a 2))
 ```
@@ -74,7 +74,7 @@ AST breakage.
 Moving cursor to the right progressively moves leading close-parens behind it
 to their normal positions:
 
-```in
+```in:3025
 (let [a 1
       ]|)
 ```
@@ -89,7 +89,7 @@ When in Paren Mode we must abide by its rules to stay balanced.
 As a courtesy, unmatched close-parens in a paren trail at the beginning of a
 line are auto-removed (only when paren mode is triggered from smart mode).
 
-```in
+```in:3030
 (|)
 -
 ```
@@ -98,7 +98,7 @@ line are auto-removed (only when paren mode is triggered from smart mode).
 |
 ```
 
-```in
+```in:3035
 (foo
   (bar|))
   ----
@@ -109,7 +109,7 @@ line are auto-removed (only when paren mode is triggered from smart mode).
   |)
 ```
 
-```in
+```in:3040
 (foo
   }|)
 ```
@@ -121,7 +121,7 @@ line are auto-removed (only when paren mode is triggered from smart mode).
 
 Likewise:
 
-```in
+```in:3045
 (foo
   ) foo} bar|
 ```
@@ -132,7 +132,7 @@ Likewise:
        ^ error: unmatched-close-paren
 ```
 
-```in
+```in:3050
 (foo
   ) (bar|
 ```
@@ -148,7 +148,7 @@ Likewise:
 
 Indent a single-line expression to enter a sibling:
 
-```in
+```in:3055
 (foo (bar)
       baz)
      +
@@ -161,7 +161,7 @@ Indent a single-line expression to enter a sibling:
 
 Dedent multi-line expression to leave its parent:
 
-```in
+```in:3060
 (foo
   {:a 1
 --
@@ -176,7 +176,7 @@ Dedent multi-line expression to leave its parent:
 
 Indent multi-line expression to enter new parent:
 
-```in
+```in:3065
 (foo)
   {:a 1
 ++
@@ -191,7 +191,7 @@ Indent multi-line expression to enter new parent:
 
 Dedenting an inner line makes it leave parent:
 
-```in
+```in:3070
 (foo
   {:a 1
    :b 2})
@@ -206,7 +206,7 @@ Dedenting an inner line makes it leave parent:
 
 Dedenting a collection will adopt a former sibling line below it:
 
-```in
+```in:3075
 (defn foo
   [a b]
 --
@@ -221,7 +221,7 @@ Dedenting a collection will adopt a former sibling line below it:
 
 But dedenting a top-level form should not cause a child to adopt a sibling:
 
-```in
+```in:3080
   (defn foo
 --
     [a b]
@@ -236,7 +236,7 @@ But dedenting a top-level form should not cause a child to adopt a sibling:
 
 Indented comments move with expressions:
 
-```in
+```in:3085
   (defn foo
 --
     [a b]
@@ -258,7 +258,7 @@ Indented comments move with expressions:
 To prevent undesirable sibling adoption when dedenting, we temporarily keep
 a close-paren from moving when the cursor is to the left of its open-paren.
 
-```in
+```in:3090
 (defn foo
   |[a b
 --
@@ -275,7 +275,7 @@ a close-paren from moving when the cursor is to the left of its open-paren.
   baz
 ```
 
-```in
+```in:3095
 (defn foo)
 |[a b
  c d]
@@ -293,7 +293,7 @@ a close-paren from moving when the cursor is to the left of its open-paren.
 
 ## Multiple Changes
 
-```in
+```in:3100
 (my-fnfoo (if some-condition
  -----+++
          println) my-funfoo {:foo 1
@@ -312,7 +312,7 @@ a close-paren from moving when the cursor is to the left of its open-paren.
 Suppose we deleted `foo` in the example below.  We expect `4` to not be adopted
 by any collection inside `(((1 2 3)))`.
 
-```in
+```in:3105
 (foo |(((1
  ----
         2
@@ -330,7 +330,7 @@ by any collection inside `(((1 2 3)))`.
 When cursor is removed, the precarious parens are resolved by preserving structure
 and correcting indentation.
 
-```in
+```in:3110
 ((((1
  ^ prevCursor
     2
@@ -345,7 +345,7 @@ and correcting indentation.
  4)
 ```
 
-```in
+```in:3115
 ((|((1
  ^ prevCursor
     2
@@ -364,7 +364,7 @@ and correcting indentation.
 
 Indent only the first line:
 
-```in
+```in:3120
   (foo
 ++
   (bar
@@ -379,7 +379,7 @@ Indent only the first line:
 
 Indent first two lines:
 
-```in
+```in:3125
   (foo
 ++
     (bar
@@ -395,7 +395,7 @@ Indent first two lines:
 
 Indent last two lines:
 
-```in
+```in:3130
   (foo
       (bar
 ++
@@ -412,7 +412,7 @@ Indent last two lines:
 
 Indent only the first line:
 
-```in
+```in:3135
   (foo
 ++
   bar
@@ -427,7 +427,7 @@ Indent only the first line:
 
 Indent first two lines:
 
-```in
+```in:3140
   (foo
 ++
     bar
@@ -443,7 +443,7 @@ Indent first two lines:
 
 Indent last two lines:
 
-```in
+```in:3145
 (foo
     bar
 ++
@@ -461,7 +461,7 @@ Indent last two lines:
 
 [Issue #173](https://github.com/shaunlebron/parinfer/issues/173)
 
-```in
+```in:3150
 ((reduce-kv (fn [m k v]
 +
             {}
@@ -485,7 +485,7 @@ Indent last two lines:
 
 [Issue #176](https://github.com/shaunlebron/parinfer/issues/176)
 
-```in
+```in:3155
 (let [a 1]
   (
   +
@@ -508,7 +508,7 @@ Indent last two lines:
 
 [Issue #177](https://github.com/shaunlebron/parinfer/issues/177)
 
-```in
+```in:3160
 (let [a 1]
 
   (foo))
@@ -540,7 +540,7 @@ Indent last two lines:
 
 [Issue #179](https://github.com/shaunlebron/parinfer/issues/179)
 
-```in
+```in:3165
 {:a                 {:b              (Integer/valueOf (-> ""
     ----------------
                                                           (.length)))}}

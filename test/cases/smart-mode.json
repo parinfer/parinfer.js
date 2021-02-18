@@ -17,7 +17,8 @@
         "(let [a 1\n      |])"
       ],
       "out": "(let [a 1\n      |])"
-    }
+    },
+    "id": 3000
   },
   {
     "text": "(let [a 1\n      ]); <-- spaces",
@@ -32,7 +33,8 @@
         "(let [a 1\n      ]); <-- spaces"
       ],
       "out": "(let [a 1])\n      ; <-- spaces"
-    }
+    },
+    "id": 3005
   },
   {
     "text": "(let [a 1\n      ] (+ a 2))",
@@ -52,7 +54,8 @@
         "(let [a 1\n      |] (+ a 2))"
       ],
       "out": "(let [a 1\n      |] (+ a 2))"
-    }
+    },
+    "id": 3010
   },
   {
     "text": "(let [a 1\n      ] (+ a 2))",
@@ -67,7 +70,8 @@
         "(let [a 1\n      ] (+ a 2))"
       ],
       "out": "(let [a 1]\n     (+ a 2))"
-    }
+    },
+    "id": 3015
   },
   {
     "text": "(let [a 1\n  ] (+ a 2))",
@@ -87,7 +91,8 @@
         "(let [a 1\n  |] (+ a 2))"
       ],
       "out": "(let [a 1\n      |] (+ a 2))"
-    }
+    },
+    "id": 3020
   },
   {
     "text": "(let [a 1\n      ])",
@@ -107,7 +112,8 @@
         "(let [a 1\n      ]|)"
       ],
       "out": "(let [a 1]\n     |)"
-    }
+    },
+    "id": 3025
   },
   {
     "text": ")",
@@ -135,7 +141,8 @@
         "(|)\n-"
       ],
       "out": "|"
-    }
+    },
+    "id": 3030
   },
   {
     "text": "(foo\n  ))",
@@ -163,7 +170,8 @@
         "(foo\n  (bar|))\n  ----"
       ],
       "out": "(foo\n  |)"
-    }
+    },
+    "id": 3035
   },
   {
     "text": "(foo\n  })",
@@ -183,7 +191,8 @@
         "(foo\n  }|)"
       ],
       "out": "(foo\n  |)"
-    }
+    },
+    "id": 3040
   },
   {
     "text": "(foo\n  ) foo} bar",
@@ -208,7 +217,8 @@
         "(foo\n  ) foo} bar|"
       ],
       "out": "(foo\n  ) foo} bar|\n       ^ error: unmatched-close-paren"
-    }
+    },
+    "id": 3045
   },
   {
     "text": "(foo\n  ) (bar",
@@ -233,7 +243,8 @@
         "(foo\n  ) (bar|"
       ],
       "out": "(foo\n  ) (bar|\n    ^ error: unclosed-paren"
-    }
+    },
+    "id": 3050
   },
   {
     "text": "(foo (bar)\n      baz)",
@@ -257,7 +268,8 @@
         "(foo (bar)\n      baz)\n     +"
       ],
       "out": "(foo (bar\n      baz))"
-    }
+    },
+    "id": 3055
   },
   {
     "text": "(foo\n{:a 1\n   :b 2})",
@@ -281,7 +293,8 @@
         "(foo\n  {:a 1\n--\n   :b 2})"
       ],
       "out": "(foo)\n{:a 1\n :b 2}"
-    }
+    },
+    "id": 3060
   },
   {
     "text": "(foo)\n  {:a 1\n :b 2}",
@@ -305,7 +318,8 @@
         "(foo)\n  {:a 1\n++\n :b 2}"
       ],
       "out": "(foo\n  {:a 1\n   :b 2})"
-    }
+    },
+    "id": 3065
   },
   {
     "text": "(foo\n  {:a 1\n:b 2})",
@@ -329,7 +343,8 @@
         "(foo\n  {:a 1\n   :b 2})\n---"
       ],
       "out": "(foo\n  {:a 1})\n:b 2"
-    }
+    },
+    "id": 3070
   },
   {
     "text": "(defn foo\n[a b]\n  bar)",
@@ -353,7 +368,8 @@
         "(defn foo\n  [a b]\n--\n  bar)"
       ],
       "out": "(defn foo)\n[a b\n  bar]"
-    }
+    },
+    "id": 3075
   },
   {
     "text": "(defn foo\n    [a b]\n    bar)",
@@ -377,7 +393,8 @@
         "  (defn foo\n--\n    [a b]\n    bar)"
       ],
       "out": "(defn foo\n  [a b]\n  bar)"
-    }
+    },
+    "id": 3080
   },
   {
     "text": "(defn foo\n    [a b]\n    ; comment 1\n    bar)\n    ; comment 2",
@@ -401,7 +418,8 @@
         "  (defn foo\n--\n    [a b]\n    ; comment 1\n    bar)\n    ; comment 2"
       ],
       "out": "(defn foo\n  [a b]\n  ; comment 1\n  bar)\n  ; comment 2"
-    }
+    },
+    "id": 3085
   },
   {
     "text": "(defn foo\n[a b\n   c d]\n  bar\n  baz)",
@@ -429,7 +447,8 @@
         "(defn foo\n  |[a b\n--\n   c d]\n  bar\n  baz)"
       ],
       "out": "(defn foo)\n|[a b\n c d]\n  bar\n  baz"
-    }
+    },
+    "id": 3090
   },
   {
     "text": "(defn foo)\n[a b\n c d]\n  bar\n  baz",
@@ -449,7 +468,8 @@
         "(defn foo)\n|[a b\n c d]\n  bar\n  baz"
       ],
       "out": "(defn foo)\n|[a b\n c d]\n  bar\n  baz"
-    }
+    },
+    "id": 3095
   },
   {
     "text": "(foo (if some-condition\n         println) foo {:foo 1\n                          :bar 2})",
@@ -479,7 +499,8 @@
         "(my-fnfoo (if some-condition\n -----+++\n         println) my-funfoo {:foo 1\n                  ------+++\n                          :bar 2})"
       ],
       "out": "(foo (if some-condition\n       println) foo {:foo 1\n                     :bar 2})"
-    }
+    },
+    "id": 3100
   },
   {
     "text": "((((1\n        2\n        3)))\n    4)",
@@ -507,7 +528,8 @@
         "(foo |(((1\n ----\n        2\n        3)))\n    4)"
       ],
       "out": "(|(((1\n    2\n    3)))\n    4)"
-    }
+    },
+    "id": 3105
   },
   {
     "text": "((((1\n    2\n    3)))\n    4)",
@@ -525,7 +547,8 @@
         "((((1\n ^ prevCursor\n    2\n    3)))\n    4)"
       ],
       "out": "((((1\n    2\n    3)))\n 4)"
-    }
+    },
+    "id": 3110
   },
   {
     "text": "((((1\n    2\n    3)))\n    4)",
@@ -547,7 +570,8 @@
         "((|((1\n ^ prevCursor\n    2\n    3)))\n    4)"
       ],
       "out": "((|((1\n    2\n    3)))\n 4)"
-    }
+    },
+    "id": 3115
   },
   {
     "text": "  (foo\n  (bar\n    baz))",
@@ -571,7 +595,8 @@
         "  (foo\n++\n  (bar\n    baz))"
       ],
       "out": "  (foo\n    (bar\n      baz))"
-    }
+    },
+    "id": 3120
   },
   {
     "text": "  (foo\n    (bar\n    baz))",
@@ -601,7 +626,8 @@
         "  (foo\n++\n    (bar\n++\n    baz))"
       ],
       "out": "  (foo\n    (bar\n      baz))"
-    }
+    },
+    "id": 3125
   },
   {
     "text": "  (foo\n      (bar\n        baz))",
@@ -631,7 +657,8 @@
         "  (foo\n      (bar\n++\n        baz))\n++"
       ],
       "out": "  (foo\n      (bar\n        baz))"
-    }
+    },
+    "id": 3130
   },
   {
     "text": "  (foo\n  bar\n  baz)",
@@ -655,7 +682,8 @@
         "  (foo\n++\n  bar\n  baz)"
       ],
       "out": "  (foo\n    bar\n    baz)"
-    }
+    },
+    "id": 3135
   },
   {
     "text": "  (foo\n    bar\n  baz)",
@@ -685,7 +713,8 @@
         "  (foo\n++\n    bar\n++\n  baz)"
       ],
       "out": "  (foo\n    bar\n    baz)"
-    }
+    },
+    "id": 3140
   },
   {
     "text": "(foo\n    bar\n    baz)",
@@ -715,7 +744,8 @@
         "(foo\n    bar\n++\n    baz)\n++"
       ],
       "out": "(foo\n    bar\n    baz)"
-    }
+    },
+    "id": 3145
   },
   {
     "text": "((reduce-kv (fn [m k v]\n            {}\n            {})))",
@@ -758,7 +788,8 @@
         "((reduce-kv (fn [m k v]\n            {}\n            {})))\n                +"
       ],
       "out": "((reduce-kv (fn [m k v])\n            {}\n            {}))"
-    }
+    },
+    "id": 3150
   },
   {
     "text": "(let [a 1]\n  (\n    (foo)))",
@@ -795,7 +826,8 @@
         "(let [a 1]\n  (\n    (foo)))\n         +"
       ],
       "out": "(let [a 1]\n  (\n    (foo)))"
-    }
+    },
+    "id": 3155
   },
   {
     "text": "(let [a 1]\n  (let [a 1]\n    (foo))\n  (foo))",
@@ -827,7 +859,8 @@
         "(let [a 1]\n  (let [a 1]\n    (foo))\n  ++\n  (foo))"
       ],
       "out": "(let [a 1]\n  (let [a 1]\n    (foo))\n  (foo))"
-    }
+    },
+    "id": 3160
   },
   {
     "text": "{:a {:b (Integer/valueOf (-> \"\"\n                             (.length)))}}",
@@ -864,6 +897,7 @@
         "{:a {:b              (Integer/valueOf (-> \"\"\n        -------------\n                                                          (.length)))}}\n                             -----------------------------"
       ],
       "out": "{:a {:b (Integer/valueOf (-> \"\"\n                             (.length)))}}"
-    }
+    },
+    "id": 3165
   }
 ]
