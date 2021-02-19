@@ -29,31 +29,31 @@
 
   // CO TODO for easier porting:
   // - identify any function hoisting
-  // - wrap string operations in a function: concatenation, charAt access / []
+  // - wrap string operations in a function: charAt access / []
   // - wrap all stack operations in a function: create, pop, push, peek, count, indexOf, concat, slice
 
   // ---------------------------------------------------------------------------
-  // Constants / Predicates
+  // Constants
 
   // NOTE: this is a performance hack
   // The main result object uses a lot of "unsigned integer or null" values.
   // Using a negative integer is faster than actual null because it cuts down on
   // type coercion overhead.
-  var UINT_NULL = -999
+  const UINT_NULL = -999
 
-  var INDENT_MODE = 'INDENT_MODE'
-  var PAREN_MODE = 'PAREN_MODE'
+  const INDENT_MODE = 'INDENT_MODE'
+  const PAREN_MODE = 'PAREN_MODE'
 
-  var BACKSLASH = '\\'
-  var BLANK_SPACE = ' '
-  var DOUBLE_SPACE = '  '
-  var DOUBLE_QUOTE = '"'
-  var NEWLINE = '\n'
-  var TAB = '\t'
+  const BACKSLASH = '\\'
+  const BLANK_SPACE = ' '
+  const DOUBLE_SPACE = '  '
+  const DOUBLE_QUOTE = '"'
+  const NEWLINE = '\n'
+  const TAB = '\t'
 
-  var LINE_ENDING_REGEX = /\r?\n/
+  const LINE_ENDING_REGEX = /\r?\n/
 
-  var MATCH_PAREN = {
+  const MATCH_PAREN = {
     '{': '}',
     '}': '{',
     '[': ']',
@@ -63,12 +63,15 @@
   }
 
   // toggle this to check the asserts during development (requires node.js runtime)
-  var RUN_ASSERTS = true
+  const RUN_ASSERTS = true
 
   let assert
   if (RUN_ASSERTS) {
     assert = require('assert')
   }
+
+  // ---------------------------------------------------------------------------
+  // Type Predicates
 
   function isBoolean (x) {
     return typeof x === 'boolean'
@@ -88,28 +91,50 @@
     return typeof s === 'string'
   }
 
-  // helper function to help with porting
-  function arraySize (a) {
-    if (RUN_ASSERTS) {
-      assert(isArray(a), 'used arraySize with not an Array!')
-    }
-    return a.length
-  }
-
-  // helper function to help with porting
-  function strLen (s) {
-    if (RUN_ASSERTS) {
-      assert(isString(s), 'used strLen with not a String!')
-    }
-    return s.length
-  }
-
   function isChar (c) {
     return isString(c) && strLen(c) === 1
   }
 
   function isArrayOfChars (arr) {
     return isArray(arr) && arr.every(isChar)
+  }
+
+  // ---------------------------------------------------------------------------
+  // Language Helpers (helps with porting between different languages)
+
+  function arraySize (a) {
+    if (RUN_ASSERTS) {
+      assert(isArray(a), 'used arraySize with not an Array')
+    }
+    return a.length
+  }
+
+  function strLen (s) {
+    if (RUN_ASSERTS) {
+      assert(isString(s), 'used strLen with not a String')
+    }
+    return s.length
+  }
+
+  function strConcat (s1, s2) {
+    if (RUN_ASSERTS) {
+      assert(isString(s1), 'strConcat argument s1 is not a String')
+      assert(isString(s2), 'strConcat argument s2 is not a String')
+    }
+    return s1 + s2
+  }
+
+  function getCharFromString (s, idx) {
+    if (RUN_ASSERTS) {
+      assert(isString(s), 'getCharFromString argument s is not a String')
+      assert(isInteger(idx), 'getCharFromString argument idx is not an Integer')
+    }
+    return s[idx]
+  }
+
+  if (RUN_ASSERTS) {
+    assert(getCharFromString('abc', 0) === 'a')
+    assert(getCharFromString('abc', 1) === 'b')
   }
 
   // ---------------------------------------------------------------------------
@@ -136,12 +161,10 @@
     //       |[])
     //     ++^ newEndX, newEndLineNo
 
-    const oldLinesLen = arraySize(oldLines)
-    const prevOldLine = oldLines[oldLinesLen - 1]
+    const prevOldLine = peek(oldLines, 0)
     const lastOldLineLen = strLen(prevOldLine)
 
-    const newLineLen = arraySize(newLines)
-    const prevNewLine = newLines[newLineLen - 1]
+    const prevNewLine = peek(newLines, 0)
     const lastNewLineLen = strLen(prevNewLine)
 
     let carryOverOldX = 0
@@ -448,21 +471,11 @@
   // ---------------------------------------------------------------------------
   // String Operations
 
-  // this function is kind of silly to have in JavaScript, but it makes porting
-  // to other languages easier
-  function getCharFromString (s, idx) {
-    return s[idx]
-  }
-
-  if (RUN_ASSERTS) {
-    assert(getCharFromString('abc', 0) === 'a')
-    assert(getCharFromString('abc', 1) === 'b')
-  }
-
   function replaceWithinString (orig, startIdx, endIdx, replace) {
     const head = orig.substring(0, startIdx)
     const tail = orig.substring(endIdx)
-    return head + replace + tail // string concatenation, not addition
+    const s1 = strConcat(head, replace)
+    return strConcat(s1, tail)
   }
 
   if (RUN_ASSERTS) {
@@ -1167,7 +1180,7 @@
       const opener = result.parenStack.pop()
       result.parenTrail.openers.push(opener)
       const closeCh = MATCH_PAREN[opener.ch]
-      parens = parens + closeCh // string concatenation, not addition
+      parens = strConcat(parens, closeCh)
 
       if (result.returnParens) {
         setCloser(opener, result.parenTrail.lineNo, result.parenTrail.startX + i, closeCh)
@@ -1292,8 +1305,7 @@
   }
 
   function updateRememberedParenTrail (result) {
-    const parenTrailLen = arraySize(result.parenTrails)
-    const trail = result.parenTrails[parenTrailLen - 1]
+    const trail = peek(result.parenTrails, 0)
     if (!trail || trail.lineNo !== result.parenTrail.lineNo) {
       rememberParenTrail(result)
     } else {
@@ -1302,8 +1314,7 @@
         // this is almost certainly buggy
         // commenting this out has no effect on the test suite
         // -- C. Oakman, 19 Feb 2021
-        const openersLen = arraySize(result.parenTrail.openers)
-        const opener = result.parenTrail.openers[openersLen - 1]
+        const opener = peek(result.parenTrail.openers, 0)
         opener.closer.trail = trail
       }
     }
@@ -1560,7 +1571,8 @@
     let x = 0
     while (x < lineLength) {
       result.inputX = x
-      const ch = result.inputLines[lineNo][x]
+      const line2 = result.inputLines[lineNo]
+      const ch = getCharFromString(line2, x)
       processChar(result, ch)
       x = x + 1
     }
