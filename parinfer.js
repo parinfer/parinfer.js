@@ -30,7 +30,7 @@
   // CO TODO for easier porting:
   // - identify any function hoisting
   // - wrap string operations in a function: charAt access / []
-  // - wrap all stack operations in a function: create, pop, push, peek, count, indexOf, concat, slice
+  // - wrap all stack operations in a function: create, peek, count, concat, slice
 
   // ---------------------------------------------------------------------------
   // Constants
@@ -135,6 +135,116 @@
   if (RUN_ASSERTS) {
     assert(getCharFromString('abc', 0) === 'a')
     assert(getCharFromString('abc', 1) === 'b')
+  }
+
+  // ---------------------------------------------------------------------------
+  // String Operations
+
+  function replaceWithinString (orig, startIdx, endIdx, replace) {
+    const head = orig.substring(0, startIdx)
+    const tail = orig.substring(endIdx)
+    const s1 = strConcat(head, replace)
+    return strConcat(s1, tail)
+  }
+
+  if (RUN_ASSERTS) {
+    assert(replaceWithinString('abc', 0, 2, '') === 'c')
+    assert(replaceWithinString('abc', 0, 1, 'x') === 'xbc')
+    assert(replaceWithinString('abc', 0, 2, 'x') === 'xc')
+    assert(replaceWithinString('abcdef', 3, 25, '') === 'abc')
+  }
+
+  function repeatString (text, n) {
+    let result = ''
+    let i = 0
+    while (i < n) {
+      result = result + text
+      i = i + 1
+    }
+    return result
+  }
+
+  if (RUN_ASSERTS) {
+    assert(repeatString('a', 2) === 'aa')
+    assert(repeatString('aa', 3) === 'aaaaaa')
+    assert(repeatString('aa', 0) === '')
+    assert(repeatString('', 0) === '')
+    assert(repeatString('', 5) === '')
+  }
+
+  function getLineEnding (text) {
+  // NOTE: We assume that if the CR char "\r" is used anywhere,
+  //       then we should use CRLF line-endings after every line.
+    var i = text.search('\r')
+    if (i !== -1) {
+      return '\r\n'
+    }
+    return '\n'
+  }
+
+  // ---------------------------------------------------------------------------
+  // Stack operations
+
+  function isStackEmpty (s) {
+    if (RUN_ASSERTS) {
+      assert(isArray(s), 'used isStackEmpty with not an Array')
+    }
+    return s.length === 0
+  }
+
+  function peek (arr, idxFromBack) {
+    var maxIdx = arraySize(arr) - 1
+    if (idxFromBack > maxIdx) {
+      return null
+    }
+    return arr[maxIdx - idxFromBack]
+  }
+
+  if (RUN_ASSERTS) {
+    assert(peek(['a'], 0) === 'a')
+    assert(peek(['a'], 1) === null)
+    assert(peek(['a', 'b', 'c'], 0) === 'c')
+    assert(peek(['a', 'b', 'c'], 1) === 'b')
+    assert(peek(['a', 'b', 'c'], 5) === null)
+    assert(peek([], 0) === null)
+    assert(peek([], 1) === null)
+  }
+
+  function stackPop (s) {
+    if (RUN_ASSERTS) {
+      assert(isArray(s), 'used stackPop with not an Array')
+    }
+    const itm = s.pop()
+    return itm
+  }
+
+  if (RUN_ASSERTS) {
+    assert(stackPop(['a']) === 'a')
+    assert(stackPop(['a', 'b', 'c']) === 'c')
+    const testArray1 = ['a', 'b']
+    assert(stackPop(testArray1) === 'b')
+    assert(arraySize(testArray1) === 1)
+    assert(stackPop(testArray1) === 'a')
+    assert(arraySize(testArray1) === 0)
+    stackPop(testArray1)
+    assert(arraySize(testArray1) === 0)
+  }
+
+  function stackPush (s, itm) {
+    if (RUN_ASSERTS) {
+      assert(isArray(s), 'used stackPush with not an Array')
+      assert(isString(itm) || itm, 'used stackPush without a second itm')
+    }
+    s.push(itm)
+    return null
+  }
+
+  if (RUN_ASSERTS) {
+    const testArray2 = ['a', 'b']
+    stackPush(testArray2, 'c')
+    assert(arraySize(testArray2) === 3)
+    assert(peek(testArray2, 0) === 'c')
+    assert(peek(testArray2, 1) === 'b')
   }
 
   // ---------------------------------------------------------------------------
@@ -469,80 +579,6 @@
   }
 
   // ---------------------------------------------------------------------------
-  // String Operations
-
-  function replaceWithinString (orig, startIdx, endIdx, replace) {
-    const head = orig.substring(0, startIdx)
-    const tail = orig.substring(endIdx)
-    const s1 = strConcat(head, replace)
-    return strConcat(s1, tail)
-  }
-
-  if (RUN_ASSERTS) {
-    assert(replaceWithinString('abc', 0, 2, '') === 'c')
-    assert(replaceWithinString('abc', 0, 1, 'x') === 'xbc')
-    assert(replaceWithinString('abc', 0, 2, 'x') === 'xc')
-    assert(replaceWithinString('abcdef', 3, 25, '') === 'abc')
-  }
-
-  function repeatString (text, n) {
-    let result = ''
-    let i = 0
-    while (i < n) {
-      result = result + text
-      i = i + 1
-    }
-    return result
-  }
-
-  if (RUN_ASSERTS) {
-    assert(repeatString('a', 2) === 'aa')
-    assert(repeatString('aa', 3) === 'aaaaaa')
-    assert(repeatString('aa', 0) === '')
-    assert(repeatString('', 0) === '')
-    assert(repeatString('', 5) === '')
-  }
-
-  function getLineEnding (text) {
-  // NOTE: We assume that if the CR char "\r" is used anywhere,
-  //       then we should use CRLF line-endings after every line.
-    var i = text.search('\r')
-    if (i !== -1) {
-      return '\r\n'
-    }
-    return '\n'
-  }
-
-  // ---------------------------------------------------------------------------
-  // Stack operations
-
-  // another silly function to have in JS, but makes porting to other languages easier
-  function isStackEmpty (s) {
-    if (RUN_ASSERTS) {
-      assert(isArray(s), 'used isStackEmpty with not an Array!')
-    }
-    return s.length === 0
-  }
-
-  function peek (arr, idxFromBack) {
-    var maxIdx = arraySize(arr) - 1
-    if (idxFromBack > maxIdx) {
-      return null
-    }
-    return arr[maxIdx - idxFromBack]
-  }
-
-  if (RUN_ASSERTS) {
-    assert(peek(['a'], 0) === 'a')
-    assert(peek(['a'], 1) === null)
-    assert(peek(['a', 'b', 'c'], 0) === 'c')
-    assert(peek(['a', 'b', 'c'], 1) === 'b')
-    assert(peek(['a', 'b', 'c'], 5) === null)
-    assert(peek([], 0) === null)
-    assert(peek([], 1) === null)
-  }
-
-  // ---------------------------------------------------------------------------
   // Line operations
 
   function isCursorAffected (result, start, end) {
@@ -663,6 +699,19 @@
 
   function isCommentChar (ch, commentChars) {
     return commentChars.indexOf(ch) !== -1
+
+    // NOTE: use this for porting code if necessary
+    // const commentCharsLen = arraySize(commentChars)
+    // let i = 0
+    // while (i < commentCharsLen) {
+    //   const commentChar = commentChars[i]
+    //   if (ch === commentChar) {
+    //     return true
+    //   }
+    //   i = i + 1
+    // }
+    //
+    // return false
   }
 
   // ---------------------------------------------------------------------------
@@ -736,10 +785,10 @@
         if (parent1) {
           parent2 = parent1.children
         }
-        parent2.push(opener)
+        stackPush(parent2, opener)
       }
 
-      result.parenStack.push(opener)
+      stackPush(result.parenStack, opener)
       result.trackingArgTabStop = 'space'
     }
   }
@@ -757,7 +806,7 @@
     }
 
     result.parenTrail.endX = result.x + 1
-    result.parenTrail.openers.push(opener)
+    stackPush(result.parenTrail.openers, opener)
 
     if (result.mode === INDENT_MODE && result.smart && checkCursorHolding(result)) {
       var origStartX = result.parenTrail.startX
@@ -768,7 +817,7 @@
       result.parenTrail.clamped.endX = origEndX
       result.parenTrail.clamped.openers = origOpeners
     }
-    result.parenStack.pop()
+    stackPop(result.parenStack)
     result.trackingArgTabStop = null
   }
 
@@ -984,7 +1033,8 @@
 
     var openers = result.parenTrail.openers
     while (!isStackEmpty(openers)) {
-      result.parenStack.push(openers.pop())
+      const itm = stackPop(openers)
+      stackPush(result.parenStack, itm)
     }
   }
 
@@ -1177,8 +1227,8 @@
     let parens = ''
     let i = 0
     while (i < openerIdx) {
-      const opener = result.parenStack.pop()
-      result.parenTrail.openers.push(opener)
+      const opener = stackPop(result.parenStack)
+      stackPush(result.parenTrail.openers, opener)
       const closeCh = MATCH_PAREN[opener.ch]
       parens = strConcat(parens, closeCh)
 
@@ -1229,7 +1279,7 @@
 
   // PAREN MODE: append a valid close-paren to the end of the paren trail
   function appendParenTrail (result) {
-    var opener = result.parenStack.pop()
+    var opener = stackPop(result.parenStack)
     var closeCh = MATCH_PAREN[opener.ch]
     if (result.returnParens) {
       setCloser(opener, result.parenTrail.lineNo, result.parenTrail.endX, closeCh)
@@ -1239,7 +1289,7 @@
     insertWithinLine(result, result.parenTrail.lineNo, result.parenTrail.endX, closeCh)
 
     result.parenTrail.endX = result.parenTrail.endX + 1
-    result.parenTrail.openers.push(opener)
+    stackPush(result.parenTrail.openers, opener)
     updateRememberedParenTrail(result)
   }
 
@@ -1287,7 +1337,7 @@
         startX: startX,
         endX: endX
       }
-      result.parenTrails.push(shortTrail)
+      stackPush(result.parenTrails, shortTrail)
 
       // FIXME: this is almost certainly not working due to openers
       // being a deep copy here and then not being returned anywhere
@@ -1439,7 +1489,8 @@
     if (result.mode === PAREN_MODE) {
       let i = 0
       while (i < parenTrailLen) {
-        result.parenStack.push(peek(result.parenTrail.openers, i))
+        const opener = peek(result.parenTrail.openers, i)
+        stackPush(result.parenStack, opener)
         i = i + 1
       }
     }
@@ -1458,7 +1509,7 @@
     if (result.mode === PAREN_MODE) {
       let i2 = 0
       while (i2 < parenTrailLen) {
-        result.parenStack.pop()
+        stackPop(result.parenStack)
         i2 = i2 + 1
       }
     }
@@ -1505,7 +1556,7 @@
     let i = 0
     while (i < parenStackLen) {
       const ts = makeTabStop(result, result.parenStack[i])
-      result.tabStops.push(ts)
+      stackPush(result.tabStops, ts)
       i = i + 1
     }
 
@@ -1514,7 +1565,7 @@
       let i2 = parenTrailOpenersLen - 1
       while (i2 >= 0) {
         const ts2 = makeTabStop(result, result.parenTrail.openers[i2])
-        result.tabStops.push(ts2)
+        stackPush(result.tabStops, ts2)
         i2 = i2 - 1
       }
     }
@@ -1563,7 +1614,7 @@
     initLine(result)
 
     const line = result.inputLines[lineNo]
-    result.lines.push(line)
+    stackPush(result.lines, line)
 
     setTabStops(result)
 
