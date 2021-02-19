@@ -29,7 +29,6 @@
 
   // CO TODO for easier porting:
   // - identify any function hoisting
-  // - remove all ternary operators
   // - replace all for loops with while
   // - wrap string operations in a function: .length, concatenation, charAt access / []
   // - wrap all stack operations in a function: create, pop, push, peek, count, isEmpty, indexOf, concat, slice
@@ -117,12 +116,22 @@
     //       |[])
     //     ++^ newEndX, newEndLineNo
 
-    var lastOldLineLen = oldLines[oldLines.length - 1].length
-    var lastNewLineLen = newLines[newLines.length - 1].length
+    const lastOldLineLen = oldLines[oldLines.length - 1].length
+    const lastNewLineLen = newLines[newLines.length - 1].length
 
-    var oldEndX = (oldLines.length === 1 ? change.x : 0) + lastOldLineLen
-    var newEndX = (newLines.length === 1 ? change.x : 0) + lastNewLineLen
-    var newEndLineNo = change.lineNo + (newLines.length - 1)
+    let carryOverOldX = 0
+    if (oldLines.length === 1) {
+      carryOverOldX = change.x
+    }
+    const oldEndX = carryOverOldX + lastOldLineLen
+
+    let carryOverNewX = 0
+    if (newLines.length === 1) {
+      carryOverNewX = change.x
+    }
+    const newEndX = carryOverNewX + lastNewLineLen
+
+    const newEndLineNo = change.lineNo + (newLines.length - 1)
 
     return {
       x: change.x,
@@ -351,35 +360,60 @@
   }
 
   function createError (result, name) {
-    var cache = result.errorPosCache[name]
+    const cache = result.errorPosCache[name]
 
-    var keyLineNo = result.partialResult ? 'lineNo' : 'inputLineNo'
-    var keyX = result.partialResult ? 'x' : 'inputX'
+    let keyLineNo = 'inputLineNo'
+    let keyX = 'inputX'
+    if (result.partialResult) {
+      keyLineNo = 'lineNo'
+      keyX = 'x'
+    }
 
-    var e = {
+    let lineNo = 0
+    let x = 0
+    if (cache) {
+      lineNo = cache[keyLineNo]
+      x = cache[keyX]
+    } else {
+      lineNo = result[keyLineNo]
+      x = result[keyX]
+    }
+
+    const err = {
       parinferError: true,
       name: name,
       message: errorMessages[name],
-      lineNo: cache ? cache[keyLineNo] : result[keyLineNo],
-      x: cache ? cache[keyX] : result[keyX]
+      lineNo: lineNo,
+      x: x
     }
-    var opener = peek(result.parenStack, 0)
+    const opener = peek(result.parenStack, 0)
 
     if (name === ERROR_UNMATCHED_CLOSE_PAREN) {
       // extra error info for locating the open-paren that it should've matched
-      cache = result.errorPosCache[ERROR_UNMATCHED_OPEN_PAREN]
-      if (cache || opener) {
-        e.extra = {
+      const cache2 = result.errorPosCache[ERROR_UNMATCHED_OPEN_PAREN]
+      if (cache2 || opener) {
+        let lineNo2 = 0
+        let x2 = 0
+        if (cache2) {
+          lineNo2 = cache2[keyLineNo]
+          x2 = cache2[keyX]
+        } else {
+          lineNo2 = opener[keyLineNo]
+          x2 = opener[keyX]
+        }
+
+        err.extra = {
           name: ERROR_UNMATCHED_OPEN_PAREN,
-          lineNo: cache ? cache[keyLineNo] : opener[keyLineNo],
-          x: cache ? cache[keyX] : opener[keyX]
+          lineNo: lineNo2,
+          x: x2
         }
       }
     } else if (name === ERROR_UNCLOSED_PAREN) {
-      e.lineNo = opener[keyLineNo]
-      e.x = opener[keyX]
+      err.lineNo = opener[keyLineNo]
+      err.x = opener[keyX]
     }
-    return e
+
+    return err
   }
 
   // ---------------------------------------------------------------------------
@@ -583,7 +617,10 @@
   function checkCursorHolding (result) {
     const opener = peek(result.parenStack, 0)
     const parent = peek(result.parenStack, 1)
-    const holdMinX = parent ? parent.x + 1 : 0
+    let holdMinX = 0
+    if (parent) {
+      holdMinX = parent.x + 1
+    }
     const holdMaxX = opener.x
 
     var holding = (
@@ -641,7 +678,10 @@
           ch: ''
         }
         const parent1 = peek(result.parenStack, 0)
-        const parent2 = parent1 ? parent1.children : result.parens
+        let parent2 = result.parens
+        if (parent1) {
+          parent2 = parent1.children
+        }
         parent2.push(opener)
       }
 
@@ -1166,15 +1206,26 @@
   }
 
   function rememberParenTrail (result) {
-    var trail = result.parenTrail
-    var openers = trail.clamped.openers.concat(trail.openers)
+    const trail = result.parenTrail
+    const openers = trail.clamped.openers.concat(trail.openers)
     if (openers.length > 0) {
-      var isClamped = trail.clamped.startX !== UINT_NULL
-      var allClamped = trail.openers.length === 0
-      var shortTrail = {
+      const isClamped = trail.clamped.startX !== UINT_NULL
+      const allClamped = trail.openers.length === 0
+
+      let startX = trail.startX
+      if (isClamped) {
+        startX = trail.clamped.startX
+      }
+
+      let endX = trail.endX
+      if (allClamped) {
+        endX = trail.clamped.endX
+      }
+
+      const shortTrail = {
         lineNo: trail.lineNo,
-        startX: isClamped ? trail.clamped.startX : trail.startX,
-        endX: allClamped ? trail.clamped.endX : trail.endX
+        startX: startX,
+        endX: endX
       }
       result.parenTrails.push(shortTrail)
 
@@ -1370,7 +1421,11 @@
   }
 
   function getTabStopLine (result) {
-    return result.selectionStartLine !== UINT_NULL ? result.selectionStartLine : result.cursorLine
+    if (result.selectionStartLine !== UINT_NULL) {
+      return result.selectionStartLine
+    } else {
+      return result.cursorLine
+    }
   }
 
   function setTabStops (result) {
@@ -1503,29 +1558,34 @@
   // Public API
 
   function publicResult (result) {
-    var lineEnding = getLineEnding(result.origText)
-    var final
+    const lineEnding = getLineEnding(result.origText)
+    const final = {}
     if (result.success) {
-      final = {
-        text: result.lines.join(lineEnding),
-        cursorX: result.cursorX,
-        cursorLine: result.cursorLine,
-        success: true,
-        tabStops: result.tabStops,
-        parenTrails: result.parenTrails
-      }
+      final.text = result.lines.join(lineEnding)
+      final.cursorX = result.cursorX
+      final.cursorLine = result.cursorLine
+      final.success = true
+      final.tabStops = result.tabStops
+      final.parenTrails = result.parenTrails
       if (result.returnParens) {
         final.parens = result.parens
       }
     } else {
-      final = {
-        text: result.partialResult ? result.lines.join(lineEnding) : result.origText,
-        cursorX: result.partialResult ? result.cursorX : result.origCursorX,
-        cursorLine: result.partialResult ? result.cursorLine : result.origCursorLine,
-        parenTrails: result.partialResult ? result.parenTrails : null,
-        success: false,
-        error: result.error
+      final.success = false
+      final.error = result.error
+
+      if (result.partialResult) {
+        final.text = result.lines.join(lineEnding)
+        final.cursorX = result.cursorX
+        final.cursorLine = result.cursorLine
+        final.parenTrails = result.parenTrails
+      } else {
+        final.text = result.origText
+        final.cursorX = result.origCursorX
+        final.cursorLine = result.origCursorLine
+        final.parenTrails = null
       }
+
       if (result.partialResult && result.returnParens) {
         final.parens = result.parens
       }
