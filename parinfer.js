@@ -27,6 +27,13 @@
 }(this, function () { // start module anonymous scope
   'use strict'
 
+  // CO TODO for easier porting:
+  // - identify any function hoisting
+  // - remove all ternary operators
+  // - replace all for loops with while
+  // - wrap string operations in a function: .length, concatenation, charAt access / []
+  // - wrap all stack operations in a function: create, pop, push, peek, count, isEmpty, indexOf, concat, slice
+
   // ---------------------------------------------------------------------------
   // Constants / Predicates
 
@@ -58,7 +65,7 @@
   }
 
   // toggle this to check the asserts during development
-  var RUN_ASSERTS = false
+  var RUN_ASSERTS = true
 
   function isBoolean (x) {
     return typeof x === 'boolean'
@@ -343,7 +350,7 @@
     return e
   }
 
-  function error (result, name) {
+  function createError (result, name) {
     var cache = result.errorPosCache[name]
 
     var keyLineNo = result.partialResult ? 'lineNo' : 'inputLineNo'
@@ -378,25 +385,35 @@
   // ---------------------------------------------------------------------------
   // String Operations
 
-  function replaceWithinString (orig, start, end, replace) {
-    return (
-      orig.substring(0, start) +
-    replace +
-    orig.substring(end)
-    )
+  // this function is kind of silly to have in JavaScript, but it makes porting
+  // to other languages easier
+  function getCharFromString (s, idx) {
+    return s[idx]
   }
 
   if (RUN_ASSERTS) {
-    console.assert(replaceWithinString('aaa', 0, 2, '') === 'a')
-    console.assert(replaceWithinString('aaa', 0, 1, 'b') === 'baa')
-    console.assert(replaceWithinString('aaa', 0, 2, 'b') === 'ba')
+    console.assert(getCharFromString('abc', 0) === 'a')
+    console.assert(getCharFromString('abc', 1) === 'b')
+  }
+
+  function replaceWithinString (orig, startIdx, endIdx, replace) {
+    const head = orig.substring(0, startIdx)
+    const tail = orig.substring(endIdx)
+    return head + replace + tail // string concatenation, not addition
+  }
+
+  if (RUN_ASSERTS) {
+    console.assert(replaceWithinString('abc', 0, 2, '') === 'c')
+    console.assert(replaceWithinString('abc', 0, 1, 'x') === 'xbc')
+    console.assert(replaceWithinString('abc', 0, 2, 'x') === 'xc')
+    console.assert(replaceWithinString('abcdef', 3, 25, '') === 'abc')
   }
 
   function repeatString (text, n) {
     var i
     var result = ''
     for (i = 0; i < n; i++) {
-      result += text
+      result = result + text
     }
     return result
   }
@@ -439,12 +456,13 @@
       result.cursorLine === lineNo &&
       result.cursorX !== UINT_NULL &&
       isCursorAffected(result, start, end)) {
-      result.cursorX += dx
+      result.cursorX = result.cursorX + dx
     }
   }
 
   function replaceWithinLine (result, lineNo, start, end, replace) {
     var line = result.lines[lineNo]
+
     var newLine = replaceWithinString(line, start, end, replace)
     result.lines[lineNo] = newLine
 
@@ -457,7 +475,7 @@
 
   function initLine (result) {
     result.x = 0
-    result.lineNo++
+    result.lineNo = result.lineNo + 1
 
     // reset line-specific state
     result.indentX = UINT_NULL
@@ -473,12 +491,15 @@
 
   // if the current character has changed, commit its change to the current line.
   function commitChar (result, origCh) {
-    var ch = result.ch
+    const ch = result.ch
+    const origChLength = origCh.length
+    const chLength = ch.length
+
     if (origCh !== ch) {
-      replaceWithinLine(result, result.lineNo, result.x, result.x + origCh.length, ch)
-      result.indentDelta -= (origCh.length - ch.length)
+      replaceWithinLine(result, result.lineNo, result.x, result.x + origChLength, ch)
+      result.indentDelta = result.indentDelta - origChLength - chLength
     }
-    result.x += ch.length
+    result.x = result.x + ch.length
   }
 
   // ---------------------------------------------------------------------------
@@ -548,8 +569,8 @@
   // can this be the last code character of a list?
   function isClosable (result) {
     var ch = result.ch
-    var closer = (isCloseParen(ch) && !result.isEscaped)
-    return result.isInCode && !isWhitespace(result) && ch !== '' && !closer
+    var isCloser = (isCloseParen(ch) && !result.isEscaped)
+    return result.isInCode && !isWhitespace(result) && ch !== '' && !isCloser
   }
 
   function isCommentChar (ch, commentChars) {
@@ -560,10 +581,10 @@
   // Advanced operations on characters
 
   function checkCursorHolding (result) {
-    var opener = peek(result.parenStack, 0)
-    var parent = peek(result.parenStack, 1)
-    var holdMinX = parent ? parent.x + 1 : 0
-    var holdMaxX = opener.x
+    const opener = peek(result.parenStack, 0)
+    const parent = peek(result.parenStack, 1)
+    const holdMinX = parent ? parent.x + 1 : 0
+    const holdMaxX = opener.x
 
     var holding = (
       result.cursorLine === opener.lineNo &&
@@ -619,9 +640,9 @@
           x: UINT_NULL,
           ch: ''
         }
-        var parent = peek(result.parenStack, 0)
-        parent = parent ? parent.children : result.parens
-        parent.push(opener)
+        const parent1 = peek(result.parenStack, 0)
+        const parent2 = parent1 ? parent1.children : result.parens
+        parent2.push(opener)
       }
 
       result.parenStack.push(opener)
@@ -663,7 +684,7 @@
       var inLeadingParenTrail = trail.lineNo === result.lineNo && trail.startX === result.indentX
       var canRemove = result.smart && inLeadingParenTrail
       if (!canRemove) {
-        throw error(result, ERROR_UNMATCHED_CLOSE_PAREN)
+        throw createError(result, ERROR_UNMATCHED_CLOSE_PAREN)
       }
     } else if (result.mode === INDENT_MODE && !result.errorPosCache[ERROR_UNMATCHED_CLOSE_PAREN]) {
       cacheErrorPos(result, ERROR_UNMATCHED_CLOSE_PAREN)
@@ -730,7 +751,7 @@
 
     if (result.ch === NEWLINE) {
       if (result.isInCode) {
-        throw error(result, ERROR_EOL_BACKSLASH)
+        throw createError(result, ERROR_EOL_BACKSLASH)
       }
       onNewline(result)
     }
@@ -797,7 +818,7 @@
       if (line) {
         var change = line[result.inputX]
         if (change) {
-          result.indentDelta += (change.newEndX - change.oldEndX)
+          result.indentDelta = result.indentDelta + change.newEndX - change.oldEndX
         }
       }
     }
@@ -839,7 +860,7 @@
       var i
       for (i = startX; i < newStartX; i++) {
         if (isCloseParen(line[i])) {
-          removeCount++
+          removeCount = removeCount + 1
         }
       }
 
@@ -909,7 +930,6 @@
         // ```
         if (result.indentDelta === 0) {
           isParent = true
-        }
 
         // 2. ALLOW FRAGMENTATION
         // ```in
@@ -921,7 +941,7 @@
         // (foo)
         // bar
         // ```
-        else if (opener.indentDelta === 0) {
+        } else if (opener.indentDelta === 0) {
           isParent = false
         } else {
         // TODO: identify legitimate cases where both are nonzero
@@ -975,7 +995,6 @@
           } else {
             isParent = false
           }
-        }
 
         // 2. ALLOW ADOPTION
         // ```in
@@ -1002,9 +1021,8 @@
         //   (bar)
         //    baz)
         // ```
-        else if (nextOpener && nextOpener.indentDelta > opener.indentDelta) {
+        } else if (nextOpener && nextOpener.indentDelta > opener.indentDelta) {
           isParent = true
-        }
 
         // 3. ALLOW ADOPTION
         // ```in
@@ -1037,7 +1055,7 @@
         //  (foo
         //   bar)
         // ```
-        else if (result.indentDelta > opener.indentDelta) {
+        } else if (result.indentDelta > opener.indentDelta) {
           isParent = true
         }
 
@@ -1064,7 +1082,7 @@
       var opener = result.parenStack.pop()
       result.parenTrail.openers.push(opener)
       var closeCh = MATCH_PAREN[opener.ch]
-      parens += closeCh
+      parens = parens + closeCh // string concatenation, not addition
 
       if (result.returnParens) {
         setCloser(opener, result.parenTrail.lineNo, result.parenTrail.startX + i, closeCh)
@@ -1091,18 +1109,21 @@
     var line = result.lines[result.lineNo]
     var newTrail = ''
     var spaceCount = 0
-    var i
-    for (i = startX; i < endX; i++) {
-      if (isCloseParen(line[i])) {
-        newTrail += line[i]
+    var i = startX
+    while (i < endX) {
+      const lineCh = getCharFromString(line, i)
+      if (isCloseParen(lineCh)) {
+        newTrail = newTrail + lineCh
       } else {
-        spaceCount++
+        spaceCount = spaceCount + 1
       }
+
+      i = i + 1
     }
 
     if (spaceCount > 0) {
       replaceWithinLine(result, result.lineNo, startX, endX, newTrail)
-      result.parenTrail.endX -= spaceCount
+      result.parenTrail.endX = result.parenTrail.endX - spaceCount
     }
   }
 
@@ -1117,7 +1138,7 @@
     setMaxIndent(result, opener)
     insertWithinLine(result, result.parenTrail.lineNo, result.parenTrail.endX, closeCh)
 
-    result.parenTrail.endX++
+    result.parenTrail.endX = result.parenTrail.endX + 1
     result.parenTrail.openers.push(opener)
     updateRememberedParenTrail(result)
   }
@@ -1129,7 +1150,7 @@
   function checkUnmatchedOutsideParenTrail (result) {
     var cache = result.errorPosCache[ERROR_UNMATCHED_CLOSE_PAREN]
     if (cache && cache.x < result.parenTrail.startX) {
-      throw error(result, ERROR_UNMATCHED_CLOSE_PAREN)
+      throw createError(result, ERROR_UNMATCHED_CLOSE_PAREN)
     }
   }
 
@@ -1157,12 +1178,16 @@
       }
       result.parenTrails.push(shortTrail)
 
-      if (result.returnParens) {
-        var i
-        for (i = 0; i < openers.length; i++) {
-          openers[i].closer.trail = shortTrail
-        }
-      }
+      // FIXME: this is almost certainly not working due to openers
+      // being a deep copy here and then not being returned anywhere
+      // commenting out has no effect on the test suite
+      // -- C. Oakman, 18 Feb 2021
+      // if (result.returnParens) {
+      //  var i
+      //  for (i = 0; i < openers.length; i++) {
+      //    openers[i].closer.trail = shortTrail
+      //  }
+      // }
     }
   }
 
@@ -1204,7 +1229,7 @@
     replaceWithinLine(result, result.lineNo, 0, origIndent, indentStr)
     result.x = newIndent
     result.indentX = newIndent
-    result.indentDelta += delta
+    result.indentDelta = result.indentDelta + delta
   }
 
   function shouldAddOpenerIndent (result, opener) {
@@ -1224,7 +1249,7 @@
       minIndent = opener.x + 1
       maxIndent = opener.maxChildIndent
       if (shouldAddOpenerIndent(result, opener)) {
-        newIndent += opener.indentDelta
+        newIndent = newIndent + opener.indentDelta
       }
     }
 
@@ -1240,7 +1265,7 @@
     result.trackingIndent = false
 
     if (result.quoteDanger) {
-      throw error(result, ERROR_QUOTE_DANGER)
+      throw createError(result, ERROR_QUOTE_DANGER)
     }
 
     if (result.mode === INDENT_MODE) {
@@ -1258,7 +1283,7 @@
   function checkLeadingCloseParen (result) {
     if (result.errorPosCache[ERROR_LEADING_CLOSE_PAREN] &&
       result.parenTrail.lineNo === result.lineNo) {
-      throw error(result, ERROR_LEADING_CLOSE_PAREN)
+      throw createError(result, ERROR_LEADING_CLOSE_PAREN)
     }
   }
 
@@ -1279,7 +1304,7 @@
         if (result.smart) {
           result.skipChar = true
         } else {
-          throw error(result, ERROR_UNMATCHED_CLOSE_PAREN)
+          throw createError(result, ERROR_UNMATCHED_CLOSE_PAREN)
         }
       } else if (isCursorLeftOf(result.cursorX, result.cursorLine, result.x, result.lineNo)) {
         resetParenTrail(result, result.lineNo, result.x)
@@ -1400,14 +1425,19 @@
 
   function processLine (result, lineNo) {
     initLine(result)
-    result.lines.push(result.inputLines[lineNo])
+
+    const line = result.inputLines[lineNo]
+    result.lines.push(line)
 
     setTabStops(result)
 
-    var x
-    for (x = 0; x < result.inputLines[lineNo].length; x++) {
+    const lineLength = line.length
+    let x = 0
+    while (x < lineLength) {
       result.inputX = x
-      processChar(result, result.inputLines[lineNo][x])
+      const ch = result.inputLines[lineNo][x]
+      processChar(result, ch)
+      x = x + 1
     }
     processChar(result, NEWLINE)
 
@@ -1422,12 +1452,12 @@
   }
 
   function finalizeResult (result) {
-    if (result.quoteDanger) { throw error(result, ERROR_QUOTE_DANGER) }
-    if (result.isInStr) { throw error(result, ERROR_UNCLOSED_QUOTE) }
+    if (result.quoteDanger) { throw createError(result, ERROR_QUOTE_DANGER) }
+    if (result.isInStr) { throw createError(result, ERROR_UNCLOSED_QUOTE) }
 
     if (result.parenStack.length !== 0) {
       if (result.mode === PAREN_MODE) {
-        throw error(result, ERROR_UNCLOSED_PAREN)
+        throw createError(result, ERROR_UNCLOSED_PAREN)
       }
     }
     if (result.mode === INDENT_MODE) {
@@ -1437,15 +1467,15 @@
     result.success = true
   }
 
-  function processError (result, e) {
+  function processError (result, err) {
     result.success = false
-    if (e.parinferError) {
-      delete e.parinferError
-      result.error = e
+    if (err.parinferError) {
+      delete err.parinferError
+      result.error = err
     } else {
       result.error.name = ERROR_UNHANDLED
-      result.error.message = e.stack
-      throw e
+      result.error.message = err.stack
+      throw err
     }
   }
 
