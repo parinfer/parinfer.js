@@ -29,7 +29,6 @@
 
   // CO TODO for easier porting:
   // - identify any function hoisting
-  // - replace all for loops with while
   // - wrap string operations in a function: .length, concatenation, charAt access / []
   // - wrap all stack operations in a function: create, pop, push, peek, count, isEmpty, indexOf, concat, slice
 
@@ -151,18 +150,22 @@
   function transformChanges (changes) {
     if (changes.length === 0) {
       return null
-    }
-    var lines = {}
-    var line, i, change
-    for (i = 0; i < changes.length; i++) {
-      change = transformChange(changes[i])
-      line = lines[change.lookupLineNo]
-      if (!line) {
-        line = lines[change.lookupLineNo] = {}
+    } else {
+      const lines = {}
+      const changesLen = changes.length
+      let i = 0
+      while (i < changesLen) {
+        const change = transformChange(changes[i])
+        let line = lines[change.lookupLineNo]
+        if (!line) {
+          line = lines[change.lookupLineNo] = {}
+        }
+        line[change.lookupX] = change
+
+        i = i + 1
       }
-      line[change.lookupX] = change
+      return lines
     }
-    return lines
   }
 
   function parseOptions (options) {
@@ -444,10 +447,11 @@
   }
 
   function repeatString (text, n) {
-    var i
-    var result = ''
-    for (i = 0; i < n; i++) {
+    let result = ''
+    let i = 0
+    while (i < n) {
       result = result + text
+      i = i + 1
     }
     return result
   }
@@ -892,16 +896,19 @@
     var clamping = isCursorClampingParenTrail(result, result.cursorX, result.cursorLine)
 
     if (clamping) {
-      var newStartX = Math.max(startX, result.cursorX)
-      var newEndX = Math.max(endX, result.cursorX)
+      const newStartX = Math.max(startX, result.cursorX)
+      const newEndX = Math.max(endX, result.cursorX)
 
-      var line = result.lines[result.lineNo]
-      var removeCount = 0
-      var i
-      for (i = startX; i < newStartX; i++) {
-        if (isCloseParen(line[i])) {
+      const line = result.lines[result.lineNo]
+      let removeCount = 0
+
+      let i = startX
+      while (i < newStartX) {
+        const ch = getCharFromString(line, i)
+        if (isCloseParen(ch)) {
           removeCount = removeCount + 1
         }
+        i = i + 1
       }
 
       var openers = result.parenTrail.openers
@@ -937,16 +944,15 @@
   // behavior by adding its `opener.indentDelta` to the current line's indentation.
   // (care must be taken to prevent redundant indentation correction, detailed below)
   function getParentOpenerIndex (result, indentX) {
-    var i
-    for (i = 0; i < result.parenStack.length; i++) {
-      var opener = peek(result.parenStack, i)
+    const parenStackLen = result.parenStack.length
+    let i = 0
+    while (i < parenStackLen) {
+      const opener = peek(result.parenStack, i)
+      const currOutside = (opener.x < indentX)
+      const prevIndentX = indentX - result.indentDelta
+      const prevOutside = (opener.x - opener.indentDelta < prevIndentX)
 
-      var currOutside = (opener.x < indentX)
-
-      var prevIndentX = indentX - result.indentDelta
-      var prevOutside = (opener.x - opener.indentDelta < prevIndentX)
-
-      var isParent = false
+      let isParent = false
 
       if (prevOutside && currOutside) {
         isParent = true
@@ -999,7 +1005,7 @@
       //            +--- ADOPT `(foo) bar` => `(foo bar)`
       //   bar   --/
 
-        var nextOpener = peek(result.parenStack, i + 1)
+        const nextOpener = peek(result.parenStack, i + 1)
 
         // 1. DISALLOW ADOPTION
         // ```in
@@ -1108,25 +1114,29 @@
       if (isParent) {
         break
       }
+
+      i = i + 1
     }
+
     return i
   }
 
   // INDENT MODE: correct paren trail from indentation
   function correctParenTrail (result, indentX) {
-    var parens = ''
-
-    var index = getParentOpenerIndex(result, indentX)
-    var i
-    for (i = 0; i < index; i++) {
-      var opener = result.parenStack.pop()
+    const openerIdx = getParentOpenerIndex(result, indentX)
+    let parens = ''
+    let i = 0
+    while (i < openerIdx) {
+      const opener = result.parenStack.pop()
       result.parenTrail.openers.push(opener)
-      var closeCh = MATCH_PAREN[opener.ch]
+      const closeCh = MATCH_PAREN[opener.ch]
       parens = parens + closeCh // string concatenation, not addition
 
       if (result.returnParens) {
         setCloser(opener, result.parenTrail.lineNo, result.parenTrail.startX + i, closeCh)
       }
+
+      i = i + 1
     }
 
     if (result.parenTrail.lineNo !== UINT_NULL) {
@@ -1234,9 +1244,11 @@
       // commenting out has no effect on the test suite
       // -- C. Oakman, 18 Feb 2021
       // if (result.returnParens) {
-      //  var i
-      //  for (i = 0; i < openers.length; i++) {
+      //  const openersLen = openers.length
+      //  let i = 0
+      //  while (i < openersLen) {
       //    openers[i].closer.trail = shortTrail
+      //    i = i + 1
       //  }
       // }
     }
@@ -1368,30 +1380,33 @@
   }
 
   function onCommentLine (result) {
-    var parenTrailLength = result.parenTrail.openers.length
+    const parenTrailLen = result.parenTrail.openers.length
 
     // restore the openers matching the previous paren trail
-    var j
     if (result.mode === PAREN_MODE) {
-      for (j = 0; j < parenTrailLength; j++) {
-        result.parenStack.push(peek(result.parenTrail.openers, j))
+      let i = 0
+      while (i < parenTrailLen) {
+        result.parenStack.push(peek(result.parenTrail.openers, i))
+        i = i + 1
       }
     }
 
-    var i = getParentOpenerIndex(result, result.x)
-    var opener = peek(result.parenStack, i)
+    const openerIdx = getParentOpenerIndex(result, result.x)
+    const opener = peek(result.parenStack, openerIdx)
     if (opener) {
-    // shift the comment line based on the parent open paren
+      // shift the comment line based on the parent open paren
       if (shouldAddOpenerIndent(result, opener)) {
         addIndent(result, opener.indentDelta)
       }
-    // TODO: store some information here if we need to place close-parens after comment lines
+      // TODO: store some information here if we need to place close-parens after comment lines
     }
 
     // repop the openers matching the previous paren trail
     if (result.mode === PAREN_MODE) {
-      for (j = 0; j < parenTrailLength; j++) {
+      let i2 = 0
+      while (i2 < parenTrailLen) {
         result.parenStack.pop()
+        i2 = i2 + 1
       }
     }
   }
@@ -1433,24 +1448,37 @@
       return
     }
 
-    var i
-    for (i = 0; i < result.parenStack.length; i++) {
-      result.tabStops.push(makeTabStop(result, result.parenStack[i]))
+    const parenStackLen = result.parenStack.length
+    let i = 0
+    while (i < parenStackLen) {
+      const ts = makeTabStop(result, result.parenStack[i])
+      result.tabStops.push(ts)
+      i = i + 1
     }
 
     if (result.mode === PAREN_MODE) {
-      for (i = result.parenTrail.openers.length - 1; i >= 0; i--) {
-        result.tabStops.push(makeTabStop(result, result.parenTrail.openers[i]))
+      const parenTrailOpenersLen = result.parenTrail.openers.length
+      let i2 = parenTrailOpenersLen - 1
+      while (i2 >= 0) {
+        const ts2 = makeTabStop(result, result.parenTrail.openers[i2])
+        result.tabStops.push(ts2)
+        i2 = i2 - 1
       }
     }
 
     // remove argX if it falls to the right of the next stop
-    for (i = 1; i < result.tabStops.length; i++) {
-      var x = result.tabStops[i].x
-      var prevArgX = result.tabStops[i - 1].argX
-      if (prevArgX != null && prevArgX >= x) {
-        delete result.tabStops[i - 1].argX
+    const tabStopsLen = result.tabStops.length
+    let i3 = 1
+    while (i3 < tabStopsLen) {
+      const currentX = result.tabStops[i3].x
+      const prevTabStop = result.tabStops[i3 - 1]
+      if (prevTabStop) {
+        const prevArgX = prevTabStop.argX
+        if (isInteger(prevArgX) && prevArgX >= currentX) {
+          delete prevTabStop.argX
+        }
       }
+      i3 = i3 + 1
     }
   }
 
@@ -1538,10 +1566,12 @@
     var result = getInitialResult(text, options, mode, smart)
 
     try {
-      var i
-      for (i = 0; i < result.inputLines.length; i++) {
+      const inputLinesLen = result.inputLines.length
+      let i = 0
+      while (i < inputLinesLen) {
         result.inputLineNo = i
         processLine(result, i)
+        i = i + 1
       }
       finalizeResult(result)
     } catch (e) {
