@@ -29,8 +29,8 @@
 
   // CO TODO for easier porting:
   // - identify any function hoisting
-  // - wrap string operations in a function: .length, concatenation, charAt access / []
-  // - wrap all stack operations in a function: create, pop, push, peek, count, isEmpty, indexOf, concat, slice
+  // - wrap string operations in a function: concatenation, charAt access / []
+  // - wrap all stack operations in a function: create, pop, push, peek, count, indexOf, concat, slice
 
   // ---------------------------------------------------------------------------
   // Constants / Predicates
@@ -62,8 +62,13 @@
     ')': '('
   }
 
-  // toggle this to check the asserts during development
+  // toggle this to check the asserts during development (requires node.js runtime)
   var RUN_ASSERTS = true
+
+  let assert
+  if (RUN_ASSERTS) {
+    assert = require('assert')
+  }
 
   function isBoolean (x) {
     return typeof x === 'boolean'
@@ -83,8 +88,24 @@
     return typeof s === 'string'
   }
 
+  // helper function to help with porting
+  function arraySize (a) {
+    if (RUN_ASSERTS) {
+      assert(isArray(a), 'used arraySize with not an Array!')
+    }
+    return a.length
+  }
+
+  // helper function to help with porting
+  function strLen (s) {
+    if (RUN_ASSERTS) {
+      assert(isString(s), 'used strLen with not a String!')
+    }
+    return s.length
+  }
+
   function isChar (c) {
-    return isString(c) && c.length === 1
+    return isString(c) && strLen(c) === 1
   }
 
   function isArrayOfChars (arr) {
@@ -115,22 +136,27 @@
     //       |[])
     //     ++^ newEndX, newEndLineNo
 
-    const lastOldLineLen = oldLines[oldLines.length - 1].length
-    const lastNewLineLen = newLines[newLines.length - 1].length
+    const oldLinesLen = arraySize(oldLines)
+    const prevOldLine = oldLines[oldLinesLen - 1]
+    const lastOldLineLen = strLen(prevOldLine)
+
+    const newLineLen = arraySize(newLines)
+    const prevNewLine = newLines[newLineLen - 1]
+    const lastNewLineLen = strLen(prevNewLine)
 
     let carryOverOldX = 0
-    if (oldLines.length === 1) {
+    if (arraySize(oldLines) === 1) {
       carryOverOldX = change.x
     }
     const oldEndX = carryOverOldX + lastOldLineLen
 
     let carryOverNewX = 0
-    if (newLines.length === 1) {
+    if (arraySize(newLines) === 1) {
       carryOverNewX = change.x
     }
     const newEndX = carryOverNewX + lastNewLineLen
 
-    const newEndLineNo = change.lineNo + (newLines.length - 1)
+    const newEndLineNo = change.lineNo + arraySize(newLines) - 1
 
     return {
       x: change.x,
@@ -148,11 +174,11 @@
   }
 
   function transformChanges (changes) {
-    if (changes.length === 0) {
+    if (arraySize(changes) === 0) {
       return null
     } else {
       const lines = {}
-      const changesLen = changes.length
+      const changesLen = arraySize(changes)
       let i = 0
       while (i < changesLen) {
         const change = transformChange(changes[i])
@@ -429,8 +455,8 @@
   }
 
   if (RUN_ASSERTS) {
-    console.assert(getCharFromString('abc', 0) === 'a')
-    console.assert(getCharFromString('abc', 1) === 'b')
+    assert(getCharFromString('abc', 0) === 'a')
+    assert(getCharFromString('abc', 1) === 'b')
   }
 
   function replaceWithinString (orig, startIdx, endIdx, replace) {
@@ -440,10 +466,10 @@
   }
 
   if (RUN_ASSERTS) {
-    console.assert(replaceWithinString('abc', 0, 2, '') === 'c')
-    console.assert(replaceWithinString('abc', 0, 1, 'x') === 'xbc')
-    console.assert(replaceWithinString('abc', 0, 2, 'x') === 'xc')
-    console.assert(replaceWithinString('abcdef', 3, 25, '') === 'abc')
+    assert(replaceWithinString('abc', 0, 2, '') === 'c')
+    assert(replaceWithinString('abc', 0, 1, 'x') === 'xbc')
+    assert(replaceWithinString('abc', 0, 2, 'x') === 'xc')
+    assert(replaceWithinString('abcdef', 3, 25, '') === 'abc')
   }
 
   function repeatString (text, n) {
@@ -457,11 +483,11 @@
   }
 
   if (RUN_ASSERTS) {
-    console.assert(repeatString('a', 2) === 'aa')
-    console.assert(repeatString('aa', 3) === 'aaaaaa')
-    console.assert(repeatString('aa', 0) === '')
-    console.assert(repeatString('', 0) === '')
-    console.assert(repeatString('', 5) === '')
+    assert(repeatString('a', 2) === 'aa')
+    assert(repeatString('aa', 3) === 'aaaaaa')
+    assert(repeatString('aa', 0) === '')
+    assert(repeatString('', 0) === '')
+    assert(repeatString('', 5) === '')
   }
 
   function getLineEnding (text) {
@@ -475,6 +501,35 @@
   }
 
   // ---------------------------------------------------------------------------
+  // Stack operations
+
+  // another silly function to have in JS, but makes porting to other languages easier
+  function isStackEmpty (s) {
+    if (RUN_ASSERTS) {
+      assert(isArray(s), 'used isStackEmpty with not an Array!')
+    }
+    return s.length === 0
+  }
+
+  function peek (arr, idxFromBack) {
+    var maxIdx = arraySize(arr) - 1
+    if (idxFromBack > maxIdx) {
+      return null
+    }
+    return arr[maxIdx - idxFromBack]
+  }
+
+  if (RUN_ASSERTS) {
+    assert(peek(['a'], 0) === 'a')
+    assert(peek(['a'], 1) === null)
+    assert(peek(['a', 'b', 'c'], 0) === 'c')
+    assert(peek(['a', 'b', 'c'], 1) === 'b')
+    assert(peek(['a', 'b', 'c'], 5) === null)
+    assert(peek([], 0) === null)
+    assert(peek([], 1) === null)
+  }
+
+  // ---------------------------------------------------------------------------
   // Line operations
 
   function isCursorAffected (result, start, end) {
@@ -485,9 +540,9 @@
     return result.cursorX >= end
   }
 
-  function shiftCursorOnEdit (result, lineNo, start, end, replace) {
+  function shiftCursorOnEdit (result, lineNo, start, end, replaceTxt) {
     var oldLength = end - start
-    var newLength = replace.length
+    var newLength = strLen(replaceTxt)
     var dx = newLength - oldLength
 
     if (dx !== 0 &&
@@ -530,14 +585,14 @@
   // if the current character has changed, commit its change to the current line.
   function commitChar (result, origCh) {
     const ch = result.ch
-    const origChLength = origCh.length
-    const chLength = ch.length
+    const origChLength = strLen(origCh)
+    const chLength = strLen(ch)
 
     if (origCh !== ch) {
       replaceWithinLine(result, result.lineNo, result.x, result.x + origChLength, ch)
       result.indentDelta = result.indentDelta - origChLength - chLength
     }
-    result.x = result.x + ch.length
+    result.x = result.x + chLength
   }
 
   // ---------------------------------------------------------------------------
@@ -554,31 +609,13 @@
   }
 
   if (RUN_ASSERTS) {
-    console.assert(clamp(1, 3, 5) === 3)
-    console.assert(clamp(9, 3, 5) === 5)
-    console.assert(clamp(1, 3, UINT_NULL) === 3)
-    console.assert(clamp(5, 3, UINT_NULL) === 5)
-    console.assert(clamp(1, UINT_NULL, 5) === 1)
-    console.assert(clamp(9, UINT_NULL, 5) === 5)
-    console.assert(clamp(1, UINT_NULL, UINT_NULL) === 1)
-  }
-
-  function peek (arr, idxFromBack) {
-    var maxIdx = arr.length - 1
-    if (idxFromBack > maxIdx) {
-      return null
-    }
-    return arr[maxIdx - idxFromBack]
-  }
-
-  if (RUN_ASSERTS) {
-    console.assert(peek(['a'], 0) === 'a')
-    console.assert(peek(['a'], 1) === null)
-    console.assert(peek(['a', 'b', 'c'], 0) === 'c')
-    console.assert(peek(['a', 'b', 'c'], 1) === 'b')
-    console.assert(peek(['a', 'b', 'c'], 5) === null)
-    console.assert(peek([], 0) === null)
-    console.assert(peek([], 1) === null)
+    assert(clamp(1, 3, 5) === 3)
+    assert(clamp(9, 3, 5) === 5)
+    assert(clamp(1, 3, UINT_NULL) === 3)
+    assert(clamp(5, 3, UINT_NULL) === 5)
+    assert(clamp(1, UINT_NULL, 5) === 1)
+    assert(clamp(9, UINT_NULL, 5) === 5)
+    assert(clamp(1, UINT_NULL, UINT_NULL) === 1)
   }
 
   // ---------------------------------------------------------------------------
@@ -593,7 +630,7 @@
   }
 
   function isValidCloseParen (parenStack, ch) {
-    if (parenStack.length === 0) {
+    if (isStackEmpty(parenStack)) {
       return false
     }
     return peek(parenStack, 0).ch === MATCH_PAREN[ch]
@@ -822,7 +859,7 @@
     result.isInCode = !result.isInComment && !result.isInStr
 
     if (isClosable(result)) {
-      resetParenTrail(result, result.lineNo, result.x + ch.length)
+      resetParenTrail(result, result.lineNo, result.x + strLen(ch))
     }
 
     var state = result.trackingArgTabStop
@@ -933,7 +970,7 @@
     }
 
     var openers = result.parenTrail.openers
-    while (openers.length !== 0) {
+    while (!isStackEmpty(openers)) {
       result.parenStack.push(openers.pop())
     }
   }
@@ -944,7 +981,7 @@
   // behavior by adding its `opener.indentDelta` to the current line's indentation.
   // (care must be taken to prevent redundant indentation correction, detailed below)
   function getParentOpenerIndex (result, indentX) {
-    const parenStackLen = result.parenStack.length
+    const parenStackLen = arraySize(result.parenStack)
     let i = 0
     while (i < parenStackLen) {
       const opener = peek(result.parenStack, i)
@@ -1141,7 +1178,7 @@
 
     if (result.parenTrail.lineNo !== UINT_NULL) {
       replaceWithinLine(result, result.parenTrail.lineNo, result.parenTrail.startX, result.parenTrail.endX, parens)
-      result.parenTrail.endX = result.parenTrail.startX + parens.length
+      result.parenTrail.endX = result.parenTrail.startX + strLen(parens)
       rememberParenTrail(result)
     }
   }
@@ -1218,9 +1255,9 @@
   function rememberParenTrail (result) {
     const trail = result.parenTrail
     const openers = trail.clamped.openers.concat(trail.openers)
-    if (openers.length > 0) {
+    if (!isStackEmpty(openers)) {
       const isClamped = trail.clamped.startX !== UINT_NULL
-      const allClamped = trail.openers.length === 0
+      const allClamped = isStackEmpty(trail.openers)
 
       let startX = trail.startX
       if (isClamped) {
@@ -1244,7 +1281,7 @@
       // commenting out has no effect on the test suite
       // -- C. Oakman, 18 Feb 2021
       // if (result.returnParens) {
-      //  const openersLen = openers.length
+      //  const openersLen = arraySize(openers()
       //  let i = 0
       //  while (i < openersLen) {
       //    openers[i].closer.trail = shortTrail
@@ -1255,13 +1292,18 @@
   }
 
   function updateRememberedParenTrail (result) {
-    var trail = result.parenTrails[result.parenTrails.length - 1]
+    const parenTrailLen = arraySize(result.parenTrails)
+    const trail = result.parenTrails[parenTrailLen - 1]
     if (!trail || trail.lineNo !== result.parenTrail.lineNo) {
       rememberParenTrail(result)
     } else {
       trail.endX = result.parenTrail.endX
       if (result.returnParens) {
-        var opener = result.parenTrail.openers[result.parenTrail.openers.length - 1]
+        // this is almost certainly buggy
+        // commenting this out has no effect on the test suite
+        // -- C. Oakman, 19 Feb 2021
+        const openersLen = arraySize(result.parenTrail.openers)
+        const opener = result.parenTrail.openers[openersLen - 1]
         opener.closer.trail = trail
       }
     }
@@ -1380,7 +1422,7 @@
   }
 
   function onCommentLine (result) {
-    const parenTrailLen = result.parenTrail.openers.length
+    const parenTrailLen = arraySize(result.parenTrail.openers)
 
     // restore the openers matching the previous paren trail
     if (result.mode === PAREN_MODE) {
@@ -1448,7 +1490,7 @@
       return
     }
 
-    const parenStackLen = result.parenStack.length
+    const parenStackLen = arraySize(result.parenStack)
     let i = 0
     while (i < parenStackLen) {
       const ts = makeTabStop(result, result.parenStack[i])
@@ -1457,7 +1499,7 @@
     }
 
     if (result.mode === PAREN_MODE) {
-      const parenTrailOpenersLen = result.parenTrail.openers.length
+      const parenTrailOpenersLen = arraySize(result.parenTrail.openers)
       let i2 = parenTrailOpenersLen - 1
       while (i2 >= 0) {
         const ts2 = makeTabStop(result, result.parenTrail.openers[i2])
@@ -1467,7 +1509,7 @@
     }
 
     // remove argX if it falls to the right of the next stop
-    const tabStopsLen = result.tabStops.length
+    const tabStopsLen = arraySize(result.tabStops)
     let i3 = 1
     while (i3 < tabStopsLen) {
       const currentX = result.tabStops[i3].x
@@ -1514,7 +1556,7 @@
 
     setTabStops(result)
 
-    const lineLength = line.length
+    const lineLength = strLen(line)
     let x = 0
     while (x < lineLength) {
       result.inputX = x
@@ -1538,7 +1580,7 @@
     if (result.quoteDanger) { throw createError(result, ERROR_QUOTE_DANGER) }
     if (result.isInStr) { throw createError(result, ERROR_UNCLOSED_QUOTE) }
 
-    if (result.parenStack.length !== 0) {
+    if (!isStackEmpty(result.parenStack)) {
       if (result.mode === PAREN_MODE) {
         throw createError(result, ERROR_UNCLOSED_PAREN)
       }
@@ -1566,7 +1608,7 @@
     var result = getInitialResult(text, options, mode, smart)
 
     try {
-      const inputLinesLen = result.inputLines.length
+      const inputLinesLen = arraySize(result.inputLines)
       let i = 0
       while (i < inputLinesLen) {
         result.inputLineNo = i
@@ -1622,7 +1664,7 @@
     }
     if (final.cursorX === UINT_NULL) { delete final.cursorX }
     if (final.cursorLine === UINT_NULL) { delete final.cursorLine }
-    if (final.tabStops && final.tabStops.length === 0) { delete final.tabStops }
+    if (final.tabStops && isStackEmpty(final.tabStops)) { delete final.tabStops }
     return final
   }
 
