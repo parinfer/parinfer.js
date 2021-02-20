@@ -29,7 +29,7 @@
 
   // CO TODO for easier porting:
   // - identify any function hoisting
-  // - wrap string operations in a function: charAt access / []
+  // - wrap string operations in a function: charAt access, .split, .join
   // - wrap all stack operations in a function: concat
   // - change all "var" to either "let" or "const"
 
@@ -188,7 +188,7 @@
   }
 
   // ---------------------------------------------------------------------------
-  // Stack operations
+  // Stack Operations
 
   function isStackEmpty (s) {
     if (RUN_ASSERTS) {
@@ -614,7 +614,7 @@
   }
 
   // ---------------------------------------------------------------------------
-  // Line operations
+  // Line Operations
 
   function isCursorAffected (result, start, end) {
     if (result.cursorX === start &&
@@ -966,7 +966,7 @@
   }
 
   // ---------------------------------------------------------------------------
-  // Cursor functions
+  // Cursor Functions
 
   function isCursorLeftOf (cursorX, cursorLine, x, lineNo) {
     return (
@@ -1299,7 +1299,7 @@
     while (i < endX) {
       const lineCh = getCharFromString(line, i)
       if (isCloseParen(lineCh)) {
-        newTrail = newTrail + lineCh
+        newTrail = strConcat(newTrail, lineCh)
       } else {
         spaceCount = spaceCount + 1
       }
