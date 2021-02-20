@@ -30,7 +30,8 @@
   // CO TODO for easier porting:
   // - identify any function hoisting
   // - wrap string operations in a function: charAt access / []
-  // - wrap all stack operations in a function: create, peek, count, concat, slice
+  // - wrap all stack operations in a function: concat
+  // - change all "var" to either "let" or "const"
 
   // ---------------------------------------------------------------------------
   // Constants
@@ -63,7 +64,7 @@
   }
 
   // toggle this to check the asserts during development (requires node.js runtime)
-  const RUN_ASSERTS = true
+  const RUN_ASSERTS = false
 
   let assert
   if (RUN_ASSERTS) {
@@ -85,6 +86,10 @@
     return typeof x === 'number' &&
          isFinite(x) &&
          Math.floor(x) === x
+  }
+
+  function isPositiveInt (i) {
+    return isInteger(i) && i >= 0
   }
 
   function isString (s) {
@@ -247,6 +252,36 @@
     assert(peek(testArray2, 1) === 'b')
   }
 
+  function arraySlice (arr, fromIdx, toIdx) {
+    if (RUN_ASSERTS) {
+      assert(isArray(arr), 'used arrayslice with not an Array')
+      assert(isPositiveInt(fromIdx), 'arraySlice fromIdx should be a positive integer')
+      assert(isPositiveInt(toIdx), 'arraySlice toIdx should be a positive integer')
+    }
+
+    return arr.slice(fromIdx, toIdx)
+
+    // NOTE: use this for porting code if necessary
+    // let newArray = []
+    // const arrLen = arraySize(arr)
+    // let i = fromIdx
+    // while (i < toIdx && i < arrLen) {
+    //   const itm = arr[i]
+    //   stackPush(newArray, itm)
+    //   i = i + 1
+    // }
+    //
+    // return newArray
+  }
+
+  if (RUN_ASSERTS) {
+    assert(arraySlice(['a', 'b', 'c'], 0, 1).join() === ['a'].join())
+    assert(arraySlice(['a', 'b', 'c'], 1, 2).join() === ['b'].join())
+    assert(arraySlice(['a', 'b', 'c', 'd', 'e'], 1, 3).join() === ['b', 'c'].join())
+    assert(arraySlice(['a', 'b', 'c', 'd', 'e'], 2, 25).join() === ['c', 'd', 'e'].join())
+    assert(arraySlice([], 2, 3).join() === [].join())
+  }
+
   // ---------------------------------------------------------------------------
   // Options Structure
 
@@ -255,8 +290,8 @@
       return undefined
     }
 
-    var newLines = change.newText.split(LINE_ENDING_REGEX)
-    var oldLines = change.oldText.split(LINE_ENDING_REGEX)
+    const newLines = change.newText.split(LINE_ENDING_REGEX)
+    const oldLines = change.oldText.split(LINE_ENDING_REGEX)
 
     // single line case:
     //     (defn foo| [])
@@ -491,16 +526,16 @@
   // Possible Errors
 
   // `result.error.name` is set to any of these
-  var ERROR_QUOTE_DANGER = 'quote-danger'
-  var ERROR_EOL_BACKSLASH = 'eol-backslash'
-  var ERROR_UNCLOSED_QUOTE = 'unclosed-quote'
-  var ERROR_UNCLOSED_PAREN = 'unclosed-paren'
-  var ERROR_UNMATCHED_CLOSE_PAREN = 'unmatched-close-paren'
-  var ERROR_UNMATCHED_OPEN_PAREN = 'unmatched-open-paren'
-  var ERROR_LEADING_CLOSE_PAREN = 'leading-close-paren'
-  var ERROR_UNHANDLED = 'unhandled'
+  const ERROR_QUOTE_DANGER = 'quote-danger'
+  const ERROR_EOL_BACKSLASH = 'eol-backslash'
+  const ERROR_UNCLOSED_QUOTE = 'unclosed-quote'
+  const ERROR_UNCLOSED_PAREN = 'unclosed-paren'
+  const ERROR_UNMATCHED_CLOSE_PAREN = 'unmatched-close-paren'
+  const ERROR_UNMATCHED_OPEN_PAREN = 'unmatched-open-paren'
+  const ERROR_LEADING_CLOSE_PAREN = 'leading-close-paren'
+  const ERROR_UNHANDLED = 'unhandled'
 
-  var errorMessages = {}
+  const errorMessages = {}
   errorMessages[ERROR_QUOTE_DANGER] = 'Quotes must balanced inside comment blocks.'
   errorMessages[ERROR_EOL_BACKSLASH] = 'Line cannot end in a hanging backslash.'
   errorMessages[ERROR_UNCLOSED_QUOTE] = 'String is missing a closing quote.'
@@ -1012,11 +1047,12 @@
 
       var openers = result.parenTrail.openers
 
-      result.parenTrail.openers = openers.slice(removeCount)
+      const openersLen = arraySize(openers)
+      result.parenTrail.openers = arraySlice(openers, removeCount, openersLen)
       result.parenTrail.startX = newStartX
       result.parenTrail.endX = newEndX
 
-      result.parenTrail.clamped.openers = openers.slice(0, removeCount)
+      result.parenTrail.clamped.openers = arraySlice(openers, 0, removeCount)
       result.parenTrail.clamped.startX = startX
       result.parenTrail.clamped.endX = endX
     }
@@ -1528,12 +1564,12 @@
   }
 
   function makeTabStop (result, opener) {
-    var tabStop = {
+    const tabStop = {
       ch: opener.ch,
       x: opener.x,
       lineNo: opener.lineNo
     }
-    if (opener.argX != null) {
+    if (isPositiveInt(opener.argX)) {
       tabStop.argX = opener.argX
     }
     return tabStop
