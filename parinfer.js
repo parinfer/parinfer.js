@@ -352,7 +352,8 @@
         const change = transformChange(changes[i])
         let line = lines[change.lookupLineNo]
         if (!line) {
-          line = lines[change.lookupLineNo] = {}
+          line = {}
+          lines[change.lookupLineNo] = line
         }
         line[change.lookupX] = change
 
@@ -637,13 +638,13 @@
     }
   }
 
-  function replaceWithinLine (result, lineNo, start, end, replace) {
-    var line = result.lines[lineNo]
+  function replaceWithinLine (result, lineNo, startIdx, endIdx, replaceTxt) {
+    const line = result.lines[lineNo]
 
-    var newLine = replaceWithinString(line, start, end, replace)
+    const newLine = replaceWithinString(line, startIdx, endIdx, replaceTxt)
     result.lines[lineNo] = newLine
 
-    shiftCursorOnEdit(result, lineNo, start, end, replace)
+    shiftCursorOnEdit(result, lineNo, startIdx, endIdx, replaceTxt)
   }
 
   function insertWithinLine (result, lineNo, idx, insert) {
@@ -835,7 +836,7 @@
   }
 
   function onMatchedCloseParen (result) {
-    var opener = peek(result.parenStack, 0)
+    const opener = peek(result.parenStack, 0)
     if (result.returnParens) {
       setCloser(opener, result.lineNo, result.x, result.ch)
     }
@@ -844,9 +845,9 @@
     stackPush(result.parenTrail.openers, opener)
 
     if (result.mode === INDENT_MODE && result.smart && checkCursorHolding(result)) {
-      var origStartX = result.parenTrail.startX
-      var origEndX = result.parenTrail.endX
-      var origOpeners = result.parenTrail.openers
+      const origStartX = result.parenTrail.startX
+      const origEndX = result.parenTrail.endX
+      const origOpeners = result.parenTrail.openers
       resetParenTrail(result, result.lineNo, result.x + 1)
       result.parenTrail.clamped.startX = origStartX
       result.parenTrail.clamped.endX = origEndX
@@ -858,17 +859,17 @@
 
   function onUnmatchedCloseParen (result) {
     if (result.mode === PAREN_MODE) {
-      var trail = result.parenTrail
-      var inLeadingParenTrail = trail.lineNo === result.lineNo && trail.startX === result.indentX
-      var canRemove = result.smart && inLeadingParenTrail
+      const trail = result.parenTrail
+      const inLeadingParenTrail = trail.lineNo === result.lineNo && trail.startX === result.indentX
+      const canRemove = result.smart && inLeadingParenTrail
       if (!canRemove) {
         throw createError(result, ERROR_UNMATCHED_CLOSE_PAREN)
       }
     } else if (result.mode === INDENT_MODE && !result.errorPosCache[ERROR_UNMATCHED_CLOSE_PAREN]) {
       cacheErrorPos(result, ERROR_UNMATCHED_CLOSE_PAREN)
-      var opener = peek(result.parenStack, 0)
+      const opener = peek(result.parenStack, 0)
       if (opener) {
-        var e = cacheErrorPos(result, ERROR_UNMATCHED_OPEN_PAREN)
+        const e = cacheErrorPos(result, ERROR_UNMATCHED_OPEN_PAREN)
         e.inputLineNo = opener.inputLineNo
         e.inputX = opener.inputX
       }
@@ -1313,6 +1314,17 @@
     }
   }
 
+  function setMaxIndent (result, opener) {
+    if (opener) {
+      var parent = peek(result.parenStack, 0)
+      if (parent) {
+        parent.maxChildIndent = opener.x
+      } else {
+        result.maxIndent = opener.x
+      }
+    }
+  }
+
   // PAREN MODE: append a valid close-paren to the end of the paren trail
   function appendParenTrail (result) {
     var opener = stackPop(result.parenStack)
@@ -1337,17 +1349,6 @@
     var cache = result.errorPosCache[ERROR_UNMATCHED_CLOSE_PAREN]
     if (cache && cache.x < result.parenTrail.startX) {
       throw createError(result, ERROR_UNMATCHED_CLOSE_PAREN)
-    }
-  }
-
-  function setMaxIndent (result, opener) {
-    if (opener) {
-      var parent = peek(result.parenStack, 0)
-      if (parent) {
-        parent.maxChildIndent = opener.x
-      } else {
-        result.maxIndent = opener.x
-      }
     }
   }
 
