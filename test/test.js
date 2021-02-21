@@ -3,6 +3,12 @@
 const parinfer = require('../parinfer.js')
 const assert = require('assert')
 
+function isInteger (x) {
+  return typeof x === 'number' &&
+       isFinite(x) &&
+       Math.floor(x) === x
+}
+
 function isValidTestId (id) {
   return typeof id === 'number' && id >= 1000 && id < 10000
 }
@@ -245,12 +251,22 @@ function assertStructure (actual, expected) {
 
   if (expected.tabStops) {
     assert.strictEqual(actual.tabStops == null, false)
-    var i
-    for (i = 0; i < actual.tabStops.length; i++) {
-      assert.strictEqual(actual.tabStops[i].lineNo, expected.tabStops[i].lineNo)
-      assert.strictEqual(actual.tabStops[i].x, expected.tabStops[i].x)
-      assert.strictEqual(actual.tabStops[i].ch, expected.tabStops[i].ch)
-      assert.strictEqual(actual.tabStops[i].argX, expected.tabStops[i].argX)
+
+    const expectedTSLen = expected.tabStops.length
+    const actualTSLen = actual.tabStops.length
+    assert.strictEqual(expectedTSLen, actualTSLen)
+
+    let i = 0
+    while (i < expectedTSLen) {
+      const actualTS = actual.tabStops[i]
+      const expectedTS = expected.tabStops[i]
+
+      assert.strictEqual(actualTS.lineNo, expectedTS.lineNo)
+      assert.strictEqual(actualTS.x, expectedTS.x)
+      assert.strictEqual(actualTS.ch, expectedTS.ch)
+      assert.strictEqual(actualTS.argX, expectedTS.argX)
+
+      i = i + 1
     }
   }
 
@@ -260,10 +276,10 @@ function assertStructure (actual, expected) {
 }
 
 function testStructure (testCase, mode) {
-  var expected = testCase.result
-  var text = testCase.text
-  var options = testCase.options
-  var actual, actual2, actual3
+  const expected = testCase.result
+  const text = testCase.text
+  const options = testCase.options
+  let result1, result2, result3
 
   // We are not yet verifying that the returned paren tree is correct.
   // We are simply setting it to ensure it is constructed in a way that doesn't
@@ -271,17 +287,22 @@ function testStructure (testCase, mode) {
   options.returnParens = true
 
   it('should generate the correct result structure', function () {
-    switch (mode) {
-      case 'indent': actual = parinfer.indentMode(text, options); break
-      case 'paren': actual = parinfer.parenMode(text, options); break
-      case 'smart': actual = parinfer.smartMode(text, options); break
+    result1 = null
+    if (mode === 'indent') {
+      result1 = parinfer.indentMode(text, options)
+    } else if (mode === 'paren') {
+      result1 = parinfer.parenMode(text, options)
+    } else if (mode === 'smart') {
+      result1 = parinfer.smartMode(text, options)
     }
-    assertStructure(actual, expected)
+    assert(result1 !== null)
+
+    assertStructure(result1, expected)
 
     // FIXME: not checking paren trails after this main check
     // (causing problems, and not a priority at time of writing)
-    if (actual.parenTrails) {
-      delete actual.parenTrails
+    if (result1.parenTrails) {
+      delete result1.parenTrails
     }
   })
 
@@ -294,33 +315,44 @@ function testStructure (testCase, mode) {
 
   it('should generate the same result structure on idempotence check', function () {
     const options2 = {
-      cursorX: actual.cursorX,
-      cursorLine: actual.cursorLine
+      cursorX: result1.cursorX,
+      cursorLine: result1.cursorLine
     }
     if (testCase.options && testCase.options.commentChars) {
       options2.commentChars = testCase.options.commentChars
     }
-    switch (mode) {
-      case 'indent': actual2 = parinfer.indentMode(actual.text, options2); break
-      case 'paren': actual2 = parinfer.parenMode(actual.text, options2); break
-      case 'smart': actual2 = parinfer.smartMode(actual.text, options2); break
+
+    result2 = null
+    if (mode === 'indent') {
+      result2 = parinfer.indentMode(result1.text, options2)
+    } else if (mode === 'paren') {
+      result2 = parinfer.parenMode(result1.text, options2)
+    } else if (mode === 'smart') {
+      result2 = parinfer.smartMode(result1.text, options2)
     }
-    assertStructure(actual2, actual)
+    assert(result2 !== null)
+
+    assertStructure(result2, result1)
   })
 
   it('should generate the same result structure on cross-mode check', function () {
-    var hasCursor = expected.cursorX != null
+    const hasCursor = isInteger(expected.cursorX)
     const options3 = {}
     if (testCase.options && testCase.options.commentChars) {
       options3.commentChars = testCase.options.commentChars
     }
     if (!hasCursor) {
-      switch (mode) {
-        case 'indent': actual3 = parinfer.parenMode(actual.text, options3); break
-        case 'paren': actual3 = parinfer.indentMode(actual.text, options3); break
-        case 'smart': actual3 = parinfer.parenMode(actual.text, options3); break
+      result3 = null
+      if (mode === 'indent') {
+        result3 = parinfer.indentMode(result1.text, options3)
+      } else if (mode === 'paren') {
+        result3 = parinfer.parenMode(result1.text, options3)
+      } else if (mode === 'smart') {
+        result3 = parinfer.smartMode(result1.text, options3)
       }
-      assertStructure(actual3, actual)
+      assert(result3 !== null)
+
+      assertStructure(result3, result1)
     }
   })
 }
