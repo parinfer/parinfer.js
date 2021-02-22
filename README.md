@@ -52,7 +52,7 @@ console.log(result.text);
 _See [integrating.md]_
 
 <!-- file links need to be full path to make them work for the NPM readme -->
-[integrating.md]:https://github.com/shaunlebron/parinfer/blob/master/lib/doc/integrating.md
+[integrating.md]:https://github.com/oakmac/parinfer/blob/master/doc/integrating.md
 
 ## API
 
@@ -203,12 +203,12 @@ __Sandbox__: See [`sandbox.js`] for how I manually test things (always changing
 based on what I'm currently working on).
 
 <!-- file links need to be full path to make them work for the NPM readme -->
-[`parinfer.js`]:https://github.com/shaunlebron/parinfer/blob/master/lib/parinfer.js
-[`code.md`]:https://github.com/shaunlebron/parinfer/blob/master/lib/doc/code.md
-[`test/cases/`]:https://github.com/shaunlebron/parinfer/tree/master/lib/test/cases
-[annotation syntax]:https://github.com/shaunlebron/parinfer/blob/master/lib/test/cases/README.md#annotations
+[`parinfer.js`]:https://github.com/oakmac/parinfer/blob/master/parinfer.js
+[`code.md`]:https://github.com/oakmac/parinfer/blob/master/doc/code.md
+[`test/cases/`]:https://github.com/oakmac/parinfer/tree/master/test/cases
+[annotation syntax]:https://github.com/oakmac/parinfer/tree/master/test/cases#annotations
 [`sandbox.js`]:https://github.com/shaunlebron/parinfer/blob/master/lib/sandbox.js
-[Paren Trails]:https://github.com/shaunlebron/parinfer/blob/master/lib/doc/code.md#paren-trail
+[Paren Trails]:https://github.com/oakmac/parinfer/blob/master/doc/code.md#paren-trail
 
 ## A stable core for editor plugins
 
@@ -230,16 +230,14 @@ comprehensive test suite to help ensure consistent behavior.
 | Kotlin (JVM)   | [parinfer-jvm]     | Cursive IDE, Nightcode   |
 | Emacs Lisp     | [parinfer-elisp]   | Emacs                    |
 | Vim Script     | [parinfer-viml]    | Vim                      |
-
-_<strong>[Open an issue]</strong> if you would like Parinfer ported to another language for
-use in an editor not listed above._
+| Lua            | [parinfer-lua]     | TextAdept                |
 
 [parinfer-rust]:https://github.com/eraserhd/parinfer-rust
 [parinfer.py]:https://github.com/oakmac/parinfer.py
 [parinfer-jvm]:https://github.com/oakmac/parinfer-jvm
 [parinfer-elisp]:https://github.com/oakmac/parinfer-elisp
 [parinfer-viml]:https://github.com/oakmac/parinfer-viml
-[Open an issue]:https://github.com/shaunlebron/parinfer/issues/new?title=port%20request
+[parinfer-lua]:https://github.com/oakmac/parinfer-lua
 
 ## Status Update 2019 (Smart Mode)
 
