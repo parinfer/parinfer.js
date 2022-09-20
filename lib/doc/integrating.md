@@ -28,8 +28,7 @@ something that you can try:
 
 ## When to process text?
 
-Process the text after a change OR a cursor movement.  Since a change always
-results in a cursor movement, make sure to only process after the change.
+Process the text after a change OR a cursor movement.  If a change AND a cursor movement both occur, make sure they are handled together.
 You can see an example of this being handled [here](https://github.com/shaunlebron/parinfer-codemirror/blob/37b36/parinfer-codemirror.js#L331-L344)
 to prevent double-processing.
 
