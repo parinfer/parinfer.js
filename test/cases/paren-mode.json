@@ -1,0 +1,985 @@
+[
+  {
+    "text": "(let [foo 1]\nfoo)",
+    "options": {},
+    "result": {
+      "text": "(let [foo 1]\n foo)",
+      "success": true
+    },
+    "source": {
+      "lineNo": 6,
+      "in": [
+        "(let [foo 1]\nfoo)"
+      ],
+      "out": "(let [foo 1]\n foo)"
+    },
+    "id": 2000
+  },
+  {
+    "text": "(let [foo 1]\n      foo)",
+    "options": {},
+    "result": {
+      "text": "(let [foo 1]\n     foo)",
+      "success": true
+    },
+    "source": {
+      "lineNo": 18,
+      "in": [
+        "(let [foo 1]\n      foo)"
+      ],
+      "out": "(let [foo 1]\n     foo)"
+    },
+    "id": 2005
+  },
+  {
+    "text": "(let [foo {:a 1}]\n           foo)",
+    "options": {},
+    "result": {
+      "text": "(let [foo {:a 1}]\n     foo)",
+      "success": true
+    },
+    "source": {
+      "lineNo": 28,
+      "in": [
+        "(let [foo {:a 1}]\n           foo)"
+      ],
+      "out": "(let [foo {:a 1}]\n     foo)"
+    },
+    "id": 2010
+  },
+  {
+    "text": "(let [foo 1]\n      foo)\n\n(let [foo 1]\nfoo)",
+    "options": {},
+    "result": {
+      "text": "(let [foo 1]\n     foo)\n\n(let [foo 1]\n foo)",
+      "success": true
+    },
+    "source": {
+      "lineNo": 40,
+      "in": [
+        "(let [foo 1]\n      foo)\n\n(let [foo 1]\nfoo)"
+      ],
+      "out": "(let [foo 1]\n     foo)\n\n(let [foo 1]\n foo)"
+    },
+    "id": 2015
+  },
+  {
+    "text": "(let [foo [1 2 3]]\n      (-> foo\n          (map inc)))",
+    "options": {},
+    "result": {
+      "text": "(let [foo [1 2 3]]\n     (-> foo\n         (map inc)))",
+      "success": true
+    },
+    "source": {
+      "lineNo": 60,
+      "in": [
+        "(let [foo [1 2 3]]\n      (-> foo\n          (map inc)))"
+      ],
+      "out": "(let [foo [1 2 3]]\n     (-> foo\n         (map inc)))"
+    },
+    "id": 2020
+  },
+  {
+    "text": "(let [foo 1\n      ]; <-- spaces\n  foo)",
+    "options": {},
+    "result": {
+      "text": "(let [foo 1]\n      ; <-- spaces\n  foo)",
+      "success": true
+    },
+    "source": {
+      "lineNo": 78,
+      "in": [
+        "(let [foo 1\n      ]; <-- spaces\n  foo)"
+      ],
+      "out": "(let [foo 1]\n      ; <-- spaces\n  foo)"
+    },
+    "id": 2025
+  },
+  {
+    "text": "(let [foo 1\n      bar 2\n\n     ] (+ foo bar\n  ); <-- spaces\n)",
+    "options": {},
+    "result": {
+      "text": "(let [foo 1\n      bar 2]\n\n     (+ foo bar))\n  ; <-- spaces\n",
+      "success": true
+    },
+    "source": {
+      "lineNo": 90,
+      "in": [
+        "(let [foo 1\n      bar 2\n\n     ] (+ foo bar\n  ); <-- spaces\n)"
+      ],
+      "out": "(let [foo 1\n      bar 2]\n\n     (+ foo bar))\n  ; <-- spaces\n"
+    },
+    "id": 2030
+  },
+  {
+    "text": "(def x [1 2 3 4\n         5 6 7 8])",
+    "options": {},
+    "result": {
+      "text": "(def x [1 2 3 4\n         5 6 7 8])",
+      "success": true
+    },
+    "source": {
+      "lineNo": 112,
+      "in": [
+        "(def x [1 2 3 4\n         5 6 7 8])"
+      ],
+      "out": "(def x [1 2 3 4\n         5 6 7 8])"
+    },
+    "id": 2035
+  },
+  {
+    "text": "  (assoc x\n:foo 1\n     :bar 2)",
+    "options": {},
+    "result": {
+      "text": "  (assoc x\n   :foo 1\n     :bar 2)",
+      "success": true
+    },
+    "source": {
+      "lineNo": 124,
+      "in": [
+        "  (assoc x\n:foo 1\n     :bar 2)"
+      ],
+      "out": "  (assoc x\n   :foo 1\n     :bar 2)"
+    },
+    "id": 2040
+  },
+  {
+    "text": "(foo",
+    "options": {},
+    "result": {
+      "error": {
+        "name": "unclosed-paren",
+        "lineNo": 0,
+        "x": 0
+      },
+      "text": "(foo",
+      "success": false
+    },
+    "source": {
+      "lineNo": 138,
+      "in": [
+        "(foo"
+      ],
+      "out": "(foo\n^ error: unclosed-paren"
+    },
+    "id": 2045
+  },
+  {
+    "text": "(defn foo\n[arg arg2\nbar",
+    "options": {},
+    "result": {
+      "error": {
+        "name": "unclosed-paren",
+        "lineNo": 1,
+        "x": 0
+      },
+      "text": "(defn foo\n[arg arg2\nbar",
+      "success": false
+    },
+    "source": {
+      "lineNo": 147,
+      "in": [
+        "(defn foo\n[arg arg2\nbar"
+      ],
+      "out": "(defn foo\n[arg arg2\n^ error: unclosed-paren\nbar"
+    },
+    "id": 2050
+  },
+  {
+    "text": "(foo})",
+    "options": {},
+    "result": {
+      "error": {
+        "name": "unmatched-close-paren",
+        "lineNo": 0,
+        "x": 4
+      },
+      "text": "(foo})",
+      "success": false
+    },
+    "source": {
+      "lineNo": 162,
+      "in": [
+        "(foo})"
+      ],
+      "out": "(foo})\n    ^ error: unmatched-close-paren"
+    },
+    "id": 2055
+  },
+  {
+    "text": "(foo\n  })",
+    "options": {},
+    "result": {
+      "error": {
+        "name": "unmatched-close-paren",
+        "lineNo": 1,
+        "x": 2
+      },
+      "text": "(foo\n  })",
+      "success": false
+    },
+    "source": {
+      "lineNo": 171,
+      "in": [
+        "(foo\n  })"
+      ],
+      "out": "(foo\n  })\n  ^ error: unmatched-close-paren"
+    },
+    "id": 2060
+  },
+  {
+    "text": "(defn foo\n  [arg\n  bar)",
+    "options": {},
+    "result": {
+      "error": {
+        "name": "unmatched-close-paren",
+        "lineNo": 2,
+        "x": 5
+      },
+      "text": "(defn foo\n  [arg\n  bar)",
+      "success": false
+    },
+    "source": {
+      "lineNo": 182,
+      "in": [
+        "(defn foo\n  [arg\n  bar)"
+      ],
+      "out": "(defn foo\n  [arg\n  bar)\n     ^ error: unmatched-close-paren"
+    },
+    "id": 2065
+  },
+  {
+    "text": "; hello \\n world",
+    "options": {},
+    "result": {
+      "text": "; hello \\n world",
+      "success": true
+    },
+    "source": {
+      "lineNo": 199,
+      "in": [
+        "; hello \\n world"
+      ],
+      "out": "; hello \\n world"
+    },
+    "id": 2070
+  },
+  {
+    "text": "(def foo \\,)\n(def bar \\ )",
+    "options": {},
+    "result": {
+      "text": "(def foo \\,)\n(def bar \\ )",
+      "success": true
+    },
+    "source": {
+      "lineNo": 209,
+      "in": [
+        "(def foo \\,)\n(def bar \\ )"
+      ],
+      "out": "(def foo \\,)\n(def bar \\ )"
+    },
+    "id": 2075
+  },
+  {
+    "text": "(foo [a b]\\\nc)",
+    "options": {},
+    "result": {
+      "error": {
+        "name": "eol-backslash",
+        "lineNo": 0,
+        "x": 10
+      },
+      "text": "(foo [a b]\\\nc)",
+      "success": false
+    },
+    "source": {
+      "lineNo": 221,
+      "in": [
+        "(foo [a b]\\\nc)"
+      ],
+      "out": "(foo [a b]\\\n          ^ error: eol-backslash\nc)"
+    },
+    "id": 2080
+  },
+  {
+    "text": "(def foo\n  \"hello\n  bar)",
+    "options": {},
+    "result": {
+      "error": {
+        "name": "unclosed-quote",
+        "lineNo": 1,
+        "x": 2
+      },
+      "text": "(def foo\n  \"hello\n  bar)",
+      "success": false
+    },
+    "source": {
+      "lineNo": 234,
+      "in": [
+        "(def foo\n  \"hello\n  bar)"
+      ],
+      "out": "(def foo\n  \"hello\n  ^ error: unclosed-quote\n  bar)"
+    },
+    "id": 2085
+  },
+  {
+    "text": "(def foo [a b]\n  ; \"my string\nret)",
+    "options": {},
+    "result": {
+      "error": {
+        "name": "quote-danger",
+        "lineNo": 1,
+        "x": 4
+      },
+      "text": "(def foo [a b]\n  ; \"my string\nret)",
+      "success": false
+    },
+    "source": {
+      "lineNo": 251,
+      "in": [
+        "(def foo [a b]\n  ; \"my string\nret)"
+      ],
+      "out": "(def foo [a b]\n  ; \"my string\n    ^ error: quote-danger\nret)"
+    },
+    "id": 2090
+  },
+  {
+    "text": "(def foo [a b]\n  ; \"my multiline\n  ; docstring.\"\nret)",
+    "options": {},
+    "result": {
+      "text": "(def foo [a b]\n  ; \"my multiline\n  ; docstring.\"\n ret)",
+      "success": true
+    },
+    "source": {
+      "lineNo": 266,
+      "in": [
+        "(def foo [a b]\n  ; \"my multiline\n  ; docstring.\"\nret)"
+      ],
+      "out": "(def foo [a b]\n  ; \"my multiline\n  ; docstring.\"\n ret)"
+    },
+    "id": 2095
+  },
+  {
+    "text": "( )\"\n\"",
+    "options": {},
+    "result": {
+      "text": "( )\"\n\"",
+      "success": true
+    },
+    "source": {
+      "lineNo": 285,
+      "in": [
+        "( )\"\n\""
+      ],
+      "out": "( )\"\n\""
+    },
+    "id": 2100
+  },
+  {
+    "text": "(foo )",
+    "options": {
+      "cursorX": 5,
+      "cursorLine": 0
+    },
+    "result": {
+      "cursorX": 5,
+      "cursorLine": 0,
+      "text": "(foo )",
+      "success": true
+    },
+    "source": {
+      "lineNo": 300,
+      "in": [
+        "(foo |)"
+      ],
+      "out": "(foo |)"
+    },
+    "id": 2105
+  },
+  {
+    "text": "(foo [1 2 3 ] )",
+    "options": {
+      "cursorX": 12,
+      "cursorLine": 0
+    },
+    "result": {
+      "cursorX": 12,
+      "cursorLine": 0,
+      "text": "(foo [1 2 3 ] )",
+      "success": true
+    },
+    "source": {
+      "lineNo": 308,
+      "in": [
+        "(foo [1 2 3 |] )"
+      ],
+      "out": "(foo [1 2 3 |] )"
+    },
+    "id": 2110
+  },
+  {
+    "text": "(foo )",
+    "options": {},
+    "result": {
+      "text": "(foo)",
+      "success": true
+    },
+    "source": {
+      "lineNo": 318,
+      "in": [
+        "(foo )"
+      ],
+      "out": "(foo)"
+    },
+    "id": 2115
+  },
+  {
+    "text": "(foo [1 2 3 ] )",
+    "options": {},
+    "result": {
+      "text": "(foo [1 2 3])",
+      "success": true
+    },
+    "source": {
+      "lineNo": 326,
+      "in": [
+        "(foo [1 2 3 ] )"
+      ],
+      "out": "(foo [1 2 3])"
+    },
+    "id": 2120
+  },
+  {
+    "text": "(foo [a b\n])",
+    "options": {
+      "cursorX": 0,
+      "cursorLine": 1
+    },
+    "result": {
+      "cursorX": 6,
+      "cursorLine": 1,
+      "text": "(foo [a b\n      ])",
+      "success": true
+    },
+    "source": {
+      "lineNo": 338,
+      "in": [
+        "(foo [a b\n|])"
+      ],
+      "out": "(foo [a b\n      |])"
+    },
+    "id": 2125
+  },
+  {
+    "text": "(foo [1 2 3\n 4 5 6\n 7 8 9])",
+    "options": {
+      "cursorX": 8,
+      "cursorLine": 2
+    },
+    "result": {
+      "cursorX": 13,
+      "cursorLine": 2,
+      "text": "(foo [1 2 3\n      4 5 6\n      7 8 9])",
+      "success": true
+    },
+    "source": {
+      "lineNo": 350,
+      "in": [
+        "(foo [1 2 3\n 4 5 6\n 7 8 9])|"
+      ],
+      "out": "(foo [1 2 3\n      4 5 6\n      7 8 9])|"
+    },
+    "id": 2130
+  },
+  {
+    "text": "(let [foo 1\n           ; comment 1\n           bar 2\n           baz 3])\n           ; comment 2",
+    "options": {
+      "changes": [
+        {
+          "lineNo": 0,
+          "x": 5,
+          "oldText": "    ",
+          "newText": ""
+        }
+      ]
+    },
+    "result": {
+      "text": "(let [foo 1\n       ; comment 1\n       bar 2\n       baz 3])\n       ; comment 2",
+      "success": true
+    },
+    "source": {
+      "lineNo": 366,
+      "in": [
+        "(let     [foo 1\n     ----\n           ; comment 1\n           bar 2\n           baz 3])\n           ; comment 2"
+      ],
+      "out": "(let [foo 1\n       ; comment 1\n       bar 2\n       baz 3])\n       ; comment 2"
+    },
+    "id": 2135
+  },
+  {
+    "text": "(def foo\n      ; comment 1\n      bar)\n      ; comment 2",
+    "options": {
+      "changes": [
+        {
+          "lineNo": 0,
+          "x": 0,
+          "oldText": "   ",
+          "newText": ""
+        }
+      ]
+    },
+    "result": {
+      "text": "(def foo\n   ; comment 1\n   bar)\n   ; comment 2",
+      "success": true
+    },
+    "source": {
+      "lineNo": 383,
+      "in": [
+        "   (def foo\n---\n      ; comment 1\n      bar)\n      ; comment 2"
+      ],
+      "out": "(def foo\n   ; comment 1\n   bar)\n   ; comment 2"
+    },
+    "id": 2140
+  },
+  {
+    "text": "(def foo (bar\n       4 5 6\n       ; comment 1\n       7 8 9))\n       ; comment 2",
+    "options": {
+      "changes": [
+        {
+          "lineNo": 0,
+          "x": 4,
+          "oldText": "",
+          "newText": " foo"
+        }
+      ]
+    },
+    "result": {
+      "text": "(def foo (bar\n           4 5 6\n           ; comment 1\n           7 8 9))\n           ; comment 2",
+      "success": true
+    },
+    "source": {
+      "lineNo": 400,
+      "in": [
+        "(def foo (bar\n    ++++\n       4 5 6\n       ; comment 1\n       7 8 9))\n       ; comment 2"
+      ],
+      "out": "(def foo (bar\n           4 5 6\n           ; comment 1\n           7 8 9))\n           ; comment 2"
+    },
+    "id": 2145
+  },
+  {
+    "text": "(foo (if some-condition\n         println) foo {:foo 1\n                          :bar 2})",
+    "options": {
+      "changes": [
+        {
+          "lineNo": 0,
+          "x": 1,
+          "oldText": "my-fn",
+          "newText": "foo"
+        },
+        {
+          "lineNo": 1,
+          "x": 18,
+          "oldText": "my-fun",
+          "newText": "foo"
+        }
+      ]
+    },
+    "result": {
+      "text": "(foo (if some-condition\n       println) foo {:foo 1\n                     :bar 2})",
+      "success": true
+    },
+    "source": {
+      "lineNo": 419,
+      "in": [
+        "(my-fnfoo (if some-condition\n -----+++\n         println) my-funfoo {:foo 1\n                  ------+++\n                          :bar 2})"
+      ],
+      "out": "(foo (if some-condition\n       println) foo {:foo 1\n                     :bar 2})"
+    },
+    "id": 2150
+  },
+  {
+    "text": "(foo [bar baz]\n       1 2 3\n       4 5 6)",
+    "options": {},
+    "result": {
+      "text": "(foo [bar baz]\n     1 2 3\n     4 5 6)",
+      "success": true
+    },
+    "source": {
+      "lineNo": 447,
+      "in": [
+        "(foo [bar baz]\n       1 2 3\n       4 5 6)"
+      ],
+      "out": "(foo [bar baz]\n     1 2 3\n     4 5 6)"
+    },
+    "id": 2155
+  },
+  {
+    "text": "(foo [bar baz\n         ]; <-- spaces\n       1 2 3\n       4 5 6)",
+    "options": {},
+    "result": {
+      "text": "(foo [bar baz]\n         ; <-- spaces\n     1 2 3\n     4 5 6)",
+      "success": true
+    },
+    "source": {
+      "lineNo": 459,
+      "in": [
+        "(foo [bar baz\n         ]; <-- spaces\n       1 2 3\n       4 5 6)"
+      ],
+      "out": "(foo [bar baz]\n         ; <-- spaces\n     1 2 3\n     4 5 6)"
+    },
+    "id": 2160
+  },
+  {
+    "text": "(defn foo\n  \"hello, this is a docstring\"\n  [a b]\n  (let [sum (+ a b)\n        prod (* a b)]\n     {:sum sum\n      :prod prod}))",
+    "options": {},
+    "result": {
+      "parenTrails": [
+        {
+          "lineNo": 2,
+          "startX": 6,
+          "endX": 7
+        },
+        {
+          "lineNo": 3,
+          "startX": 18,
+          "endX": 19
+        },
+        {
+          "lineNo": 4,
+          "startX": 19,
+          "endX": 21
+        },
+        {
+          "lineNo": 6,
+          "startX": 16,
+          "endX": 19
+        }
+      ],
+      "text": "(defn foo\n  \"hello, this is a docstring\"\n  [a b]\n  (let [sum (+ a b)\n        prod (* a b)]\n     {:sum sum\n      :prod prod}))",
+      "success": true
+    },
+    "source": {
+      "lineNo": 478,
+      "in": [
+        "(defn foo\n  \"hello, this is a docstring\"\n  [a b]\n  (let [sum (+ a b)\n        prod (* a b)]\n     {:sum sum\n      :prod prod}))"
+      ],
+      "out": "(defn foo\n  \"hello, this is a docstring\"\n  [a b]\n      ^ parenTrail\n  (let [sum (+ a b)\n                  ^ parenTrail\n        prod (* a b)]\n                   ^^ parenTrail\n     {:sum sum\n      :prod prod}))\n                ^^^ parenTrail"
+    },
+    "id": 2165
+  },
+  {
+    "text": "  (foo\n  (bar\n    baz))",
+    "options": {
+      "changes": [
+        {
+          "lineNo": 0,
+          "x": 0,
+          "oldText": "",
+          "newText": "  "
+        }
+      ]
+    },
+    "result": {
+      "text": "  (foo\n    (bar\n      baz))",
+      "success": true
+    },
+    "source": {
+      "lineNo": 506,
+      "in": [
+        "  (foo\n++\n  (bar\n    baz))"
+      ],
+      "out": "  (foo\n    (bar\n      baz))"
+    },
+    "id": 2170
+  },
+  {
+    "text": "  (foo\n    (bar\n    baz))",
+    "options": {
+      "changes": [
+        {
+          "lineNo": 0,
+          "x": 0,
+          "oldText": "",
+          "newText": "  "
+        },
+        {
+          "lineNo": 1,
+          "x": 0,
+          "oldText": "",
+          "newText": "  "
+        }
+      ]
+    },
+    "result": {
+      "text": "  (foo\n    (bar\n      baz))",
+      "success": true
+    },
+    "source": {
+      "lineNo": 521,
+      "in": [
+        "  (foo\n++\n    (bar\n++\n    baz))"
+      ],
+      "out": "  (foo\n    (bar\n      baz))"
+    },
+    "id": 2175
+  },
+  {
+    "text": "  (foo\n      (bar\n        baz))",
+    "options": {
+      "changes": [
+        {
+          "lineNo": 1,
+          "x": 0,
+          "oldText": "",
+          "newText": "  "
+        },
+        {
+          "lineNo": 2,
+          "x": 0,
+          "oldText": "",
+          "newText": "  "
+        }
+      ]
+    },
+    "result": {
+      "text": "  (foo\n      (bar\n        baz))",
+      "success": true
+    },
+    "source": {
+      "lineNo": 537,
+      "in": [
+        "  (foo\n      (bar\n++\n        baz))\n++"
+      ],
+      "out": "  (foo\n      (bar\n        baz))"
+    },
+    "id": 2180
+  },
+  {
+    "text": "  (foo\n  bar\n  baz)",
+    "options": {
+      "changes": [
+        {
+          "lineNo": 0,
+          "x": 0,
+          "oldText": "",
+          "newText": "  "
+        }
+      ]
+    },
+    "result": {
+      "text": "  (foo\n    bar\n    baz)",
+      "success": true
+    },
+    "source": {
+      "lineNo": 554,
+      "in": [
+        "  (foo\n++\n  bar\n  baz)"
+      ],
+      "out": "  (foo\n    bar\n    baz)"
+    },
+    "id": 2185
+  },
+  {
+    "text": "  (foo\n    bar\n  baz)",
+    "options": {
+      "changes": [
+        {
+          "lineNo": 0,
+          "x": 0,
+          "oldText": "",
+          "newText": "  "
+        },
+        {
+          "lineNo": 1,
+          "x": 0,
+          "oldText": "",
+          "newText": "  "
+        }
+      ]
+    },
+    "result": {
+      "text": "  (foo\n    bar\n    baz)",
+      "success": true
+    },
+    "source": {
+      "lineNo": 569,
+      "in": [
+        "  (foo\n++\n    bar\n++\n  baz)"
+      ],
+      "out": "  (foo\n    bar\n    baz)"
+    },
+    "id": 2190
+  },
+  {
+    "text": "(foo\n    bar\n    baz)",
+    "options": {
+      "changes": [
+        {
+          "lineNo": 1,
+          "x": 0,
+          "oldText": "",
+          "newText": "  "
+        },
+        {
+          "lineNo": 2,
+          "x": 0,
+          "oldText": "",
+          "newText": "  "
+        }
+      ]
+    },
+    "result": {
+      "text": "(foo\n    bar\n    baz)",
+      "success": true
+    },
+    "source": {
+      "lineNo": 585,
+      "in": [
+        "(foo\n    bar\n++\n    baz)\n++"
+      ],
+      "out": "(foo\n    bar\n    baz)"
+    },
+    "id": 2195
+  },
+  {
+    "text": "(def x [1 2 3])\n(def y 2)\n",
+    "options": {
+      "cursorX": 0,
+      "cursorLine": 2
+    },
+    "result": {
+      "tabStops": [
+        {
+          "x": 0,
+          "ch": "(",
+          "lineNo": 1,
+          "argX": 5
+        }
+      ],
+      "cursorX": 0,
+      "cursorLine": 2,
+      "text": "(def x [1 2 3])\n(def y 2)\n",
+      "success": true
+    },
+    "source": {
+      "lineNo": 607,
+      "in": [
+        "(def x [1 2 3])\n(def y 2)\n|"
+      ],
+      "out": "(def x [1 2 3])\n(def y 2)\n^    > tabStops\n|"
+    },
+    "id": 2200
+  },
+  {
+    "text": "(foo bar\n  (baz boo))\n",
+    "options": {
+      "cursorX": 0,
+      "cursorLine": 2
+    },
+    "result": {
+      "tabStops": [
+        {
+          "x": 0,
+          "ch": "(",
+          "lineNo": 0
+        },
+        {
+          "x": 2,
+          "ch": "(",
+          "lineNo": 1,
+          "argX": 7
+        }
+      ],
+      "cursorX": 0,
+      "cursorLine": 2,
+      "text": "(foo bar\n  (baz boo))\n",
+      "success": true
+    },
+    "source": {
+      "lineNo": 623,
+      "in": [
+        "(foo bar\n  (baz boo))\n|"
+      ],
+      "out": "(foo bar\n  (baz boo))\n^ ^    > tabStops\n|"
+    },
+    "id": 2205
+  },
+  {
+    "text": "(let [a {:foo 1}\n      \n      bar [1 2 3]]\n  bar)",
+    "options": {
+      "cursorX": 6,
+      "cursorLine": 1
+    },
+    "result": {
+      "tabStops": [
+        {
+          "x": 0,
+          "ch": "(",
+          "lineNo": 0
+        },
+        {
+          "x": 5,
+          "ch": "[",
+          "lineNo": 0
+        },
+        {
+          "x": 8,
+          "ch": "{",
+          "lineNo": 0,
+          "argX": 14
+        }
+      ],
+      "cursorX": 6,
+      "cursorLine": 1,
+      "text": "(let [a {:foo 1}\n      \n      bar [1 2 3]]\n  bar)",
+      "success": true
+    },
+    "source": {
+      "lineNo": 636,
+      "in": [
+        "(let [a {:foo 1}\n      |\n      bar [1 2 3]]\n  bar)"
+      ],
+      "out": "(let [a {:foo 1}\n^    ^  ^     > tabStops\n      |\n      bar [1 2 3]]\n  bar)"
+    },
+    "id": 2210
+  },
+  {
+    "text": "(let [a {:foo 1}\n      bar (func 1 2 3)]\n  \n  bar)",
+    "options": {
+      "cursorX": 2,
+      "cursorLine": 2
+    },
+    "result": {
+      "tabStops": [
+        {
+          "x": 0,
+          "ch": "(",
+          "lineNo": 0
+        },
+        {
+          "x": 5,
+          "ch": "[",
+          "lineNo": 0
+        },
+        {
+          "x": 10,
+          "ch": "(",
+          "lineNo": 1,
+          "argX": 16
+        }
+      ],
+      "cursorX": 2,
+      "cursorLine": 2,
+      "text": "(let [a {:foo 1}\n      bar (func 1 2 3)]\n  \n  bar)",
+      "success": true
+    },
+    "source": {
+      "lineNo": 651,
+      "in": [
+        "(let [a {:foo 1}\n      bar (func 1 2 3)]\n  |\n  bar)"
+      ],
+      "out": "(let [a {:foo 1}\n      bar (func 1 2 3)]\n^    ^    ^     > tabStops\n  |\n  bar)"
+    },
+    "id": 2215
+  }
+]

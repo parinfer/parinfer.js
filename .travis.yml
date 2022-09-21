@@ -1,7 +1,0 @@
-language: node_js
-node_js:
-  - "7.4"
-install:
-  - pushd lib; npm install; popd
-script:
-  - pushd lib && npm test && popd
