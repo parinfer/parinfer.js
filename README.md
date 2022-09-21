@@ -1,26 +1,25 @@
-# Parinfer.js (updated fork)
+# Parinfer.js
 
 > Pronounced "par-in-fur". "par" rhymes with car and star; "fur" rhymes with blur and stir
 
-This is a fork of [shaunlebron's Parinfer library] which was archived on Jan 2019.
+<em>See the __[Parinfer Home Page]__ for the original animated demo page.</em>
 
-The original repo was split into two separate parts: the library itself and [a website that explains Parinfer].
-
-This fork will contain only the parinfer.js library (and supporting tests).
-
-[shaunlebron's Parinfer library]:https://github.com/shaunlebron/parinfer
-[a website that explains Parinfer]:https://shaunlebron.github.io/parinfer/
+__Parinfer__ is a proof-of-concept editor mode for Lisp programming languages.
+It simplifies the way we write Lisp by auto-adjusting parens when indentation
+changes and vice versa.  The hope is to make basic Lisp-editing easier for
+newcomers and experts alike, while still allowing existing plugins like Paredit
+to satisfy the need for more advanced operations.
 
 ## npm package
 
-This fork is published on npm under the package name [`@chrisoakman/parinfer`](https://www.npmjs.com/package/@chrisoakman/parinfer)
+This library is published on npm under the package name [`parinfer`](https://www.npmjs.com/package/parinfer)
 
 ```sh
 ## using npm
-npm install @chrisoakman/parinfer
+npm install parinfer
 
 ## using yarn
-yarn add @chrisoakman/parinfer
+yarn add parinfer
 ```
 
 ## Usage
@@ -52,7 +51,7 @@ console.log(result.text);
 _See [integrating.md]_
 
 <!-- file links need to be full path to make them work for the NPM readme -->
-[integrating.md]:https://github.com/oakmac/parinfer/blob/master/doc/integrating.md
+[integrating.md]:https://github.com/parinfer/parinfer.js/blob/master/doc/integrating.md
 
 ## API
 
@@ -199,16 +198,12 @@ npm install
 npm test
 ```
 
-__Sandbox__: See [`sandbox.js`] for how I manually test things (always changing
-based on what I'm currently working on).
-
 <!-- file links need to be full path to make them work for the NPM readme -->
-[`parinfer.js`]:https://github.com/oakmac/parinfer/blob/master/parinfer.js
-[`code.md`]:https://github.com/oakmac/parinfer/blob/master/doc/code.md
-[`test/cases/`]:https://github.com/oakmac/parinfer/tree/master/test/cases
-[annotation syntax]:https://github.com/oakmac/parinfer/tree/master/test/cases#annotations
-[`sandbox.js`]:https://github.com/shaunlebron/parinfer/blob/master/lib/sandbox.js
-[Paren Trails]:https://github.com/oakmac/parinfer/blob/master/doc/code.md#paren-trail
+[`parinfer.js`]:https://github.com/parinfer/parinfer.js/blob/master/parinfer.js
+[`code.md`]:https://github.com/parinfer/parinfer.js/blob/master/doc/code.md
+[`test/cases/`]:https://github.com/parinfer/parinfer.js/tree/master/test/cases
+[annotation syntax]:https://github.com/parinfer/parinfer.js/tree/master/test/cases#annotations
+[Paren Trails]:https://github.com/parinfer/parinfer.js/blob/master/doc/code.md#paren-trail
 
 ## A stable core for editor plugins
 

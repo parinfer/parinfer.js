@@ -1,19 +1,20 @@
 {
-  "name": "@chrisoakman/parinfer",
+  "name": "parinfer",
   "version": "3.13.1",
   "description": "core Parinfer implementation for JavaScript",
   "license": "MIT",
   "author": "Shaun Lebron",
   "contributors": [
-    "Chris Oakman <chris@oakmac.com> (https://chrisoakman.com)"
+    "Chris Oakman <chris@oakmac.com> (https://chrisoakman.com)",
+    "Shaun Williams <shaunewilliams@gmail.com>"
   ],
-  "homepage": "https://github.com/oakmac/parinfer",
+  "homepage": "https://github.com/parinfer/parinfer.js",
   "bugs": {
-    "url": "https://github.com/oakmac/parinfer/issues"
+    "url": "https://github.com/parinfer/parinfer.js/issues"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/oakmac/parinfer"
+    "url": "https://github.com/parinfer/parinfer.js"
   },
   "keywords": [
     "parinfer",
