@@ -235,6 +235,7 @@ comprehensive test suite to help ensure consistent behavior.
 [parinfer-elisp]:https://github.com/oakmac/parinfer-elisp
 [parinfer-viml]:https://github.com/oakmac/parinfer-viml
 [parinfer-lua]:https://github.com/oakmac/parinfer-lua
+[Parinfer Home Page]:https://shaunlebron.github.io/parinfer/
 
 ## Status Update 2019 (Smart Mode)
 
