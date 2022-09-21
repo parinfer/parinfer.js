@@ -1,3 +1,5 @@
+![](logo/parinfer-org-logo-200x150.png) 
+
 # Parinfer.js
 
 > Pronounced "par-in-fur". "par" rhymes with car and star; "fur" rhymes with blur and stir
