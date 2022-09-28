@@ -388,14 +388,14 @@
 
   function initialParenTrail () {
     return {
-      lineNo: UINT_NULL, // [integer] - line number of the last parsed paren trail
-      startX: UINT_NULL, // [integer] - x position of first paren in this range
-      endX: UINT_NULL, // [integer] - x position after the last paren in this range
-      openers: [], // [array of stack elements] - corresponding open-paren for each close-paren in this range
+      lineNo: UINT_NULL,    // [integer] - line number of the last parsed paren trail
+      startX: UINT_NULL,    // [integer] - x position of first paren in this range
+      endX: UINT_NULL,      // [integer] - x position after the last paren in this range
+      openers: [],          // [array of stack elements] - corresponding open-paren for each close-paren in this range
       clamped: {
-        startX: UINT_NULL, // startX before paren trail was clamped
-        endX: UINT_NULL, // endX before paren trail was clamped
-        openers: [] // openers that were cut out after paren trail was clamped
+        startX: UINT_NULL,  // startX before paren trail was clamped
+        endX: UINT_NULL,    // endX before paren trail was clamped
+        openers: []         // openers that were cut out after paren trail was clamped
       }
     }
   }
@@ -403,82 +403,84 @@
   function getInitialResult (text, options, mode, smart) {
     var result = {
 
-      mode: mode, // [enum] - current processing mode (INDENT_MODE or PAREN_MODE)
-      smart: smart, // [boolean] - smart mode attempts special user-friendly behavior
+      mode: mode,                     // @doc [enum] - current processing mode (INDENT_MODE or PAREN_MODE)
+      smart: smart,                   // @doc [boolean] - smart mode attempts special user-friendly behavior
 
-      origText: text, // [string] - original text
-      origCursorX: UINT_NULL, // [integer] - original cursorX option
-      origCursorLine: UINT_NULL, // [integer] - original cursorLine option
+      origText: text,                 // @doc [string] - original text
+      origCursorX: UINT_NULL,         // @doc [integer] - original cursorX option
+      origCursorLine: UINT_NULL,      // @doc [integer] - original cursorLine option
 
-      inputLines: // [string array] - input lines that we process line-by-line, char-by-char
+      inputLines:                     // @doc [string array] - input lines that we process line-by-line, char-by-char
       text.split(LINE_ENDING_REGEX),
-      inputLineNo: -1, // [integer] - the current input line number
-      inputX: -1, // [integer] - the current input x position of the current character (ch)
 
-      lines: [], // [string array] - output lines (with corrected parens or indentation)
-      lineNo: -1, // [integer] - output line number we are on
-      ch: '', // [string] - character we are processing (can be changed to indicate a replacement)
-      x: 0, // [integer] - output x position of the current character (ch)
-      indentX: UINT_NULL, // [integer] - x position of the indentation point if present
+      inputLineNo: -1,                // @doc [integer] - the current input line number
+      inputX: -1,                     // @doc [integer] - the current input x position of the current character (ch)
 
-      // We track where we are in the Lisp tree by keeping a stack (array) of open-parens.
-      // Stack elements are objects containing keys {ch, x, lineNo, indentDelta}
-      // whose values are the same as those described here in this result structure.
-      parenStack: [],
+      lines: [],                      // @doc [string array] - output lines (with corrected parens or indentation)
+      lineNo: -1,                     // @doc [integer] - output line number we are on
+      ch: '',                         // @doc [string] - character we are processing (can be changed to indicate a replacement)
+      x: 0,                           // @doc [integer] - output x position of the current character (ch)
+      indentX: UINT_NULL,             // @doc [integer] - x position of the indentation point if present
 
-      // In Indent Mode, it is useful for editors to snap a line's indentation
-      // to certain critical points.  Thus, we have a `tabStops` array of objects containing
-      // keys {ch, x, lineNo, argX}, which is just the state of the `parenStack` at the cursor line.
-      tabStops: [],
+      parenStack: [],                 // @doc [array of {ch,x,lineNo,indentDelta}] - stack of open-parens
+                                      // We track where we are in the Lisp tree by keeping a stack (array) of open-parens.
+                                      // Stack elements are objects containing keys {ch, x, lineNo, indentDelta}
+                                      // whose values are the same as those described here in this result structure.
 
-      parenTrail: initialParenTrail(), // the range of parens at the end of a line
+      tabStops: [],                   // doc [array of {ch,x,lineNo,argX}]
+                                      // In Indent Mode, it is useful for editors to snap a line's indentation
+                                      // to certain critical points.  Thus, we have a `tabStops` array of objects containing
+                                      // keys {ch, x, lineNo, argX}, which is just the state of the `parenStack` at the cursor line.
 
-      parenTrails: [], // [array of {lineNo, startX, endX}] - all non-empty parenTrails to be returned
+      parenTrail:                     // @doc [array] - the range of parens at the end of a line
+      initialParenTrail(),
 
-      returnParens: false, // [boolean] - determines if we return `parens` described below
-      parens: [], // [array of {lineNo, x, closer, children}] - paren tree if `returnParens` is true
+      parenTrails: [],                // @doc [array of {lineNo, startX, endX}] - all non-empty parenTrails to be returned
 
-      cursorX: UINT_NULL, // [integer] - x position of the cursor
-      cursorLine: UINT_NULL, // [integer] - line number of the cursor
-      prevCursorX: UINT_NULL, // [integer] - x position of the previous cursor
-      prevCursorLine: UINT_NULL, // [integer] - line number of the previous cursor
+      returnParens: false,            // @doc [boolean] - determines if we return `parens` described below
+      parens: [],                     // @doc [array of {lineNo, x, closer, children}] - paren tree if `returnParens` is true
 
-      commentChars: [';'], // [array of chars] - characters that signify a comment in the code
+      cursorX: UINT_NULL,             // @doc [integer] - x position of the cursor
+      cursorLine: UINT_NULL,          // @doc [integer] - line number of the cursor
+      prevCursorX: UINT_NULL,         // @doc [integer] - x position of the previous cursor
+      prevCursorLine: UINT_NULL,      // @doc [integer] - line number of the previous cursor
 
-      selectionStartLine: UINT_NULL, // [integer] - line number of the current selection starting point
+      commentChars: [';'],            // @doc [array of chars] - characters that signify a comment in the code
 
-      changes: null, // [object] - mapping change.key to a change object (please see `transformChange` for object structure)
+      selectionStartLine: UINT_NULL,  // @doc [integer] - line number of the current selection starting point
 
-      isInCode: true, // [boolean] - indicates if we are currently in "code space" (not string or comment)
-      isEscaping: false, // [boolean] - indicates if the next character will be escaped (e.g. `\c`).  This may be inside string, comment, or code.
-      isEscaped: false, // [boolean] - indicates if the current character is escaped (e.g. `\c`).  This may be inside string, comment, or code.
-      isInStr: false, // [boolean] - indicates if we are currently inside a string
-      isInComment: false, // [boolean] - indicates if we are currently inside a comment
-      commentX: UINT_NULL, // [integer] - x position of the start of comment on current line (if any)
+      changes: null,                  // @doc [object] - mapping change.key to a change object (please see `transformChange` for object structure)
 
-      quoteDanger: false, // [boolean] - indicates if quotes are imbalanced inside of a comment (dangerous)
-      trackingIndent: false, // [boolean] - are we looking for the indentation point of the current line?
-      skipChar: false, // [boolean] - should we skip the processing of the current character?
-      success: false, // [boolean] - was the input properly formatted enough to create a valid result?
-      partialResult: false, // [boolean] - should we return a partial result when an error occurs?
-      forceBalance: false, // [boolean] - should indent mode aggressively enforce paren balance?
+      isInCode: true,                 // @doc [boolean] - indicates if we are currently in "code space" (not string or comment)
+      isEscaping: false,              // @doc [boolean] - indicates if the next character will be escaped (e.g. `\c`).  This may be inside string, comment, or code.
+      isEscaped: false,               // @doc [boolean] - indicates if the current character is escaped (e.g. `\c`).  This may be inside string, comment, or code.
+      isInStr: false,                 // @doc [boolean] - indicates if we are currently inside a string
+      isInComment: false,             // @doc [boolean] - indicates if we are currently inside a comment
+      commentX: UINT_NULL,            // @doc [integer] - x position of the start of comment on current line (if any)
 
-      maxIndent: UINT_NULL, // [integer] - maximum allowed indentation of subsequent lines in Paren Mode
-      indentDelta: 0, // [integer] - how far indentation was shifted by Paren Mode
-      //  (preserves relative indentation of nested expressions)
+      quoteDanger: false,             // @doc [boolean] - indicates if quotes are imbalanced inside of a comment (dangerous)
+      trackingIndent: false,          // @doc [boolean] - are we looking for the indentation point of the current line?
+      skipChar: false,                // @doc [boolean] - should we skip the processing of the current character?
+      success: false,                 // @doc [boolean] - was the input properly formatted enough to create a valid result?
+      partialResult: false,           // @doc [boolean] - should we return a partial result when an error occurs?
+      forceBalance: false,            // @doc [boolean] - should indent mode aggressively enforce paren balance?
 
-      trackingArgTabStop: null, // [string] - enum to track how close we are to the first-arg tabStop in a list
-      //  For example a tabStop occurs at `bar` below:
-      //
-      //         `   (foo    bar`
-      //          00011112222000  <-- state after processing char (enums below)
-      //
-      //         0   null    => not searching
-      //         1   'space' => searching for next space
-      //         2   'arg'   => searching for arg
-      //
-      //    (We create the tabStop when the change from 2->0 happens.)
-      //
+      maxIndent: UINT_NULL,           // @doc [integer] - maximum allowed indentation of subsequent lines in Paren Mode
+      indentDelta: 0,                 // @doc [integer] - how far indentation was shifted by Paren Mode
+                                      // (preserves relative indentation of nested expressions)
+
+      trackingArgTabStop: null,       // @doc [string] - enum to track how close we are to the first-arg tabStop in a list
+                                      // For example a tabStop occurs at `bar` below:
+                                      //
+                                      // `   (foo    bar`
+                                      // 00011112222000  <-- state after processing char (enums below)
+                                      //
+                                      // 0   null    => not searching
+                                      // 1   'space' => searching for next space
+                                      // 2   'arg'   => searching for arg
+                                      //
+                                      // (We create the tabStop when the change from 2->0 happens.)
+                                      //
 
       error: { // if 'success' is false, return this error to the user
         name: null, // [string] - Parinfer's unique name for this error
