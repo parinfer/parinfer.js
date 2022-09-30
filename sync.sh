@@ -19,7 +19,7 @@ fn_links=$(perl -n -e'/^  function (\w+)/ && print "[`$1`]:../parinfer.js#L$.\n"
 var_links=$(perl -n -e'/^  (var|const|let) ([\w_]+) = / && print "[`$2`]:../parinfer.js#L$.\n"' $jsfile)
 
 # ref links for each top-level result key
-result_links=$(perl -n -e'/^\s+(\w+):.*\/\/ \@doc / && print "[`result.$1`]:../parinfer.js#L$.\n"' $jsfile)
+result_links=$(perl -n -e'/^\s+(\w+):.*\/\/\s*\@doc / && print "[`result.$1`]:../parinfer.js#L$.\n"' $jsfile)
 
 # where to insert the ref links
 lineno=$(perl -n -e'/<!-- END OF DOC/ && print $.' $docfile)
