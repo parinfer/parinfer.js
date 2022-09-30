@@ -72,6 +72,8 @@ Arguments:
 - `text` is the full text input.
 - `options` is an object with the following properties:
   - `commentChars` - a character (ie: string of length 1) or array of characters that should be considered comments in the code (defaults to `[";"]`)
+  - `openParenChars` - array of characters for open-parentheses (defaults to `["(","[","{"]`)
+  - `closeParenChars` - array of characters for close-parentheses (defaults to `[")","]","}"]`)
   - `cursorLine` - zero-based line number of the cursor
   - `cursorX` - zero-based x-position of the cursor
   - `prevCursorLine` and `prevCursorX` is required by Smart Mode (previous cursor position)

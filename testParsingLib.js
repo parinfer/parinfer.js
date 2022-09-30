@@ -192,6 +192,8 @@ function _parseInput (text, extras) {
   extras = extras || {}
   var options = {}
   if (extras.commentChars) { options.commentChars = extras.commentChars }
+  if (extras.openParenChars) { options.openParenChars = extras.openParenChars }
+  if (extras.closeParenChars) { options.closeParenChars = extras.closeParenChars }
   if (extras.forceBalance) { options.forceBalance = true }
   if (extras.partialResult) { options.partialResult = true }
   if (extras.printParensOnly) { options.returnParens = true }

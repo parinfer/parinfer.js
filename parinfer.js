@@ -368,6 +368,8 @@
     return {
       changes: options.changes,
       commentChars: options.commentChars,
+      openParenChars: options.openParenChars,
+      closeParenChars: options.closeParenChars,
       cursorLine: options.cursorLine,
       cursorX: options.cursorX,
       forceBalance: options.forceBalance,
@@ -446,6 +448,8 @@
       prevCursorLine: UINT_NULL,      // @doc [integer] - line number of the previous cursor
 
       commentChars: [';'],            // @doc [array of chars] - characters that signify a comment in the code
+      openParenChars: ['(','[','{'],  // @doc [array of chars] - open parentheses characters
+      closeParenChars: [')',']','}'], // @doc [array of chars] - close parentheses characters
 
       selectionStartLine: UINT_NULL,  // @doc [integer] - line number of the current selection starting point
 
@@ -520,6 +524,10 @@
       if (isBoolean(options.returnParens)) result.returnParens = options.returnParens
       if (isChar(options.commentChars)) result.commentChars = [options.commentChars]
       if (isArrayOfChars(options.commentChars)) result.commentChars = options.commentChars
+      if (isChar(options.openParenChars)) result.openParenChars = [options.openParenChars]
+      if (isArrayOfChars(options.openParenChars)) result.openParenChars = options.openParenChars
+      if (isChar(options.closeParenChars)) result.closeParenChars = [options.closeParenChars]
+      if (isArrayOfChars(options.closeParenChars)) result.closeParenChars = options.closeParenChars
     }
 
     return result
@@ -708,12 +716,12 @@
   // ---------------------------------------------------------------------------
   // Questions about characters
 
-  function isOpenParen (ch) {
-    return ch === '{' || ch === '(' || ch === '['
+  function isOpenParen (ch, openParenChars) {
+    return openParenChars.indexOf(ch) !== -1
   }
 
-  function isCloseParen (ch) {
-    return ch === '}' || ch === ')' || ch === ']'
+  function isCloseParen (ch, closeParenChars) {
+    return closeParenChars.indexOf(ch) !== -1
   }
 
   function isValidCloseParen (parenStack, ch) {
@@ -731,7 +739,7 @@
   // can this be the last code character of a list?
   function isClosable (result) {
     var ch = result.ch
-    var isCloser = (isCloseParen(ch) && !result.isEscaped)
+    var isCloser = (isCloseParen(ch, result.closeParenChars) && !result.isEscaped)
     return result.isInCode && !isWhitespace(result) && ch !== '' && !isCloser
   }
 
@@ -946,8 +954,8 @@
     result.isEscaped = false
 
     if (result.isEscaping) afterBackslash(result)
-    else if (isOpenParen(ch)) onOpenParen(result)
-    else if (isCloseParen(ch)) onCloseParen(result)
+    else if (isOpenParen(ch, result.openParenChars)) onOpenParen(result)
+    else if (isCloseParen(ch, result.closeParenChars)) onCloseParen(result)
     else if (ch === DOUBLE_QUOTE) onQuote(result)
     else if (isCommentChar(ch, result.commentChars)) onCommentChar(result)
     else if (ch === BACKSLASH) onBackslash(result)
@@ -1042,7 +1050,7 @@
       let i = startX
       while (i < newStartX) {
         const ch = getCharFromString(line, i)
-        if (isCloseParen(ch)) {
+        if (isCloseParen(ch, result.closeParenChars)) {
           removeCount = removeCount + 1
         }
         i = i + 1
@@ -1301,7 +1309,7 @@
     var i = startX
     while (i < endX) {
       const lineCh = getCharFromString(line, i)
-      if (isCloseParen(lineCh)) {
+      if (isCloseParen(lineCh, result.closeParenChars)) {
         newTrail = strConcat(newTrail, lineCh)
       } else {
         spaceCount = spaceCount + 1
@@ -1555,7 +1563,7 @@
   }
 
   function checkIndent (result) {
-    if (isCloseParen(result.ch)) {
+    if (isCloseParen(result.ch, result.closeParenChars)) {
       onLeadingCloseParen(result)
     } else if (isCommentChar(result.ch, result.commentChars)) {
       // comments don't count as indentation points

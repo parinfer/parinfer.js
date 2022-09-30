@@ -117,10 +117,28 @@ const indentModeCommentTest1415 = {
   }
 }
 
+const indentModeParenCharTest1420 = {
+  id: 1420,
+  text: '(let ((}{ 2)\n      (]]] 5))\n  (- }{ ]]]))',
+  options: {openParenChars:'(', closeParenChars:')'},
+  result: {
+    text: '(let ((}{ 2)\n      (]]] 5))\n  (- }{ ]]]))',
+    success: true
+  },
+  source: {
+    lineNo: 9200,
+    in: [
+      '(let ((}{ 2)\n      (]]] 5))\n  (- }{ ]]]))',
+    ],
+    out: '(let ((}{ 2)\n      (]]] 5))\n  (- }{ ]]]))',
+  }
+}
+
 indentCases.push(indentModeCommentTest1400)
 indentCases.push(indentModeCommentTest1405)
 indentCases.push(indentModeCommentTest1410)
 indentCases.push(indentModeCommentTest1415)
+indentCases.push(indentModeParenCharTest1420)
 
 const parenModeCommentTest2300 = {
   id: 2300,
@@ -178,9 +196,27 @@ const parenModeCommentTest2310 = {
   }
 }
 
+const parenModeParenCharTest2315 = {
+  id: 2315,
+  text: '(let ((}{ 2)\n      (]]] 5))\n  (- }{ ]]]))',
+  options: {openParenChars:'(', closeParenChars:')'},
+  result: {
+    text: '(let ((}{ 2)\n      (]]] 5))\n  (- }{ ]]]))',
+    success: true
+  },
+  source: {
+    lineNo: 9200,
+    in: [
+      '(let ((}{ 2)\n      (]]] 5))\n  (- }{ ]]]))',
+    ],
+    out: '(let ((}{ 2)\n      (]]] 5))\n  (- }{ ]]]))',
+  }
+}
+
 parenCases.push(parenModeCommentTest2300)
 parenCases.push(parenModeCommentTest2305)
 parenCases.push(parenModeCommentTest2310)
+parenCases.push(parenModeParenCharTest2315)
 
 const smartModeCommentTest3200 = {
   id: 3200,
@@ -228,8 +264,27 @@ const smartModeCommentTest3205 = {
   }
 }
 
+const smartModeParenCharTest3210 = {
+  id: 3210,
+  text: '(let ((}{ 2)\n      (]]] 5))\n  (- }{ ]]]))',
+  options: {openParenChars:'(', closeParenChars:')'},
+  result: {
+    text: '(let ((}{ 2)\n      (]]] 5))\n  (- }{ ]]]))',
+    success: true
+  },
+  source: {
+    lineNo: 9200,
+    in: [
+      '(let ((}{ 2)\n      (]]] 5))\n  (- }{ ]]]))',
+    ],
+    out: '(let ((}{ 2)\n      (]]] 5))\n  (- }{ ]]]))',
+  }
+}
+
+
 smartCases.push(smartModeCommentTest3200)
 smartCases.push(smartModeCommentTest3205)
+smartCases.push(smartModeParenCharTest3210)
 
 // -----------------------------------------------------------------------------
 // STRUCTURE TEST
@@ -321,6 +376,12 @@ function testStructure (testCase, mode) {
     if (testCase.options && testCase.options.commentChars) {
       options2.commentChars = testCase.options.commentChars
     }
+    if (testCase?.options?.openParenChars) {
+      options2.openParenChars = testCase.options.openParenChars
+    }
+    if (testCase?.options?.closeParenChars) {
+      options2.closeParenChars = testCase.options.closeParenChars
+    }
 
     result2 = null
     if (mode === 'indent') {
@@ -341,6 +402,13 @@ function testStructure (testCase, mode) {
     if (testCase.options && testCase.options.commentChars) {
       options3.commentChars = testCase.options.commentChars
     }
+    if (testCase?.options?.openParenChars) {
+      options3.openParenChars = testCase.options.openParenChars
+    }
+    if (testCase?.options?.closeParenChars) {
+      options3.closeParenChars = testCase.options.closeParenChars
+    }
+
     if (!hasCursor) {
       result3 = null
       if (mode === 'indent') {
@@ -374,6 +442,12 @@ function testString (testCase, mode) {
   }
   if (testCase.options && testCase.options.commentChars) {
     prettyOptions.commentChars = testCase.options.commentChars
+  }
+  if (testCase?.options?.openParenChars) {
+    prettyOptions.openParenChars = testCase.options.openParenChars
+  }
+  if (testCase?.options?.closeParenChars) {
+    prettyOptions.closeParenChars = testCase.options.closeParenChars
   }
 
   var pretty, pretty2, pretty3
