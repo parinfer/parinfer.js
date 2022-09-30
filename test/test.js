@@ -120,7 +120,7 @@ const indentModeCommentTest1415 = {
 const indentModeParenCharTest1420 = {
   id: 1420,
   text: '(let ((}{ 2)\n      (]]] 5))\n  (- }{ ]]]))',
-  options: {openParenChars:'(', closeParenChars:')'},
+  options: { openParenChars: '(', closeParenChars: ')' },
   result: {
     text: '(let ((}{ 2)\n      (]]] 5))\n  (- }{ ]]]))',
     success: true
@@ -128,9 +128,9 @@ const indentModeParenCharTest1420 = {
   source: {
     lineNo: 9200,
     in: [
-      '(let ((}{ 2)\n      (]]] 5))\n  (- }{ ]]]))',
+      '(let ((}{ 2)\n      (]]] 5))\n  (- }{ ]]]))'
     ],
-    out: '(let ((}{ 2)\n      (]]] 5))\n  (- }{ ]]]))',
+    out: '(let ((}{ 2)\n      (]]] 5))\n  (- }{ ]]]))'
   }
 }
 
@@ -199,7 +199,7 @@ const parenModeCommentTest2310 = {
 const parenModeParenCharTest2315 = {
   id: 2315,
   text: '(let ((}{ 2)\n      (]]] 5))\n  (- }{ ]]]))',
-  options: {openParenChars:'(', closeParenChars:')'},
+  options: { openParenChars: '(', closeParenChars: ')' },
   result: {
     text: '(let ((}{ 2)\n      (]]] 5))\n  (- }{ ]]]))',
     success: true
@@ -207,9 +207,9 @@ const parenModeParenCharTest2315 = {
   source: {
     lineNo: 9200,
     in: [
-      '(let ((}{ 2)\n      (]]] 5))\n  (- }{ ]]]))',
+      '(let ((}{ 2)\n      (]]] 5))\n  (- }{ ]]]))'
     ],
-    out: '(let ((}{ 2)\n      (]]] 5))\n  (- }{ ]]]))',
+    out: '(let ((}{ 2)\n      (]]] 5))\n  (- }{ ]]]))'
   }
 }
 
@@ -267,7 +267,7 @@ const smartModeCommentTest3205 = {
 const smartModeParenCharTest3210 = {
   id: 3210,
   text: '(let ((}{ 2)\n      (]]] 5))\n  (- }{ ]]]))',
-  options: {openParenChars:'(', closeParenChars:')'},
+  options: { openParenChars: '(', closeParenChars: ')' },
   result: {
     text: '(let ((}{ 2)\n      (]]] 5))\n  (- }{ ]]]))',
     success: true
@@ -275,12 +275,11 @@ const smartModeParenCharTest3210 = {
   source: {
     lineNo: 9200,
     in: [
-      '(let ((}{ 2)\n      (]]] 5))\n  (- }{ ]]]))',
+      '(let ((}{ 2)\n      (]]] 5))\n  (- }{ ]]]))'
     ],
-    out: '(let ((}{ 2)\n      (]]] 5))\n  (- }{ ]]]))',
+    out: '(let ((}{ 2)\n      (]]] 5))\n  (- }{ ]]]))'
   }
 }
-
 
 smartCases.push(smartModeCommentTest3200)
 smartCases.push(smartModeCommentTest3205)
