@@ -899,5 +899,54 @@
       "out": "{:a {:b (Integer/valueOf (-> \"\"\n                             (.length)))}}"
     },
     "id": 3165
+  },
+  {
+    "text": "(let [a 1\n      ])$ <-- spaces",
+    "options": {
+      "commentChars": [
+        ";",
+        "$"
+      ]
+    },
+    "result": {
+      "text": "(let [a 1])\n      $ <-- spaces",
+      "success": true
+    },
+    "source": {
+      "lineNo": 562,
+      "in": [
+        "options = { commentChars: [';', '$'] }\n\n(let [a 1\n      ])$ <-- spaces"
+      ],
+      "out": "(let [a 1])\n      $ <-- spaces"
+    },
+    "id": 3200
+  },
+  {
+    "text": "(defn foo\n    [a b]\n    # comment 1\n    bar)\n    # comment 2",
+    "options": {
+      "commentChars": [
+        "#"
+      ],
+      "changes": [
+        {
+          "lineNo": 0,
+          "x": 0,
+          "oldText": "  ",
+          "newText": ""
+        }
+      ]
+    },
+    "result": {
+      "text": "(defn foo\n  [a b]\n  # comment 1\n  bar)\n  # comment 2",
+      "success": true
+    },
+    "source": {
+      "lineNo": 574,
+      "in": [
+        "options = { commentChars: ['#'] }\n\n  (defn foo\n--\n    [a b]\n    # comment 1\n    bar)\n    # comment 2"
+      ],
+      "out": "(defn foo\n  [a b]\n  # comment 1\n  bar)\n  # comment 2"
+    },
+    "id": 3205
   }
 ]

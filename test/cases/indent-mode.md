@@ -895,3 +895,79 @@ We return non-empty Paren Trails so plugins can dim them with markers:
       :prod prod}))
                 ^^^ parenTrail
 ```
+
+## Custom Comment Chars
+
+```in:1400
+options = { commentChars: ['#'] }
+
+(def foo \,
+(def bar \ # <-- space
+```
+
+```out
+(def foo \,)
+(def bar \ )# <-- space
+```
+
+```in:1405
+options = { commentChars: 'q'}
+
+(def foo q)
+```
+
+```out
+(def foo) q)
+```
+
+```in:1410
+options = { commentChars: ['#'] }
+
+(def foo [a b]
+  # "my multiline
+  # docstring."
+ret)
+```
+
+```out
+(def foo [a b])
+  # "my multiline
+  # docstring."
+ret
+```
+
+```in:1415
+options = { commentChars: '#' }
+
+(let [a 1
+      b 2
+      c {:foo 1
+         ## :bar 2}]
+  ret)
+```
+
+```out
+(let [a 1
+      b 2
+      c {:foo 1}]
+         ## :bar 2}]
+  ret)
+```
+
+## Limit Paren Chars
+
+Allow curly and bracket parens to be interpreted as atoms:
+
+```in:2315
+options = { openParenChars: '(', closeParenChars: ')' }
+
+(let ((}{ 2
+      (]]] 5
+  (- }{ ]]]
+```
+
+```out
+(let ((}{ 2)
+      (]]] 5))
+  (- }{ ]]]))
+```

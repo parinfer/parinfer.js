@@ -1357,5 +1357,100 @@
       "out": "(defn foo\n  \"hello, this is a docstring\"\n  [a b]\n      ^ parenTrail\n  (let [sum (+ a b)\n                  ^ parenTrail\n        prod (* a b)]\n                   ^^ parenTrail\n     {:sum sum\n      :prod prod}))\n                ^^^ parenTrail"
     },
     "id": 1320
+  },
+  {
+    "text": "(def foo \\,\n(def bar \\ # <-- space",
+    "options": {
+      "commentChars": [
+        "#"
+      ]
+    },
+    "result": {
+      "text": "(def foo \\,)\n(def bar \\ )# <-- space",
+      "success": true
+    },
+    "source": {
+      "lineNo": 900,
+      "in": [
+        "options = { commentChars: ['#'] }\n\n(def foo \\,\n(def bar \\ # <-- space"
+      ],
+      "out": "(def foo \\,)\n(def bar \\ )# <-- space"
+    },
+    "id": 1400
+  },
+  {
+    "text": "(def foo q)",
+    "options": {
+      "commentChars": "q"
+    },
+    "result": {
+      "text": "(def foo) q)",
+      "success": true
+    },
+    "source": {
+      "lineNo": 912,
+      "in": [
+        "options = { commentChars: 'q'}\n\n(def foo q)"
+      ],
+      "out": "(def foo) q)"
+    },
+    "id": 1405
+  },
+  {
+    "text": "(def foo [a b]\n  # \"my multiline\n  # docstring.\"\nret)",
+    "options": {
+      "commentChars": [
+        "#"
+      ]
+    },
+    "result": {
+      "text": "(def foo [a b])\n  # \"my multiline\n  # docstring.\"\nret",
+      "success": true
+    },
+    "source": {
+      "lineNo": 922,
+      "in": [
+        "options = { commentChars: ['#'] }\n\n(def foo [a b]\n  # \"my multiline\n  # docstring.\"\nret)"
+      ],
+      "out": "(def foo [a b])\n  # \"my multiline\n  # docstring.\"\nret"
+    },
+    "id": 1410
+  },
+  {
+    "text": "(let [a 1\n      b 2\n      c {:foo 1\n         ## :bar 2}]\n  ret)",
+    "options": {
+      "commentChars": "#"
+    },
+    "result": {
+      "text": "(let [a 1\n      b 2\n      c {:foo 1}]\n         ## :bar 2}]\n  ret)",
+      "success": true
+    },
+    "source": {
+      "lineNo": 938,
+      "in": [
+        "options = { commentChars: '#' }\n\n(let [a 1\n      b 2\n      c {:foo 1\n         ## :bar 2}]\n  ret)"
+      ],
+      "out": "(let [a 1\n      b 2\n      c {:foo 1}]\n         ## :bar 2}]\n  ret)"
+    },
+    "id": 1415
+  },
+  {
+    "text": "(let ((}{ 2\n      (]]] 5\n  (- }{ ]]]",
+    "options": {
+      "openParenChars": "(",
+      "closeParenChars": ")"
+    },
+    "result": {
+      "text": "(let ((}{ 2)\n      (]]] 5))\n  (- }{ ]]]))",
+      "success": true
+    },
+    "source": {
+      "lineNo": 960,
+      "in": [
+        "options = { openParenChars: '(', closeParenChars: ')' }\n\n(let ((}{ 2\n      (]]] 5\n  (- }{ ]]]"
+      ],
+      "out": "(let ((}{ 2)\n      (]]] 5))\n  (- }{ ]]]))"
+    },
+    "id": 2315
   }
 ]

@@ -40,251 +40,6 @@ const indentCases = require('./cases/indent-mode.json')
 const parenCases = require('./cases/paren-mode.json')
 const smartCases = require('./cases/smart-mode.json')
 
-// NOTE:
-// Add some additional tests that do not participate in the "test cases in markdown" system
-// This is a hack in order to ensure that adding configurable comment characters
-// did not break anything.
-// Long-term: I want to refactor the "test cases in markdown" approach
-// -- C. Oakman, 06 Sep 2020
-
-const indentModeCommentTest1400 = {
-  id: 1400,
-  text: '(def foo \\,\n(def bar \\ # <-- space',
-  options: {
-    commentChars: ['#']
-  },
-  result: {
-    text: '(def foo \\,)\n(def bar \\ )# <-- space',
-    success: true
-  },
-  source: {
-    lineNo: 9000,
-    in: [
-      '(def foo \\,\n(def bar \\ # <-- space'
-    ],
-    out: '(def foo \\,)\n(def bar \\ )# <-- space'
-  }
-}
-
-const indentModeCommentTest1405 = {
-  id: 1405,
-  text: '(def foo q)',
-  options: { commentChars: 'q' },
-  result: {
-    text: '(def foo) q)',
-    success: true
-  },
-  source: {
-    lineNo: 9050,
-    in: [
-      '(def foo q)'
-    ],
-    out: '(def foo) q)'
-  }
-}
-
-const indentModeCommentTest1410 = {
-  id: 1410,
-  text: '(def foo [a b]\n  # "my multiline\n  # docstring."\nret)',
-  options: { commentChars: ['#'] },
-  result: {
-    text: '(def foo [a b])\n  # "my multiline\n  # docstring."\nret',
-    success: true
-  },
-  source: {
-    lineNo: 9100,
-    in: [
-      '(def foo [a b]\n  # "my multiline\n  # docstring."\nret)'
-    ],
-    out: '(def foo [a b])\n  # "my multiline\n  # docstring."\nret'
-  }
-}
-
-const indentModeCommentTest1415 = {
-  id: 1415,
-  text: '(let [a 1\n      b 2\n      c {:foo 1\n         ## :bar 2}]\n  ret)',
-  options: { commentChars: '#' },
-  result: {
-    text: '(let [a 1\n      b 2\n      c {:foo 1}]\n         ## :bar 2}]\n  ret)',
-    success: true
-  },
-  source: {
-    lineNo: 9150,
-    in: [
-      '(let [a 1\n      b 2\n      c {:foo 1\n         ## :bar 2}]\n  ret)'
-    ],
-    out: '(let [a 1\n      b 2\n      c {:foo 1}]\n         ## :bar 2}]\n  ret)'
-  }
-}
-
-const indentModeParenCharTest1420 = {
-  id: 1420,
-  text: '(let ((}{ 2)\n      (]]] 5))\n  (- }{ ]]]))',
-  options: { openParenChars: '(', closeParenChars: ')' },
-  result: {
-    text: '(let ((}{ 2)\n      (]]] 5))\n  (- }{ ]]]))',
-    success: true
-  },
-  source: {
-    lineNo: 9200,
-    in: [
-      '(let ((}{ 2)\n      (]]] 5))\n  (- }{ ]]]))'
-    ],
-    out: '(let ((}{ 2)\n      (]]] 5))\n  (- }{ ]]]))'
-  }
-}
-
-indentCases.push(indentModeCommentTest1400)
-indentCases.push(indentModeCommentTest1405)
-indentCases.push(indentModeCommentTest1410)
-indentCases.push(indentModeCommentTest1415)
-indentCases.push(indentModeParenCharTest1420)
-
-const parenModeCommentTest2300 = {
-  id: 2300,
-  text: '(let [foo 1\n      ]# <-- spaces\n  foo)',
-  options: { commentChars: '#' },
-  result: {
-    text: '(let [foo 1]\n      # <-- spaces\n  foo)',
-    success: true
-  },
-  source: {
-    lineNo: 8000,
-    in: [
-      '(let [foo 1\n      ]# <-- spaces\n  foo)'
-    ],
-    out: '(let [foo 1]\n      # <-- spaces\n  foo)'
-  }
-}
-
-const parenModeCommentTest2305 = {
-  id: 2305,
-  text: '(let [foo 1\n      bar 2\n\n     ] (+ foo bar\n  )% <-- spaces\n)',
-  options: { commentChars: [';', '%'] },
-  result: {
-    text: '(let [foo 1\n      bar 2]\n\n     (+ foo bar))\n  % <-- spaces\n',
-    success: true
-  },
-  source: {
-    lineNo: 8100,
-    in: [
-      '(let [foo 1\n      bar 2\n\n     ] (+ foo bar\n  )% <-- spaces\n)'
-    ],
-    out: '(let [foo 1\n      bar 2]\n\n     (+ foo bar))\n  % <-- spaces\n'
-  }
-}
-
-const parenModeCommentTest2310 = {
-  id: 2310,
-  text: '(def foo [a b]\n  # "my string\nret)',
-  options: { commentChars: ['#'] },
-  result: {
-    error: {
-      name: 'quote-danger',
-      lineNo: 1,
-      x: 4
-    },
-    text: '(def foo [a b]\n  # "my string\nret)',
-    success: false
-  },
-  source: {
-    lineNo: 8200,
-    in: [
-      '(def foo [a b]\n  # "my string\nret)'
-    ],
-    out: '(def foo [a b]\n  # "my string\n    ^ error: quote-danger\nret)'
-  }
-}
-
-const parenModeParenCharTest2315 = {
-  id: 2315,
-  text: '(let ((}{ 2)\n      (]]] 5))\n  (- }{ ]]]))',
-  options: { openParenChars: '(', closeParenChars: ')' },
-  result: {
-    text: '(let ((}{ 2)\n      (]]] 5))\n  (- }{ ]]]))',
-    success: true
-  },
-  source: {
-    lineNo: 9200,
-    in: [
-      '(let ((}{ 2)\n      (]]] 5))\n  (- }{ ]]]))'
-    ],
-    out: '(let ((}{ 2)\n      (]]] 5))\n  (- }{ ]]]))'
-  }
-}
-
-parenCases.push(parenModeCommentTest2300)
-parenCases.push(parenModeCommentTest2305)
-parenCases.push(parenModeCommentTest2310)
-parenCases.push(parenModeParenCharTest2315)
-
-const smartModeCommentTest3200 = {
-  id: 3200,
-  text: '(let [a 1\n      ])$ <-- spaces',
-  options: {
-    commentChars: [';', '$']
-  },
-  result: {
-    text: '(let [a 1])\n      $ <-- spaces',
-    success: true
-  },
-  source: {
-    lineNo: 4100,
-    in: [
-      '(let [a 1\n      ])$ <-- spaces'
-    ],
-    out: '(let [a 1])\n      $ <-- spaces'
-  }
-}
-
-const smartModeCommentTest3205 = {
-  id: 3205,
-  text: '(defn foo\n    [a b]\n    # comment 1\n    bar)\n    # comment 2',
-  options: {
-    commentChars: ['#'],
-    changes: [
-      {
-        lineNo: 0,
-        x: 0,
-        oldText: '  ',
-        newText: ''
-      }
-    ]
-  },
-  result: {
-    text: '(defn foo\n  [a b]\n  # comment 1\n  bar)\n  # comment 2',
-    success: true
-  },
-  source: {
-    lineNo: 4200,
-    in: [
-      '  (defn foo\n--\n    [a b]\n    # comment 1\n    bar)\n    # comment 2'
-    ],
-    out: '(defn foo\n  [a b]\n  # comment 1\n  bar)\n  # comment 2'
-  }
-}
-
-const smartModeParenCharTest3210 = {
-  id: 3210,
-  text: '(let ((}{ 2)\n      (]]] 5))\n  (- }{ ]]]))',
-  options: { openParenChars: '(', closeParenChars: ')' },
-  result: {
-    text: '(let ((}{ 2)\n      (]]] 5))\n  (- }{ ]]]))',
-    success: true
-  },
-  source: {
-    lineNo: 9200,
-    in: [
-      '(let ((}{ 2)\n      (]]] 5))\n  (- }{ ]]]))'
-    ],
-    out: '(let ((}{ 2)\n      (]]] 5))\n  (- }{ ]]]))'
-  }
-}
-
-smartCases.push(smartModeCommentTest3200)
-smartCases.push(smartModeCommentTest3205)
-smartCases.push(smartModeParenCharTest3210)
-
 // -----------------------------------------------------------------------------
 // STRUCTURE TEST
 // Diff the relevant result properties.
@@ -369,17 +124,9 @@ function testStructure (testCase, mode) {
 
   it('should generate the same result structure on idempotence check', function () {
     const options2 = {
+      ...options,
       cursorX: result1.cursorX,
       cursorLine: result1.cursorLine
-    }
-    if (testCase.options && testCase.options.commentChars) {
-      options2.commentChars = testCase.options.commentChars
-    }
-    if (testCase?.options?.openParenChars) {
-      options2.openParenChars = testCase.options.openParenChars
-    }
-    if (testCase?.options?.closeParenChars) {
-      options2.closeParenChars = testCase.options.closeParenChars
     }
 
     result2 = null
@@ -397,18 +144,8 @@ function testStructure (testCase, mode) {
 
   it('should generate the same result structure on cross-mode check', function () {
     const hasCursor = isInteger(expected.cursorX)
-    const options3 = {}
-    if (testCase.options && testCase.options.commentChars) {
-      options3.commentChars = testCase.options.commentChars
-    }
-    if (testCase?.options?.openParenChars) {
-      options3.openParenChars = testCase.options.openParenChars
-    }
-    if (testCase?.options?.closeParenChars) {
-      options3.closeParenChars = testCase.options.closeParenChars
-    }
-
     if (!hasCursor) {
+      const options3 = { ...options }
       result3 = null
       if (mode === 'indent') {
         result3 = parinfer.indentMode(result1.text, options3)
@@ -435,29 +172,22 @@ function testString (testCase, mode) {
   var expected = testCase.result
   var source = testCase.source
 
-  const prettyOptions = {
+  const extras = {
     printTabStops: expected.tabStops,
     printParenTrails: expected.parenTrails
   }
-  if (testCase.options && testCase.options.commentChars) {
-    prettyOptions.commentChars = testCase.options.commentChars
-  }
-  if (testCase?.options?.openParenChars) {
-    prettyOptions.openParenChars = testCase.options.openParenChars
-  }
-  if (testCase?.options?.closeParenChars) {
-    prettyOptions.closeParenChars = testCase.options.closeParenChars
-  }
 
   var pretty, pretty2, pretty3
+  var prettyIn
 
   it('should generate the correct annotated output', function () {
     switch (mode) {
-      case 'indent': pretty = parinferTest.indentMode(source.in, prettyOptions); break
-      case 'paren': pretty = parinferTest.parenMode(source.in, prettyOptions); break
-      case 'smart': pretty = parinferTest.smartMode(source.in, prettyOptions); break
+      case 'indent': pretty = parinferTest.indentMode(source.in, extras); break
+      case 'paren': pretty = parinferTest.parenMode(source.in, extras); break
+      case 'smart': pretty = parinferTest.smartMode(source.in, extras); break
     }
     assert.strictEqual(pretty, source.out, '\n\nINPUT:\n' + source.in + '\n')
+    prettyIn = parinferTest.transferInlineOpts(source.in, pretty)
   })
 
   if (expected.error ||
@@ -469,9 +199,9 @@ function testString (testCase, mode) {
 
   it('should generate the same annotated output on idempotence check', function () {
     switch (mode) {
-      case 'indent': pretty2 = parinferTest.indentMode(pretty, prettyOptions); break
-      case 'paren': pretty2 = parinferTest.parenMode(pretty, prettyOptions); break
-      case 'smart': pretty2 = parinferTest.smartMode(pretty, prettyOptions); break
+      case 'indent': pretty2 = parinferTest.indentMode(prettyIn, extras); break
+      case 'paren': pretty2 = parinferTest.parenMode(prettyIn, extras); break
+      case 'smart': pretty2 = parinferTest.smartMode(prettyIn, extras); break
     }
     assert.strictEqual(pretty2, pretty)
   })
@@ -480,9 +210,9 @@ function testString (testCase, mode) {
     const hasCursor = expected.cursorX != null
     if (!hasCursor) {
       switch (mode) {
-        case 'indent': pretty3 = parinferTest.parenMode(pretty, prettyOptions); break
-        case 'paren': pretty3 = parinferTest.indentMode(pretty, prettyOptions); break
-        case 'smart': pretty3 = parinferTest.parenMode(pretty, prettyOptions); break
+        case 'indent': pretty3 = parinferTest.parenMode(prettyIn, extras); break
+        case 'paren': pretty3 = parinferTest.indentMode(prettyIn, extras); break
+        case 'smart': pretty3 = parinferTest.parenMode(prettyIn, extras); break
       }
       assert.strictEqual(pretty3, pretty)
     }

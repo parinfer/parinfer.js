@@ -663,3 +663,72 @@ use it for alignment.
   |
   bar)
 ```
+
+## Custom Comment Chars
+
+```in:2300
+options = { commentChars: '#' }
+
+(let [foo 1
+      ]# <-- spaces
+  foo)
+```
+
+```out
+(let [foo 1]
+      # <-- spaces
+  foo)
+```
+
+```in:2305
+options = { commentChars: [';', '%'] }
+
+(let [foo 1
+      bar 2
+
+     ] (+ foo bar
+  )% <-- spaces
+)
+```
+
+```out
+(let [foo 1
+      bar 2]
+
+     (+ foo bar))
+  % <-- spaces
+
+```
+
+```in:2310
+options = { commentChars: ['#'] }
+
+(def foo [a b]
+  # "my string
+ret)
+```
+
+```out
+(def foo [a b]
+  # "my string
+    ^ error: quote-danger
+ret)
+```
+
+## Limit Paren Chars
+
+Allow curly and bracket parens to be interpreted as atoms:
+
+```in:1420
+options = { openParenChars: '(', closeParenChars: ')' }
+
+(let ((}{ 2)
+      (]]] 5))
+  (- }{ ]]]))
+```
+
+```out
+(let ((}{ 2)
+      (]]] 5))
+  (- }{ ]]]))
+```

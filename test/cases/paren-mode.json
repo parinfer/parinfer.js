@@ -981,5 +981,88 @@
       "out": "(let [a {:foo 1}\n      bar (func 1 2 3)]\n^    ^    ^     > tabStops\n  |\n  bar)"
     },
     "id": 2215
+  },
+  {
+    "text": "(let [foo 1\n      ]# <-- spaces\n  foo)",
+    "options": {
+      "commentChars": "#"
+    },
+    "result": {
+      "text": "(let [foo 1]\n      # <-- spaces\n  foo)",
+      "success": true
+    },
+    "source": {
+      "lineNo": 668,
+      "in": [
+        "options = { commentChars: '#' }\n\n(let [foo 1\n      ]# <-- spaces\n  foo)"
+      ],
+      "out": "(let [foo 1]\n      # <-- spaces\n  foo)"
+    },
+    "id": 2300
+  },
+  {
+    "text": "(let [foo 1\n      bar 2\n\n     ] (+ foo bar\n  )% <-- spaces\n)",
+    "options": {
+      "commentChars": [
+        ";",
+        "%"
+      ]
+    },
+    "result": {
+      "text": "(let [foo 1\n      bar 2]\n\n     (+ foo bar))\n  % <-- spaces\n",
+      "success": true
+    },
+    "source": {
+      "lineNo": 682,
+      "in": [
+        "options = { commentChars: [';', '%'] }\n\n(let [foo 1\n      bar 2\n\n     ] (+ foo bar\n  )% <-- spaces\n)"
+      ],
+      "out": "(let [foo 1\n      bar 2]\n\n     (+ foo bar))\n  % <-- spaces\n"
+    },
+    "id": 2305
+  },
+  {
+    "text": "(def foo [a b]\n  # \"my string\nret)",
+    "options": {
+      "commentChars": [
+        "#"
+      ]
+    },
+    "result": {
+      "error": {
+        "name": "quote-danger",
+        "lineNo": 1,
+        "x": 4
+      },
+      "text": "(def foo [a b]\n  # \"my string\nret)",
+      "success": false
+    },
+    "source": {
+      "lineNo": 702,
+      "in": [
+        "options = { commentChars: ['#'] }\n\n(def foo [a b]\n  # \"my string\nret)"
+      ],
+      "out": "(def foo [a b]\n  # \"my string\n    ^ error: quote-danger\nret)"
+    },
+    "id": 2310
+  },
+  {
+    "text": "(let ((}{ 2)\n      (]]] 5))\n  (- }{ ]]]))",
+    "options": {
+      "openParenChars": "(",
+      "closeParenChars": ")"
+    },
+    "result": {
+      "text": "(let ((}{ 2)\n      (]]] 5))\n  (- }{ ]]]))",
+      "success": true
+    },
+    "source": {
+      "lineNo": 721,
+      "in": [
+        "options = { openParenChars: '(', closeParenChars: ')' }\n\n(let ((}{ 2)\n      (]]] 5))\n  (- }{ ]]]))"
+      ],
+      "out": "(let ((}{ 2)\n      (]]] 5))\n  (- }{ ]]]))"
+    },
+    "id": 1420
   }
 ]

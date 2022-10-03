@@ -9,6 +9,8 @@ var parinfer = require('./parinfer.js')
 
 var LINE_ENDING_REGEX = /\r?\n/
 
+const INLINE_OPTS_REGEX = /^options\s*=\s*(.*)\n\n/
+
 function isOpenParen (c) {
   return c === '{' || c === '(' || c === '['
 }
@@ -43,7 +45,7 @@ function repeatString (text, n) {
 // ------------------------------------------------------------------------------
 
 function error (lineNo, msg) {
-  return 'test parse error at line ' + lineNo + ': ' + msg
+  return new Error('test parse error at line ' + lineNo + ': ' + msg)
 }
 
 function parsePrevCursorLine (options, inputLineNo, outputLineNo, input) {
@@ -64,7 +66,7 @@ function parseCursorFromLine (options, inputLineNo, outputLineNo, input) {
   var cursorX = input.indexOf('|')
   if (cursorX !== -1) {
     if (options.cursorX) {
-      throw error(inputLineNo, 'only one cursor allowed.  cursor already found at line', options.cursorLine)
+      throw error(inputLineNo, `found cursor at ${inputLineNo}:${cursorX}, but cursor was already found at ${options.cursorLine}:${options.cursorX}`)
     }
     var clean = input.split('|').join('')
     if (clean.length < input.length - 1) {
@@ -188,15 +190,26 @@ function handlePostDiffLine (options, inputLineNo, outputLineNo, outputLines, ou
   diff.code = outputLines[diff.codeLineNo]
 }
 
+function transferInlineOpts (src, dst) {
+  if (Array.isArray(src)) {
+    src = src[src.length - 1]
+  }
+  const m = src.match(INLINE_OPTS_REGEX)
+  return m ? m[0] + dst : dst
+}
+
 function _parseInput (text, extras) {
   extras = extras || {}
   var options = {}
-  if (extras.commentChars) { options.commentChars = extras.commentChars }
-  if (extras.openParenChars) { options.openParenChars = extras.openParenChars }
-  if (extras.closeParenChars) { options.closeParenChars = extras.closeParenChars }
-  if (extras.forceBalance) { options.forceBalance = true }
-  if (extras.partialResult) { options.partialResult = true }
   if (extras.printParensOnly) { options.returnParens = true }
+
+  // parse inline options
+  const m = text.match(INLINE_OPTS_REGEX)
+  if (m) {
+    text = text.slice(m[0].length) // remove inline options from text
+    const inlineOpts = eval(`(${m[1]})`) // parse options line
+    Object.assign(options, inlineOpts) // add options
+  }
 
   var inputLines = text.split(LINE_ENDING_REGEX)
   var outputLines = []
@@ -527,5 +540,7 @@ module.exports = {
 
   parseInput: parseInput,
   parseOutput: parseOutput,
-  printOutput: printOutput
+  printOutput: printOutput,
+
+  transferInlineOpts: transferInlineOpts
 }

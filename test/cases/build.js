@@ -43,6 +43,7 @@ function finalizeCase (testCase) {
     text = input.text
     options = input.options
   } catch (e) {
+    const block = inBlocks[0]
     console.log()
     console.log('error at input block, line ' + block.fileLineNo + ':')
     console.log()

@@ -557,3 +557,37 @@ Indent last two lines:
 {:a {:b (Integer/valueOf (-> ""
                              (.length)))}}
 ```
+
+## Custom Comment Chars
+
+```in:3200
+options = { commentChars: [';', '$'] }
+
+(let [a 1
+      ])$ <-- spaces
+```
+
+```out
+(let [a 1])
+      $ <-- spaces
+```
+
+```in:3205
+options = { commentChars: ['#'] }
+
+  (defn foo
+--
+    [a b]
+    # comment 1
+    bar)
+    # comment 2
+```
+
+```out
+(defn foo
+  [a b]
+  # comment 1
+  bar)
+  # comment 2
+```
+
