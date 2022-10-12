@@ -169,16 +169,16 @@ function testStructure (testCase, mode) {
 const parinferTest = require('../testParsingLib.js')
 
 function testString (testCase, mode) {
-  var expected = testCase.result
-  var source = testCase.source
+  const expected = testCase.result
+  const source = testCase.source
 
   const extras = {
     printTabStops: expected.tabStops,
     printParenTrails: expected.parenTrails
   }
 
-  var pretty, pretty2, pretty3
-  var prettyIn
+  let pretty, pretty2, pretty3
+  let prettyIn
 
   it('should generate the correct annotated output', function () {
     switch (mode) {

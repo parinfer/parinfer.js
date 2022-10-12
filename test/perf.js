@@ -3,8 +3,8 @@ const path = require('path')
 const parinfer = require('../parinfer.js')
 
 function timeProcess (filename, text, options) {
-  var numChars = text.length
-  var lines = text.split('\n')
+  const numChars = text.length
+  const lines = text.split('\n')
   console.log('Processing', filename, ':', lines.length, 'lines,', numChars, 'chars')
 
   console.time('indent')

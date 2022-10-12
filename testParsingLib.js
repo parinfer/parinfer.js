@@ -5,9 +5,9 @@
 // MIT License
 //
 
-var parinfer = require('./parinfer.js')
+const parinfer = require('./parinfer.js')
 
-var LINE_ENDING_REGEX = /\r?\n/
+const LINE_ENDING_REGEX = /\r?\n/
 
 const INLINE_OPTS_REGEX = /^options\s*=\s*(.*)\n\n/
 
@@ -32,8 +32,8 @@ function replaceWithinString (orig, start, end, replace) {
 }
 
 function repeatString (text, n) {
-  var i
-  var result = ''
+  let i
+  let result = ''
   for (i = 0; i < n; i++) {
     result += text
   }
@@ -49,11 +49,11 @@ function error (lineNo, msg) {
 }
 
 function parsePrevCursorLine (options, inputLineNo, outputLineNo, input) {
-  var match = input.match(/^\s*\^\s*prevCursor\s*$/)
+  const match = input.match(/^\s*\^\s*prevCursor\s*$/)
   if (!match) {
     return false
   }
-  var x = input.indexOf('^')
+  let x = input.indexOf('^')
   if (options.cursorX < x && options.cursorLine === outputLineNo) {
     x++
   }
@@ -63,12 +63,12 @@ function parsePrevCursorLine (options, inputLineNo, outputLineNo, input) {
 }
 
 function parseCursorFromLine (options, inputLineNo, outputLineNo, input) {
-  var cursorX = input.indexOf('|')
+  const cursorX = input.indexOf('|')
   if (cursorX !== -1) {
     if (options.cursorX) {
       throw error(inputLineNo, `found cursor at ${inputLineNo}:${cursorX}, but cursor was already found at ${options.cursorLine}:${options.cursorX}`)
     }
-    var clean = input.split('|').join('')
+    const clean = input.split('|').join('')
     if (clean.length < input.length - 1) {
       throw error(inputLineNo, 'only one cursor allowed')
     }
@@ -80,7 +80,7 @@ function parseCursorFromLine (options, inputLineNo, outputLineNo, input) {
 }
 
 function initialDiffState () {
-  var diff = {
+  const diff = {
     code: null, // the code that the diff line is annotating
     codeLineNo: null,
     prevCode: null, // the code that the previous diff line annotated
@@ -94,29 +94,28 @@ function initialDiffState () {
 
 function parseDiffLine (options, inputLineNo, input, diff) {
   // lines with only -/+ chars are considered diff lines.
-  var looseMatch = input.match(/^\s*[-+]+[-+\s]*$/)
+  const looseMatch = input.match(/^\s*[-+]+[-+\s]*$/)
   if (!looseMatch) {
     return
   }
-  var match = input.match(/^((\s*)(-*)(\+*))\s*$/)
+  const match = input.match(/^((\s*)(-*)(\+*))\s*$/)
   if (!match) {
     throw error(inputLineNo, " diff chars must be adjacent with '-'s before '+'s.")
   }
-  var x = match[2].length
+  let x = match[2].length
   if (!diff.code) {
     throw error(inputLineNo, ' diff lines must be directly below a code line')
   }
 
   // "open" means current and previous diffs can be connected
-  var prevDiffOpen = (
+  const prevDiffOpen = (
     diff.prevCode &&
     diff.prevNewlineChar !== '' &&
     (diff.prevCodeLineNo === diff.codeLineNo ||
      diff.prevCodeLineNo + 1 === diff.codeLineNo)
   )
-  var currDiffOpen = x === 0
+  const currDiffOpen = x === 0
 
-  var change
   if (prevDiffOpen && currDiffOpen) {
     if (diff.prevNewlineChar === '+' && input[0] === '-') {
       throw error(inputLineNo, "diff line starts with '-', which cannot come after '+' which previous diff line ends with")
@@ -133,19 +132,19 @@ function parseDiffLine (options, inputLineNo, input, diff) {
   }
 
   // get the current active change
-  change = options.changes[options.changes.length - 1]
+  const change = options.changes[options.changes.length - 1]
 
   if (match[1].length > diff.code.length + 1) {
     throw error(inputLineNo, "diff line can only extend one character past the previous line length (to annotate the 'newline' char)")
   }
 
   x += diff.mergeOffset
-  var oldLen = match[3].length
-  var newLen = match[4].length
-  var oldX = x
-  var newX = x + oldLen
-  var len = oldLen + newLen
-  var xEnd = x + len - 1
+  const oldLen = match[3].length
+  const newLen = match[4].length
+  let oldX = x
+  let newX = x + oldLen
+  const len = oldLen + newLen
+  const xEnd = x + len - 1
 
   if (options.cursorLine === diff.codeLineNo) {
     if (x <= options.cursorX && options.cursorX < x + len) {
@@ -157,9 +156,9 @@ function parseDiffLine (options, inputLineNo, input, diff) {
     }
   }
 
-  var newlineChar = (diff.code.length === xEnd ? input.charAt(xEnd) : '')
-  var oldText = diff.code.substring(oldX, oldX + oldLen) + (newlineChar === '-' ? '\n' : '')
-  var newText = diff.code.substring(newX, newX + newLen) + (newlineChar === '+' ? '\n' : '')
+  const newlineChar = (diff.code.length === xEnd ? input.charAt(xEnd) : '')
+  const oldText = diff.code.substring(oldX, oldX + oldLen) + (newlineChar === '-' ? '\n' : '')
+  const newText = diff.code.substring(newX, newX + newLen) + (newlineChar === '+' ? '\n' : '')
   change.oldText += oldText
   change.newText += newText
 
@@ -173,7 +172,7 @@ function parseDiffLine (options, inputLineNo, input, diff) {
 }
 
 function handlePostDiffLine (options, inputLineNo, outputLineNo, outputLines, output, diff) {
-  var j = outputLineNo
+  const j = outputLineNo
   if (diff.merge) {
     diff.mergeOffset = outputLines[j - 1].length
     if (options.cursorLine === j) {
@@ -200,7 +199,7 @@ function transferInlineOpts (src, dst) {
 
 function _parseInput (text, extras) {
   extras = extras || {}
-  var options = {}
+  const options = {}
   if (extras.printParensOnly) { options.returnParens = true }
 
   // parse inline options
@@ -211,22 +210,20 @@ function _parseInput (text, extras) {
     Object.assign(options, inlineOpts) // add options
   }
 
-  var inputLines = text.split(LINE_ENDING_REGEX)
-  var outputLines = []
+  const inputLines = text.split(LINE_ENDING_REGEX)
+  const outputLines = []
 
-  var i, j // input and output line numbers
-  var input, output // input and output line text
-  var diff = initialDiffState()
+  const diff = initialDiffState()
 
-  for (i = 0; i < inputLines.length; i++) {
-    input = inputLines[i]
-    j = outputLines.length
+  for (let i = 0; i < inputLines.length; i++) { // input line number
+    const input = inputLines[i]
+    const j = outputLines.length // output line number
 
     if (parsePrevCursorLine(options, i, j - 1, input)) {
       continue
     }
 
-    output = parseDiffLine(options, i, input, diff)
+    let output = parseDiffLine(options, i, input, diff)
     if (output != null) {
       outputLines[j - 1] = output
       delete diff.code
@@ -248,17 +245,16 @@ function parseInput (texts, extras) {
     return _parseInput(texts, extras)
   }
 
-  var changes = []
-  var resultText
-  var resultOptions
-  var i, j
-  for (i = 0; i < texts.length; i++) {
-    var result = _parseInput(texts[i], extras)
+  const changes = []
+  let resultText
+  let resultOptions
+  for (let i = 0; i < texts.length; i++) {
+    const result = _parseInput(texts[i], extras)
     resultText = result.text
     resultOptions = result.options
-    var newChanges = result.options.changes
+    const newChanges = result.options.changes
     if (newChanges) {
-      for (j = 0; j < newChanges.length; j++) {
+      for (let j = 0; j < newChanges.length; j++) {
         changes.push(newChanges[j])
       }
     }
@@ -279,14 +275,14 @@ function parseInput (texts, extras) {
 // ------------------------------------------------------------------------------
 
 function parseErrorLine (result, inputLineNo, outputLineNo, input) {
-  var match = input.match(/^\s*\^\s*error: ([a-z-]+)\s*$/)
+  const match = input.match(/^\s*\^\s*error: ([a-z-]+)\s*$/)
   if (!match) {
     return false
   }
   if (result.error) {
     throw error(inputLineNo, 'only one error can be specified')
   }
-  var x = input.indexOf('^')
+  let x = input.indexOf('^')
   if (result.cursorLine === outputLineNo && result.cursorX < x) {
     x--
   }
@@ -299,7 +295,7 @@ function parseErrorLine (result, inputLineNo, outputLineNo, input) {
 }
 
 function parseTabStopsLine (result, inputLineNo, outputLineNo, input) {
-  var match = input.match(/^([\^>\s]+)tabStops?\s*$/)
+  const match = input.match(/^([\^>\s]+)tabStops?\s*$/)
   if (!match) {
     return false
   }
@@ -307,12 +303,12 @@ function parseTabStopsLine (result, inputLineNo, outputLineNo, input) {
     throw error(inputLineNo, 'only one tabStop line can be specified')
   }
   result.tabStops = []
-  var sym, ch, x, i, tabStop
-  for (x = 0; x < input.length; x++) {
-    sym = input[x]
+  let ch, tabStop
+  for (let x = 0; x < input.length; x++) {
+    const sym = input[x]
     if (sym === '^') {
       tabStop = { x: x }
-      for (i = outputLineNo; i >= 0; i--) {
+      for (let i = outputLineNo; i >= 0; i--) {
         ch = result.lines[i][x]
         if (isOpenParen(ch)) {
           tabStop.ch = ch
@@ -339,20 +335,19 @@ function parseTabStopsLine (result, inputLineNo, outputLineNo, input) {
 }
 
 function parseParenTrailLine (result, inputLineNo, outputLineNo, input) {
-  var match = input.match(/^\s*(\^*)\s*parenTrail\s*$/)
+  const match = input.match(/^\s*(\^*)\s*parenTrail\s*$/)
   if (!match) {
     return false
   }
   if (result.cursorLine != null) {
     throw error(inputLineNo, 'parenTrail cannot currently be printed when a cursor is present')
   }
-  var trail = match[1]
-  var startX = input.indexOf('^')
-  var endX = startX + trail.length
+  const trail = match[1]
+  const startX = input.indexOf('^')
+  const endX = startX + trail.length
 
-  var x
-  for (x = startX; x < endX; x++) {
-    var ch = result.lines[outputLineNo][x]
+  for (let x = startX; x < endX; x++) {
+    const ch = result.lines[outputLineNo][x]
     if (!isCloseParen(ch)) {
       throw error(inputLineNo, '^ parenTrail must point to close-parens only')
     }
@@ -370,17 +365,14 @@ function parseParenTrailLine (result, inputLineNo, outputLineNo, input) {
 }
 
 function parseOutput (text) {
-  var lines = text.split(LINE_ENDING_REGEX)
-  var result = {
+  const lines = text.split(LINE_ENDING_REGEX)
+  const result = {
     lines: []
   }
 
-  var i, j // input and output line numbers
-  var input, output // input and output line text
-
-  for (i = 0; i < lines.length; i++) {
-    input = lines[i]
-    j = result.lines.length
+  for (let i = 0; i < lines.length; i++) { // input line number
+    const input = lines[i]
+    const j = result.lines.length // output line number
 
     if (parseErrorLine(result, i, j - 1, input) ||
         parseTabStopsLine(result, i, j - 1, input) ||
@@ -388,7 +380,7 @@ function parseOutput (text) {
       continue
     }
 
-    output = parseCursorFromLine(result, i, j, input)
+    const output = parseCursorFromLine(result, i, j, input)
     result.lines.push(output)
   }
   result.text = result.lines.join('\n')
@@ -403,7 +395,7 @@ function parseOutput (text) {
 
 function printErrorLine (result) {
   // shift x position back if previous line has cursor before our error caret
-  var x = result.error.x
+  let x = result.error.x
   if (result.cursorLine === result.error.lineNo &&
       result.cursorX <= x) {
     x++
@@ -412,12 +404,11 @@ function printErrorLine (result) {
 }
 
 function printTabStopLine (tabStops) {
-  var i, x
-  var lastX = -1
-  var line = ''
-  var count = 0
-  for (i = 0; i < tabStops.length; i++) {
-    x = tabStops[i].x
+  let lastX = -1
+  let line = ''
+  let count = 0
+  for (let i = 0; i < tabStops.length; i++) {
+    let x = tabStops[i].x
     line += repeatString(' ', x - lastX - 1) + '^'
     lastX = x
     count++
@@ -442,19 +433,19 @@ function printParenTrailLine (parenTrail) {
 }
 
 function printPadding (lineNo, x, nextLineNo, nextX) {
-  var newlines = nextLineNo - lineNo
-  var spaces = (nextLineNo > lineNo) ? nextX : nextX - x - 1
+  const newlines = nextLineNo - lineNo
+  const spaces = (nextLineNo > lineNo) ? nextX : nextX - x - 1
   return repeatString('\n', newlines) + repeatString(' ', spaces)
 }
 
 function printParen (lineNo, x, opener) {
-  var s = printPadding(lineNo, x, opener.lineNo, opener.x)
+  let s = printPadding(lineNo, x, opener.lineNo, opener.x)
   s += opener.ch
   lineNo = opener.lineNo
   x = opener.x
 
   s += printParens(lineNo, x, opener.children)
-  var lastChild = opener.children[opener.children.length - 1]
+  const lastChild = opener.children[opener.children.length - 1]
   if (lastChild) {
     lineNo = lastChild.closer.lineNo
     x = lastChild.closer.x
@@ -469,11 +460,9 @@ function printParen (lineNo, x, opener) {
 }
 
 function printParens (lineNo, x, parens) {
-  var s = ''
-  var i
-  var opener
-  for (i = 0; i < parens.length; i++) {
-    opener = parens[i]
+  let s = ''
+  for (let i = 0; i < parens.length; i++) {
+    const opener = parens[i]
     s += printParen(lineNo, x, opener)
     lineNo = opener.closer.lineNo
     x = opener.closer.x
@@ -483,8 +472,8 @@ function printParens (lineNo, x, parens) {
 
 function printOutput (result, extras) {
   extras = extras || {}
-  var lines = result.text.split(LINE_ENDING_REGEX)
-  var hasCursor = (
+  const lines = result.text.split(LINE_ENDING_REGEX)
+  const hasCursor = (
     result.cursorX != null &&
     result.cursorLine != null &&
 
@@ -492,7 +481,7 @@ function printOutput (result, extras) {
     result.cursorLine < lines.length
   )
   if (hasCursor) {
-    var line = lines[result.cursorLine]
+    const line = lines[result.cursorLine]
     lines[result.cursorLine] = replaceWithinString(line, result.cursorX, result.cursorX, '|')
   }
   if (result.error) {
@@ -500,9 +489,8 @@ function printOutput (result, extras) {
   } else if (extras.printParensOnly) {
     return printParens(0, 0, result.parens)
   } else if (extras.printParenTrails && result.parenTrails) {
-    var i, parenTrail
-    for (i = result.parenTrails.length - 1; i >= 0; i--) {
-      parenTrail = result.parenTrails[i]
+    for (let i = result.parenTrails.length - 1; i >= 0; i--) {
+      const parenTrail = result.parenTrails[i]
       lines.splice(parenTrail.lineNo + 1, 0, printParenTrailLine(parenTrail))
     }
   } else if (hasCursor && extras.printTabStops && result.tabStops.length > 0) {
@@ -516,20 +504,20 @@ function printOutput (result, extras) {
 // ------------------------------------------------------------------------------
 
 function indentMode (text, extras) {
-  var parsed = parseInput(text, extras)
-  var result = parinfer.indentMode(parsed.text, parsed.options)
+  const parsed = parseInput(text, extras)
+  const result = parinfer.indentMode(parsed.text, parsed.options)
   return printOutput(result, extras)
 }
 
 function parenMode (text, extras) {
-  var parsed = parseInput(text, extras)
-  var result = parinfer.parenMode(parsed.text, parsed.options)
+  const parsed = parseInput(text, extras)
+  const result = parinfer.parenMode(parsed.text, parsed.options)
   return printOutput(result, extras)
 }
 
 function smartMode (text, extras) {
-  var parsed = parseInput(text, extras)
-  var result = parinfer.smartMode(parsed.text, parsed.options)
+  const parsed = parseInput(text, extras)
+  const result = parinfer.smartMode(parsed.text, parsed.options)
   return printOutput(result, extras)
 }
 

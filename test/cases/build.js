@@ -1,11 +1,11 @@
-var fs = require('fs')
-var parinferTest = require('../../testParsingLib.js')
+const fs = require('fs')
+const parinferTest = require('../../testParsingLib.js')
 
 // -----------------------------------------------------------------------------
 // Result Data
 
 function getInitialResult () {
-  var result = {
+  const result = {
     cases: [],
     currLabel: null, // "in" or "out"
     currCase: getInitialCase()
@@ -15,7 +15,7 @@ function getInitialResult () {
 }
 
 function getInitialCase () {
-  var testCase = {
+  const testCase = {
     id: null,
     in: [],
     out: []
@@ -97,12 +97,12 @@ function error (fileLineNo, msg) {
 // -----------------------------------------------------------------------------
 // Test case parsing
 
-function parseLine_endBlock (result, fileLineNo, line) {
+function parseLineEndBlock (result, fileLineNo, line) {
   if (result.currLabel === null) {
     error(fileLineNo, "opening block must have a name: 'in' or 'out'.")
   }
 
-  var isTestCaseDone = (result.currCase.out.length !== 0)
+  const isTestCaseDone = (result.currCase.out.length !== 0)
 
   if (isTestCaseDone) {
     result.cases.push(finalizeCase(result.currCase))
@@ -113,7 +113,7 @@ function parseLine_endBlock (result, fileLineNo, line) {
   }
 }
 
-function parseLine_startBlock (result, fileLineNo, line) {
+function parseLineStartBlock (result, fileLineNo, line) {
   if (result.currLabel !== null) {
     error(fileLineNo, "must close previous block '" + result.currLabel + "' before starting new one.")
   }
@@ -152,7 +152,7 @@ function parseLine_startBlock (result, fileLineNo, line) {
   blocks.push(newBlock)
 }
 
-function parseLine_insideBlock (result, fileLineNo, line) {
+function parseLineInsideBlock (result, fileLineNo, line) {
   const blocks = result.currCase[result.currLabel]
   const block = blocks[blocks.length - 1]
   if (block.fileText) {
@@ -161,25 +161,24 @@ function parseLine_insideBlock (result, fileLineNo, line) {
   block.fileText += line
 }
 
-function parseLine_default (result, fileLineNo, line) {
+function parseLineDefault (result, fileLineNo, line) {
   return result
 }
 
 function parseLine (result, fileLineNo, line) {
-  var f
-  if (line === '```') f = parseLine_endBlock
-  else if (line.startsWith('```')) f = parseLine_startBlock
-  else if (result.currLabel !== null) f = parseLine_insideBlock
-  else f = parseLine_default
+  let f
+  if (line === '```') f = parseLineEndBlock
+  else if (line.startsWith('```')) f = parseLineStartBlock
+  else if (result.currLabel !== null) f = parseLineInsideBlock
+  else f = parseLineDefault
 
   return f(result, fileLineNo, line)
 }
 
 function parseText (text) {
-  var lines = text.split('\n')
-  var result = getInitialResult()
-  var i
-  for (i = 0; i < lines.length; i++) {
+  const lines = text.split('\n')
+  const result = getInitialResult()
+  for (let i = 0; i < lines.length; i++) {
     parseLine(result, i, lines[i])
   }
 
@@ -197,13 +196,13 @@ function parseText (text) {
 // -----------------------------------------------------------------------------
 // JSON builder
 
-var casesPath = __dirname
+const casesPath = __dirname
 
 function buildJSON (name) {
   // JSON.stringify(data, null, "  ");
-  var inFile = casesPath + '/' + name + '.md'
-  var outFile = casesPath + '/' + name + '.json'
-  var inText = fs.readFileSync(inFile, 'utf8')
+  const inFile = casesPath + '/' + name + '.md'
+  const outFile = casesPath + '/' + name + '.json'
+  const inText = fs.readFileSync(inFile, 'utf8')
 
   console.log(
     '  compiling ' +
@@ -212,8 +211,8 @@ function buildJSON (name) {
     name + '.json'
   )
 
-  var cases = parseText(inText)
-  var outText = JSON.stringify(cases, null, '  ')
+  const cases = parseText(inText)
+  const outText = JSON.stringify(cases, null, '  ')
   fs.writeFileSync(outFile, outText)
 }
 

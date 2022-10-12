@@ -16,7 +16,7 @@ docfile=doc/code.md
 fn_links=$(perl -n -e'/^  function (\w+)/ && print "[`$1`]:../parinfer.js#L$.\n"' $jsfile)
 
 # ref links for each top-level var name
-var_links=$(perl -n -e'/^  (var|const|let) ([\w_]+) = / && print "[`$2`]:../parinfer.js#L$.\n"' $jsfile)
+var_links=$(perl -n -e'/^  (const|let) ([\w_]+) = / && print "[`$2`]:../parinfer.js#L$.\n"' $jsfile)
 
 # ref links for each top-level result key
 result_links=$(perl -n -e'/^\s+(\w+):.*\/\/\s*\@doc / && print "[`result.$1`]:../parinfer.js#L$.\n"' $jsfile)

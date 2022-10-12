@@ -31,7 +31,6 @@
   // - identify any function hoisting
   // - wrap string operations in a function: charAt access, .split, .join
   // - wrap all stack operations in a function: concat
-  // - change all "var" to either "let" or "const"
 
   // ---------------------------------------------------------------------------
   // Constants
@@ -180,7 +179,7 @@
   function getLineEnding (text) {
   // NOTE: We assume that if the CR char "\r" is used anywhere,
   //       then we should use CRLF line-endings after every line.
-    var i = text.search('\r')
+    const i = text.search('\r')
     if (i !== -1) {
       return '\r\n'
     }
@@ -198,7 +197,7 @@
   }
 
   function peek (arr, idxFromBack) {
-    var maxIdx = arraySize(arr) - 1
+    const maxIdx = arraySize(arr) - 1
     if (idxFromBack > maxIdx) {
       return null
     }
@@ -403,7 +402,7 @@
   }
 
   function getInitialResult (text, options, mode, smart) {
-    var result = {
+    const result = {
 
       mode: mode, //                     @doc [enum] - current processing mode (INDENT_MODE or PAREN_MODE)
       smart: smart, //                   @doc [boolean] - smart mode attempts special user-friendly behavior
@@ -560,7 +559,7 @@
   errorMessages[ERROR_UNHANDLED] = 'Unhandled error.'
 
   function cacheErrorPos (result, errorName) {
-    var e = {
+    const e = {
       lineNo: result.lineNo,
       x: result.x,
       inputLineNo: result.inputLineNo,
@@ -639,9 +638,9 @@
   }
 
   function shiftCursorOnEdit (result, lineNo, start, end, replaceTxt) {
-    var oldLength = end - start
-    var newLength = strLen(replaceTxt)
-    var dx = newLength - oldLength
+    const oldLength = end - start
+    const newLength = strLen(replaceTxt)
+    const dx = newLength - oldLength
 
     if (dx !== 0 &&
       result.cursorLine === lineNo &&
@@ -735,14 +734,14 @@
   }
 
   function isWhitespace (result) {
-    var ch = result.ch
+    const ch = result.ch
     return !result.isEscaped && (ch === BLANK_SPACE || ch === DOUBLE_SPACE)
   }
 
   // can this be the last code character of a list?
   function isClosable (result) {
-    var ch = result.ch
-    var isCloser = (isCloseParen(ch, result.closeParenChars) && !result.isEscaped)
+    const ch = result.ch
+    const isCloser = (isCloseParen(ch, result.closeParenChars) && !result.isEscaped)
     return result.isInCode && !isWhitespace(result) && ch !== '' && !isCloser
   }
 
@@ -775,15 +774,15 @@
     }
     const holdMaxX = opener.x
 
-    var holding = (
+    const holding = (
       result.cursorLine === opener.lineNo &&
-    holdMinX <= result.cursorX && result.cursorX <= holdMaxX
+      holdMinX <= result.cursorX && result.cursorX <= holdMaxX
     )
-    var shouldCheckPrev = !result.changes && result.prevCursorLine !== UINT_NULL
+    const shouldCheckPrev = !result.changes && result.prevCursorLine !== UINT_NULL
     if (shouldCheckPrev) {
-      var prevHolding = (
+      const prevHolding = (
         result.prevCursorLine === opener.lineNo &&
-      holdMinX <= result.prevCursorX && result.prevCursorX <= holdMaxX
+        holdMinX <= result.prevCursorX && result.prevCursorX <= holdMaxX
       )
       if (prevHolding && !holding) {
         throw { releaseCursorHold: true }
@@ -799,7 +798,7 @@
       }
     } else if (state === 'arg') {
       if (!isWhitespace(result)) {
-        var opener = peek(result.parenStack, 0)
+        const opener = peek(result.parenStack, 0)
         opener.argX = result.x
         result.trackingArgTabStop = null
       }
@@ -811,7 +810,7 @@
 
   function onOpenParen (result) {
     if (result.isInCode) {
-      var opener = {
+      const opener = {
         inputLineNo: result.inputLineNo,
         inputX: result.inputX,
 
@@ -953,7 +952,7 @@
   // Character dispatch
 
   function onChar (result) {
-    var ch = result.ch
+    let ch = result.ch
     result.isEscaped = false
 
     if (result.isEscaping) afterBackslash(result)
@@ -973,7 +972,7 @@
       resetParenTrail(result, result.lineNo, result.x + strLen(ch))
     }
 
-    var state = result.trackingArgTabStop
+    const state = result.trackingArgTabStop
     if (state) {
       trackArgTabStop(result, state)
     }
@@ -1006,9 +1005,9 @@
 
   function handleChangeDelta (result) {
     if (result.changes && (result.smart || result.mode === PAREN_MODE)) {
-      var line = result.changes[result.inputLineNo]
+      const line = result.changes[result.inputLineNo]
       if (line) {
-        var change = line[result.inputX]
+        const change = line[result.inputX]
         if (change) {
           result.indentDelta = result.indentDelta + change.newEndX - change.oldEndX
         }
@@ -1038,10 +1037,10 @@
 
   // INDENT MODE: allow the cursor to clamp the paren trail
   function clampParenTrailToCursor (result) {
-    var startX = result.parenTrail.startX
-    var endX = result.parenTrail.endX
+    const startX = result.parenTrail.startX
+    const endX = result.parenTrail.endX
 
-    var clamping = isCursorClampingParenTrail(result, result.cursorX, result.cursorLine)
+    const clamping = isCursorClampingParenTrail(result, result.cursorX, result.cursorLine)
 
     if (clamping) {
       const newStartX = Math.max(startX, result.cursorX)
@@ -1059,7 +1058,7 @@
         i = i + 1
       }
 
-      var openers = result.parenTrail.openers
+      const openers = result.parenTrail.openers
 
       const openersLen = arraySize(openers)
       result.parenTrail.openers = arraySlice(openers, removeCount, openersLen)
@@ -1074,14 +1073,14 @@
 
   // INDENT MODE: pops the paren trail from the stack
   function popParenTrail (result) {
-    var startX = result.parenTrail.startX
-    var endX = result.parenTrail.endX
+    const startX = result.parenTrail.startX
+    const endX = result.parenTrail.endX
 
     if (startX === endX) {
       return
     }
 
-    var openers = result.parenTrail.openers
+    const openers = result.parenTrail.openers
     while (!isStackEmpty(openers)) {
       const itm = stackPop(openers)
       stackPush(result.parenStack, itm)
@@ -1298,18 +1297,18 @@
 
   // PAREN MODE: remove spaces from the paren trail
   function cleanParenTrail (result) {
-    var startX = result.parenTrail.startX
-    var endX = result.parenTrail.endX
+    const startX = result.parenTrail.startX
+    const endX = result.parenTrail.endX
 
     if (startX === endX ||
       result.lineNo !== result.parenTrail.lineNo) {
       return
     }
 
-    var line = result.lines[result.lineNo]
-    var newTrail = ''
-    var spaceCount = 0
-    var i = startX
+    const line = result.lines[result.lineNo]
+    let newTrail = ''
+    let spaceCount = 0
+    let i = startX
     while (i < endX) {
       const lineCh = getCharFromString(line, i)
       if (isCloseParen(lineCh, result.closeParenChars)) {
@@ -1329,7 +1328,7 @@
 
   function setMaxIndent (result, opener) {
     if (opener) {
-      var parent = peek(result.parenStack, 0)
+      const parent = peek(result.parenStack, 0)
       if (parent) {
         parent.maxChildIndent = opener.x
       } else {
@@ -1340,8 +1339,8 @@
 
   // PAREN MODE: append a valid close-paren to the end of the paren trail
   function appendParenTrail (result) {
-    var opener = stackPop(result.parenStack)
-    var closeCh = MATCH_PAREN[opener.ch]
+    const opener = stackPop(result.parenStack)
+    const closeCh = MATCH_PAREN[opener.ch]
     if (result.returnParens) {
       setCloser(opener, result.parenTrail.lineNo, result.parenTrail.endX, closeCh)
     }
@@ -1359,7 +1358,7 @@
   }
 
   function checkUnmatchedOutsideParenTrail (result) {
-    var cache = result.errorPosCache[ERROR_UNMATCHED_CLOSE_PAREN]
+    const cache = result.errorPosCache[ERROR_UNMATCHED_CLOSE_PAREN]
     if (cache && cache.x < result.parenTrail.startX) {
       throw createError(result, ERROR_UNMATCHED_CLOSE_PAREN)
     }
@@ -1439,9 +1438,9 @@
   // Indentation functions
 
   function addIndent (result, delta) {
-    var origIndent = result.x
-    var newIndent = origIndent + delta
-    var indentStr = repeatString(BLANK_SPACE, newIndent)
+    const origIndent = result.x
+    const newIndent = origIndent + delta
+    const indentStr = repeatString(BLANK_SPACE, newIndent)
     replaceWithinLine(result, result.lineNo, 0, origIndent, indentStr)
     result.x = newIndent
     result.indentX = newIndent
@@ -1455,12 +1454,12 @@
   }
 
   function correctIndent (result) {
-    var origIndent = result.x
-    var newIndent = origIndent
-    var minIndent = 0
-    var maxIndent = result.maxIndent
+    const origIndent = result.x
+    let newIndent = origIndent
+    let minIndent = 0
+    let maxIndent = result.maxIndent
 
-    var opener = peek(result.parenStack, 0)
+    const opener = peek(result.parenStack, 0)
     if (opener) {
       minIndent = opener.x + 1
       maxIndent = opener.maxChildIndent
@@ -1487,7 +1486,7 @@
     if (result.mode === INDENT_MODE) {
       correctParenTrail(result, result.x)
 
-      var opener = peek(result.parenStack, 0)
+      const opener = peek(result.parenStack, 0)
       if (opener && shouldAddOpenerIndent(result, opener)) {
         addIndent(result, opener.indentDelta)
       }
@@ -1640,7 +1639,7 @@
   // High-level processing functions
 
   function processChar (result, ch) {
-    var origCh = ch
+    const origCh = ch
 
     result.ch = ch
     result.skipChar = false
@@ -1718,7 +1717,7 @@
   }
 
   function processText (text, options, mode, smart) {
-    var result = getInitialResult(text, options, mode, smart)
+    const result = getInitialResult(text, options, mode, smart)
 
     try {
       const inputLinesLen = arraySize(result.inputLines)
@@ -1793,11 +1792,11 @@
 
   function smartMode (text, options) {
     options = parseOptions(options)
-    var smart = options.selectionStartLine == null
+    const smart = options.selectionStartLine == null
     return publicResult(processText(text, options, INDENT_MODE, smart))
   }
 
-  var API = {
+  const API = {
     version: '3.13.1',
     indentMode: indentMode,
     parenMode: parenMode,
