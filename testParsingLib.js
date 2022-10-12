@@ -197,6 +197,14 @@ function transferInlineOpts (src, dst) {
   return m ? m[0] + dst : dst
 }
 
+function parseJSON (text) {
+  return JSON.parse(
+    text
+      .replace(/([a-zA-Z]+)\s*:/g, '"$1":') // wrap keys in quotes
+      .replace(/'/g, '"') // replace ' with "
+  )
+}
+
 function _parseInput (text, extras) {
   extras = extras || {}
   const options = {}
@@ -206,7 +214,7 @@ function _parseInput (text, extras) {
   const m = text.match(INLINE_OPTS_REGEX)
   if (m) {
     text = text.slice(m[0].length) // remove inline options from text
-    const inlineOpts = eval(`(${m[1]})`) // parse options line
+    const inlineOpts = parseJSON(m[1]) // parse options line
     Object.assign(options, inlineOpts) // add options
   }
 

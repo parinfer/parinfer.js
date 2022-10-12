@@ -626,6 +626,10 @@
     return err
   }
 
+  function exitToParenMode (reason) {
+    return { exitToParenMode: true, reason: reason }
+  }
+
   // ---------------------------------------------------------------------------
   // Line Operations
 
@@ -785,7 +789,7 @@
         holdMinX <= result.prevCursorX && result.prevCursorX <= holdMaxX
       )
       if (prevHolding && !holding) {
-        throw { releaseCursorHold: true }
+        throw exitToParenMode('releaseCursorHold')
       }
     }
     return holding
@@ -1506,7 +1510,7 @@
     if (result.mode === INDENT_MODE) {
       if (!result.forceBalance) {
         if (result.smart) {
-          throw { leadingCloseParen: true }
+          throw exitToParenMode('leadingCloseParen')
         }
         if (!result.errorPosCache[ERROR_LEADING_CLOSE_PAREN]) {
           cacheErrorPos(result, ERROR_LEADING_CLOSE_PAREN)
@@ -1729,7 +1733,7 @@
       }
       finalizeResult(result)
     } catch (e) {
-      if (e.leadingCloseParen || e.releaseCursorHold) {
+      if (e.exitToParenMode) {
         return processText(text, options, PAREN_MODE, smart)
       }
       processError(result, e)
