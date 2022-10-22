@@ -141,6 +141,18 @@
     assert(getCharFromString('abc', 1) === 'b')
   }
 
+  function indexOf(arr, val) {
+    const len = arraySize(arr)
+    let i = 0
+    while (i < len) {
+      if (val === arr[i]) {
+        return i
+      }
+      i = i + 1
+    }
+    return -1
+  }
+
   // ---------------------------------------------------------------------------
   // String Operations
 
@@ -709,25 +721,15 @@
     return val
   }
 
-  if (RUN_ASSERTS) {
-    assert(clamp(1, 3, 5) === 3)
-    assert(clamp(9, 3, 5) === 5)
-    assert(clamp(1, 3, UINT_NULL) === 3)
-    assert(clamp(5, 3, UINT_NULL) === 5)
-    assert(clamp(1, UINT_NULL, 5) === 1)
-    assert(clamp(9, UINT_NULL, 5) === 5)
-    assert(clamp(1, UINT_NULL, UINT_NULL) === 1)
-  }
-
   // ---------------------------------------------------------------------------
   // Questions about characters
 
   function isOpenParen (ch, openParenChars) {
-    return openParenChars.indexOf(ch) !== -1
+    return indexOf(openParenChars, ch) !== -1
   }
 
   function isCloseParen (ch, closeParenChars) {
-    return closeParenChars.indexOf(ch) !== -1
+    return indexOf(closeParenChars, ch) !== -1
   }
 
   function isValidCloseParen (parenStack, ch) {
@@ -750,20 +752,7 @@
   }
 
   function isCommentChar (ch, commentChars) {
-    return commentChars.indexOf(ch) !== -1
-
-    // NOTE: use this for porting code if necessary
-    // const commentCharsLen = arraySize(commentChars)
-    // let i = 0
-    // while (i < commentCharsLen) {
-    //   const commentChar = commentChars[i]
-    //   if (ch === commentChar) {
-    //     return true
-    //   }
-    //   i = i + 1
-    // }
-    //
-    // return false
+    return indexOf(commentChars, ch) !== -1
   }
 
   // ---------------------------------------------------------------------------
