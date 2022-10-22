@@ -153,6 +153,13 @@
     return -1
   }
 
+  if (RUN_ASSERTS) {
+    assert(indexOf(['a','b','c'], 'a') === 0)
+    assert(indexOf(['a','b','c'], 'b') === 1)
+    assert(indexOf(['a','b','c'], 'c') === 2)
+    assert(indexOf(['a','b','c'], 'd') === -1)
+  }
+
   // ---------------------------------------------------------------------------
   // String Operations
 
