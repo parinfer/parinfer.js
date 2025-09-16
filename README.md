@@ -224,6 +224,7 @@ comprehensive test suite to help ensure consistent behavior.
 | implemented in | link               | relevant editor          |
 |:---------------|:-------------------|:-------------------------|
 | JavaScript     | parinfer.js (here) | Atom, VSCode, LightTable |
+| C++            | [cpparinfer]       |                          |
 | Rust           | [parinfer-rust]    | Vim                      |
 | Python         | [parinfer.py]      | Sublime Text             |
 | Kotlin (JVM)   | [parinfer-jvm]     | Cursive IDE, Nightcode   |
@@ -231,6 +232,7 @@ comprehensive test suite to help ensure consistent behavior.
 | Vim Script     | [parinfer-viml]    | Vim                      |
 | Lua            | [parinfer-lua]     | TextAdept                |
 
+[cpparinfer]:https://gitlab.com/w0utert/cpparinfer
 [parinfer-rust]:https://github.com/eraserhd/parinfer-rust
 [parinfer.py]:https://github.com/oakmac/parinfer.py
 [parinfer-jvm]:https://github.com/oakmac/parinfer-jvm
