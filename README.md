@@ -2,7 +2,7 @@
 
 # Parinfer.js
 
-> Pronounced "par-in-fur". "par" rhymes with car and star; "fur" rhymes with blur and stir
+> Pronounced "PAR-infer".
 
 <em>See the __[Parinfer Home Page]__ for the original animated demo page.</em>
 
